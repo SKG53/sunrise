@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShopifyTestRouteImport } from './routes/shopify-test'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as FindRouteImport } from './routes/find'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -16,6 +17,11 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsSlugRouteImport } from './routes/products_.$slug'
 
+const ShopifyTestRoute = ShopifyTestRouteImport.update({
+  id: '/shopify-test',
+  path: '/shopify-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
   '/products': typeof ProductsRoute
+  '/shopify-test': typeof ShopifyTestRoute
   '/products/$slug': typeof ProductsSlugRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
   '/products': typeof ProductsRoute
+  '/shopify-test': typeof ShopifyTestRoute
   '/products/$slug': typeof ProductsSlugRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
   '/products': typeof ProductsRoute
+  '/shopify-test': typeof ShopifyTestRoute
   '/products_/$slug': typeof ProductsSlugRoute
 }
 export interface FileRouteTypes {
@@ -80,9 +89,17 @@ export interface FileRouteTypes {
     | '/contact'
     | '/find'
     | '/products'
+    | '/shopify-test'
     | '/products/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/find' | '/products' | '/products/$slug'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/find'
+    | '/products'
+    | '/shopify-test'
+    | '/products/$slug'
   id:
     | '__root__'
     | '/'
@@ -90,6 +107,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/find'
     | '/products'
+    | '/shopify-test'
     | '/products_/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -99,11 +117,19 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   FindRoute: typeof FindRoute
   ProductsRoute: typeof ProductsRoute
+  ShopifyTestRoute: typeof ShopifyTestRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/shopify-test': {
+      id: '/shopify-test'
+      path: '/shopify-test'
+      fullPath: '/shopify-test'
+      preLoaderRoute: typeof ShopifyTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products': {
       id: '/products'
       path: '/products'
@@ -155,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   FindRoute: FindRoute,
   ProductsRoute: ProductsRoute,
+  ShopifyTestRoute: ShopifyTestRoute,
   ProductsSlugRoute: ProductsSlugRoute,
 }
 export const routeTree = rootRouteImport
