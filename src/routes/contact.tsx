@@ -54,6 +54,7 @@ function ContactPage() {
   const [reason, setReason] = useState(REASONS[0]);
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
 
   // Pre-select reason from ?topic= URL param on mount. Browser-only.
   useEffect(() => {
@@ -67,6 +68,16 @@ function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Validate required fields in React state since the form uses noValidate to
+    // suppress native browser bubbles in favor of brand-aligned inline errors.
+    const next: { name?: string; email?: string; message?: string } = {};
+    if (!name.trim()) next.name = "Name needed.";
+    if (!email.trim()) next.email = "Email needed.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = "Email looks off.";
+    if (!message.trim()) next.message = "Message needed.";
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
+
     // TODO: Wire to backend. Options: EmailJS, Formspree, HubSpot Forms API,
     // Netlify Forms, or direct Cloudflare Worker endpoint. Until then, form
     // surfaces a success state so the UX is complete end-to-end.
@@ -133,6 +144,7 @@ function ContactPage() {
                           setName("");
                           setEmail("");
                           setMessage("");
+                          setErrors({});
                         }}
                       >
                         Send Another
@@ -146,23 +158,33 @@ function ContactPage() {
                         <span className="c-field-label">Name</span>
                         <input
                           type="text"
-                          className="c-input"
+                          className={`c-input${errors.name ? " c-input-error" : ""}`}
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                            if (errors.name) setErrors({ ...errors, name: undefined });
+                          }}
                           required
                           autoComplete="name"
+                          aria-invalid={errors.name ? true : undefined}
                         />
+                        {errors.name && <span className="c-field-error">{errors.name}</span>}
                       </label>
                       <label className="c-field">
                         <span className="c-field-label">Email</span>
                         <input
                           type="email"
-                          className="c-input"
+                          className={`c-input${errors.email ? " c-input-error" : ""}`}
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (errors.email) setErrors({ ...errors, email: undefined });
+                          }}
                           required
                           autoComplete="email"
+                          aria-invalid={errors.email ? true : undefined}
                         />
+                        {errors.email && <span className="c-field-error">{errors.email}</span>}
                       </label>
                     </div>
 
@@ -187,12 +209,17 @@ function ContactPage() {
                       <label className="c-field">
                         <span className="c-field-label">Message</span>
                         <textarea
-                          className="c-textarea"
+                          className={`c-textarea${errors.message ? " c-input-error" : ""}`}
                           rows={6}
                           value={message}
-                          onChange={(e) => setMessage(e.target.value)}
+                          onChange={(e) => {
+                            setMessage(e.target.value);
+                            if (errors.message) setErrors({ ...errors, message: undefined });
+                          }}
                           required
+                          aria-invalid={errors.message ? true : undefined}
                         />
+                        {errors.message && <span className="c-field-error">{errors.message}</span>}
                       </label>
                     </div>
 
