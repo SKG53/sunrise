@@ -144,8 +144,9 @@ main { flex: 1; width: 100%; }
 }
 .nav-cta.outline { background: transparent; color: var(--near-black); border: 1.5px solid var(--near-black); }
 .nav-cta.outline:hover { background: var(--near-black); color: var(--cream); }
-.nav-cta.solid { background: var(--near-black); color: var(--cream); border: 1.5px solid var(--near-black); }
-.nav-cta.solid:hover { background: var(--near-black-hover); }
+.nav-cta.solid { background: var(--tier-10); color: var(--cream); border: 1.5px solid var(--tier-10); }
+.nav-cta.solid:hover { background: var(--tier-10-hover); border-color: var(--tier-10-hover); }
+.nav-cta .no-transform { text-transform: none; }
 
 /* ── SITE FOOTER ────────────────────────────────────────────────────────── */
 .site-footer {

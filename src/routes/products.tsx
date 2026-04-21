@@ -143,6 +143,18 @@ function ProductsPage() {
   const [activeTier, setActiveTier] = useState<TierKey>("10");
   const lockupRef = useRef<HTMLDivElement>(null);
 
+  // Read ?tier= URL param on mount so Home S06 tier cards (and any other
+  // /products?tier=X deep-links) land on the correct panel. Invalid values
+  // are silently ignored and the default 10mg panel remains active.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get("tier");
+    if (t === "5" || t === "10" || t === "30" || t === "60") {
+      setActiveTier(t);
+    }
+  }, []);
+
   useEffect(() => {
     const paint = () => {
       if (!lockupRef.current) return;

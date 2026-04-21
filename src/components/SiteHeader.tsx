@@ -39,8 +39,8 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
         <a href="/contact" className={linkClass("contact")}>Contact</a>
       </nav>
       <div className="nav-right">
-        <a href="#" className="nav-cta outline">COAs</a>
-        <a href="#" className="nav-cta solid">Shop</a>
+        <a href="#" className="nav-cta outline"><span className="no-transform">COAs</span></a>
+        <a href="/products" className="nav-cta solid">Shop</a>
       </div>
     </header>
   );

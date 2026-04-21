@@ -27,6 +27,16 @@ import "./home.css";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
+  head: () => ({
+    meta: [
+      { title: "SUNRISE · Refresh the way the world drinks." },
+      {
+        name: "description",
+        content:
+          "Hemp-infused Delta-9 seltzer. Real fruit, pure cane sugar, clean lift — four potency tiers from easy to elevated, engineered for refreshment.",
+      },
+    ],
+  }),
 });
 
 function HomePage() {
@@ -114,7 +124,7 @@ function HomePage() {
         </section>
 
         {/* ── 04 · WHAT'S INSIDE ────────────────────────────────────────── */}
-        <section className="s04-whats-inside">
+        <section id="whats-inside" className="s04-whats-inside">
           <div className="container">
             <h2 className="s04-headline">
               Simple. Transparent. <span className="accent">Delicious.</span>
@@ -188,7 +198,7 @@ function HomePage() {
               Every occasion, every tolerance, every mood. Find the SUNRISE that fits.
             </p>
             <div className="s06-grid">
-              <a href="#" className="s06-card t5">
+              <a href="/products?tier=5" className="s06-card t5">
                 <div className="s06-lockup-slot" ref={lockup5Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">A Subtle Lift</div>
@@ -199,7 +209,7 @@ function HomePage() {
                 </div>
                 <div className="s06-card-footer"><span>Explore</span><span>→</span></div>
               </a>
-              <a href="#" className="s06-card t10">
+              <a href="/products?tier=10" className="s06-card t10">
                 <div className="s06-lockup-slot" ref={lockup10Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">The Perfect Buzz</div>
@@ -210,7 +220,7 @@ function HomePage() {
                 </div>
                 <div className="s06-card-footer"><span>Explore</span><span>→</span></div>
               </a>
-              <a href="#" className="s06-card t30">
+              <a href="/products?tier=30" className="s06-card t30">
                 <div className="s06-lockup-slot" ref={lockup30Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">A Deeper Dive</div>
@@ -221,7 +231,7 @@ function HomePage() {
                 </div>
                 <div className="s06-card-footer"><span>Explore</span><span>→</span></div>
               </a>
-              <a href="#" className="s06-card t60">
+              <a href="/products?tier=60" className="s06-card t60">
                 <div className="s06-lockup-slot" ref={lockup60Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">Elevated Experience</div>
@@ -252,7 +262,7 @@ function HomePage() {
                   manufacturing to the problem, and every can reflects that work.
                 </p>
                 <div className="s07-cta-row">
-                  <a href="#" className="btn btn-secondary">Read Our Story →</a>
+                  <a href="/about" className="btn btn-secondary">Read Our Story →</a>
                 </div>
               </div>
             </div>

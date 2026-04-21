@@ -57,8 +57,8 @@ export function SiteFooter() {
             <ul>
               <li><a href="/about">About</a></li>
               <li><a href="/contact">Contact</a></li>
-              <li><a href="#">Wholesale</a></li>
-              <li><a href="#">Press</a></li>
+              <li><a href="/contact?topic=wholesale">Wholesale</a></li>
+              <li><a href="/contact?topic=press">Press</a></li>
               <li><a href="#">Careers</a></li>
             </ul>
           </div>
