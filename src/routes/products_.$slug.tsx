@@ -29,7 +29,7 @@ import {
   render12ozStatBlock,
   getBasePx,
 } from "../lib/sunrise-components";
-import "./products.$slug.css";
+import "./products_.$slug.css";
 
 // ── TYPES ────────────────────────────────────────────────────────────────
 type Tier = 5 | 10 | 30 | 60;
@@ -266,7 +266,7 @@ const FAQS = [
 ];
 
 // ── ROUTE ────────────────────────────────────────────────────────────────
-export const Route = createFileRoute("/products/$slug")({
+export const Route = createFileRoute("/products_/$slug")({
   component: ProductDetailPage,
   loader: ({ params }) => {
     const product = PRODUCTS.find((p) => p.slug === params.slug);
