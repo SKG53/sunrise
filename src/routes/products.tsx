@@ -7,7 +7,7 @@
 // Data is canonical from SUNRISE Product Architecture Guide v5 + Color Codes xlsx.
 // =============================================================================
 
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
@@ -220,10 +220,9 @@ function ProductsPage() {
 
               <div className="p-flavor-grid">
                 {tier.flavors.map((f, i) => (
-                  <Link
+                  <a
                     key={i}
-                    to="/products/$slug"
-                    params={{ slug: toSlug(activeTier, f) }}
+                    href={`/products/${toSlug(activeTier, f)}`}
                     className="p-flavor-card"
                     aria-label={`${f.name} — ${tier.name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ""}`}
                   >
@@ -237,7 +236,7 @@ function ProductsPage() {
                         </div>
                       )}
                     </div>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>
