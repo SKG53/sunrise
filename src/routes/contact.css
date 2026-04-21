@@ -143,6 +143,20 @@
   border-color: var(--tier-10);
   box-shadow: 0 0 0 3px rgba(204, 31, 57, 0.15);
 }
+/* Error state — matches brand red (tier-10) and voice-guide-compliant inline copy */
+.c-input-error {
+  border-color: var(--tier-10);
+  box-shadow: 0 0 0 3px rgba(204, 31, 57, 0.12);
+}
+.c-field-error {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--tier-10);
+  margin-top: calc(var(--base) * 0.04);
+  line-height: 1.3;
+}
 .c-select {
   appearance: none;
   -webkit-appearance: none;
