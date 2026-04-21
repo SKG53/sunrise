@@ -315,19 +315,18 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 06 · PATH TO PURCHASE ─────────────────────────────────────── */}
+        {/* ── 06 · FIND NEAR YOU BAND (reusable element — plum) ─────────── */}
         <section className="p-ptp">
           <div className="container">
             <div className="p-ptp-inner">
               <div className="p-ptp-copy">
-                <h2 className="p-ptp-headline">Ready when you are.</h2>
+                <h2 className="p-ptp-headline">Find it near you.</h2>
                 <p className="p-ptp-body">
-                  Shop direct, or find SUNRISE at a retailer near you.
+                  SUNRISE is popping up at retailers across the country. Check the locator to find your nearest store.
                 </p>
               </div>
               <div className="p-ptp-ctas">
-                <a href="#" className="btn btn-on-color">Shop Now →</a>
-                <a href="/near-you" className="btn btn-on-color-ghost">
+                <a href="/near-you" className="btn btn-on-color">
                   Find Near You →
                 </a>
               </div>

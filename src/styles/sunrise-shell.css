@@ -35,6 +35,8 @@
   --tier-30: #0A6034;
   --tier-60: #2E1E3D;
 
+  --plum: #822665;
+
   --section-pad-y: calc(var(--base) * 1.5);
   --section-pad-x: calc(var(--base) * 1.2);
   --gap-headline-body: calc(var(--base) * 0.4);
