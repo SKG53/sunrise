@@ -376,9 +376,12 @@
   align-items: flex-start;
 }
 
-/* ── PATH TO PURCHASE ───────────────────────────────────────────────────── */
+/* ── CTA BAND (reusable pattern — plum) ──────────────────────────────────
+   Currently scoped as .p-ptp. When Home/About adopt this pattern, promote
+   to a generic .cta-band class in sunrise-shell.css and share.
+   ========================================================================== */
 .p-ptp {
-  background: var(--near-black);
+  background: var(--plum);
   color: var(--cream);
   padding: calc(var(--base) * 1.6) 0;
 }
@@ -406,7 +409,7 @@
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
   line-height: 1.5;
-  color: rgba(254,251,224,0.8);
+  color: rgba(254,251,224,0.85);
   max-width: 42ch;
 }
 .p-ptp-ctas {
@@ -419,7 +422,8 @@
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 980px) {
   .p-panel-head { grid-template-columns: 1fr; gap: calc(var(--base) * 0.7); }
-  .p-transparency-inner, .p-ptp-inner { grid-template-columns: 1fr; }
+  .p-transparency-inner,
+  .p-ptp-inner { grid-template-columns: 1fr; }
   .p-cannabinoid-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
