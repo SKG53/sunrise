@@ -2,6 +2,7 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import sunriseCss from "../styles/sunrise-shell.css?url";
+import { QueryProvider } from "../components/shopify/QueryProvider";
 
 function NotFoundComponent() {
   return (
@@ -74,5 +75,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <QueryProvider>
+      <Outlet />
+    </QueryProvider>
+  );
 }
