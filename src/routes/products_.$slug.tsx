@@ -300,7 +300,7 @@ function ProductDetailPage() {
     const paint = () => {
       const base = getBasePx();
       if (lockupRef.current) {
-        lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.2, TIER_COLORS[product.tier]);
+        lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.2, TIER_COLORS[product.tier as Tier]);
       }
       if (stat12Ref.current) {
         stat12Ref.current.innerHTML = render12ozStatBlock(base * 0.8);
@@ -316,7 +316,7 @@ function ProductDetailPage() {
   const ingredients = getIngredients(product);
   const servings = 2;
   const thcPerServing = product.tier / servings;
-  const cbCopy = product.cannabinoid ? CANNABINOID_COPY[product.cannabinoid] : null;
+  const cbCopy = product.cannabinoid ? CANNABINOID_COPY[product.cannabinoid as Cannabinoid] : null;
 
   return (
     <>
