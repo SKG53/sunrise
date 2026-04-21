@@ -1,0 +1,528 @@
+/* ==========================================================================
+   SUNRISE — home.css
+   Session: SBev.BC.WebBuild.2 · Home route styles
+   All styles here are scoped with .s0X-* or .home-* / .hero-* prefixes.
+   Tokens, type scale classes, button classes, header/footer live in sunrise-shell.css.
+   ========================================================================== */
+
+/* ── SECTION 01 · HERO ──────────────────────────────────────────────────── */
+.home-hero {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  overflow: hidden;
+}
+.hero-strip {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.hero-strip-col {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.hero-strip-col.tier-5-bg  { background: var(--tier-5); }
+.hero-strip-col.tier-10-bg { background: var(--tier-10); }
+.hero-strip-col.tier-30-bg { background: var(--tier-30); }
+.hero-strip-col.tier-60-bg { background: var(--tier-60); }
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--base) * 0.38);
+  z-index: 2;
+  text-align: center;
+  padding: 0 calc(var(--base) * 0.8);
+  pointer-events: none;
+}
+.hero-wordmark-slot { line-height: 1; display: block; }
+.hero-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.28);
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--cream);
+  line-height: 1;
+  padding-left: 0.42em; /* optical center compensate for trailing letter-spacing */
+}
+
+/* ── SECTION 02 · BRAND STATEMENT ───────────────────────────────────────── */
+.s02-brand-statement {
+  background: var(--cream);
+  padding: calc(var(--base) * 2.8) 0 calc(var(--base) * 2.6);
+}
+.s02-brand-statement .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: calc(var(--base) * 0.7);
+}
+.s02-headline-stack {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.08);
+}
+.s02-headline-line {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.3);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 0.95;
+}
+.s02-headline-line .accent { color: var(--green-accent); }
+.s02-body {
+  font-size: calc(var(--base) * 0.42);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-body);
+  max-width: 48ch;
+  margin: calc(var(--base) * 0.2) auto 0;
+}
+.s02-tagline {
+  font-size: calc(var(--base) * 0.62);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--text-body);
+  margin: calc(var(--base) * 0.5) auto 0;
+  max-width: 32ch;
+}
+.s02-tagline .bold {
+  font-weight: 700;
+  background: linear-gradient(90deg, #4F308D, #822665, #94264B, #BF252D, #CC382C, #DC531F, #E76B37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── SECTION 03 · ORIGIN ────────────────────────────────────────────────── */
+.s03-origin {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.s03-origin-inner {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: calc(var(--base) * 1.4);
+  align-items: center;
+}
+.s03-copy {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.5);
+}
+.s03-eyebrow {
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.s03-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.1);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 0.98;
+}
+.s03-body {
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-body);
+  max-width: 48ch;
+}
+.s03-image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  min-height: calc(var(--base) * 7);
+  background: var(--warm-gray-faint);
+  border-radius: 4px;
+}
+
+/* ── SECTION 04 · WHAT'S INSIDE ─────────────────────────────────────────── */
+.s04-whats-inside {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.s04-whats-inside .container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.5);
+}
+.s04-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.0);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.0;
+  max-width: 20ch;
+}
+.s04-headline .accent { color: var(--green-accent); }
+.s04-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: calc(var(--base) * 1.4);
+  align-items: center;
+  margin-top: calc(var(--base) * 0.8);
+}
+.s04-image-wrap { display: flex; justify-content: center; }
+.s04-image {
+  width: 100%;
+  max-width: calc(var(--base) * 7.5);
+  aspect-ratio: 3 / 4;
+  background: var(--warm-gray-faint);
+  border-radius: 4px;
+}
+.s04-list { display: flex; flex-direction: column; }
+.s04-row {
+  padding: calc(var(--base) * 0.42) 0;
+  border-bottom: 1px solid var(--warm-gray-faint);
+  display: grid;
+  grid-template-columns: minmax(calc(var(--base) * 4.2), auto) 1fr;
+  gap: calc(var(--base) * 0.8);
+  align-items: baseline;
+}
+.s04-row:first-child { padding-top: 0; }
+.s04-row:last-of-type { border-bottom: none; }
+.s04-ingredient-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.32);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.2;
+}
+.s04-ingredient-desc {
+  font-size: calc(var(--base) * 0.28);
+  font-weight: 400;
+  color: var(--text-body);
+  line-height: 1.5;
+}
+.s04-footnote {
+  margin-top: calc(var(--base) * 0.6);
+  font-size: calc(var(--base) * 0.26);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.s04-footnote a {
+  color: var(--near-black);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  transition: color 200ms ease;
+}
+.s04-footnote a:hover { color: var(--gold); }
+
+/* ── SECTION 05 · WHY SUNRISE ───────────────────────────────────────────── */
+.s05-why {
+  background: var(--cream);
+  padding: calc(var(--base) * 2.6) 0;
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.s05-why .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: calc(var(--base) * 0.05);
+}
+.s05-manifesto-line {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.6);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  line-height: 1.0;
+  background: linear-gradient(90deg, #4F308D, #822665, #94264B, #BF252D, #CC382C, #DC531F, #E76B37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── SECTION 06 · FOUR TIERS ────────────────────────────────────────────── */
+.s06-tiers {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.s06-tiers .container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.4);
+}
+.s06-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.0);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.0;
+  max-width: 22ch;
+}
+.s06-headline .accent { color: var(--green-accent); }
+.s06-subhead {
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-body);
+  max-width: 54ch;
+}
+.s06-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: calc(var(--base) * 0.25);
+  margin-top: calc(var(--base) * 0.7);
+}
+.s06-card {
+  padding: calc(var(--base) * 0.7);
+  aspect-ratio: 3 / 4.4;
+  display: flex;
+  flex-direction: column;
+  color: var(--cream);
+  text-decoration: none;
+  border-radius: 4px;
+  position: relative;
+  transition: transform 200ms ease-out;
+}
+.s06-card:hover { transform: translateY(-4px); }
+.s06-card.t5  { background: var(--tier-5); }
+.s06-card.t10 { background: var(--tier-10); }
+.s06-card.t30 { background: var(--tier-30); }
+.s06-card.t60 { background: var(--tier-60); }
+.s06-lockup-slot { line-height: 0; }
+.s06-card-meta {
+  margin-top: calc(var(--base) * 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.12);
+}
+.s06-card-name {
+  font-size: calc(var(--base) * 0.34);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--cream);
+  line-height: 1.15;
+}
+.s06-card-descriptor {
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(254, 251, 224, 0.72);
+}
+.s06-card-occasion {
+  margin-top: calc(var(--base) * 0.3);
+  font-size: calc(var(--base) * 0.24);
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(254, 251, 224, 0.88);
+}
+.s06-card-footer {
+  margin-top: auto;
+  padding-top: calc(var(--base) * 0.5);
+  border-top: 1px solid rgba(254, 251, 224, 0.28);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ── SECTION 07 · STORY TEASER ──────────────────────────────────────────── */
+.s07-story {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.8) 0;
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.s07-layout {
+  display: grid;
+  grid-template-columns: 4fr 5fr;
+  gap: calc(var(--base) * 1.2);
+  align-items: center;
+}
+.s07-portrait {
+  aspect-ratio: 4 / 5;
+  min-height: calc(var(--base) * 8);
+  background: var(--warm-gray-faint);
+  border-radius: 4px;
+}
+.s07-copy {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.5);
+}
+.s07-eyebrow {
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.s07-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.0);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 0.98;
+}
+.s07-body {
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-body);
+  max-width: 52ch;
+}
+.s07-cta-row { margin-top: calc(var(--base) * 0.2); }
+
+/* ── SECTION 08 · NEAR YOU TEASER ───────────────────────────────────────── */
+.s08-near-you {
+  background: var(--tier-30);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+.s08-inner {
+  position: relative;
+  height: calc(var(--base) * 9);
+}
+.s08-map-bg {
+  position: absolute;
+  inset: 0;
+}
+.s08-card {
+  position: absolute;
+  bottom: calc(var(--base) * 1.0);
+  left: calc(var(--base) * 1.2);
+  background: var(--cream);
+  padding: calc(var(--base) * 0.8) calc(var(--base) * 0.9);
+  border-radius: 6px;
+  max-width: calc(var(--base) * 9);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+.s08-card-eyebrow {
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.s08-card-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.72);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.0;
+}
+.s08-card-body {
+  font-size: calc(var(--base) * 0.3);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-bottom: calc(var(--base) * 0.2);
+}
+
+/* ── SECTION 09 · REVIEWS ───────────────────────────────────────────────── */
+.s09-reviews {
+  background: var(--cream);
+  padding: calc(var(--base) * 2.0) 0;
+  text-align: center;
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.s09-inner {
+  max-width: calc(var(--base) * 16);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.4);
+}
+.s09-quote-mark {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: calc(var(--base) * 1.8);
+  color: var(--warm-gray-light);
+  line-height: 1;
+}
+.s09-quote {
+  font-size: calc(var(--base) * 0.58);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--near-black);
+  max-width: 32ch;
+  min-height: calc(var(--base) * 2.4);
+}
+.s09-attribution {
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  min-height: calc(var(--base) * 0.3);
+}
+.s09-progress {
+  display: flex;
+  gap: calc(var(--base) * 0.08);
+  justify-content: center;
+  width: 100%;
+  max-width: calc(var(--base) * 7);
+  margin-top: calc(var(--base) * 0.3);
+}
+.s09-progress-seg {
+  flex: 1;
+  height: 2px;
+  background: var(--warm-gray-light);
+  transition: background 200ms ease;
+}
+.s09-progress-seg.active { background: var(--near-black); }
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 980px) {
+  .s03-origin-inner,
+  .s04-layout,
+  .s07-layout {
+    grid-template-columns: 1fr;
+    gap: calc(var(--base) * 0.8);
+  }
+  .s06-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .home-hero { height: 440px; }
+  .hero-strip { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
+  .s08-inner { height: calc(var(--base) * 11); }
+  .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
+}
+@media (max-width: 520px) {
+  .s06-grid { grid-template-columns: 1fr; }
+  .s02-headline-line { font-size: calc(var(--base) * 1.0); }
+  .s05-manifesto-line { font-size: calc(var(--base) * 1.1); }
+}
