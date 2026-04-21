@@ -47,7 +47,7 @@ export function SiteFooter() {
               <li><a href="/products?tier=10">10mg THC</a></li>
               <li><a href="/products?tier=30">30mg THC</a></li>
               <li><a href="/products?tier=60">60mg THC</a></li>
-              <li><a href="/near-you">Find Near You</a></li>
+              <li><a href="/find">Find Near You</a></li>
             </ul>
           </div>
 

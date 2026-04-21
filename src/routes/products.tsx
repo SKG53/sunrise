@@ -326,7 +326,7 @@ function ProductsPage() {
                 </p>
               </div>
               <div className="p-ptp-ctas">
-                <a href="/near-you" className="btn btn-on-color">
+                <a href="/find" className="btn btn-on-color">
                   Find Near You →
                 </a>
               </div>

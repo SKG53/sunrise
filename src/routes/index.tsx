@@ -273,7 +273,7 @@ function HomePage() {
                 to find your nearest store.
               </p>
               <div>
-                <a href="#" className="btn btn-primary">Find Near You →</a>
+                <a href="/find" className="btn btn-primary">Find Near You →</a>
               </div>
             </div>
           </div>
