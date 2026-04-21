@@ -1,60 +1,39 @@
 
 
-# Combine All Contact Page Files Into One Document
+# SUNRISE Site Rebuild — Execute 12 Operations
 
-## Goal
-Produce a single copy-pasteable document containing the full contents of every file involved in the SUNRISE Contact page, with clear file-path separators so you can split them back apart on your end.
+Plan approved previously. Switching to default mode to execute the following operations exactly as specified:
 
-## What will be in the combined document
+## Operations
 
-A single fenced block (or plain text dump) with this structure:
+1. Rename `src/styles/sunrise.css` → `src/styles/sunrise-shell.css` and overwrite with attached `sunrise-shell.css` (verbatim).
+2. Create `src/components/SiteHeader.tsx` from attached file (verbatim).
+3. Create `src/components/SiteFooter.tsx` from attached file (verbatim, inline SVGs preserved).
+4. Create `src/lib/sunrise-components.ts` from attached file (verbatim).
+5. Update `src/routes/__root.tsx`:
+   - Swap `../styles/sunrise.css?url` → `../styles/sunrise-shell.css?url`
+   - Remove the three Montserrat-related `<link>` entries (preconnect googleapis, preconnect gstatic, Montserrat stylesheet)
+   - Preserve `../styles.css?url` import, `RootShell`, `NotFoundComponent`, head meta, `Scripts`, `RootComponent`
+6. Create `src/routes/products.tsx` from attached `products.tsx`, wrapped with `createFileRoute('/products')({ component: ProductsPage })`.
+7. Create `src/routes/about.tsx` from attached `about.tsx`, wrapped with `createFileRoute('/about')({ component: AboutPage })`.
+8. Create `src/routes/near-you.tsx` from attached `near-you.tsx`, wrapped with `createFileRoute('/near-you')({ component: NearYouPage })`.
+9. Overwrite `src/routes/contact.tsx` with attached `contact.tsx` (placeholder), wrapped with `createFileRoute('/contact')({ component: ContactPage })`.
+10. Create `src/routes/home.css` from attached file (verbatim).
+11. Overwrite `src/routes/index.tsx` with attached `home.tsx`, wrapped with `createFileRoute('/')({ component: HomePage })`. Preserve `import "./home.css"`, all `useRef`/`useEffect`/`innerHTML` logic verbatim.
+12. Delete stale files:
+    - `src/components/sunrise/Wordmark.tsx`
+    - `src/components/sunrise/PotencyLockup.tsx`
+    - `src/components/sunrise/SiteHeader.tsx`
+    - `src/components/sunrise/SiteFooter.tsx`
+    - `src/components/sunrise/TierCard.tsx`
+    - `src/components/sunrise/` (now-empty directory)
 
-```text
-=== FILE: src/styles/sunrise.css ===
-<full CSS contents>
+`routeTree.gen.ts` regenerates automatically — not hand-edited.
 
-=== FILE: src/routes/contact.tsx ===
-<full TSX contents>
+## Preserved (untouched)
 
-=== FILE: src/components/sunrise/Wordmark.tsx ===
-<full TSX contents>
-
-=== FILE: src/components/sunrise/PotencyLockup.tsx ===
-<full TSX contents>
-
-=== FILE: src/components/sunrise/SiteHeader.tsx ===
-<full TSX contents>
-
-=== FILE: src/components/sunrise/SiteFooter.tsx ===
-<full TSX contents>
-
-=== FILE: src/components/sunrise/TierCard.tsx ===
-<full TSX contents>
-
-=== FILE: src/routes/__root.tsx ===
-<full TSX contents>
-
-=== FILE: src/routes/index.tsx ===
-<full TSX contents>
-```
-
-Each section contains the complete, untruncated source of that file. Nothing is summarized, abbreviated, or omitted.
-
-## Format details
-
-- One outer fenced code block so you can copy the whole thing in a single selection.
-- File boundaries marked with `=== FILE: <path> ===` so they're easy to spot visually and easy to split programmatically (e.g. `awk`/`split` on that marker).
-- Files are emitted in dependency order (CSS first, then leaf components, then page, then root) so a human reading top-to-bottom sees styles before markup.
-
-## Clarification
-
-Note: this will still be one chat message containing source for nine files — it cannot literally become one `.tsx` file because CSS, route files, and components have different roles and TanStack's router requires `src/routes/contact.tsx` to live at that exact path. But the output will be a single copy-paste blob with clear separators, which is what "one thing to copy" means in practice.
-
-If you actually want a downloadable `.zip` of all the files instead of a copy-paste blob, say so and I'll generate that instead.
-
-## What this plan does NOT do
-
-- Does not modify any source files.
-- Does not change behavior, styling, or routing.
-- Does not collapse multiple components into a single file (would break TanStack's file-based routing and the component boundaries from the approved plan).
+- `src/styles.css` (Tailwind/shadcn baseline)
+- `src/router.tsx`
+- All `src/components/ui/**` shadcn primitives
+- `SUNRISE_Home_v7.html` (reference-only, not committed)
 
