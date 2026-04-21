@@ -1,0 +1,353 @@
+/* ==========================================================================
+   SUNRISE — about.css
+   Path: src/routes/about.css
+   Session: SBev.BC.WebsiteDesign.About.1
+   ==========================================================================
+   Scoped .a-* styles for the About route. No @font-face — inherits Montserrat
+   from sunrise-shell.css via __root.tsx. All design tokens (--cream, --gold,
+   --near-black, --base, --tier-30, etc.) are defined globally in the shell.
+   ========================================================================== */
+
+/* ── EYEBROW (reusable across sections) ─────────────────────────────────── */
+.a-eyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.24);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: calc(var(--base) * 0.45);
+}
+.a-eyebrow-on-color { color: rgba(254, 251, 224, 0.75); }
+
+/* ── 01 · HERO ──────────────────────────────────────────────────────────── */
+.a-hero {
+  padding: calc(var(--base) * 2.4) 0 calc(var(--base) * 2.0);
+}
+.a-hero-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.5);
+  letter-spacing: 0.005em;
+  line-height: 0.98;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin-bottom: calc(var(--base) * 0.6);
+  max-width: 18ch;
+}
+.a-hero-headline .accent { color: var(--green-accent); }
+.a-hero-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.42);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-body);
+  max-width: 42ch;
+}
+
+/* ── 02 · ORIGIN ────────────────────────────────────────────────────────── */
+.a-origin {
+  border-top: 1px solid var(--warm-gray-faint);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
+}
+.a-origin-inner {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: calc(var(--base) * 1.2);
+  align-items: start;
+}
+.a-origin-copy {
+  padding-top: calc(var(--base) * 0.2);
+}
+.a-origin-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.15);
+  letter-spacing: 0.005em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin-bottom: calc(var(--base) * 0.55);
+  max-width: 18ch;
+}
+.a-origin-headline .accent { color: var(--green-accent); }
+.a-origin-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.38);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-body);
+}
+.a-origin-body p + p { margin-top: calc(var(--base) * 0.4); }
+.a-origin-image-wrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #E8E2C4;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.a-origin-image {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    #E8E2C4, #E8E2C4 10px,
+    #DED5B3 10px, #DED5B3 20px
+  );
+}
+
+/* ── 03 · HOW WE BUILD ──────────────────────────────────────────────────── */
+.a-approach {
+  border-top: 1px solid var(--warm-gray-faint);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
+}
+.a-approach-head {
+  margin-bottom: calc(var(--base) * 1.0);
+}
+.a-approach-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.15);
+  letter-spacing: 0.005em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin-bottom: calc(var(--base) * 0.4);
+  max-width: 18ch;
+}
+.a-approach-headline .accent { color: var(--green-accent); }
+.a-approach-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.38);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-body);
+  max-width: 44ch;
+}
+.a-approach-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--base) * 0.7);
+}
+.a-approach-card {
+  background: #ffffff;
+  border: 1px solid var(--warm-gray-faint);
+  border-radius: 4px;
+  padding: calc(var(--base) * 0.75) calc(var(--base) * 0.75) calc(var(--base) * 0.85);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.3);
+}
+.a-approach-card-num {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+  text-transform: uppercase;
+  line-height: 1;
+}
+.a-approach-card-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.56);
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--near-black);
+}
+.a-approach-card-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.32);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-body);
+}
+
+/* ── 04 · AMERICAN HEARTLAND (tier-30 flood) ────────────────────────────── */
+.a-heartland {
+  background: var(--tier-30);
+  color: var(--cream);
+  padding: calc(var(--base) * 2.8) 0 calc(var(--base) * 3.0);
+}
+.a-heartland-inner {
+  max-width: 36ch;
+}
+.a-heartland-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.6);
+  letter-spacing: 0.005em;
+  line-height: 0.98;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: calc(var(--base) * 0.55);
+}
+.a-heartland-headline .accent { color: #F2D480; }
+.a-heartland-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.55;
+  color: rgba(254, 251, 224, 0.88);
+  max-width: 42ch;
+}
+
+/* ── 05 · WHAT'S INSIDE ─────────────────────────────────────────────────── */
+.a-inside {
+  border-top: 1px solid var(--warm-gray-faint);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
+}
+.a-inside-head {
+  margin-bottom: calc(var(--base) * 1.2);
+}
+.a-inside-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.15);
+  letter-spacing: 0.005em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin-bottom: calc(var(--base) * 0.4);
+  max-width: 18ch;
+}
+.a-inside-headline .accent { color: var(--green-accent); }
+.a-inside-lead {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.38);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-body);
+  max-width: 56ch;
+}
+.a-inside-pillars {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--base) * 0.8);
+  margin-bottom: calc(var(--base) * 1.4);
+}
+.a-inside-pillar {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.3);
+  padding-top: calc(var(--base) * 0.55);
+  border-top: 2px solid var(--gold);
+}
+.a-inside-pillar-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.7);
+  letter-spacing: 0.02em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+}
+.a-inside-pillar-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.34);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-body);
+}
+.a-inside-stats {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--base) * 1.0);
+  flex-wrap: wrap;
+  padding-top: calc(var(--base) * 0.95);
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.a-inside-stats-stat {
+  line-height: 0;
+  flex-shrink: 0;
+}
+.a-inside-stats-badges {
+  display: flex;
+  gap: calc(var(--base) * 0.3);
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: flex-end;
+}
+.a-inside-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: calc(var(--base) * 0.22) calc(var(--base) * 0.5);
+  border: 1.5px solid var(--near-black);
+  border-radius: 9999px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* ── 06 · PATH TO PURCHASE (dark band — matches products.css) ───────────── */
+.a-ptp {
+  background: var(--near-black);
+  color: var(--cream);
+  padding: calc(var(--base) * 1.6) 0;
+}
+.a-ptp-inner {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: calc(var(--base) * 1.2);
+  align-items: center;
+}
+.a-ptp-copy {
+  display: flex;
+  flex-direction: column;
+}
+.a-ptp-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.4);
+  letter-spacing: 0.01em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: calc(var(--base) * 0.4);
+}
+.a-ptp-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(254, 251, 224, 0.85);
+  max-width: 40ch;
+}
+.a-ptp-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.3);
+  align-items: flex-start;
+  justify-self: end;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .a-origin-inner,
+  .a-ptp-inner { grid-template-columns: 1fr; }
+  .a-ptp-ctas { justify-self: start; flex-direction: row; }
+  .a-inside-pillars { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .a-approach-grid { grid-template-columns: 1fr; }
+  .a-inside-pillars { grid-template-columns: 1fr; }
+  .a-inside-stats-badges { justify-content: flex-start; }
+  .a-hero-headline { font-size: calc(var(--base) * 1.35); }
+  .a-heartland-headline { font-size: calc(var(--base) * 1.35); }
+  .a-origin-headline,
+  .a-approach-headline,
+  .a-inside-headline { font-size: calc(var(--base) * 1.0); }
+  .a-ptp-headline { font-size: calc(var(--base) * 1.0); }
+}
+@media (max-width: 520px) {
+  .a-ptp-ctas { flex-direction: column; width: 100%; }
+  .a-ptp-ctas .btn { width: 100%; text-align: center; }
+  .a-inside-stats { gap: calc(var(--base) * 0.7); }
+}
