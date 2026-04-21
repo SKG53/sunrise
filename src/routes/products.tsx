@@ -7,7 +7,7 @@
 // Data is canonical from SUNRISE Product Architecture Guide v5 + Color Codes xlsx.
 // =============================================================================
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
@@ -37,6 +37,16 @@ export const Route = createFileRoute("/products")({
 // ── TYPES ────────────────────────────────────────────────────────────────
 type TierKey = "5" | "10" | "30" | "60";
 type Cannabinoid = "CBG" | "CBN" | "THCV";
+
+// ── SLUG HELPER ──────────────────────────────────────────────────────────
+// Maps tier + flavor to the canonical slug registered in products.$slug.tsx.
+// Pattern: {tier}mg-{flavor-slug}[-{cannabinoid-lowercase}]
+// Examples: "5mg-blackberry", "10mg-blackberry-lemonade-cbn".
+function toSlug(tier: TierKey, flavor: { name: string; cannabinoid?: Cannabinoid }): string {
+  const flavorPart = flavor.name.toLowerCase().replace(/\s+/g, "-");
+  const variantSuffix = flavor.cannabinoid ? `-${flavor.cannabinoid.toLowerCase()}` : "";
+  return `${tier}mg-${flavorPart}${variantSuffix}`;
+}
 
 type Flavor = {
   name: string;
@@ -210,9 +220,10 @@ function ProductsPage() {
 
               <div className="p-flavor-grid">
                 {tier.flavors.map((f, i) => (
-                  <a
+                  <Link
                     key={i}
-                    href="#"
+                    to="/products/$slug"
+                    params={{ slug: toSlug(activeTier, f) }}
                     className="p-flavor-card"
                     aria-label={`${f.name} — ${tier.name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ""}`}
                   >
@@ -226,7 +237,7 @@ function ProductsPage() {
                         </div>
                       )}
                     </div>
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
