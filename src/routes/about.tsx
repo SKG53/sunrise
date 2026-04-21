@@ -231,7 +231,7 @@ function AboutPage() {
               </div>
               <div className="a-ptp-ctas">
                 <a href="#" className="btn btn-on-color">Shop Now →</a>
-                <a href="/near-you" className="btn btn-on-color-ghost">
+                <a href="/find" className="btn btn-on-color-ghost">
                   Find Near You →
                 </a>
               </div>

@@ -8,7 +8,7 @@
 import { useEffect, useRef } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 
-type NavKey = "home" | "products" | "about" | "near-you" | "contact";
+type NavKey = "home" | "products" | "about" | "find" | "contact";
 
 export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
   const wmRef = useRef<HTMLDivElement>(null);
@@ -35,7 +35,7 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
         <a href="/" className={linkClass("home")}>Home</a>
         <a href="/products" className={linkClass("products")}>Products</a>
         <a href="/about" className={linkClass("about")}>About</a>
-        <a href="/near-you" className={linkClass("near-you")}>Near You</a>
+        <a href="/find" className={linkClass("find")}>Find</a>
         <a href="/contact" className={linkClass("contact")}>Contact</a>
       </nav>
       <div className="nav-right">
