@@ -50,10 +50,10 @@ function HomePage() {
     const paint = () => {
       const base = getBasePx();
       if (heroWmRef.current) heroWmRef.current.innerHTML = renderWordmark(base * 2.8, "cream");
-      if (lockup5Ref.current)  lockup5Ref.current.innerHTML  = render5mgLockup(64,  "#FEFBE0");
-      if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(64, "#FEFBE0");
-      if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(64, "#FEFBE0");
-      if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(64, "#FEFBE0");
+      if (lockup5Ref.current)  lockup5Ref.current.innerHTML  = render5mgLockup(80,  "#FEFBE0");
+      if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(80, "#FEFBE0");
+      if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(80, "#FEFBE0");
+      if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(80, "#FEFBE0");
     };
     paint();
     if (document.fonts) document.fonts.ready.then(paint);
