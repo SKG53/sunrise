@@ -201,7 +201,7 @@ function HomePage() {
               <a href="/products?tier=5" className="s06-card t5">
                 <div className="s06-lockup-slot" ref={lockup5Ref} />
                 <div className="s06-card-meta">
-                  <div className="s06-card-name">A Subtle Lift</div>
+                  <div className="s06-card-name">Subtle<br />Lift</div>
                   <div className="s06-card-descriptor">Light · Bright · Casual</div>
                   <div className="s06-card-occasion">
                     First times, mid-week refreshments, or social sessions.
@@ -212,7 +212,7 @@ function HomePage() {
               <a href="/products?tier=10" className="s06-card t10">
                 <div className="s06-lockup-slot" ref={lockup10Ref} />
                 <div className="s06-card-meta">
-                  <div className="s06-card-name">The Perfect Buzz</div>
+                  <div className="s06-card-name">Perfect<br />Buzz</div>
                   <div className="s06-card-descriptor">Smooth · Balanced · Social</div>
                   <div className="s06-card-occasion">
                     Casual sips, afternoon resets, or social gatherings.
@@ -223,7 +223,7 @@ function HomePage() {
               <a href="/products?tier=30" className="s06-card t30">
                 <div className="s06-lockup-slot" ref={lockup30Ref} />
                 <div className="s06-card-meta">
-                  <div className="s06-card-name">A Deeper Dive</div>
+                  <div className="s06-card-name">Deeper<br />Dive</div>
                   <div className="s06-card-descriptor">Bold · Vibrant · Spirited</div>
                   <div className="s06-card-occasion">
                     Extended sessions, creative inspirations, or evening unwinds.
@@ -234,7 +234,7 @@ function HomePage() {
               <a href="/products?tier=60" className="s06-card t60">
                 <div className="s06-lockup-slot" ref={lockup60Ref} />
                 <div className="s06-card-meta">
-                  <div className="s06-card-name">Elevated Experience</div>
+                  <div className="s06-card-name">Elevated<br />Experience</div>
                   <div className="s06-card-descriptor">Potent · Rich · Immersive</div>
                   <div className="s06-card-occasion">
                     Late nights, deep decompressions, or weekend relaxation.
