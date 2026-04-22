@@ -2,6 +2,7 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import sunriseCss from "../styles/sunrise-shell.css?url";
+import devSectionsCss from "../styles/dev-section-markers.css?url";
 
 function NotFoundComponent() {
   return (
@@ -51,6 +52,10 @@ export const Route = createRootRoute({
       {
         rel: "stylesheet",
         href: sunriseCss,
+      },
+      {
+        rel: "stylesheet",
+        href: devSectionsCss,
       },
     ],
   }),
