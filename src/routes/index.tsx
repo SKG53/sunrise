@@ -45,8 +45,22 @@ function HomePage() {
   const lockup10Ref = useRef<HTMLDivElement>(null);
   const lockup30Ref = useRef<HTMLDivElement>(null);
   const lockup60Ref = useRef<HTMLDivElement>(null);
+  const s02StackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const justifyS02 = () => {
+      const stack = s02StackRef.current;
+      if (!stack) return;
+      const target = stack.getBoundingClientRect().width;
+      if (target === 0) return;
+      const lines = stack.querySelectorAll<HTMLDivElement>(".s02-manifesto-line");
+      lines.forEach((line) => {
+        // measure natural width at a reference size, then scale so natural width === stack width
+        line.style.fontSize = "100px";
+        const natural = line.getBoundingClientRect().width;
+        if (natural > 0) line.style.fontSize = (100 * target) / natural + "px";
+      });
+    };
     const paint = () => {
       const base = getBasePx();
       if (heroWmRef.current) heroWmRef.current.innerHTML = renderWordmark(base * 2.8, "cream");
@@ -54,6 +68,7 @@ function HomePage() {
       if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(80, "#FEFBE0");
       if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(80, "#FEFBE0");
       if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(80, "#FEFBE0");
+      justifyS02();
     };
     paint();
     if (document.fonts) document.fonts.ready.then(paint);
@@ -83,7 +98,7 @@ function HomePage() {
         {/* ── 02 · BRAND STATEMENT ──────────────────────────────────────── */}
         <section className="s02-brand-statement">
           <div className="container">
-            <div className="s02-manifesto-stack">
+            <div className="s02-manifesto-stack" ref={s02StackRef}>
               <div className="s02-manifesto-line s02-ml-refresh">Refresh</div>
               <div className="s02-manifesto-line s02-ml-theway">The Way</div>
               <div className="s02-manifesto-line s02-ml-world">The World</div>

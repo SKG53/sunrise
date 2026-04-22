@@ -69,6 +69,7 @@
   flex-direction: column;
   align-items: center;
   gap: calc(var(--base) * 0.05);
+  width: 85%;
 }
 .s02-manifesto-line {
   font-family: 'Montserrat', sans-serif;
@@ -77,8 +78,10 @@
   text-transform: uppercase;
   line-height: 0.95;
 }
-/* Filled lines — brand gradient, top and bottom of the block */
+/* All four lines share the brand gradient fill — JS auto-fit sets font-size per line at runtime */
 .s02-ml-refresh,
+.s02-ml-theway,
+.s02-ml-world,
 .s02-ml-drinks {
   background: linear-gradient(90deg, #4F308D, #822665, #94264B, #BF252D, #CC382C, #DC531F, #E76B37);
   -webkit-background-clip: text;
@@ -86,13 +89,7 @@
   background-clip: text;
   color: transparent;
 }
-/* Outlined lines — hollow near-black stroke, middle of the block */
-.s02-ml-theway,
-.s02-ml-world {
-  color: transparent;
-  -webkit-text-stroke: 2px var(--near-black);
-}
-/* Per-line sizing — widths approximately match (shorter words get larger) */
+/* Per-line font-size fallbacks — used for SSR render and as a pre-hydration safety net. JS overrides once fonts load. */
 .s02-ml-refresh { font-size: calc(var(--base) * 2.2); }
 .s02-ml-theway  { font-size: calc(var(--base) * 2.0); }
 .s02-ml-world   { font-size: calc(var(--base) * 1.7); }
