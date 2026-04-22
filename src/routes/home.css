@@ -63,46 +63,40 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: calc(var(--base) * 0.7);
 }
-.s02-headline-stack {
+.s02-manifesto-stack {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--base) * 0.08);
+  align-items: center;
+  gap: calc(var(--base) * 0.05);
 }
-.s02-headline-line {
+.s02-manifesto-line {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.3);
   font-weight: 900;
   letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: var(--near-black);
   line-height: 0.95;
 }
-.s02-headline-line .accent { color: var(--green-accent); }
-.s02-body {
-  font-size: calc(var(--base) * 0.42);
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--text-body);
-  max-width: 48ch;
-  margin: calc(var(--base) * 0.2) auto 0;
-}
-.s02-tagline {
-  font-size: calc(var(--base) * 0.62);
-  font-weight: 400;
-  line-height: 1.25;
-  color: var(--text-body);
-  margin: calc(var(--base) * 0.5) auto 0;
-  max-width: 32ch;
-}
-.s02-tagline .bold {
-  font-weight: 700;
+/* Filled lines — brand gradient, top and bottom of the block */
+.s02-ml-refresh,
+.s02-ml-drinks {
   background: linear-gradient(90deg, #4F308D, #822665, #94264B, #BF252D, #CC382C, #DC531F, #E76B37);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  color: transparent;
 }
+/* Outlined lines — hollow near-black stroke, middle of the block */
+.s02-ml-theway,
+.s02-ml-world {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--near-black);
+}
+/* Per-line sizing — widths approximately match (shorter words get larger) */
+.s02-ml-refresh { font-size: calc(var(--base) * 2.2); }
+.s02-ml-theway  { font-size: calc(var(--base) * 2.0); }
+.s02-ml-world   { font-size: calc(var(--base) * 1.7); }
+.s02-ml-drinks  { font-size: calc(var(--base) * 2.6); }
 
 /* ── SECTION 03 · ORIGIN ────────────────────────────────────────────────── */
 .s03-origin {
@@ -561,6 +555,9 @@
 }
 @media (max-width: 520px) {
   .s06-grid { grid-template-columns: 1fr; }
-  .s02-headline-line { font-size: calc(var(--base) * 1.0); }
+  .s02-ml-refresh { font-size: calc(var(--base) * 1.5); }
+  .s02-ml-theway  { font-size: calc(var(--base) * 1.4); }
+  .s02-ml-world   { font-size: calc(var(--base) * 1.2); }
+  .s02-ml-drinks  { font-size: calc(var(--base) * 1.8); }
   .s05-manifesto-line { font-size: calc(var(--base) * 1.1); }
 }

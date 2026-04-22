@@ -83,18 +83,11 @@ function HomePage() {
         {/* ── 02 · BRAND STATEMENT ──────────────────────────────────────── */}
         <section className="s02-brand-statement">
           <div className="container">
-            <div className="s02-headline-stack">
-              <div className="s02-headline-line">Seltzers</div>
-              <div className="s02-headline-line">
-                Infused with <span className="accent">Hemp.</span>
-              </div>
-            </div>
-            <div className="s02-body">
-              Twenty-four flavors across four potency tiers. Real fruit, pure cane sugar,
-              hemp-derived Delta-9 THC — crafted for flavor, not just effect.
-            </div>
-            <div className="s02-tagline">
-              We're here to <span className="bold">refresh the way the world drinks.</span>
+            <div className="s02-manifesto-stack">
+              <div className="s02-manifesto-line s02-ml-refresh">Refresh</div>
+              <div className="s02-manifesto-line s02-ml-theway">The Way</div>
+              <div className="s02-manifesto-line s02-ml-world">The World</div>
+              <div className="s02-manifesto-line s02-ml-drinks">Drinks</div>
             </div>
           </div>
         </section>
