@@ -202,45 +202,45 @@ function HomePage() {
                 <div className="s06-lockup-slot" ref={lockup5Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">Subtle<br />Lift</div>
-                  <div className="s06-card-descriptor">Light · Bright · Casual</div>
+                  <div className="s06-card-descriptor">Light · Bright</div>
                   <div className="s06-card-occasion">
                     First times, mid-week refreshments, or social sessions.
                   </div>
                 </div>
-                <div className="s06-card-footer"><span>Explore</span><span>→</span></div>
+                <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
               <a href="/products?tier=10" className="s06-card t10">
                 <div className="s06-lockup-slot" ref={lockup10Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">Perfect<br />Buzz</div>
-                  <div className="s06-card-descriptor">Smooth · Balanced · Social</div>
+                  <div className="s06-card-descriptor">Smooth · Social</div>
                   <div className="s06-card-occasion">
                     Casual sips, afternoon resets, or social gatherings.
                   </div>
                 </div>
-                <div className="s06-card-footer"><span>Explore</span><span>→</span></div>
+                <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
               <a href="/products?tier=30" className="s06-card t30">
                 <div className="s06-lockup-slot" ref={lockup30Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">Deeper<br />Dive</div>
-                  <div className="s06-card-descriptor">Bold · Vibrant · Spirited</div>
+                  <div className="s06-card-descriptor">Rich · Vibrant</div>
                   <div className="s06-card-occasion">
                     Extended sessions, creative inspirations, or evening unwinds.
                   </div>
                 </div>
-                <div className="s06-card-footer"><span>Explore</span><span>→</span></div>
+                <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
               <a href="/products?tier=60" className="s06-card t60">
                 <div className="s06-lockup-slot" ref={lockup60Ref} />
                 <div className="s06-card-meta">
                   <div className="s06-card-name">Elevated<br />Experience</div>
-                  <div className="s06-card-descriptor">Potent · Rich · Immersive</div>
+                  <div className="s06-card-descriptor">Bold · Immersive</div>
                   <div className="s06-card-occasion">
                     Late nights, deep decompressions, or weekend relaxation.
                   </div>
                 </div>
-                <div className="s06-card-footer"><span>Explore</span><span>→</span></div>
+                <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
             </div>
           </div>
