@@ -295,7 +295,7 @@
   margin-top: calc(var(--base) * 0.7);
 }
 .s06-card {
-  padding: calc(var(--base) * 0.7);
+  padding: calc(var(--base) * 0.8);
   aspect-ratio: 3 / 4.4;
   display: flex;
   flex-direction: column;
@@ -306,20 +306,22 @@
   transition: transform 200ms ease-out;
 }
 .s06-card:hover { transform: translateY(-4px); }
-.s06-card.t5  { background: var(--tier-5); }
-.s06-card.t10 { background: var(--tier-10); }
-.s06-card.t30 { background: var(--tier-30); }
-.s06-card.t60 { background: var(--tier-60); }
+.s06-card.t5  { background: var(--tier-5);  --tier-color: var(--tier-5); }
+.s06-card.t10 { background: var(--tier-10); --tier-color: var(--tier-10); }
+.s06-card.t30 { background: var(--tier-30); --tier-color: var(--tier-30); }
+.s06-card.t60 { background: var(--tier-60); --tier-color: var(--tier-60); }
 .s06-lockup-slot { line-height: 0; }
 .s06-card-meta {
   margin-top: calc(var(--base) * 0.5);
+  margin-bottom: calc(var(--base) * 0.5);
   display: flex;
   flex-direction: column;
   gap: calc(var(--base) * 0.12);
 }
 .s06-card-name {
   font-size: calc(var(--base) * 0.425);
-  font-weight: 800;
+  font-weight: 900;
+  font-style: italic;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--cream);
@@ -334,6 +336,7 @@
 }
 .s06-card-occasion {
   margin-top: calc(var(--base) * 0.3);
+  min-height: calc(var(--base) * 1.35);
   font-size: calc(var(--base) * 0.3);
   font-weight: 400;
   line-height: 1.5;
@@ -341,7 +344,7 @@
 }
 .s06-card-footer {
   margin-top: auto;
-  padding-top: calc(var(--base) * 0.5);
+  padding-top: calc(var(--base) * 0.2);
   border-top: 1px solid rgba(254, 251, 224, 0.28);
   display: flex;
   justify-content: space-between;
@@ -350,6 +353,44 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
+  position: relative;
+}
+/* Pill pseudo — sits behind label/arrow, fades in on hover */
+.s06-card-footer::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--base) * 0.2) 0 0 0;
+  background: #FEFBE0;
+  border-radius: 9999px;
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+  z-index: 0;
+}
+.s06-card-footer > * {
+  position: relative;
+  z-index: 1;
+}
+.s06-card-footer-label {
+  transition: color 200ms ease-out;
+}
+.s06-card-footer-arrow {
+  display: inline-block;
+  font-size: 1.35em;
+  margin-right: 25%;
+  transition: margin-right 300ms ease-out, color 200ms ease-out;
+}
+/* Hover: pill fades in, text colors flip to tier color, arrow teleports 75% -> 100% under a fade */
+.s06-card:hover .s06-card-footer::before { opacity: 1; }
+.s06-card:hover .s06-card-footer-label { color: var(--tier-color); }
+.s06-card:hover .s06-card-footer-arrow {
+  color: var(--tier-color);
+  margin-right: 0;
+  transition: margin-right 0ms linear 150ms, color 200ms ease-out;
+  animation: s06-arrow-jump 300ms ease-out;
+}
+@keyframes s06-arrow-jump {
+  0%, 100% { opacity: 1; }
+  35%, 65% { opacity: 0; }
 }
 
 /* ── SECTION 07 · STORY TEASER ──────────────────────────────────────────── */
