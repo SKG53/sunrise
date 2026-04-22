@@ -191,11 +191,11 @@ function HomePage() {
         <section className="s06-tiers">
           <div className="container">
             <h2 className="s06-headline">
-              Four potencies.<br />
-              Twenty-four <span className="accent">flavors.</span>
+              Four options.<br />
+              Find your <span className="accent">perfect dose.</span>
             </h2>
             <p className="s06-subhead">
-              Every occasion, every tolerance, every mood. Find the SUNRISE that fits.
+              Mellow moments to enhanced relaxation, find your favorite SUNRISE experience below.
             </p>
             <div className="s06-grid">
               <a href="/products?tier=5" className="s06-card t5">
