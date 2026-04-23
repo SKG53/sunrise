@@ -50,12 +50,12 @@
   animation: pagehero-char-in 0.05s ease-out forwards;
 }
 .f-pagehero-title span:nth-child(1) { animation-delay: 0.40s; }
-.f-pagehero-title span:nth-child(2) { animation-delay: 0.55s; }
-.f-pagehero-title span:nth-child(3) { animation-delay: 0.70s; }
-.f-pagehero-title span:nth-child(4) { animation-delay: 0.85s; }
-.f-pagehero-title span:nth-child(5) { animation-delay: 1.00s; }
-.f-pagehero-title span:nth-child(6) { animation-delay: 1.15s; }
-.f-pagehero-title span:nth-child(7) { animation-delay: 1.30s; }
+.f-pagehero-title span:nth-child(2) { animation-delay: 0.53s; }
+.f-pagehero-title span:nth-child(3) { animation-delay: 0.66s; }
+.f-pagehero-title span:nth-child(4) { animation-delay: 0.79s; }
+.f-pagehero-title span:nth-child(5) { animation-delay: 0.92s; }
+.f-pagehero-title span:nth-child(6) { animation-delay: 1.05s; }
+.f-pagehero-title span:nth-child(7) { animation-delay: 1.18s; }
 @keyframes pagehero-char-in {
   to { opacity: 1; }
 }
