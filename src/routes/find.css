@@ -47,15 +47,15 @@
 }
 .f-pagehero-title span {
   opacity: 0;
-  animation: pagehero-char-in 0.08s ease-out forwards;
+  animation: pagehero-char-in 0.05s ease-out forwards;
 }
 .f-pagehero-title span:nth-child(1) { animation-delay: 0.40s; }
-.f-pagehero-title span:nth-child(2) { animation-delay: 0.59s; }
-.f-pagehero-title span:nth-child(3) { animation-delay: 0.78s; }
-.f-pagehero-title span:nth-child(4) { animation-delay: 0.97s; }
-.f-pagehero-title span:nth-child(5) { animation-delay: 1.16s; }
-.f-pagehero-title span:nth-child(6) { animation-delay: 1.35s; }
-.f-pagehero-title span:nth-child(7) { animation-delay: 1.54s; }
+.f-pagehero-title span:nth-child(2) { animation-delay: 0.57s; }
+.f-pagehero-title span:nth-child(3) { animation-delay: 0.74s; }
+.f-pagehero-title span:nth-child(4) { animation-delay: 0.91s; }
+.f-pagehero-title span:nth-child(5) { animation-delay: 1.08s; }
+.f-pagehero-title span:nth-child(6) { animation-delay: 1.25s; }
+.f-pagehero-title span:nth-child(7) { animation-delay: 1.42s; }
 @keyframes pagehero-char-in {
   to { opacity: 1; }
 }
