@@ -136,41 +136,30 @@ function AboutPage() {
                 Built in-house.<br />
                 Tested <span className="accent">every batch.</span>
               </h2>
-              <p className="a-approach-sub">
-                The four operating principles that shape every can of SUNRISE.
+              <p className="a-approach-lead">
+                Three principles shape every can. None of them are shortcuts.
               </p>
             </div>
-            <div className="a-approach-grid">
-              <div className="a-approach-card">
-                <div className="a-approach-card-num">01</div>
-                <div className="a-approach-card-title">In-House Formulation</div>
-                <p className="a-approach-card-body">
+            <div className="a-approach-pillars">
+              <div className="a-approach-pillar">
+                <div className="a-approach-pillar-title">In-House Formulation</div>
+                <p className="a-approach-pillar-body">
                   Every product is built from scratch by our own team — no contract outsourcing,
                   no white-label shortcuts. Formulation is a craft we own end-to-end.
                 </p>
               </div>
-              <div className="a-approach-card">
-                <div className="a-approach-card-num">02</div>
-                <div className="a-approach-card-title">Small-Batch Craft</div>
-                <p className="a-approach-card-body">
+              <div className="a-approach-pillar">
+                <div className="a-approach-pillar-title">Small-Batch Craft</div>
+                <p className="a-approach-pillar-body">
                   Deliberate batch sizes. Quality over scale. Every run gets the attention
                   that makes the difference you taste from the first sip to the last.
                 </p>
               </div>
-              <div className="a-approach-card">
-                <div className="a-approach-card-num">03</div>
-                <div className="a-approach-card-title">Full-Panel Testing</div>
-                <p className="a-approach-card-body">
+              <div className="a-approach-pillar">
+                <div className="a-approach-pillar-title">Full-Panel Testing</div>
+                <p className="a-approach-pillar-body">
                   Every batch is third-party tested for cannabinoid content and contaminants.
                   Every COA is published. Nothing to hide, and nothing ever does.
-                </p>
-              </div>
-              <div className="a-approach-card">
-                <div className="a-approach-card-num">04</div>
-                <div className="a-approach-card-title">American Made</div>
-                <p className="a-approach-card-body">
-                  Ingredients sourced and product produced in the USA.
-                  Hemp grown under federal law. Made proudly in Tulsa, Oklahoma.
                 </p>
               </div>
             </div>
