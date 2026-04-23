@@ -116,7 +116,7 @@
   display: grid;
   grid-template-columns: 1.25fr 1fr;
   gap: calc(var(--base) * 0.9);
-  align-items: start;
+  align-items: stretch;
 }
 .f-map {
   position: relative;
@@ -165,6 +165,24 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  /* Match the map's height (grid row sized by map's aspect-ratio because
+     min-height: 0 removes the list's content from track sizing). Overflow
+     content scrolls internally instead of running past the map's bottom. */
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  padding-right: calc(var(--base) * 0.15);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26, 26, 26, 0.25) transparent;
+}
+.f-results-list::-webkit-scrollbar { width: 8px; }
+.f-results-list::-webkit-scrollbar-track { background: transparent; }
+.f-results-list::-webkit-scrollbar-thumb {
+  background: rgba(26, 26, 26, 0.22);
+  border-radius: 4px;
+}
+.f-results-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(26, 26, 26, 0.38);
 }
 .f-results-meta {
   display: flex;
@@ -173,6 +191,12 @@
   padding: 0 0 calc(var(--base) * 0.35);
   border-bottom: 1px solid var(--warm-gray-faint);
   margin-bottom: calc(var(--base) * 0.3);
+  /* Sticky inside the scrolling list so the count/clear row stays visible
+     as the retailer list scrolls underneath. */
+  position: sticky;
+  top: 0;
+  background: var(--cream);
+  z-index: 1;
 }
 .f-results-count {
   font-family: 'Montserrat', sans-serif;
@@ -347,6 +371,10 @@
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .f-results-grid { grid-template-columns: 1fr; }
+  /* Grid stacks vertically — list no longer shares a row with the map,
+     so the height cap and internal scroll don't apply. */
+  .f-results-list { max-height: none; overflow-y: visible; padding-right: 0; }
+  .f-results-meta { position: static; }
   .f-gateway-inner { grid-template-columns: 1fr; }
   .f-gateway-right { justify-self: start; }
 }
