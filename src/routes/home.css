@@ -435,11 +435,15 @@
 /* ── SECTION 07 · NEAR YOU TEASER ───────────────────────────────────────── */
 /* Leaflet map fills .s08-map-bg via the <S07Map /> component. The cream    */
 /* .s08-card floats over the map via position: absolute + z-index.          */
+/* Background stays cream — the map IS the color. If the map fails to      */
+/* load, the section falls through to the site's default cream rather      */
+/* than flashing an unrelated tier-30 green brick.                          */
 .s08-near-you {
-  background: var(--tier-30);
+  background: var(--cream);
   padding: 0;
   position: relative;
   overflow: hidden;
+  border-top: 1px solid var(--warm-gray-faint);
 }
 .s08-inner {
   position: relative;
