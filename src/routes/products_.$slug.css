@@ -659,17 +659,17 @@
 }
 @media (max-width: 768px) {
   .pd-section-headline { font-size: calc(var(--base) * 1.0); }
-  .pd-cannabinoid-headline { font-size: calc(var(--base) * 1.2); }
   .pd-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .pd-related-grid { grid-template-columns: repeat(2, 1fr); }
-  .pd-cannabinoid-stats { grid-template-columns: 1fr 1fr; }
+  .pd-cannabinoid-grid { gap: calc(var(--base) * 0.55); }
+  .pd-cannabinoid-stats { justify-content: flex-start; }
 }
 @media (max-width: 520px) {
   .pd-ptp-ctas { flex-direction: column; width: 100%; }
   .pd-ptp-ctas .btn { width: 100%; text-align: center; }
   .pd-hero-ctas { flex-direction: column; width: 100%; }
   .pd-hero-ctas .btn { width: 100%; text-align: center; }
-  .pd-cannabinoid-stats { grid-template-columns: 1fr; }
+  .pd-cannabinoid-stats { flex-direction: column; align-items: stretch; }
   .pd-variant-pill {
     font-size: calc(var(--base) * 0.2);
     letter-spacing: 0.14em;
