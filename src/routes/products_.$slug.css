@@ -151,7 +151,7 @@
 .pd-hero-flavor {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.35);
+  font-size: calc(var(--base) * 1.255);
   letter-spacing: 0.005em;
   line-height: 0.98;
   text-transform: uppercase;
