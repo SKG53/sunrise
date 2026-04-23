@@ -2,26 +2,37 @@
 // SUNRISE — S07Map.tsx
 // Path: src/components/S07Map.tsx
 //
-// Homepage "Find Near You" map teaser. Renders an interactive-looking but
-// interaction-locked Leaflet map with CartoDB Positron tiles and brand-styled
-// pins marking placeholder retail cities. Real interaction (drag, zoom, pin
-// click) lives on the /find page — this is a visual hook only.
+// Homepage "Find Near You" map teaser. Renders Google Maps with nine brand-
+// styled markers for placeholder rollout cities. Interaction is fully locked
+// (no drag, no zoom, no UI controls) — this is a visual hook only. The real
+// interactive locator lives on the /find page.
+//
+// API KEY NOTES
+//   The Maps JavaScript API is a client-side product: the key is visible
+//   in the browser by design. Security is enforced server-side by Google
+//   via the HTTP Referer restriction on the key. This key is restricted
+//   to: savorsunrise.com, *.savorsunrise.com, *.lovable.app,
+//   *.lovableproject.com, localhost. Requests from any other origin are
+//   rejected by Google's servers regardless of what code runs here.
+//   Rotating the key is safe if ever needed — change the constant below
+//   and redeploy.
 //
 // LOADING STRATEGY
-//   This component is entirely self-contained: on mount it injects both the
-//   Leaflet stylesheet and the Leaflet script into document.head (once per
-//   page lifecycle, guarded against double-loads via a module-level promise).
-//   This avoids adding Leaflet as a package dependency and sidesteps SSR/
-//   bundling gotchas — Leaflet touches `window` at import time, which can
-//   break server-side rendering if imported the conventional way.
+//   Google Maps JS is injected from the Maps CDN at runtime (this
+//   component owns the <script> tag). Module-level promise guards against
+//   double-injection on remount. SSR-safe (no window access at module
+//   scope). Graceful degradation: if the CDN fails, the map doesn't
+//   render but the cream overlay card and CTA still work.
 //
 // REPLACING PLACEHOLDER PINS
-//   Swap the PINS array below when a real retail-locations list is available.
-//   Each pin is a { city, lat, lng }. Extending to richer data (name, address,
-//   phone, hours) is additive.
+//   Swap the PINS array below when a real retail-locations list exists.
 // =============================================================================
 
 import { useEffect, useRef } from "react";
+
+// Domain-restricted public key — safe to embed per Google's client-side
+// Maps model. See API KEY NOTES above.
+const GOOGLE_MAPS_API_KEY = "AIzaSyCjWZ3tjPQ5jARXQx0LxSuQuIcvExXZbAc";
 
 // Placeholder rollout cities — central US anchored on SUNRISE HQ (Tulsa, OK),
 // with regional expansion markers. To be replaced with real locations.
@@ -37,135 +48,147 @@ const PINS: ReadonlyArray<{ city: string; lat: number; lng: number }> = [
   { city: "Portland, OR",      lat: 45.5152, lng: -122.6784 },
 ];
 
-const LEAFLET_VERSION = "1.9.4";
-const LEAFLET_CSS = `https://unpkg.com/leaflet@${LEAFLET_VERSION}/dist/leaflet.css`;
-const LEAFLET_JS  = `https://unpkg.com/leaflet@${LEAFLET_VERSION}/dist/leaflet.js`;
+// Custom map style — heavily muted palette tuned for SUNRISE cream (#FEFBE0).
+// Neutralizes all colors toward warm tones, hides most POI labels, keeps
+// roads subtle. Typed as any[] because this project does not include
+// @types/google.maps (avoiding a dependency add).
+const MAP_STYLE: any[] = [
+  { elementType: "geometry",        stylers: [{ color: "#f5f3ed" }] },
+  { elementType: "labels.icon",     stylers: [{ visibility: "off" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#8a8478" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#f5f3ed" }] },
+  { featureType: "administrative.country",   elementType: "geometry.stroke", stylers: [{ color: "#c8c4ba" }] },
+  { featureType: "administrative.province",  elementType: "geometry.stroke", stylers: [{ color: "#d8d4ca" }] },
+  { featureType: "administrative.land_parcel", stylers: [{ visibility: "off" }] },
+  { featureType: "administrative.neighborhood", stylers: [{ visibility: "off" }] },
+  { featureType: "poi",             stylers: [{ visibility: "off" }] },
+  { featureType: "road",            elementType: "geometry",        stylers: [{ color: "#ebe7dd" }] },
+  { featureType: "road.arterial",   elementType: "labels",          stylers: [{ visibility: "off" }] },
+  { featureType: "road.highway",    elementType: "geometry",        stylers: [{ color: "#e0dcd0" }] },
+  { featureType: "road.highway",    elementType: "labels",          stylers: [{ visibility: "off" }] },
+  { featureType: "road.local",      elementType: "labels",          stylers: [{ visibility: "off" }] },
+  { featureType: "transit",         stylers: [{ visibility: "off" }] },
+  { featureType: "water",           elementType: "geometry",        stylers: [{ color: "#dcdccf" }] },
+  { featureType: "water",           elementType: "labels.text.fill", stylers: [{ color: "#9a9488" }] },
+];
 
-// Module-level cache so mount/unmount/remount does not re-inject scripts.
-let leafletPromise: Promise<any> | null = null;
+// Module-level promise cache so mount/unmount/remount does not re-inject
+// the Google Maps script.
+let mapsPromise: Promise<any> | null = null;
 
-function loadLeaflet(): Promise<any> {
+function loadGoogleMaps(): Promise<any> {
   if (typeof window === "undefined") {
-    // SSR-safe no-op — real loading happens on the client after hydration.
     return Promise.resolve(null);
   }
   const w = window as any;
-  if (w.L) return Promise.resolve(w.L);
-  if (leafletPromise) return leafletPromise;
+  if (w.google && w.google.maps) return Promise.resolve(w.google.maps);
+  if (mapsPromise) return mapsPromise;
 
-  leafletPromise = new Promise<any>((resolve, reject) => {
-    // Inject the stylesheet if not already present.
-    if (!document.getElementById("sunrise-leaflet-css")) {
-      const link = document.createElement("link");
-      link.id = "sunrise-leaflet-css";
-      link.rel = "stylesheet";
-      link.href = LEAFLET_CSS;
-      document.head.appendChild(link);
-    }
-
-    // Inject the script; resolve / reject based on its load lifecycle.
-    const existing = document.getElementById("sunrise-leaflet-js") as HTMLScriptElement | null;
+  mapsPromise = new Promise<any>((resolve, reject) => {
+    const existing = document.getElementById("sunrise-google-maps-js") as HTMLScriptElement | null;
     if (existing) {
-      // Another instance is loading it — poll for completion.
       const started = Date.now();
       const tick = () => {
-        if ((window as any).L) return resolve((window as any).L);
-        if (Date.now() - started > 5000) return reject(new Error("Leaflet load timeout"));
+        if (w.google && w.google.maps) return resolve(w.google.maps);
+        if (Date.now() - started > 8000) return reject(new Error("Google Maps load timeout"));
         setTimeout(tick, 50);
       };
       return tick();
     }
 
-    const script = document.createElement("script");
-    script.id = "sunrise-leaflet-js";
-    script.src = LEAFLET_JS;
-    script.async = true;
-    script.onload = () => {
-      if ((window as any).L) resolve((window as any).L);
-      else reject(new Error("Leaflet script loaded but window.L is undefined"));
+    // Use a unique global callback name to avoid collisions.
+    const callbackName = "__sunriseGoogleMapsReady";
+    (window as any)[callbackName] = () => {
+      if (w.google && w.google.maps) resolve(w.google.maps);
+      else reject(new Error("Google Maps script loaded but google.maps is undefined"));
+      delete (window as any)[callbackName];
     };
-    script.onerror = () => reject(new Error("Failed to load Leaflet from CDN"));
+
+    const script = document.createElement("script");
+    script.id = "sunrise-google-maps-js";
+    script.src =
+      `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}` +
+      `&callback=${callbackName}&loading=async&v=weekly`;
+    script.async = true;
+    script.defer = true;
+    script.onerror = () => reject(new Error("Failed to load Google Maps from CDN"));
     document.head.appendChild(script);
   });
 
-  return leafletPromise;
+  return mapsPromise;
 }
 
 export function S07Map() {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let map: any = null;
     let cancelled = false;
+    // Google Maps doesn't offer a .remove() on the map instance; cleanup
+    // clears the container DOM on unmount.
+    const containerNode = mapRef.current;
 
-    loadLeaflet()
-      .then((L) => {
-        if (cancelled || !L || !mapRef.current) return;
+    loadGoogleMaps()
+      .then((maps) => {
+        if (cancelled || !maps || !containerNode) return;
 
-        // Center chosen so Tulsa sits slightly below-center and both coastal
-        // pins (Portland OR / Nashville TN) fit the viewport without clipping
-        // at zoom 4. Zoom is locked — country-scale view only.
-        map = L.map(mapRef.current, {
-          center: [38.5, -96.5],
+        const map = new maps.Map(containerNode, {
+          center: { lat: 38.5, lng: -96.5 },
           zoom: 4,
           minZoom: 4,
           maxZoom: 4,
-          dragging: false,
-          scrollWheelZoom: false,
-          doubleClickZoom: false,
-          touchZoom: false,
-          boxZoom: false,
-          keyboard: false,
+          // All interaction disabled — teaser map, not a tool.
+          draggable: false,
+          scrollwheel: false,
+          disableDoubleClickZoom: true,
           zoomControl: false,
-          attributionControl: false,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false,
+          rotateControl: false,
+          scaleControl: false,
+          keyboardShortcuts: false,
+          clickableIcons: false,
+          gestureHandling: "none",
+          disableDefaultUI: true,
+          styles: MAP_STYLE,
+          backgroundColor: "#f5f3ed",
         });
 
-        // CartoDB Positron — clean pale basemap, no API key required for
-        // reasonable traffic. At production scale we'd migrate to a paid
-        // tile provider (Mapbox) or self-host tiles.
-        L.tileLayer(
-          "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-          {
-            subdomains: "abcd",
-            maxZoom: 20,
-          },
-        ).addTo(map);
-
-        // Brand-styled pins via divIcon — pure HTML/CSS, no sprites or
-        // bundler icon-path quirks, full theming control.
-        const pinIcon = L.divIcon({
-          className: "s07-pin",
-          html: '<div class="s07-pin-inner"></div>',
-          iconSize: [14, 14],
-          iconAnchor: [7, 7],
-        });
+        // Brand-styled pin: tier-30 green (#0A6034) circle with cream
+        // border. Using the symbol-path API so the marker is vector, not
+        // a raster sprite — renders crisp at any pixel density.
+        const pinIcon: any = {
+          path: maps.SymbolPath.CIRCLE,
+          fillColor: "#0A6034",
+          fillOpacity: 1,
+          strokeColor: "#FEFBE0",
+          strokeWeight: 2,
+          scale: 7,
+        };
 
         PINS.forEach((p) => {
-          L.marker([p.lat, p.lng], {
+          new maps.Marker({
+            position: { lat: p.lat, lng: p.lng },
+            map,
             icon: pinIcon,
-            interactive: false,
-            keyboard: false,
-          }).addTo(map);
+            clickable: false,
+            title: p.city,
+          });
         });
       })
       .catch((err) => {
-        // Non-fatal: if Leaflet fails to load, the map simply doesn't render.
-        // The cream "Find SUNRISE near you" card still displays and users
-        // can click through to the /find page.
         // eslint-disable-next-line no-console
         console.warn("[S07Map]", err);
       });
 
     return () => {
       cancelled = true;
-      if (map) {
-        map.remove();
-        map = null;
-      }
+      // Best-effort cleanup — clear container to release map DOM.
+      if (containerNode) containerNode.innerHTML = "";
     };
   }, []);
 
   // Class `s08-map-bg` retained so existing layout rules (position: absolute;
-  // inset: 0) apply without needing duplicate styles.
+  // inset: 0) apply without duplicate styles.
   return <div ref={mapRef} className="s08-map-bg" aria-hidden="true" />;
 }
