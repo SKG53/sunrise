@@ -514,17 +514,6 @@
   color: rgba(254, 251, 224, 0.75);
 }
 
-/* Dark-text mode — applied when flavor bg has YIQ brightness >= 128.
-   Swaps cream treatment to near-black for WCAG AA contrast on light SKUs. */
-.pd-cannabinoid.is-dark-text { color: var(--near-black); }
-.pd-cannabinoid.is-dark-text .pd-cannabinoid-headline { color: var(--near-black); }
-.pd-cannabinoid.is-dark-text .pd-cannabinoid-headline .accent-on-color { color: var(--gold); }
-.pd-cannabinoid.is-dark-text .pd-cannabinoid-body { color: rgba(26, 26, 26, 0.82); }
-.pd-cannabinoid.is-dark-text .pd-cannabinoid-stat { border-color: rgba(26, 26, 26, 0.45); }
-.pd-cannabinoid.is-dark-text .pd-cannabinoid-stat-value { color: var(--near-black); }
-.pd-cannabinoid.is-dark-text .pd-cannabinoid-stat-label { color: rgba(26, 26, 26, 0.7); }
-.pd-cannabinoid.is-dark-text .pd-eyebrow-on-color { color: rgba(26, 26, 26, 0.7); }
-
 /* ── 07 · FAQ ───────────────────────────────────────────────────────────── */
 .pd-faq {
   border-top: 1px solid var(--warm-gray-faint);
@@ -610,28 +599,6 @@
   gap: calc(var(--base) * 0.3);
   align-items: flex-start;
   justify-self: end;
-}
-
-/* Dark-text mode — applied when flavor bg has YIQ brightness >= 128.
-   Swaps cream treatment to near-black for WCAG AA contrast on light SKUs.
-   CTAs invert too: cream pill → dark pill, cream-bordered ghost → dark-bordered. */
-.pd-ptp.is-dark-text { color: var(--near-black); }
-.pd-ptp.is-dark-text .pd-ptp-headline { color: var(--near-black); }
-.pd-ptp.is-dark-text .pd-ptp-body { color: rgba(26, 26, 26, 0.78); }
-.pd-ptp.is-dark-text .btn-on-color {
-  background: var(--near-black);
-  color: var(--cream);
-}
-.pd-ptp.is-dark-text .btn-on-color:hover {
-  background: var(--near-black-hover);
-}
-.pd-ptp.is-dark-text .btn-on-color-ghost {
-  color: var(--near-black);
-  border-color: var(--near-black);
-}
-.pd-ptp.is-dark-text .btn-on-color-ghost:hover {
-  background: var(--near-black);
-  color: var(--cream);
 }
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
