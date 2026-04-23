@@ -39,34 +39,30 @@
   text-align: center;
   color: var(--cream);
   margin: 0;
-  position: relative;
-  display: inline-block;
 }
-/* GPU-accelerated reveal: a bg-matched overlay sits on top of the text    */
-/* and retreats rightward via transform (scaleX). Transform animations     */
-/* run on the compositor layer — text pixels are never repainted during   */
-/* the animation. The overshoot (top/bottom -0.1em) hides antialiasing    */
-/* edges that would otherwise flicker as the mask leaves.                  */
-.p-pagehero-title::after {
-  content: '';
-  position: absolute;
-  top: -0.1em;
-  bottom: -0.1em;
-  left: 0;
-  right: 0;
-  background: var(--tier-5);
-  transform: scaleX(0);
-  transform-origin: right center;
-  will-change: transform;
-  animation: pagehero-reveal 2.0s steps(8) 0.4s both;
-  z-index: 1;
+/* Typed reveal: each character is wrapped in a <span> and appears       */
+/* instantly at its staggered delay. Character-by-character — no mid-    */
+/* character partial-reveal states (the issue proportional fonts cause   */
+/* for step-based overlay animations). 210ms between characters =        */
+/* deliberate typing rhythm; 0.4s initial delay lets the page settle     */
+/* visually before the title starts.                                     */
+.p-pagehero-title span {
+  opacity: 0;
+  animation: pagehero-char-in 0.01s forwards;
 }
-@keyframes pagehero-reveal {
-  from { transform: scaleX(1); }
-  to   { transform: scaleX(0); }
+.p-pagehero-title span:nth-child(1) { animation-delay: 0.40s; }
+.p-pagehero-title span:nth-child(2) { animation-delay: 0.61s; }
+.p-pagehero-title span:nth-child(3) { animation-delay: 0.82s; }
+.p-pagehero-title span:nth-child(4) { animation-delay: 1.03s; }
+.p-pagehero-title span:nth-child(5) { animation-delay: 1.24s; }
+.p-pagehero-title span:nth-child(6) { animation-delay: 1.45s; }
+.p-pagehero-title span:nth-child(7) { animation-delay: 1.66s; }
+.p-pagehero-title span:nth-child(8) { animation-delay: 1.87s; }
+@keyframes pagehero-char-in {
+  to { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .p-pagehero-title::after { animation: none; }
+  .p-pagehero-title span { opacity: 1; animation: none; }
 }
 
 /* ── FIND YOUR EFFECT (4-card: Core + CBG/CBN/THCV) ─────────────────────── */
