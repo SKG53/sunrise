@@ -69,7 +69,7 @@
   flex-direction: column;
   align-items: center;
   gap: calc(var(--base) * 0.05);
-  width: 85%;
+  width: var(--s02-stack-width, 65%);
 }
 .s02-manifesto-line {
   font-family: 'Montserrat', sans-serif;
