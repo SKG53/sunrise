@@ -309,7 +309,15 @@ function ProductsPage() {
       <SiteHeader activeNav="products" />
 
       <main>
-        {/* ── 01 · HERO ─────────────────────────────────────────────────── */}
+        {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
+        {/* Giant color-flood page title. Tier-5 amber with near-black text */}
+        {/* (amber + cream fails contrast). Establishes page identity as    */}
+        {/* the first screenful; old hero content shifts to S02.            */}
+        <section className="p-pagehero">
+          <h1 className="p-pagehero-title">Products</h1>
+        </section>
+
+        {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
         <section className="p-hero">
           <div className="container">
             <h1 className="p-hero-headline">
@@ -322,7 +330,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 02 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
+        {/* ── 03 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
         <section className="p-effects">
           <div className="container">
             <h2 className="p-effects-headline">
@@ -344,7 +352,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 03 · TIER SWITCHER + PANEL ──────────────────────────────── */}
+        {/* ── 04 · TIER SWITCHER + PANEL ──────────────────────────────── */}
         <section className="p-switcher">
           <div className="container">
             <h2 className="p-switcher-headline">
@@ -405,7 +413,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 04 · WHAT'S INSIDE (ported from About S05) ────────────────── */}
+        {/* ── 05 · WHAT'S INSIDE (ported from About S05) ────────────────── */}
         <section className="p-inside">
           <div className="container">
             <div className="p-inside-head">
@@ -455,7 +463,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 05 · TRANSPARENCY (unchanged) ─────────────────────────────── */}
+        {/* ── 06 · TRANSPARENCY (unchanged) ─────────────────────────────── */}
         <section className="p-transparency">
           <div className="container">
             <div className="p-transparency-inner">
@@ -502,7 +510,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 07 · FAQ (new, last section before footer) ──────────────── */}
+        {/* ── 08 · FAQ (new, last section before footer) ──────────────── */}
         <section className="p-faq">
           <div className="container">
             <h2 className="p-faq-headline">
