@@ -99,7 +99,11 @@ function ContactPage() {
         {/* register for the sign-off/reach-us page; completes the tier    */}
         {/* color cycle across the four subpage heroes.                    */}
         <section className="c-pagehero">
-          <h1 className="c-pagehero-title">Contact</h1>
+          <h1 className="c-pagehero-title" aria-label="Contact">
+            {"Contact".split("").map((ch, i) => (
+              <span key={i} aria-hidden="true">{ch === " " ? "\u00A0" : ch}</span>
+            ))}
+          </h1>
         </section>
 
         {/* ── 02 · HERO ─────────────────────────────────────────────────── */}

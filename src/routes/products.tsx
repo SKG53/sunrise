@@ -314,7 +314,11 @@ function ProductsPage() {
         {/* (amber + cream fails contrast). Establishes page identity as    */}
         {/* the first screenful; old hero content shifts to S02.            */}
         <section className="p-pagehero">
-          <h1 className="p-pagehero-title">Products</h1>
+          <h1 className="p-pagehero-title" aria-label="Products">
+            {"Products".split("").map((ch, i) => (
+              <span key={i} aria-hidden="true">{ch === " " ? "\u00A0" : ch}</span>
+            ))}
+          </h1>
         </section>
 
         {/* ── 02 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
