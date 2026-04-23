@@ -490,7 +490,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 06 · CTA BAND (matches About S05 pattern) ─────────────────── */}
+        {/* ── 07 · CTA BAND (matches About S05 pattern) ─────────────────── */}
         <section className="p-ptp">
           <div className="container">
             <div className="p-ptp-inner">
