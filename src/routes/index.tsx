@@ -363,7 +363,7 @@ function HomePage() {
                   manufacturing to the problem, and every can reflects that work.
                 </p>
                 <div className="s07-cta-row">
-                  <a href="/about" className="btn btn-secondary">Read Our Story →</a>
+                  <a href="/about" className="btn btn-on-color-ghost">Read Our Story →</a>
                 </div>
               </div>
             </div>

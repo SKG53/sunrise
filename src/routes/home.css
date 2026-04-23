@@ -380,10 +380,14 @@
 }
 
 /* ── SECTION 07 · STORY TEASER ──────────────────────────────────────────── */
+/* Full-color editorial moment. Deep purple (#4F308D) is the first stop of */
+/* the SUNRISE wordmark gradient — brand-coherent without introducing a    */
+/* new color to the system. Sits as the single chromatic peak of the page, */
+/* framed by cream on both sides. The color block is the section break —   */
+/* border-top removed accordingly.                                          */
 .s07-story {
-  background: var(--cream);
+  background: #4F308D;
   padding: calc(var(--base) * 1.8) 0;
-  border-top: 1px solid var(--warm-gray-faint);
 }
 .s07-layout {
   display: grid;
@@ -394,7 +398,7 @@
 .s07-portrait {
   aspect-ratio: 4 / 5;
   min-height: calc(var(--base) * 8);
-  background: var(--warm-gray-faint);
+  background: rgba(0, 0, 0, 0.18);
   border-radius: 4px;
 }
 .s07-copy {
@@ -415,14 +419,14 @@
   font-weight: 900;
   letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: var(--near-black);
+  color: var(--cream);
   line-height: 0.98;
 }
 .s07-body {
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
   line-height: 1.55;
-  color: var(--text-body);
+  color: rgba(254, 251, 224, 0.88);
   max-width: 52ch;
 }
 .s07-cta-row { margin-top: calc(var(--base) * 0.2); }
