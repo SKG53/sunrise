@@ -1,20 +1,35 @@
 // =============================================================================
 // SUNRISE — find.tsx
 // Path: src/routes/find.tsx
-// Session: SBev.BC.WebsiteDesign.Find.1 · Find route — full build
 //
-// Renamed from "Near You." CTAs throughout the site keep "Find Near You →"
-// as the invitation phrasing; this page's nav label is "Find."
+// Find page — retailer locator. Full-site interactive map paired with a
+// searchable/filterable list. Data source: src/data/retailers.ts
+// (shared with S07Map on the home page).
+//
+// Interaction model:
+//   - Map and list always reflect the same filtered result set
+//   - Search field: substring match across store name, address, city, zip
+//   - State dropdown: restricts to a single state
+//   - Pin click → opens info window, highlights + scrolls list row
+//   - List row click → pans map, opens info window for that retailer
+//   - Clearing all filters returns to US-level view with every marker
+//
+// SEO — this page ships <meta name="robots" content="noindex, nofollow">
+// because the retailer data is currently FABRICATED PLACEHOLDER. Once the
+// real retailer list replaces src/data/retailers.ts, remove the noindex
+// entry below (look for the "PLACEHOLDER DATA" comment) and request
+// re-indexing in Google Search Console.
 //
 // Five sections: Hero, Search, Results (Map + List), Don't See Us, Retailer
-// Gateway (dark band). No PtP band — the page is itself the B2C path to
-// purchase, and the Retailer Gateway serves as the B2B closing band.
+// Gateway (dark band).
 // =============================================================================
 
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { loadGoogleMaps, MAP_STYLE } from "../lib/googleMaps";
+import { RETAILERS, RETAILER_STATES, type Retailer } from "../data/retailers";
 import "./find.css";
 
 export const Route = createFileRoute("/find")({
@@ -25,65 +40,41 @@ export const Route = createFileRoute("/find")({
       {
         name: "description",
         content:
-          "Retailers stocking SUNRISE near you. Search by zip, city, or state to see what's available nearby.",
+          "Retailers stocking SUNRISE near you. Search by zip, city, or store name to see what's available nearby.",
       },
+      // PLACEHOLDER DATA — remove this robots entry when real retailer data replaces
+      // src/data/retailers.ts. See that file's header for the full swap protocol.
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://savorsunrise.com/find" },
     ],
   }),
 });
 
-// ── RETAILER DATA ────────────────────────────────────────────────────────
-// Stub dataset for v1. Replace with live retailer API or CMS-backed list
-// when backend is selected. Structure kept simple so migration is a swap.
-type Category = "Dispensary" | "Liquor" | "Convenience" | "Bar / Restaurant";
-
-type Retailer = {
-  name: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  category: Category;
-  distanceLabel?: string;
-};
-
-const RETAILERS: Retailer[] = [
-  { name: "Mother Road Liquor", address: "2032 Utica Square", city: "Tulsa", state: "OK", zip: "74114", category: "Liquor", distanceLabel: "— miles" },
-  { name: "Brookside Bottle Shop", address: "3810 S Peoria Ave", city: "Tulsa", state: "OK", zip: "74105", category: "Liquor", distanceLabel: "— miles" },
-  { name: "Cherry Street Market", address: "1502 E 15th St", city: "Tulsa", state: "OK", zip: "74120", category: "Convenience", distanceLabel: "— miles" },
-  { name: "The Hunt Club", address: "224 N Main St", city: "Tulsa", state: "OK", zip: "74103", category: "Bar / Restaurant", distanceLabel: "— miles" },
-  { name: "Route 66 Package Store", address: "6110 E Admiral Pl", city: "Tulsa", state: "OK", zip: "74115", category: "Liquor", distanceLabel: "— miles" },
-  { name: "Heartland Dispensary", address: "4535 E 51st St", city: "Tulsa", state: "OK", zip: "74135", category: "Dispensary", distanceLabel: "— miles" },
-  { name: "Midtown Spirits", address: "2323 E 21st St", city: "Oklahoma City", state: "OK", zip: "73129", category: "Liquor" },
-  { name: "Plaza District Market", address: "1801 N Classen Blvd", city: "Oklahoma City", state: "OK", zip: "73106", category: "Convenience" },
-];
-
-const CATEGORIES: ("All" | Category)[] = [
-  "All",
-  "Dispensary",
-  "Liquor",
-  "Convenience",
-  "Bar / Restaurant",
-];
-
-const US_STATES = [
-  "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-  "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-  "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-  "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-  "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
-];
+// Stable identifier per retailer for list-to-map coupling.
+function retailerId(r: Retailer): string {
+  return `${r.name}|${r.address}|${r.zip}`;
+}
 
 // ── COMPONENT ────────────────────────────────────────────────────────────
 function FindPage() {
   const [query, setQuery] = useState("");
   const [stateFilter, setStateFilter] = useState("");
-  const [activeCategory, setActiveCategory] = useState<"All" | Category>("All");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  // Map plumbing — refs survive renders without causing re-renders.
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const markersRef = useRef<Map<string, any>>(new Map());
+  const infoWindowRef = useRef<any>(null);
+  const mapsApiRef = useRef<any>(null);
+  const listItemRefs = useRef<Map<string, HTMLLIElement>>(new Map());
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     return RETAILERS.filter((r) => {
       if (stateFilter && r.state !== stateFilter) return false;
-      if (activeCategory !== "All" && r.category !== activeCategory) return false;
       if (!q) return true;
       return (
         r.zip.startsWith(q) ||
@@ -92,7 +83,172 @@ function FindPage() {
         r.address.toLowerCase().includes(q)
       );
     });
-  }, [query, stateFilter, activeCategory]);
+  }, [query, stateFilter]);
+
+  // ── MAP: initial load ──────────────────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    const containerNode = mapContainerRef.current;
+
+    loadGoogleMaps()
+      .then((maps) => {
+        if (cancelled || !maps || !containerNode) return;
+
+        mapsApiRef.current = maps;
+
+        const map = new maps.Map(containerNode, {
+          center: { lat: 38.5, lng: -96.5 },
+          zoom: 4,
+          minZoom: 3,
+          maxZoom: 16,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: true,
+          rotateControl: false,
+          scaleControl: false,
+          zoomControl: true,
+          clickableIcons: false,
+          styles: MAP_STYLE,
+          backgroundColor: "#f5f3ed",
+        });
+
+        mapInstanceRef.current = map;
+        infoWindowRef.current = new maps.InfoWindow({
+          maxWidth: 280,
+        });
+
+        // Close info window when clicking empty map area.
+        map.addListener("click", () => {
+          infoWindowRef.current?.close();
+          setSelectedId(null);
+        });
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.warn("[FindMap]", err);
+      });
+
+    return () => {
+      cancelled = true;
+      // Clear all markers and release map DOM on unmount.
+      markersRef.current.forEach((m) => m.setMap(null));
+      markersRef.current.clear();
+      infoWindowRef.current?.close();
+      if (containerNode) containerNode.innerHTML = "";
+      mapInstanceRef.current = null;
+      mapsApiRef.current = null;
+    };
+  }, []);
+
+  // ── MAP: sync markers to filtered results ─────────────────────────────
+  useEffect(() => {
+    const maps = mapsApiRef.current;
+    const map = mapInstanceRef.current;
+    if (!maps || !map) return;
+
+    const visibleIds = new Set(results.map(retailerId));
+    const markers = markersRef.current;
+
+    // Brand-styled pin — matches home map.
+    const pinIcon: any = {
+      path: maps.SymbolPath.CIRCLE,
+      fillColor: "#0A6034",
+      fillOpacity: 1,
+      strokeColor: "#FEFBE0",
+      strokeWeight: 2,
+      scale: 7,
+    };
+
+    // Remove markers no longer in results.
+    for (const [id, marker] of markers) {
+      if (!visibleIds.has(id)) {
+        marker.setMap(null);
+        markers.delete(id);
+      }
+    }
+
+    // Add markers for new results.
+    for (const r of results) {
+      const id = retailerId(r);
+      if (markers.has(id)) continue;
+      const marker = new maps.Marker({
+        position: { lat: r.lat, lng: r.lng },
+        map,
+        icon: pinIcon,
+        title: r.name,
+      });
+      marker.addListener("click", () => {
+        openInfoWindowFor(r, marker);
+        setSelectedId(id);
+        // Scroll list to this retailer.
+        const el = listItemRefs.current.get(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      markers.set(id, marker);
+    }
+
+    // Fit bounds or reset to US view.
+    if (results.length === 0) {
+      return; // keep current view; list shows empty state
+    }
+    if (!query && !stateFilter) {
+      // Full dataset — reset to US overview.
+      map.setCenter({ lat: 38.5, lng: -96.5 });
+      map.setZoom(4);
+      return;
+    }
+    // Filtered — fit bounds. Clamp minimum zoom so a single result doesn't
+    // zoom to street level.
+    const bounds = new maps.LatLngBounds();
+    for (const r of results) {
+      bounds.extend({ lat: r.lat, lng: r.lng });
+    }
+    map.fitBounds(bounds, 48);
+    const listenerOnce = maps.event.addListenerOnce(map, "idle", () => {
+      if (map.getZoom() > 12) map.setZoom(12);
+    });
+    // listenerOnce is cleaned up automatically on fire; referencing to
+    // satisfy lint without exposing it:
+    void listenerOnce;
+  }, [results, query, stateFilter]);
+
+  // Open info window for a retailer — shared between pin and list clicks.
+  function openInfoWindowFor(r: Retailer, marker: any) {
+    const maps = mapsApiRef.current;
+    const map = mapInstanceRef.current;
+    const iw = infoWindowRef.current;
+    if (!maps || !map || !iw) return;
+    const directionsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      `${r.name}, ${r.address}, ${r.city}, ${r.state} ${r.zip}`
+    )}`;
+    // Minimal HTML inside Google's default InfoWindow frame. Styled
+    // via .sr-iw-* classes in find.css.
+    const html = `
+      <div class="sr-iw">
+        <div class="sr-iw-name">${escapeHtml(r.name)}</div>
+        <div class="sr-iw-addr">${escapeHtml(r.address)}</div>
+        <div class="sr-iw-addr">${escapeHtml(r.city)}, ${escapeHtml(r.state)} ${escapeHtml(r.zip)}</div>
+        <a class="sr-iw-link" href="${directionsHref}" target="_blank" rel="noreferrer">Get directions →</a>
+      </div>
+    `;
+    iw.setContent(html);
+    iw.open({ anchor: marker, map });
+  }
+
+  // Handle list click — pan map and open info window for that retailer.
+  function handleListClick(r: Retailer) {
+    const id = retailerId(r);
+    const map = mapInstanceRef.current;
+    const marker = markersRef.current.get(id);
+    if (!map || !marker) {
+      setSelectedId(id);
+      return;
+    }
+    map.panTo({ lat: r.lat, lng: r.lng });
+    if (map.getZoom() < 11) map.setZoom(11);
+    openInfoWindowFor(r, marker);
+    setSelectedId(id);
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,7 +271,7 @@ function FindPage() {
               </h1>
               <p className="f-hero-body">
                 Retailers carrying SUNRISE right now. Search by zip, city, or
-                state — or browse the list below.
+                store name — or browse the list below.
               </p>
             </div>
           </div>
@@ -126,11 +282,11 @@ function FindPage() {
           <div className="container">
             <form className="f-search-form" onSubmit={handleSubmit}>
               <label className="f-search-field f-search-field-grow">
-                <span className="f-field-label">Zip or city</span>
+                <span className="f-field-label">Zip, city, or store</span>
                 <input
                   type="text"
                   className="f-input"
-                  placeholder="Enter zip or city"
+                  placeholder="e.g. 78701 or Austin or Brookside"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   inputMode="search"
@@ -146,7 +302,7 @@ function FindPage() {
                   onChange={(e) => setStateFilter(e.target.value)}
                 >
                   <option value="">All states</option>
-                  {US_STATES.map((s) => (
+                  {RETAILER_STATES.map((s) => (
                     <option key={s} value={s}>
                       {s}
                     </option>
@@ -158,22 +314,6 @@ function FindPage() {
                 Search →
               </button>
             </form>
-
-            <div className="f-filter-row">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  className={
-                    "f-filter-pill" +
-                    (activeCategory === cat ? " is-active" : "")
-                  }
-                  onClick={() => setActiveCategory(cat)}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
           </div>
         </section>
 
@@ -181,38 +321,27 @@ function FindPage() {
         <section className="f-results">
           <div className="container">
             <div className="f-results-grid">
-              {/* Map placeholder — intentional, not broken. Upgrade to live
-                  Google Maps / Mapbox when API + retailer dataset is chosen. */}
-              <div className="f-map" aria-label="Map placeholder">
-                <svg
-                  className="f-map-pin"
-                  viewBox="0 0 48 60"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M24 2C12.4 2 3 11.4 3 23c0 14.3 18.3 33 20.1 34.8.5.5 1.3.5 1.8 0C26.7 56 45 37.3 45 23 45 11.4 35.6 2 24 2Z"
-                    fill="#CC1F39"
-                  />
-                  <circle cx="24" cy="23" r="7.5" fill="#FEFBE0" />
-                </svg>
-                <div className="f-map-label">Interactive map coming soon</div>
-                <div className="f-map-sub">Browse the list for retailers near you</div>
-              </div>
+              <div
+                className="f-map"
+                ref={mapContainerRef}
+                aria-label="Interactive map of SUNRISE retailers"
+                role="application"
+              />
 
               <div className="f-results-list">
                 <div className="f-results-meta">
                   <span className="f-results-count">
                     {results.length} {results.length === 1 ? "retailer" : "retailers"}
                   </span>
-                  {(query || stateFilter || activeCategory !== "All") && (
+                  {(query || stateFilter) && (
                     <button
                       type="button"
                       className="f-results-clear"
                       onClick={() => {
                         setQuery("");
                         setStateFilter("");
-                        setActiveCategory("All");
+                        setSelectedId(null);
+                        infoWindowRef.current?.close();
                       }}
                     >
                       Clear filters
@@ -229,32 +358,41 @@ function FindPage() {
                   </div>
                 ) : (
                   <ul className="f-retailer-list">
-                    {results.map((r) => (
-                      <li key={`${r.name}-${r.zip}`} className="f-retailer">
-                        <div className="f-retailer-main">
-                          <div className="f-retailer-name">{r.name}</div>
-                          <div className="f-retailer-address">
-                            {r.address}, {r.city}, {r.state} {r.zip}
+                    {results.map((r) => {
+                      const id = retailerId(r);
+                      const isSelected = id === selectedId;
+                      return (
+                        <li
+                          key={id}
+                          ref={(el) => {
+                            if (el) listItemRefs.current.set(id, el);
+                            else listItemRefs.current.delete(id);
+                          }}
+                          className={"f-retailer" + (isSelected ? " is-selected" : "")}
+                          onClick={() => handleListClick(r)}
+                        >
+                          <address className="f-retailer-main">
+                            <div className="f-retailer-name">{r.name}</div>
+                            <div className="f-retailer-address">
+                              {r.address}, {r.city}, {r.state} {r.zip}
+                            </div>
+                          </address>
+                          <div className="f-retailer-right">
+                            <a
+                              className="f-retailer-directions"
+                              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                `${r.name}, ${r.address}, ${r.city}, ${r.state} ${r.zip}`,
+                              )}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Get directions →
+                            </a>
                           </div>
-                          <div className="f-retailer-tag">{r.category}</div>
-                        </div>
-                        <div className="f-retailer-right">
-                          {r.distanceLabel && (
-                            <div className="f-retailer-distance">{r.distanceLabel}</div>
-                          )}
-                          <a
-                            className="f-retailer-directions"
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                              `${r.name}, ${r.address}, ${r.city}, ${r.state} ${r.zip}`,
-                            )}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Get directions →
-                          </a>
-                        </div>
-                      </li>
-                    ))}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </div>
@@ -315,4 +453,14 @@ function FindPage() {
       <SiteFooter />
     </>
   );
+}
+
+// Minimal HTML escape for InfoWindow content.
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
