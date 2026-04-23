@@ -299,7 +299,6 @@ function HomePage() {
             <div className="s07-layout">
               <div className="s07-portrait" />
               <div className="s07-copy">
-                <div className="s07-eyebrow">Our Story</div>
                 <h2 className="s07-headline">
                   A family business.<br />A new kind of drink.
                 </h2>
@@ -324,7 +323,6 @@ function HomePage() {
           <div className="s08-inner">
             <S07Map />
             <div className="s08-card">
-              <div className="s08-card-eyebrow">Near You</div>
               <h2 className="s08-card-headline">
                 Find SUNRISE<br />near you.
               </h2>

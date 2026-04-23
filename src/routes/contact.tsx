@@ -95,7 +95,6 @@ function ContactPage() {
         <section className="c-hero">
           <div className="container">
             <div className="c-hero-inner">
-              <div className="c-eyebrow">Say Hello</div>
               <h1 className="c-hero-headline">
                 Say hello.<br />
                 Give us a <em className="accent-italic">buzz.</em>
@@ -242,7 +241,6 @@ function ContactPage() {
         <section className="c-direct">
           <div className="container">
             <div className="c-direct-head">
-              <div className="c-eyebrow">Or Reach Us Directly</div>
               <h2 className="c-direct-headline">
                 Three ways to find <span className="accent">us.</span>
               </h2>

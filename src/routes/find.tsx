@@ -109,7 +109,6 @@ function FindPage() {
         <section className="f-hero">
           <div className="container">
             <div className="f-hero-inner">
-              <div className="f-eyebrow">Find SUNRISE</div>
               <h1 className="f-hero-headline">
                 Stocked on real shelves.<br />
                 <span className="accent">Near</span> you.
@@ -267,7 +266,6 @@ function FindPage() {
         <section className="f-fallback">
           <div className="container">
             <div className="f-fallback-inner">
-              <div className="f-eyebrow">Don't See Us Yet?</div>
               <h2 className="f-fallback-headline">
                 We're rolling out. <span className="accent">Region</span> by region.
               </h2>
@@ -295,7 +293,6 @@ function FindPage() {
           <div className="container">
             <div className="f-gateway-inner">
               <div className="f-gateway-left">
-                <div className="f-eyebrow f-eyebrow-on-color">Are You a Retailer?</div>
                 <h2 className="f-gateway-headline">
                   Let's stock <span className="accent-on-color">your</span> shelves.
                 </h2>
