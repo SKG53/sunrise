@@ -370,11 +370,11 @@ function ProductDetailPage() {
                   </div>
                 )}
 
+                <div className="pd-hero-lockup" ref={lockupRef} aria-hidden="true" />
+
                 <h1 className="pd-hero-flavor">{product.flavor}</h1>
 
                 <div className="pd-hero-descriptor">{product.descriptor}</div>
-
-                <div className="pd-hero-lockup" ref={lockupRef} aria-hidden="true" />
 
                 <p className="pd-hero-blurb">{product.blurb}</p>
 
@@ -587,7 +587,7 @@ function ProductDetailPage() {
                   {product.cannabinoid && <> +{product.cannabinoid}</>}.
                 </h2>
                 <p className="pd-ptp-body">
-                  Grab one, or find it near you.
+                  Find one near you or explore other flavors and potencies.
                 </p>
               </div>
               <div className="pd-ptp-ctas">
