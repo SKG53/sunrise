@@ -330,7 +330,7 @@
   color: var(--text-body);
 }
 
-/* ── 04 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────────────── */
+/* ── 05 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────────────── */
 .f-fallback {
   /* Mirrors .a-ptp on the About page: full tier-10 red flood, cream text,
      horizontal copy | ctas split. This is the primary consumer conversion
@@ -376,7 +376,7 @@
   justify-self: end;
 }
 
-/* ── 05 · RETAILER GATEWAY (cream band) ─────────────────────────────────── */
+/* ── 06 · RETAILER GATEWAY (cream band) ─────────────────────────────────── */
 .f-gateway {
   /* Cream background, quiet B2B wholesale call-out. Previously this was
      a forest-green flood to separate it from the footer — superseded now
