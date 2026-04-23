@@ -1,11 +1,8 @@
 /* ==========================================================================
    SUNRISE — sunrise-shell.css
-   Session: SBev.BC.WebBuild.2 · Locked global foundation
-   ==========================================================================
-   Owns: tokens, reset, typography scale, buttons, container, site header,
-   site footer, placeholder page helper, shared responsive breakpoints.
-   Every route imports this once via __root.tsx.
-   Per-route .css files import nothing — they just add scoped styles.
+   Global foundation: tokens, reset, typography scale, buttons, container,
+   site header, site footer, shared responsive breakpoints. Imported once
+   via __root.tsx. Per-route .css files add scoped styles only.
    ========================================================================== */
 
 /* ── FONTS (site-wide) ──────────────────────────────────────────────────── */
@@ -284,38 +281,6 @@ main { flex: 1; width: 100%; }
   opacity: 0.6;
 }
 .footer-legal-links a:hover { opacity: 1; color: var(--gold); }
-
-/* ── PAGE PLACEHOLDER (for scaffolded routes) ───────────────────────────── */
-.page-placeholder {
-  padding: calc(var(--base) * 3.0) 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-}
-.page-placeholder .container {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--base) * 0.4);
-}
-.page-placeholder-headline {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.4);
-  font-weight: 900;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  color: var(--near-black);
-  line-height: 1.0;
-}
-.page-placeholder-body {
-  font-size: calc(var(--base) * 0.4);
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--text-secondary);
-  max-width: 48ch;
-  margin: 0 auto;
-}
 
 /* ── SHARED RESPONSIVE ──────────────────────────────────────────────────── */
 @media (max-width: 1100px) {

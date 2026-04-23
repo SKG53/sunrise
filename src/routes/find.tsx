@@ -1,10 +1,5 @@
-// =============================================================================
-// SUNRISE — find.tsx
-// Path: src/routes/find.tsx
-//
-// Find page — retailer locator. Full-site interactive map paired with a
-// searchable/filterable list. Data source: src/data/retailers.ts
-// (shared with S07Map on the home page).
+// Retailer locator. Interactive map paired with a searchable/filterable list.
+// Data source: src/data/retailers.ts (shared with S07Map on the home page).
 //
 // Interaction model:
 //   - Map and list always reflect the same filtered result set
@@ -19,10 +14,6 @@
 // real retailer list replaces src/data/retailers.ts, remove the noindex
 // entry below (look for the "PLACEHOLDER DATA" comment) and request
 // re-indexing in Google Search Console.
-//
-// Five sections: Hero, Search, Results (Map + List), Don't See Us, Retailer
-// Gateway (dark band).
-// =============================================================================
 
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -262,8 +253,6 @@ function FindPage() {
 
       <main>
         {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
-        {/* Giant color-flood page title. Tier-30 green — Find's coded      */}
-        {/* color via the map pins and map-adjacent wayfinding palette.    */}
         <section className="f-pagehero">
           <h1 className="f-pagehero-title" aria-label="Find Us">
             {"Find Us".split("").map((ch, i) => (

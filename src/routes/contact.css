@@ -1,11 +1,7 @@
 /* ==========================================================================
    SUNRISE — contact.css
-   Path: src/routes/contact.css
-   Session: SBev.BC.WebsiteDesign.Contact.1
-   ==========================================================================
-   Scoped .c-* styles for the Contact route.
-   No @font-face — inherits Montserrat from sunrise-shell.css via __root.tsx.
-   All design tokens are defined globally in the shell.
+   Scoped .c-* styles for the Contact route. Inherits fonts and tokens from
+   sunrise-shell.css.
    ========================================================================== */
 
 /* ── EYEBROW (reusable across sections) ─────────────────────────────────── */

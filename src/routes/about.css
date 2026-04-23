@@ -1,7 +1,6 @@
 /* ==========================================================================
    SUNRISE — about.css
    Path: src/routes/about.css
-   Session: SBev.BC.WebsiteDesign.About.1
    ==========================================================================
    Scoped .a-* styles for the About route. No @font-face — inherits Montserrat
    from sunrise-shell.css via __root.tsx. All design tokens (--cream, --gold,

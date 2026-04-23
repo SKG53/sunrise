@@ -1,14 +1,6 @@
-// =============================================================================
-// SUNRISE — googleMaps.ts
-// Path: src/lib/googleMaps.ts
-//
 // Shared Google Maps loader and brand map style. Consumed by:
 //   - src/components/S07Map.tsx  (home-page US overview map)
 //   - src/routes/find.tsx        (full interactive store locator)
-//
-// Extracted from the original inline loader in S07Map.tsx so the Find-page
-// map doesn't re-inject the Google Maps script tag and doesn't duplicate
-// brand-color constants.
 //
 // API KEY NOTES
 //   The Maps JavaScript API is a client-side product: the key is visible

@@ -1,12 +1,5 @@
-// =============================================================================
-// SUNRISE — contact.tsx
-// Path: src/routes/contact.tsx
-// Session: SBev.BC.WebsiteDesign.Contact.1 · Contact route — full build
-//
-// Replaces the scaffolded placeholder. Utility page. No PtP band — the page
-// IS the CTA. Hero uses the locked Voice Guide accent line "Give us a buzz."
-// Reason dropdown pre-fills from ?topic= URL param so Find CTAs land clean.
-// =============================================================================
+// Utility page — the page itself is the CTA (no PtP band). Reason dropdown
+// pre-fills from ?topic= URL param so Find CTAs land on the right category.
 
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -95,9 +88,6 @@ function ContactPage() {
 
       <main>
         {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
-        {/* Giant color-flood page title. Tier-60 deep purple — quieter   */}
-        {/* register for the sign-off/reach-us page; completes the tier    */}
-        {/* color cycle across the four subpage heroes.                    */}
         <section className="c-pagehero">
           <h1 className="c-pagehero-title" aria-label="Contact">
             {"Contact".split("").map((ch, i) => (
@@ -301,10 +291,6 @@ function ContactPage() {
         </section>
 
         {/* ── 05 · FOLLOW ALONG (tier-10 flood) ─────────────────────────── */}
-        {/* Matches the red-flood closer pattern used on other subpages     */}
-        {/* (About .a-ptp, Find .f-fallback, Home .s08-near-you). Three     */}
-        {/* social channels inline: icon + linked handle per row. Only the  */}
-        {/* handle text is the link target — icon is a decorative sibling.  */}
         <section className="c-social">
           <div className="container">
             <div className="c-social-head">
