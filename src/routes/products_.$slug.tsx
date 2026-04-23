@@ -39,22 +39,6 @@ type Product = {
   imagePath?: string;      // /images/cans/[file].png once assets land
 };
 
-// ── HELPERS ──────────────────────────────────────────────────────────────
-// Returns 'cream' for dark flavor backgrounds, 'dark' for light ones.
-// YIQ perceived-brightness formula, threshold 128. Used to switch text and
-// CTA treatment on per-SKU color floods (S05 Cannabinoid, S07 PtP) so cream
-// text stays on dark SKUs and near-black text takes over on light ones.
-// Without this, light SKUs (Lemonade, Tangerine, Orange Lemonade, Kiwi
-// Watermelon, Strawberry Peach, Peach Mango, Blood Orange) fail WCAG AA
-// on cream-text bands.
-function textModeFor(hex: string): "cream" | "dark" {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-  return yiq >= 128 ? "dark" : "cream";
-}
-
 // ── PRODUCT DATA (24 SKUs) ───────────────────────────────────────────────
 // Positions 1/2/3 = base flavors; positions 4/5/6 = +CBG / +CBN / +THCV.
 // Effect defaults per VIG: CBG=FOCUS, CBN=RELAX, THCV=ELEVATE (can override).
@@ -324,8 +308,6 @@ function ProductDetailPage() {
   const ingredientsLeft = ingredients.slice(0, halfPoint);
   const ingredientsRight = ingredients.slice(halfPoint);
   const cbCopy = product.cannabinoid ? CANNABINOID_COPY[product.cannabinoid] : null;
-  const textMode = textModeFor(product.color);
-  const darkTextMod = textMode === "dark" ? " is-dark-text" : "";
 
   return (
     <>
@@ -423,7 +405,7 @@ function ProductDetailPage() {
         {/* ── 06 · CANNABINOID STORY (variant only) ─────────────────────── */}
         {product.cannabinoid && cbCopy && (
           <section
-            className={`pd-cannabinoid${darkTextMod}`}
+            className="pd-cannabinoid"
             style={{ background: product.color }}
           >
             <div className="container">
@@ -588,7 +570,7 @@ function ProductDetailPage() {
 
         {/* ── 08 · PATH TO PURCHASE (per-SKU flavor color flood) ────────── */}
         <section
-          className={`pd-ptp${darkTextMod}`}
+          className="pd-ptp"
           style={{ background: product.color }}
         >
           <div className="container">
