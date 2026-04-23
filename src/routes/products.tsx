@@ -317,20 +317,7 @@ function ProductsPage() {
           <h1 className="p-pagehero-title">Products</h1>
         </section>
 
-        {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
-        <section className="p-hero">
-          <div className="container">
-            <h1 className="p-hero-headline">
-              Pick your<br />pace.
-            </h1>
-            <p className="p-hero-body">
-              Twenty-four flavors. Four tiers. Three effects. From a light lift
-              to a full experience — find the SUNRISE that fits.
-            </p>
-          </div>
-        </section>
-
-        {/* ── 03 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
+        {/* ── 02 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
         <section className="p-effects">
           <div className="container">
             <h2 className="p-effects-headline">
@@ -352,7 +339,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 04 · TIER SWITCHER + PANEL ──────────────────────────────── */}
+        {/* ── 03 · TIER SWITCHER + PANEL ──────────────────────────────── */}
         <section className="p-switcher">
           <div className="container">
             <h2 className="p-switcher-headline">
@@ -413,7 +400,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 05 · WHAT'S INSIDE (ported from About S05) ────────────────── */}
+        {/* ── 04 · WHAT'S INSIDE (ported from About S05) ────────────────── */}
         <section className="p-inside">
           <div className="container">
             <div className="p-inside-head">
@@ -463,7 +450,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 06 · TRANSPARENCY (unchanged) ─────────────────────────────── */}
+        {/* ── 05 · TRANSPARENCY (unchanged) ─────────────────────────────── */}
         <section className="p-transparency">
           <div className="container">
             <div className="p-transparency-inner">
@@ -490,7 +477,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 07 · CTA BAND (matches About S05 pattern) ─────────────────── */}
+        {/* ── 06 · CTA BAND (matches About S05 pattern) ─────────────────── */}
         <section className="p-ptp">
           <div className="container">
             <div className="p-ptp-inner">
@@ -510,7 +497,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 08 · FAQ (new, last section before footer) ──────────────── */}
+        {/* ── 07 · FAQ (new, last section before footer) ──────────────── */}
         <section className="p-faq">
           <div className="container">
             <h2 className="p-faq-headline">
