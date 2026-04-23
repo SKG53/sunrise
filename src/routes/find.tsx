@@ -407,7 +407,7 @@ function FindPage() {
           </div>
         </section>
 
-        {/* ── 04 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────── */}
+        {/* ── 05 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────── */}
         <section className="f-fallback">
           <div className="container">
             <div className="f-fallback-inner">
@@ -431,7 +431,7 @@ function FindPage() {
           </div>
         </section>
 
-        {/* ── 05 · RETAILER GATEWAY (cream band) ─────────────────────────── */}
+        {/* ── 06 · RETAILER GATEWAY (cream band) ─────────────────────────── */}
         <section className="f-gateway">
           <div className="container">
             <div className="f-gateway-inner">
