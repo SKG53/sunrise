@@ -544,14 +544,17 @@
     gap: calc(var(--base) * 0.8);
   }
   .s06-grid { grid-template-columns: repeat(2, 1fr); }
+  .s02-manifesto-stack { --s02-stack-width: 78%; }
 }
 @media (max-width: 768px) {
   .home-hero { height: 440px; }
   .hero-strip { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
   .s08-inner { height: calc(var(--base) * 11); }
   .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
+  .s02-manifesto-stack { --s02-stack-width: 92%; }
 }
 @media (max-width: 520px) {
+  .s02-manifesto-stack { --s02-stack-width: 100%; }
   .s02-ml-refresh { font-size: calc(var(--base) * 1.5); }
   .s02-ml-theway  { font-size: calc(var(--base) * 1.4); }
   .s02-ml-world   { font-size: calc(var(--base) * 1.2); }
