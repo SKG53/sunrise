@@ -39,14 +39,34 @@
   text-align: center;
   color: var(--cream);
   margin: 0;
-  animation: pagehero-type 1.2s steps(8) both;
+  position: relative;
+  display: inline-block;
 }
-@keyframes pagehero-type {
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(0); }
+/* GPU-accelerated reveal: a bg-matched overlay sits on top of the text    */
+/* and retreats rightward via transform (scaleX). Transform animations     */
+/* run on the compositor layer — text pixels are never repainted during   */
+/* the animation. The overshoot (top/bottom -0.1em) hides antialiasing    */
+/* edges that would otherwise flicker as the mask leaves.                  */
+.p-pagehero-title::after {
+  content: '';
+  position: absolute;
+  top: -0.1em;
+  bottom: -0.1em;
+  left: 0;
+  right: 0;
+  background: var(--tier-5);
+  transform: scaleX(0);
+  transform-origin: right center;
+  will-change: transform;
+  animation: pagehero-reveal 1.0s cubic-bezier(0.25, 1, 0.5, 1) both;
+  z-index: 1;
+}
+@keyframes pagehero-reveal {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .p-pagehero-title { animation: none; }
+  .p-pagehero-title::after { animation: none; }
 }
 
 /* ── FIND YOUR EFFECT (4-card: Core + CBG/CBN/THCV) ─────────────────────── */
