@@ -1,7 +1,18 @@
 /* ==========================================================================
    SUNRISE — products.css
-   Session: SBev.BC.WebsiteDesign.Products.1 · Products route styles
+   Session: SBev.BC.WebsiteDesign.AllPages.2 · Products restructure
    Scoped with .p-* prefix. Relies on tokens + btn + container from shell.
+
+   Changes vs previous version:
+   · .p-cannabinoids* / .p-cannabinoid* classes retired
+   · New .p-effects* / .p-effect* (4-card grid for Find Your Effect)
+   · New .p-switch-lockup (slot for rendered potency lockup per button)
+   · .p-switch-mg retired (plain "MG" text replaced by lockup slot)
+   · .p-switch refactored to flex column (lockup + name)
+   · .p-panel-head grid-template-columns flipped to auto 1.2fr (lockup left)
+   · .p-ticker* and @keyframes p-ticker-scroll removed entirely
+   · New .p-inside* block (ported from about.css with class rename)
+   · New .p-faq* block (accordion pattern, shared with future Home FAQ)
    ========================================================================== */
 
 /* ── HERO ───────────────────────────────────────────────────────────────── */
@@ -32,6 +43,82 @@
   color: var(--text-body);
   max-width: 52ch;
   margin: 0 auto;
+}
+
+/* ── FIND YOUR EFFECT (4-card: Core + CBG/CBN/THCV) ─────────────────────── */
+.p-effects {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 2.2);
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.p-effects .container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.35);
+}
+.p-effects-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.0);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.0;
+}
+.p-effects-headline .accent { color: var(--green-accent); }
+.p-effects-subhead {
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-body);
+  max-width: 64ch;
+}
+.p-effects-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: calc(var(--base) * 0.3);
+  margin-top: calc(var(--base) * 0.6);
+}
+.p-effect-card {
+  padding: calc(var(--base) * 0.8) calc(var(--base) * 0.7);
+  color: var(--cream);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(var(--base) * 5.6);
+}
+.p-effect-eyebrow {
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(254, 251, 224, 0.8);
+  margin-bottom: calc(var(--base) * 0.3);
+}
+.p-effect-symbol {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.05);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+  line-height: 1.0;
+  margin-bottom: calc(var(--base) * 0.3);
+}
+.p-effect-body {
+  font-size: calc(var(--base) * 0.3);
+  font-weight: 400;
+  line-height: 1.45;
+  color: rgba(254, 251, 224, 0.9);
+  max-width: 28ch;
+}
+.p-effect-foot {
+  margin-top: auto;
+  padding-top: calc(var(--base) * 0.5);
+  font-size: calc(var(--base) * 0.19);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(254, 251, 224, 0.6);
 }
 
 /* ── SWITCHER ───────────────────────────────────────────────────────────── */
@@ -80,15 +167,19 @@
   cursor: pointer;
   transition: all 200ms ease-out;
   font-family: 'Montserrat', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.18);
 }
 .p-switch:last-child { border-right: none; }
-.p-switch:hover { background: rgba(26,26,26,0.04); }
-.p-switch-mg {
-  font-size: calc(var(--base) * 0.62);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  color: var(--near-black);
-  line-height: 1.0;
+.p-switch:hover { background: rgba(26, 26, 26, 0.04); }
+.p-switch-lockup {
+  line-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(var(--base) * 0.9);
 }
 .p-switch-name {
   font-size: calc(var(--base) * 0.22);
@@ -96,13 +187,12 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--text-secondary);
-  margin-top: calc(var(--base) * 0.12);
+  white-space: nowrap;
 }
-.p-switch.active .p-switch-mg,
 .p-switch.active .p-switch-name { color: var(--cream); }
 .p-switch.active:hover { filter: brightness(0.95); }
 
-/* ── PANEL ──────────────────────────────────────────────────────────────── */
+/* ── PANEL (lockup-left layout) ─────────────────────────────────────────── */
 .p-panel {
   color: var(--cream);
   padding: calc(var(--base) * 1.1) calc(var(--base) * 1.0);
@@ -112,12 +202,17 @@
 }
 .p-panel-head {
   display: grid;
-  grid-template-columns: 1.2fr auto;
-  gap: calc(var(--base) * 1.0);
-  align-items: start;
+  grid-template-columns: auto 1.2fr;
+  gap: calc(var(--base) * 1.2);
+  align-items: center;
   padding-bottom: calc(var(--base) * 0.9);
-  border-bottom: 1px solid rgba(254,251,224,0.25);
+  border-bottom: 1px solid rgba(254, 251, 224, 0.25);
   margin-bottom: calc(var(--base) * 0.9);
+}
+.p-panel-lockup {
+  line-height: 0;
+  align-self: center;
+  flex-shrink: 0;
 }
 .p-panel-head-text {
   display: flex;
@@ -128,7 +223,7 @@
   font-weight: 800;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(254,251,224,0.75);
+  color: rgba(254, 251, 224, 0.75);
   margin-bottom: calc(var(--base) * 0.2);
 }
 .p-panel-tier-name {
@@ -145,16 +240,11 @@
   font-size: calc(var(--base) * 0.38);
   font-weight: 400;
   line-height: 1.5;
-  color: rgba(254,251,224,0.9);
+  color: rgba(254, 251, 224, 0.9);
   max-width: 44ch;
 }
-.p-panel-lockup {
-  line-height: 0;
-  align-self: center;
-  flex-shrink: 0;
-}
 
-/* ── FLAVOR GRID ────────────────────────────────────────────────────────── */
+/* ── FLAVOR GRID (unchanged) ────────────────────────────────────────────── */
 .p-flavor-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -163,20 +253,20 @@
 .p-flavor-card {
   display: flex;
   flex-direction: column;
-  background: rgba(254,251,224,0.08);
-  border: 1px solid rgba(254,251,224,0.18);
+  background: rgba(254, 251, 224, 0.08);
+  border: 1px solid rgba(254, 251, 224, 0.18);
   border-radius: 4px;
   overflow: hidden;
   transition: all 200ms ease-out;
   cursor: pointer;
 }
 .p-flavor-card:hover {
-  background: rgba(254,251,224,0.14);
+  background: rgba(254, 251, 224, 0.14);
   transform: translateY(-2px);
 }
 .p-flavor-can {
   aspect-ratio: 3 / 4;
-  background: rgba(254,251,224,0.09);
+  background: rgba(254, 251, 224, 0.09);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,7 +274,7 @@
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(254,251,224,0.38);
+  color: rgba(254, 251, 224, 0.38);
 }
 .p-flavor-can::before {
   content: 'Can Image';
@@ -209,13 +299,13 @@
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(254,251,224,0.7);
+  color: rgba(254, 251, 224, 0.7);
 }
 .p-flavor-pill {
   display: inline-block;
   align-self: flex-start;
   padding: calc(var(--base) * 0.08) calc(var(--base) * 0.24);
-  border: 1px solid rgba(254,251,224,0.45);
+  border: 1px solid rgba(254, 251, 224, 0.45);
   border-radius: 9999px;
   font-size: calc(var(--base) * 0.18);
   font-weight: 700;
@@ -225,117 +315,100 @@
   margin-top: calc(var(--base) * 0.18);
 }
 
-/* ── CANNABINOIDS ───────────────────────────────────────────────────────── */
-.p-cannabinoids {
+/* ── WHAT'S INSIDE (ported from about.css) ──────────────────────────────── */
+.p-inside {
   background: var(--cream);
-  padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
   border-top: 1px solid var(--warm-gray-faint);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
 }
-.p-cannabinoids .container {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--base) * 0.35);
+.p-inside-head {
+  margin-bottom: calc(var(--base) * 1.2);
 }
-.p-cannabinoids-headline {
+.p-inside-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
   font-weight: 900;
-  letter-spacing: 0.015em;
+  font-size: calc(var(--base) * 1.15);
+  letter-spacing: 0.005em;
+  line-height: 1.0;
   text-transform: uppercase;
   color: var(--near-black);
-  line-height: 1.0;
+  margin-bottom: calc(var(--base) * 0.4);
+  max-width: 18ch;
 }
-.p-cannabinoids-headline .accent { color: var(--green-accent); }
-.p-cannabinoids-subhead {
-  font-size: calc(var(--base) * 0.4);
+.p-inside-headline .accent { color: var(--green-accent); }
+.p-inside-lead {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.38);
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--text-body);
-  max-width: 58ch;
+  max-width: 56ch;
 }
-.p-cannabinoid-grid {
+.p-inside-pillars {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: calc(var(--base) * 0.35);
-  margin-top: calc(var(--base) * 0.5);
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--base) * 0.8);
+  margin-bottom: calc(var(--base) * 1.4);
 }
-.p-cannabinoid-card {
-  padding: calc(var(--base) * 0.9) calc(var(--base) * 0.8);
-  color: var(--cream);
-  border-radius: 4px;
+.p-inside-pillar {
   display: flex;
   flex-direction: column;
-  min-height: calc(var(--base) * 5.6);
+  gap: calc(var(--base) * 0.3);
+  padding-top: calc(var(--base) * 0.55);
+  border-top: 2px solid var(--gold);
 }
-.p-cannabinoid-eyebrow {
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 800;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(254,251,224,0.8);
-  margin-bottom: calc(var(--base) * 0.3);
-}
-.p-cannabinoid-symbol {
+.p-inside-pillar-title {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.2);
   font-weight: 900;
-  letter-spacing: -0.02em;
-  color: var(--cream);
+  font-size: calc(var(--base) * 0.7);
+  letter-spacing: 0.02em;
   line-height: 1.0;
-  margin-bottom: calc(var(--base) * 0.3);
+  text-transform: uppercase;
+  color: var(--near-black);
 }
-.p-cannabinoid-body {
-  font-size: calc(var(--base) * 0.32);
+.p-inside-pillar-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.34);
   font-weight: 400;
-  line-height: 1.45;
-  color: rgba(254,251,224,0.9);
-  max-width: 28ch;
+  line-height: 1.55;
+  color: var(--text-body);
 }
-.p-cannabinoid-foot {
-  margin-top: auto;
-  padding-top: calc(var(--base) * 0.5);
-  font-size: calc(var(--base) * 0.2);
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(254,251,224,0.6);
-}
-
-/* ── TICKER ─────────────────────────────────────────────────────────────── */
-.p-ticker {
-  background: var(--near-black);
-  color: var(--cream);
-  padding: calc(var(--base) * 0.45) 0;
-  overflow: hidden;
-  position: relative;
-}
-.p-ticker-track {
+.p-inside-stats {
   display: flex;
-  gap: calc(var(--base) * 0.8);
   align-items: center;
-  font-size: calc(var(--base) * 0.26);
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(254,251,224,0.9);
-  white-space: nowrap;
-  animation: p-ticker-scroll 40s linear infinite;
-  width: max-content;
+  gap: calc(var(--base) * 1.0);
+  flex-wrap: wrap;
+  padding-top: calc(var(--base) * 0.95);
+  border-top: 1px solid var(--warm-gray-faint);
 }
-.p-ticker-dot {
-  width: calc(var(--base) * 0.12);
-  height: calc(var(--base) * 0.12);
-  border-radius: 50%;
-  background: var(--tier-5);
-  display: inline-block;
+.p-inside-stats-stat {
+  line-height: 0;
   flex-shrink: 0;
 }
-@keyframes p-ticker-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+.p-inside-stats-badges {
+  display: flex;
+  gap: calc(var(--base) * 0.3);
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: flex-end;
+}
+.p-inside-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: calc(var(--base) * 0.22) calc(var(--base) * 0.5);
+  border: 1.5px solid var(--near-black);
+  border-radius: 9999px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  white-space: nowrap;
+  line-height: 1;
 }
 
-/* ── TRANSPARENCY ───────────────────────────────────────────────────────── */
+/* ── TRANSPARENCY (unchanged) ───────────────────────────────────────────── */
 .p-transparency {
   background: var(--cream);
   padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
@@ -376,7 +449,7 @@
   align-items: flex-start;
 }
 
-/* ── CTA BAND (reusable pattern — plum) ──────────────────────────────────
+/* ── CTA BAND (reusable plum pattern, unchanged) ─────────────────────────
    Currently scoped as .p-ptp. When Home/About adopt this pattern, promote
    to a generic .cta-band class in sunrise-shell.css and share.
    ========================================================================== */
@@ -409,7 +482,7 @@
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
   line-height: 1.5;
-  color: rgba(254,251,224,0.85);
+  color: rgba(254, 251, 224, 0.85);
   max-width: 42ch;
 }
 .p-ptp-ctas {
@@ -419,21 +492,125 @@
   align-items: flex-start;
 }
 
+/* ── FAQ (new: accordion) ───────────────────────────────────────────────── */
+.p-faq {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.2);
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.p-faq .container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.4);
+}
+.p-faq-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.0);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.0;
+}
+.p-faq-headline .accent { color: var(--green-accent); }
+.p-faq-subhead {
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-body);
+  max-width: 58ch;
+}
+.p-faq-list {
+  margin-top: calc(var(--base) * 0.5);
+  display: flex;
+  flex-direction: column;
+}
+.p-faq-item {
+  border-top: 1px solid rgba(26, 26, 26, 0.15);
+}
+.p-faq-item:last-child {
+  border-bottom: 1px solid rgba(26, 26, 26, 0.15);
+}
+.p-faq-q {
+  width: 100%;
+  padding: calc(var(--base) * 0.55) 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--base) * 0.4);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+}
+.p-faq-q-text {
+  font-size: calc(var(--base) * 0.44);
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  color: var(--near-black);
+  line-height: 1.3;
+}
+.p-faq-q-icon {
+  width: calc(var(--base) * 0.6);
+  height: calc(var(--base) * 0.6);
+  border-radius: 50%;
+  background: var(--near-black);
+  color: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--base) * 0.38);
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: transform 300ms ease-out, background 300ms ease-out;
+  line-height: 1;
+}
+.p-faq-item.open .p-faq-q-icon {
+  transform: rotate(45deg);
+  background: var(--tier-10);
+}
+.p-faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 400ms ease-out;
+}
+.p-faq-item.open .p-faq-a {
+  max-height: 500px;
+}
+.p-faq-a-inner {
+  padding: 0 calc(var(--base) * 0.9) calc(var(--base) * 0.6) 0;
+  font-size: calc(var(--base) * 0.38);
+  line-height: 1.6;
+  color: var(--text-body);
+  max-width: 68ch;
+}
+
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .p-effects-grid { grid-template-columns: repeat(2, 1fr); }
+  .p-inside-pillars { grid-template-columns: 1fr 1fr; }
+}
 @media (max-width: 980px) {
   .p-panel-head { grid-template-columns: 1fr; gap: calc(var(--base) * 0.7); }
   .p-transparency-inner,
   .p-ptp-inner { grid-template-columns: 1fr; }
-  .p-cannabinoid-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
   .p-flavor-grid { grid-template-columns: 1fr 1fr; }
   .p-switcher-bar { grid-template-columns: repeat(2, 1fr); }
-  .p-switch:nth-child(1), .p-switch:nth-child(2) { border-bottom: 1.5px solid var(--near-black); }
+  .p-switch:nth-child(1),
+  .p-switch:nth-child(2) { border-bottom: 1.5px solid var(--near-black); }
   .p-switch:nth-child(2) { border-right: none; }
+  .p-inside-pillars { grid-template-columns: 1fr; }
+  .p-inside-stats-badges { justify-content: flex-start; }
+  .p-inside-headline { font-size: calc(var(--base) * 1.0); }
 }
 @media (max-width: 520px) {
   .p-flavor-grid { grid-template-columns: 1fr; }
+  .p-effects-grid { grid-template-columns: 1fr; }
   .p-hero-headline { font-size: calc(var(--base) * 1.2); }
   .p-ptp-headline { font-size: calc(var(--base) * 1.0); }
+  .p-faq-q-text { font-size: calc(var(--base) * 0.38); }
+  .p-inside-stats { gap: calc(var(--base) * 0.7); }
 }
