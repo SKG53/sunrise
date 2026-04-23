@@ -51,6 +51,22 @@ function textModeFor(hex: string): "cream" | "dark" {
   return yiq >= 128 ? "dark" : "cream";
 }
 
+// ── HELPERS ──────────────────────────────────────────────────────────────
+// Returns 'cream' for dark flavor backgrounds, 'dark' for light ones.
+// YIQ perceived-brightness formula, threshold 128. Used to switch text and
+// CTA treatment on per-SKU color floods (S05 Cannabinoid, S07 PtP) so cream
+// text stays on dark SKUs and near-black text takes over on light ones.
+// Without this, light SKUs (Lemonade, Tangerine, Orange Lemonade, Kiwi
+// Watermelon, Strawberry Peach, Peach Mango, Blood Orange) fail WCAG AA
+// on cream-text bands.
+function textModeFor(hex: string): "cream" | "dark" {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 128 ? "dark" : "cream";
+}
+
 // ── PRODUCT DATA (24 SKUs) ───────────────────────────────────────────────
 // Positions 1/2/3 = base flavors; positions 4/5/6 = +CBG / +CBN / +THCV.
 // Effect defaults per VIG: CBG=FOCUS, CBN=RELAX, THCV=ELEVATE (can override).
@@ -415,6 +431,39 @@ function ProductDetailPage() {
             </div>
           </div>
         </section>
+
+        {/* ── 06 · CANNABINOID STORY (variant only) ─────────────────────── */}
+        {product.cannabinoid && cbCopy && (
+          <section
+            className={`pd-cannabinoid${darkTextMod}`}
+            style={{ background: product.color }}
+          >
+            <div className="container">
+              <div className="pd-cannabinoid-grid">
+                <div className="pd-cannabinoid-copy">
+                  <div className="pd-eyebrow pd-eyebrow-on-color">
+                    About the +{product.cannabinoid}
+                  </div>
+                  <h2 className="pd-cannabinoid-headline">
+                    {cbCopy.name}. For{" "}
+                    <span className="accent-on-color">{cbCopy.effect.toLowerCase()}.</span>
+                  </h2>
+                </div>
+                <p className="pd-cannabinoid-body">{cbCopy.description}</p>
+                <div className="pd-cannabinoid-stats">
+                  <div className="pd-cannabinoid-stat">
+                    <div className="pd-cannabinoid-stat-value">{product.tier}<span>mg</span></div>
+                    <div className="pd-cannabinoid-stat-label">THC per can</div>
+                  </div>
+                  <div className="pd-cannabinoid-stat">
+                    <div className="pd-cannabinoid-stat-value">30<span>mg</span></div>
+                    <div className="pd-cannabinoid-stat-label">{product.cannabinoid} per can</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ── 06 · CANNABINOID STORY (variant only) ─────────────────────── */}
         {product.cannabinoid && cbCopy && (
