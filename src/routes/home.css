@@ -117,7 +117,7 @@
 }
 .s03-pi-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.1);
+  font-size: calc(var(--base) * 1.0);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -190,7 +190,7 @@
 }
 .s04-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.1);
+  font-size: calc(var(--base) * 1.0);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -408,7 +408,7 @@
   gap: calc(var(--base) * 0.5);
 }
 .s07-eyebrow {
-  font-size: calc(var(--base) * 0.22);
+  font-size: calc(var(--base) * 0.24);
   font-weight: 800;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -527,7 +527,7 @@
 }
 .s09-heading {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.1);
+  font-size: calc(var(--base) * 1.0);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -617,7 +617,7 @@
 .s10-faq-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.15);
+  font-size: calc(var(--base) * 1.0);
   letter-spacing: 0.005em;
   line-height: 1.0;
   text-transform: uppercase;

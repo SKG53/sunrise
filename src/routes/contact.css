@@ -71,7 +71,7 @@
 .c-hero-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.6);
+  font-size: calc(var(--base) * 1.5);
   letter-spacing: 0.005em;
   line-height: 0.98;
   text-transform: uppercase;
@@ -113,7 +113,7 @@
 .c-form-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.15);
+  font-size: calc(var(--base) * 1.0);
   letter-spacing: 0.005em;
   line-height: 1.0;
   text-transform: uppercase;
@@ -276,7 +276,7 @@
 .c-direct-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.15);
+  font-size: calc(var(--base) * 1.0);
   letter-spacing: 0.005em;
   line-height: 1.0;
   text-transform: uppercase;
