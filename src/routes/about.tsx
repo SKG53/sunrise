@@ -42,7 +42,11 @@ function AboutPage() {
         {/* Giant color-flood page title. Tier-10 red reinforces brand     */}
         {/* heritage color also used in ptp section below and on home S06. */}
         <section className="a-pagehero">
-          <h1 className="a-pagehero-title">About Us</h1>
+          <h1 className="a-pagehero-title" aria-label="About Us">
+            {"About Us".split("").map((ch, i) => (
+              <span key={i} aria-hidden="true">{ch === " " ? "\u00A0" : ch}</span>
+            ))}
+          </h1>
         </section>
 
         {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
