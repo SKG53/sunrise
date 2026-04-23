@@ -63,11 +63,12 @@ function HomePage() {
     };
     const paint = () => {
       const base = getBasePx();
+      const lockupBase = window.innerWidth <= 520 ? 48 : 80;
       if (heroWmRef.current) heroWmRef.current.innerHTML = renderWordmark(base * 2.8, "cream");
-      if (lockup5Ref.current)  lockup5Ref.current.innerHTML  = render5mgLockup(80,  "#FEFBE0");
-      if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(80, "#FEFBE0");
-      if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(80, "#FEFBE0");
-      if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(80, "#FEFBE0");
+      if (lockup5Ref.current)  lockup5Ref.current.innerHTML  = render5mgLockup(lockupBase,  "#FEFBE0");
+      if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(lockupBase, "#FEFBE0");
+      if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(lockupBase, "#FEFBE0");
+      if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(lockupBase, "#FEFBE0");
       justifyS02();
     };
     paint();
