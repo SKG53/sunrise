@@ -148,13 +148,6 @@ const PRODUCTS: Product[] = [
 ];
 
 // ── HELPERS ──────────────────────────────────────────────────────────────
-const TIER_COLORS: Record<Tier, string> = {
-  5: "#DC7F27",
-  10: "#CC1F39",
-  30: "#0A6034",
-  60: "#2E1E3D",
-};
-
 const CANNABINOID_COPY: Record<Cannabinoid, { name: string; effect: string; description: string }> = {
   CBG: {
     name: "CBG",
@@ -308,7 +301,7 @@ function ProductDetailPage() {
     const paint = () => {
       const base = getBasePx();
       if (lockupRef.current) {
-        lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.2, TIER_COLORS[product.tier]);
+        lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.2, product.color);
       }
       if (stat12Ref.current) {
         stat12Ref.current.innerHTML = render12ozStatBlock(base * 0.8);
@@ -322,8 +315,9 @@ function ProductDetailPage() {
 
   const othersInTier = PRODUCTS.filter((p) => p.tier === product.tier && p.slug !== product.slug);
   const ingredients = getIngredients(product);
-  const servings = 2;
-  const thcPerServing = product.tier / servings;
+  const halfPoint = Math.ceil(ingredients.length / 2);
+  const ingredientsLeft = ingredients.slice(0, halfPoint);
+  const ingredientsRight = ingredients.slice(halfPoint);
   const cbCopy = product.cannabinoid ? CANNABINOID_COPY[product.cannabinoid] : null;
 
   return (
@@ -427,46 +421,72 @@ function ProductDetailPage() {
                 <div className="pd-stat-lockup" ref={stat12Ref} aria-hidden="true" />
                 <div className="pd-stat-label">Can Size</div>
               </div>
-              <div className="pd-stat">
-                <div className="pd-stat-value">{servings}</div>
-                <div className="pd-stat-label">Servings per Can</div>
+              <div className="pd-claim">
+                <svg className="pd-claim-icon" viewBox="0 0 80 80" aria-hidden="true">
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" strokeWidth="4" />
+                  <line x1="18" y1="62" x2="62" y2="18" stroke="currentColor" strokeWidth="4" />
+                  <line x1="40" y1="26" x2="40" y2="56" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M40 33 L34 29 M40 33 L46 29 M40 42 L34 38 M40 42 L46 38 M40 51 L34 47 M40 51 L46 47" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
+                </svg>
+                <div className="pd-claim-label"><span>Gluten</span><span>Free</span></div>
               </div>
-              <div className="pd-stat">
-                <div className="pd-stat-value">{thcPerServing}</div>
-                <div className="pd-stat-label">mg THC / Serving</div>
+              <div className="pd-claim">
+                <svg className="pd-claim-icon" viewBox="0 0 80 80" aria-hidden="true">
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" strokeWidth="4" />
+                  <path d="M40 26 C 30 34, 26 46, 32 56 C 40 50, 44 40, 40 26 Z" fill="currentColor" />
+                  <path d="M40 26 C 50 34, 54 46, 48 56 C 40 50, 36 40, 40 26 Z" fill="currentColor" fillOpacity="0.7" />
+                </svg>
+                <div className="pd-claim-label"><span>Natural</span><span>Vegan</span></div>
               </div>
-              {product.cannabinoid ? (
-                <div className="pd-stat">
-                  <div className="pd-stat-value">15</div>
-                  <div className="pd-stat-label">mg {product.cannabinoid} / Serving</div>
-                </div>
-              ) : (
-                <div className="pd-stat">
-                  <div className="pd-stat-value">70</div>
-                  <div className="pd-stat-label">Calories / Serving</div>
-                </div>
-              )}
+              <div className="pd-claim">
+                <svg className="pd-claim-icon" viewBox="0 0 80 80" aria-hidden="true">
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" strokeWidth="4" />
+                  <line x1="18" y1="62" x2="62" y2="18" stroke="currentColor" strokeWidth="4" />
+                  <rect x="43" y="30" width="8" height="22" fill="currentColor" />
+                  <rect x="45" y="26" width="4" height="4" fill="currentColor" />
+                  <path d="M28 34 L38 34 L35 44 Q35 48, 31 48 Q27 48, 27 44 Z" fill="currentColor" />
+                  <line x1="31" y1="48" x2="31" y2="52" stroke="currentColor" strokeWidth="2" />
+                </svg>
+                <div className="pd-claim-label"><span>Zero</span><span>Alcohol</span></div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ── 04 · INGREDIENTS ──────────────────────────────────────────── */}
+        {/* ── 04 · INGREDIENTS (home-style trifecta, per-SKU can) ───────── */}
         <section className="pd-ingredients">
           <div className="container">
-            <div className="pd-section-head">
-              <div className="pd-eyebrow">What's Inside</div>
-              <h2 className="pd-section-headline">
-                Every ingredient. <span className="accent">Named.</span>
-              </h2>
+            <h2 className="pd-inside-headline">What's Inside?</h2>
+            <div className="pd-inside-trifecta">
+              <div className="pd-inside-col pd-inside-col-left">
+                {ingredientsLeft.map((i, idx) => (
+                  <div key={idx} className="pd-inside-ing">
+                    <div className="pd-inside-ing-name">{i.name}</div>
+                    <div className="pd-inside-ing-desc">{i.note}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="pd-inside-center">
+                {product.imagePath ? (
+                  <img
+                    className="pd-inside-can"
+                    src={product.imagePath}
+                    alt={`SUNRISE ${product.flavor} ${product.tier}mg THC hemp-infused seltzer can`}
+                    style={{ background: product.color }}
+                  />
+                ) : (
+                  <div className="pd-inside-can pd-inside-can--placeholder" style={{ background: product.color }} aria-hidden="true" />
+                )}
+              </div>
+              <div className="pd-inside-col pd-inside-col-right">
+                {ingredientsRight.map((i, idx) => (
+                  <div key={idx} className="pd-inside-ing">
+                    <div className="pd-inside-ing-name">{i.name}</div>
+                    <div className="pd-inside-ing-desc">{i.note}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <ul className="pd-ingredients-list">
-              {ingredients.map((i, idx) => (
-                <li key={idx} className="pd-ingredient">
-                  <div className="pd-ingredient-name">{i.name}</div>
-                  <div className="pd-ingredient-note">{i.note}</div>
-                </li>
-              ))}
-            </ul>
           </div>
         </section>
 
@@ -556,18 +576,22 @@ function ProductDetailPage() {
           </div>
         </section>
 
-        {/* ── 08 · PATH TO PURCHASE ─────────────────────────────────────── */}
+        {/* ── 08 · PATH TO PURCHASE (red flood, matches About S05) ──────── */}
         <section className="pd-ptp">
           <div className="container">
             <div className="pd-ptp-inner">
               <div className="pd-ptp-copy">
-                <h2 className="pd-ptp-headline">Ready for a conversation?</h2>
+                <h2 className="pd-ptp-headline">
+                  Now you know<br />
+                  {product.flavor}
+                  {product.cannabinoid && <> +{product.cannabinoid}</>}.
+                </h2>
                 <p className="pd-ptp-body">
-                  Order online or find a shelf nearby.
+                  Grab one, or find it near you.
                 </p>
               </div>
               <div className="pd-ptp-ctas">
-                <a href="/products" className="btn btn-on-color">Shop Now →</a>
+                <a href="#" className="btn btn-on-color">Shop Now →</a>
                 <a href="/find" className="btn btn-on-color-ghost">Find Near You →</a>
               </div>
             </div>
