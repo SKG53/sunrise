@@ -449,39 +449,6 @@ function ProductDetailPage() {
           </section>
         )}
 
-        {/* ── 06 · CANNABINOID STORY (variant only) ─────────────────────── */}
-        {product.cannabinoid && cbCopy && (
-          <section
-            className={`pd-cannabinoid${darkTextMod}`}
-            style={{ background: product.color }}
-          >
-            <div className="container">
-              <div className="pd-cannabinoid-grid">
-                <div className="pd-cannabinoid-copy">
-                  <div className="pd-eyebrow pd-eyebrow-on-color">
-                    About the +{product.cannabinoid}
-                  </div>
-                  <h2 className="pd-cannabinoid-headline">
-                    {cbCopy.name}. For{" "}
-                    <span className="accent-on-color">{cbCopy.effect.toLowerCase()}.</span>
-                  </h2>
-                </div>
-                <p className="pd-cannabinoid-body">{cbCopy.description}</p>
-                <div className="pd-cannabinoid-stats">
-                  <div className="pd-cannabinoid-stat">
-                    <div className="pd-cannabinoid-stat-value">{product.tier}<span>mg</span></div>
-                    <div className="pd-cannabinoid-stat-label">THC per can</div>
-                  </div>
-                  <div className="pd-cannabinoid-stat">
-                    <div className="pd-cannabinoid-stat-value">30<span>mg</span></div>
-                    <div className="pd-cannabinoid-stat-label">{product.cannabinoid} per can</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
         {/* ── 03 · STAT STRIP ───────────────────────────────────────────── */}
         <section className="pd-stats">
           <div className="container">
