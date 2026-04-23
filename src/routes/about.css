@@ -57,7 +57,7 @@
   transform: scaleX(0);
   transform-origin: right center;
   will-change: transform;
-  animation: pagehero-reveal 1.0s cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation: pagehero-reveal 2.0s steps(8) 0.4s both;
   z-index: 1;
 }
 @keyframes pagehero-reveal {
