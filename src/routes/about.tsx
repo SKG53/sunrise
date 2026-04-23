@@ -54,7 +54,6 @@ function AboutPage() {
         <section className="a-hero">
           <div className="container">
             <div className="a-hero-inner">
-              <div className="a-eyebrow">About SUNRISE</div>
               <h1 className="a-hero-headline">
                 A better way to drink.<br />
                 Made in the <span className="accent">heartland.</span>
@@ -72,7 +71,6 @@ function AboutPage() {
           <div className="container">
             <div className="a-origin-inner">
               <div className="a-origin-copy">
-                <div className="a-eyebrow">Origin</div>
                 <h2 className="a-origin-headline">
                   Generations in beverage.<br />
                   A new kind of <span className="accent">drink.</span>
@@ -104,7 +102,6 @@ function AboutPage() {
         <section className="a-approach">
           <div className="container">
             <div className="a-approach-head">
-              <div className="a-eyebrow">How We Build</div>
               <h2 className="a-approach-headline">
                 Built in-house.<br />
                 Tested <span className="accent">every batch.</span>
@@ -154,7 +151,6 @@ function AboutPage() {
         <section className="a-heartland">
           <div className="container">
             <div className="a-heartland-inner">
-              <div className="a-eyebrow a-eyebrow-on-color">The Place</div>
               <h2 className="a-heartland-headline">
                 Route 66.<br />
                 Tulsa, <span className="accent">Oklahoma.</span>
@@ -172,7 +168,6 @@ function AboutPage() {
         <section className="a-inside">
           <div className="container">
             <div className="a-inside-head">
-              <div className="a-eyebrow">What's Inside</div>
               <h2 className="a-inside-headline">
                 Real ingredients.<br />
                 Real <span className="accent">effects.</span>
