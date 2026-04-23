@@ -168,21 +168,21 @@ const EFFECTS: EffectCardData[] = [
     foot: "Three flavors per tier",
   },
   {
-    bg: "#2E1E3D",
+    bg: "#DC7F27",
     eyebrow: "Focus · Uplift",
     symbol: "+CBG",
     body: "Cannabigerol. The sharpener. Lifts without pulling focus.",
     foot: "One flavor per tier",
   },
   {
-    bg: "#36121D",
+    bg: "#2E1E3D",
     eyebrow: "Relax · Unwind",
     symbol: "+CBN",
     body: "Cannabinol. The settler. Evening weight, softer edges.",
     foot: "One flavor per tier",
   },
   {
-    bg: "#DD756B",
+    bg: "#CC1F39",
     eyebrow: "Elevate · Engage",
     symbol: "+THCV",
     body: "Tetrahydrocannabivarin. The lift. Cleaner, clearer, forward-leaning.",
@@ -482,18 +482,19 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 06 · FIND NEAR YOU BAND (unchanged) ──────────────────────── */}
+        {/* ── 06 · CTA BAND (matches About S05 pattern) ─────────────────── */}
         <section className="p-ptp">
           <div className="container">
             <div className="p-ptp-inner">
               <div className="p-ptp-copy">
-                <h2 className="p-ptp-headline">Find it near you.</h2>
+                <h2 className="p-ptp-headline">Now you know<br />our products.</h2>
                 <p className="p-ptp-body">
-                  SUNRISE is popping up at retailers across the country. Check the locator to find your nearest store.
+                  Get to know us, or find a can near you.
                 </p>
               </div>
               <div className="p-ptp-ctas">
-                <a href="/find" className="btn btn-on-color">
+                <a href="/about" className="btn btn-on-color">Learn About Us →</a>
+                <a href="/find" className="btn btn-on-color-ghost">
                   Find Near You →
                 </a>
               </div>
