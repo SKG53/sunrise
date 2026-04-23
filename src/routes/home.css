@@ -380,13 +380,14 @@
 }
 
 /* ── SECTION 07 · STORY TEASER ──────────────────────────────────────────── */
-/* Full-color editorial moment. Deep purple (#4F308D) is the first stop of */
-/* the SUNRISE wordmark gradient — brand-coherent without introducing a    */
-/* new color to the system. Sits as the single chromatic peak of the page, */
-/* framed by cream on both sides. The color block is the section break —   */
-/* border-top removed accordingly.                                          */
+/* Full-color editorial moment. Uses var(--tier-10) — the brand's primary  */
+/* accent, also used on the About page path-to-purchase section. Same      */
+/* color across pages means "this is the moment," creating coherence       */
+/* between Home and About. Cream text follows the same pattern as          */
+/* .a-ptp on About. The color block is the section break — border-top      */
+/* removed accordingly.                                                     */
 .s07-story {
-  background: #4F308D;
+  background: var(--tier-10);
   padding: calc(var(--base) * 1.8) 0;
 }
 .s07-layout {
