@@ -306,49 +306,62 @@
   color: var(--text-body);
 }
 
-/* ── 04 · DON'T SEE SUNRISE ─────────────────────────────────────────────── */
+/* ── 04 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────────────── */
 .f-fallback {
-  border-top: 1px solid var(--warm-gray-faint);
-  padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
+  /* Mirrors .a-ptp on the About page: full tier-10 red flood, cream text,
+     horizontal copy | ctas split. This is the primary consumer conversion
+     moment on the Find page — when a visitor didn't locate us on a shelf,
+     this band is where they decide to buy direct or learn more. */
+  background: var(--tier-10);
+  color: var(--cream);
+  padding: calc(var(--base) * 1.6) 0;
 }
 .f-fallback-inner {
-  max-width: 42ch;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: calc(var(--base) * 1.2);
+  align-items: center;
+}
+.f-fallback-copy {
+  display: flex;
+  flex-direction: column;
 }
 .f-fallback-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.15);
-  letter-spacing: 0.005em;
+  font-size: calc(var(--base) * 1.4);
+  letter-spacing: 0.01em;
   line-height: 1.0;
   text-transform: uppercase;
-  color: var(--near-black);
-  margin-bottom: calc(var(--base) * 0.45);
+  color: var(--cream);
+  margin-bottom: calc(var(--base) * 0.4);
 }
-.f-fallback-headline .accent { color: var(--green-accent); }
 .f-fallback-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
-  line-height: 1.55;
-  color: var(--text-body);
-  margin-bottom: calc(var(--base) * 0.7);
+  line-height: 1.5;
+  color: rgba(254, 251, 224, 0.85);
+  max-width: 40ch;
 }
 .f-fallback-ctas {
   display: flex;
+  flex-direction: column;
   gap: calc(var(--base) * 0.3);
-  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-self: end;
 }
 
-/* ── 05 · RETAILER GATEWAY (forest-green band) ─────────────────────────── */
+/* ── 05 · RETAILER GATEWAY (cream band) ─────────────────────────────────── */
 .f-gateway {
-  /* Using tier-30 (#0A6034) — same forest green as the retailer map pins
-     above. Deliberately NOT var(--near-black): that tone is reserved for
-     the footer, and two stacked near-black bands flatten into one visual
-     mass. Green gives separation from the footer and carries the
-     agricultural/retail/grow-the-shelf semantics that fit the wholesale
-     pitch copy. */
-  background: var(--tier-30);
-  color: var(--cream);
+  /* Cream background, quiet B2B wholesale call-out. Previously this was
+     a forest-green flood to separate it from the footer — superseded now
+     that S04 carries the red flood, making S05 the quieter follow-up
+     moment before the footer. Border-top maintains section separation
+     from the red band above. */
+  background: var(--cream);
+  color: var(--near-black);
+  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.6) 0;
 }
 .f-gateway-inner {
@@ -364,18 +377,16 @@
   letter-spacing: 0.01em;
   line-height: 1.0;
   text-transform: uppercase;
-  color: var(--cream);
+  color: var(--near-black);
   margin-bottom: calc(var(--base) * 0.4);
 }
-.f-gateway-headline .accent-on-color {
-  color: #F2D480; /* Heartland cream-gold — reused for on-color accent */
-}
+.f-gateway-headline .accent { color: var(--green-accent); }
 .f-gateway-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
   line-height: 1.5;
-  color: rgba(254, 251, 224, 0.85);
+  color: var(--text-body);
   max-width: 44ch;
 }
 .f-gateway-right {
@@ -394,6 +405,8 @@
      so the height cap and internal scroll don't apply. */
   .f-results-list { max-height: none; overflow-y: visible; padding-right: 0; }
   .f-results-meta { position: static; }
+  .f-fallback-inner { grid-template-columns: 1fr; }
+  .f-fallback-ctas { justify-self: start; flex-direction: row; }
   .f-gateway-inner { grid-template-columns: 1fr; }
   .f-gateway-right { justify-self: start; }
 }

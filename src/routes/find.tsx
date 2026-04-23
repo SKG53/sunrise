@@ -400,36 +400,37 @@ function FindPage() {
           </div>
         </section>
 
-        {/* ── 04 · DON'T SEE SUNRISE ────────────────────────────────────── */}
+        {/* ── 04 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────── */}
         <section className="f-fallback">
           <div className="container">
             <div className="f-fallback-inner">
-              <h2 className="f-fallback-headline">
-                No store nearby? <span className="accent">No problem.</span>
-              </h2>
-              <p className="f-fallback-body">
-                Order SUNRISE direct to your door, or get to know us before
-                you buy.
-              </p>
+              <div className="f-fallback-copy">
+                <h2 className="f-fallback-headline">
+                  No store nearby? No problem.
+                </h2>
+                <p className="f-fallback-body">
+                  Order SUNRISE direct to your door — or get to know us first.
+                </p>
+              </div>
               <div className="f-fallback-ctas">
-                <a href="/about" className="btn btn-secondary">
-                  Our Story →
-                </a>
-                <a href="/products" className="btn btn-primary">
+                <a href="/products" className="btn btn-on-color">
                   Shop Online →
+                </a>
+                <a href="/about" className="btn btn-on-color-ghost">
+                  Our Story →
                 </a>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── 05 · RETAILER GATEWAY (dark band) ─────────────────────────── */}
+        {/* ── 05 · RETAILER GATEWAY (cream band) ─────────────────────────── */}
         <section className="f-gateway">
           <div className="container">
             <div className="f-gateway-inner">
               <div className="f-gateway-left">
                 <h2 className="f-gateway-headline">
-                  Let's stock <span className="accent-on-color">your</span> shelves.
+                  Let's stock <span className="accent">your</span> shelves.
                 </h2>
                 <p className="f-gateway-body">
                   Wholesale inquiries welcome. Small-batch craft, full-panel
@@ -438,7 +439,7 @@ function FindPage() {
                 </p>
               </div>
               <div className="f-gateway-right">
-                <a href="/contact?topic=wholesale" className="btn btn-on-color">
+                <a href="/contact?topic=wholesale" className="btn btn-primary">
                   Wholesale Inquiries →
                 </a>
               </div>
