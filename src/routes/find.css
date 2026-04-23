@@ -115,6 +115,14 @@
 .f-results-grid {
   display: grid;
   grid-template-columns: 1.25fr 1fr;
+  /* Definite row height is required so the list's max-height: 100% has
+     something to resolve against. Without this, the row sizes to the list's
+     521-item max-content (~40,000px) and the map stretches to match — the
+     "grey box scrolls for miles" bug. clamp() keeps the map a comfortable
+     size across viewports: ~520px nominal, tightened on shorter laptops,
+     capped so it never dominates on tall displays. Reset to auto in the
+     stacked-layout media query below. */
+  grid-template-rows: clamp(460px, 58vh, 580px);
   gap: calc(var(--base) * 0.9);
   align-items: stretch;
 }
@@ -370,7 +378,12 @@
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  .f-results-grid { grid-template-columns: 1fr; }
+  .f-results-grid {
+    grid-template-columns: 1fr;
+    /* Reset the desktop row cap so stacked layout flows naturally — map row
+       sizes via aspect-ratio (see .f-map below), list row sizes to content. */
+    grid-template-rows: auto;
+  }
   /* Grid stacks vertically — list no longer shares a row with the map,
      so the height cap and internal scroll don't apply. */
   .f-results-list { max-height: none; overflow-y: visible; padding-right: 0; }
