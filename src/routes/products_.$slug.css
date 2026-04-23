@@ -443,70 +443,87 @@
   color: var(--green-accent);
 }
 
-/* ── 06 · CANNABINOID STORY (variant only, on-color flood) ──────────────── */
+/* ── 06 · CANNABINOID STORY (variant only, slim on-color band) ─────────── */
 .pd-cannabinoid {
   color: var(--cream);
-  padding: calc(var(--base) * 1.8) 0;
+  padding: calc(var(--base) * 0.9) 0;
 }
 .pd-cannabinoid-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: calc(var(--base) * 1.2);
+  grid-template-columns: 1fr 2fr auto;
+  gap: calc(var(--base) * 0.9);
   align-items: center;
+}
+.pd-cannabinoid-copy {
+  min-width: 0;
 }
 .pd-cannabinoid-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.5);
+  font-size: calc(var(--base) * 0.85);
   letter-spacing: 0.005em;
-  line-height: 1.0;
+  line-height: 1.05;
   text-transform: uppercase;
   color: var(--cream);
-  margin-bottom: calc(var(--base) * 0.5);
+  margin-bottom: 0;
+  margin-top: calc(var(--base) * 0.15);
 }
 .pd-cannabinoid-headline .accent-on-color {
   color: #F2D480;
 }
 .pd-cannabinoid-body {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.4);
+  font-size: calc(var(--base) * 0.32);
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.5;
   color: rgba(254, 251, 224, 0.9);
-  max-width: 48ch;
+  max-width: 54ch;
 }
 .pd-cannabinoid-stats {
-  display: grid;
-  gap: calc(var(--base) * 0.5);
+  display: flex;
+  gap: calc(var(--base) * 0.3);
+  align-items: stretch;
+  white-space: nowrap;
 }
 .pd-cannabinoid-stat {
-  padding: calc(var(--base) * 0.5) calc(var(--base) * 0.55);
+  padding: calc(var(--base) * 0.28) calc(var(--base) * 0.42);
   border: 1.5px solid rgba(254, 251, 224, 0.35);
   border-radius: 6px;
 }
 .pd-cannabinoid-stat-value {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.4);
+  font-size: calc(var(--base) * 0.7);
   font-weight: 900;
   letter-spacing: -0.02em;
   color: var(--cream);
   line-height: 1.0;
-  margin-bottom: calc(var(--base) * 0.1);
+  margin-bottom: calc(var(--base) * 0.08);
 }
 .pd-cannabinoid-stat-value span {
-  font-size: calc(var(--base) * 0.4);
+  font-size: calc(var(--base) * 0.24);
   font-weight: 800;
   letter-spacing: 0.04em;
-  margin-left: calc(var(--base) * 0.06);
+  margin-left: calc(var(--base) * 0.05);
 }
 .pd-cannabinoid-stat-label {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.22);
+  font-size: calc(var(--base) * 0.18);
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(254, 251, 224, 0.75);
 }
+
+/* Dark-text mode — applied when flavor bg has YIQ brightness >= 128.
+   Swaps cream treatment to near-black for WCAG AA contrast on light SKUs. */
+.pd-cannabinoid.is-dark-text { color: var(--near-black); }
+.pd-cannabinoid.is-dark-text .pd-cannabinoid-headline { color: var(--near-black); }
+.pd-cannabinoid.is-dark-text .pd-cannabinoid-headline .accent-on-color { color: var(--gold); }
+.pd-cannabinoid.is-dark-text .pd-cannabinoid-body { color: rgba(26, 26, 26, 0.82); }
+.pd-cannabinoid.is-dark-text .pd-cannabinoid-stat { border-color: rgba(26, 26, 26, 0.45); }
+.pd-cannabinoid.is-dark-text .pd-cannabinoid-stat-value { color: var(--near-black); }
+.pd-cannabinoid.is-dark-text .pd-cannabinoid-stat-label { color: rgba(26, 26, 26, 0.7); }
+.pd-cannabinoid.is-dark-text .pd-eyebrow-on-color { color: rgba(26, 26, 26, 0.7); }
 
 /* ── 07 · FAQ ───────────────────────────────────────────────────────────── */
 .pd-faq {
@@ -557,11 +574,11 @@
   max-width: 62ch;
 }
 
-/* ── 08 · PATH TO PURCHASE (red flood, matches About S05 / Products S06) ── */
+/* ── 08 · PATH TO PURCHASE (per-SKU flavor color flood, inline-styled) ──── */
 .pd-ptp {
-  background: var(--tier-10);
   color: var(--cream);
   padding: calc(var(--base) * 1.6) 0;
+  /* background set inline via product.color per-SKU */
 }
 .pd-ptp-inner {
   display: grid;
@@ -595,6 +612,28 @@
   justify-self: end;
 }
 
+/* Dark-text mode — applied when flavor bg has YIQ brightness >= 128.
+   Swaps cream treatment to near-black for WCAG AA contrast on light SKUs.
+   CTAs invert too: cream pill → dark pill, cream-bordered ghost → dark-bordered. */
+.pd-ptp.is-dark-text { color: var(--near-black); }
+.pd-ptp.is-dark-text .pd-ptp-headline { color: var(--near-black); }
+.pd-ptp.is-dark-text .pd-ptp-body { color: rgba(26, 26, 26, 0.78); }
+.pd-ptp.is-dark-text .btn-on-color {
+  background: var(--near-black);
+  color: var(--cream);
+}
+.pd-ptp.is-dark-text .btn-on-color:hover {
+  background: var(--near-black-hover);
+}
+.pd-ptp.is-dark-text .btn-on-color-ghost {
+  color: var(--near-black);
+  border-color: var(--near-black);
+}
+.pd-ptp.is-dark-text .btn-on-color-ghost:hover {
+  background: var(--near-black);
+  color: var(--cream);
+}
+
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .pd-hero-grid { grid-template-columns: 1fr; gap: calc(var(--base) * 0.8); }
@@ -620,17 +659,17 @@
 }
 @media (max-width: 768px) {
   .pd-section-headline { font-size: calc(var(--base) * 1.0); }
-  .pd-cannabinoid-headline { font-size: calc(var(--base) * 1.2); }
   .pd-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .pd-related-grid { grid-template-columns: repeat(2, 1fr); }
-  .pd-cannabinoid-stats { grid-template-columns: 1fr 1fr; }
+  .pd-cannabinoid-grid { gap: calc(var(--base) * 0.55); }
+  .pd-cannabinoid-stats { justify-content: flex-start; }
 }
 @media (max-width: 520px) {
   .pd-ptp-ctas { flex-direction: column; width: 100%; }
   .pd-ptp-ctas .btn { width: 100%; text-align: center; }
   .pd-hero-ctas { flex-direction: column; width: 100%; }
   .pd-hero-ctas .btn { width: 100%; text-align: center; }
-  .pd-cannabinoid-stats { grid-template-columns: 1fr; }
+  .pd-cannabinoid-stats { flex-direction: column; align-items: stretch; }
   .pd-variant-pill {
     font-size: calc(var(--base) * 0.2);
     letter-spacing: 0.14em;

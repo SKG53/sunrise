@@ -1,6 +1,10 @@
 // Dynamic route rendering a product detail page for each of the 24 SKUs.
 // URL pattern: /products/{tier}mg-{flavor-slug}[-{cannabinoid}]
 // Example:     /products/10mg-blackberry-lemonade-cbn
+//
+// Section order (visual; code section numbers kept stable for reference):
+// 01 Breadcrumb → 02 Hero → 06 Cannabinoid (variant only) → 03 Stat Strip
+// → 05 Others in Tier → 04 Ingredients → 07 FAQ → 08 PtP band → Footer
 
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -34,6 +38,22 @@ type Product = {
   effect?: Effect;
   imagePath?: string;      // /images/cans/[file].png once assets land
 };
+
+// ── HELPERS ──────────────────────────────────────────────────────────────
+// Returns 'cream' for dark flavor backgrounds, 'dark' for light ones.
+// YIQ perceived-brightness formula, threshold 128. Used to switch text and
+// CTA treatment on per-SKU color floods (S05 Cannabinoid, S07 PtP) so cream
+// text stays on dark SKUs and near-black text takes over on light ones.
+// Without this, light SKUs (Lemonade, Tangerine, Orange Lemonade, Kiwi
+// Watermelon, Strawberry Peach, Peach Mango, Blood Orange) fail WCAG AA
+// on cream-text bands.
+function textModeFor(hex: string): "cream" | "dark" {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 128 ? "dark" : "cream";
+}
 
 // ── PRODUCT DATA (24 SKUs) ───────────────────────────────────────────────
 // Positions 1/2/3 = base flavors; positions 4/5/6 = +CBG / +CBN / +THCV.
@@ -304,6 +324,8 @@ function ProductDetailPage() {
   const ingredientsLeft = ingredients.slice(0, halfPoint);
   const ingredientsRight = ingredients.slice(halfPoint);
   const cbCopy = product.cannabinoid ? CANNABINOID_COPY[product.cannabinoid] : null;
+  const textMode = textModeFor(product.color);
+  const darkTextMod = textMode === "dark" ? " is-dark-text" : "";
 
   return (
     <>
@@ -398,6 +420,39 @@ function ProductDetailPage() {
           </div>
         </section>
 
+        {/* ── 06 · CANNABINOID STORY (variant only) ─────────────────────── */}
+        {product.cannabinoid && cbCopy && (
+          <section
+            className={`pd-cannabinoid${darkTextMod}`}
+            style={{ background: product.color }}
+          >
+            <div className="container">
+              <div className="pd-cannabinoid-grid">
+                <div className="pd-cannabinoid-copy">
+                  <div className="pd-eyebrow pd-eyebrow-on-color">
+                    About the +{product.cannabinoid}
+                  </div>
+                  <h2 className="pd-cannabinoid-headline">
+                    {cbCopy.name}. For{" "}
+                    <span className="accent-on-color">{cbCopy.effect.toLowerCase()}.</span>
+                  </h2>
+                </div>
+                <p className="pd-cannabinoid-body">{cbCopy.description}</p>
+                <div className="pd-cannabinoid-stats">
+                  <div className="pd-cannabinoid-stat">
+                    <div className="pd-cannabinoid-stat-value">{product.tier}<span>mg</span></div>
+                    <div className="pd-cannabinoid-stat-label">THC per can</div>
+                  </div>
+                  <div className="pd-cannabinoid-stat">
+                    <div className="pd-cannabinoid-stat-value">30<span>mg</span></div>
+                    <div className="pd-cannabinoid-stat-label">{product.cannabinoid} per can</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* ── 03 · STAT STRIP ───────────────────────────────────────────── */}
         <section className="pd-stats">
           <div className="container">
@@ -434,6 +489,39 @@ function ProductDetailPage() {
                 </svg>
                 <div className="pd-claim-label"><span>Zero</span><span>Alcohol</span></div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 05 · OTHERS IN TIER ───────────────────────────────────────── */}
+        <section className="pd-related">
+          <div className="container">
+            <div className="pd-section-head">
+              <div className="pd-eyebrow">Also in {product.tier}mg</div>
+              <h2 className="pd-section-headline">
+                More at your <span className="accent">pace.</span>
+              </h2>
+            </div>
+            <div className="pd-related-grid">
+              {othersInTier.map((o) => (
+                <Link
+                  key={o.slug}
+                  to="/products/$slug"
+                  params={{ slug: o.slug }}
+                  className="pd-related-card"
+                >
+                  <div className="pd-related-can" style={{ background: o.color }}>
+                    <span>{o.flavor}</span>
+                  </div>
+                  <div className="pd-related-meta">
+                    <div className="pd-related-name">
+                      {o.flavor}
+                      {o.cannabinoid && <span className="pd-related-variant"> +{o.cannabinoid}</span>}
+                    </div>
+                    <div className="pd-related-descriptor">{o.descriptor}</div>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </section>
@@ -475,69 +563,6 @@ function ProductDetailPage() {
           </div>
         </section>
 
-        {/* ── 05 · OTHERS IN TIER ───────────────────────────────────────── */}
-        <section className="pd-related">
-          <div className="container">
-            <div className="pd-section-head">
-              <div className="pd-eyebrow">Also in {product.tier}mg</div>
-              <h2 className="pd-section-headline">
-                More at your <span className="accent">pace.</span>
-              </h2>
-            </div>
-            <div className="pd-related-grid">
-              {othersInTier.map((o) => (
-                <Link
-                  key={o.slug}
-                  to="/products/$slug"
-                  params={{ slug: o.slug }}
-                  className="pd-related-card"
-                >
-                  <div className="pd-related-can" style={{ background: o.color }}>
-                    <span>{o.flavor}</span>
-                  </div>
-                  <div className="pd-related-meta">
-                    <div className="pd-related-name">
-                      {o.flavor}
-                      {o.cannabinoid && <span className="pd-related-variant"> +{o.cannabinoid}</span>}
-                    </div>
-                    <div className="pd-related-descriptor">{o.descriptor}</div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── 06 · CANNABINOID STORY (variant only) ─────────────────────── */}
-        {product.cannabinoid && cbCopy && (
-          <section className="pd-cannabinoid" style={{ background: product.color }}>
-            <div className="container">
-              <div className="pd-cannabinoid-grid">
-                <div className="pd-cannabinoid-copy">
-                  <div className="pd-eyebrow pd-eyebrow-on-color">
-                    About the +{product.cannabinoid}
-                  </div>
-                  <h2 className="pd-cannabinoid-headline">
-                    {cbCopy.name}.<br />
-                    For <span className="accent-on-color">{cbCopy.effect.toLowerCase()}.</span>
-                  </h2>
-                  <p className="pd-cannabinoid-body">{cbCopy.description}</p>
-                </div>
-                <div className="pd-cannabinoid-stats">
-                  <div className="pd-cannabinoid-stat">
-                    <div className="pd-cannabinoid-stat-value">{product.tier}<span>mg</span></div>
-                    <div className="pd-cannabinoid-stat-label">THC per can</div>
-                  </div>
-                  <div className="pd-cannabinoid-stat">
-                    <div className="pd-cannabinoid-stat-value">30<span>mg</span></div>
-                    <div className="pd-cannabinoid-stat-label">{product.cannabinoid} per can</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
         {/* ── 07 · FAQ ──────────────────────────────────────────────────── */}
         <section className="pd-faq">
           <div className="container">
@@ -561,15 +586,17 @@ function ProductDetailPage() {
           </div>
         </section>
 
-        {/* ── 08 · PATH TO PURCHASE (red flood, matches About S05) ──────── */}
-        <section className="pd-ptp">
+        {/* ── 08 · PATH TO PURCHASE (per-SKU flavor color flood) ────────── */}
+        <section
+          className={`pd-ptp${darkTextMod}`}
+          style={{ background: product.color }}
+        >
           <div className="container">
             <div className="pd-ptp-inner">
               <div className="pd-ptp-copy">
                 <h2 className="pd-ptp-headline">
                   Now you know<br />
-                  {product.flavor}
-                  {product.cannabinoid && <> +{product.cannabinoid}</>}.
+                  {product.flavor}.
                 </h2>
                 <p className="pd-ptp-body">
                   Find one near you or explore other flavors and potencies.
