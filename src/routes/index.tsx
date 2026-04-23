@@ -43,6 +43,40 @@ export const Route = createFileRoute("/")({
   }),
 });
 
+// ── FAQ DATA ─────────────────────────────────────────────────────────────
+// Home-level FAQs. Broader than Product Detail's SKU-moment FAQs — these
+// are cold-traffic, first-time-visitor questions about the brand, category,
+// legality, effect, risk, and purchase path. If editing, also review the
+// /products/$slug FAQs to make sure the two don't start to overlap. The
+// two sets are intentionally disjoint so visitors who see both read them
+// as complementary, not duplicative.
+const FAQS = [
+  {
+    q: "What is SUNRISE?",
+    a: "A hemp-infused Delta-9 seltzer. Real fruit, pure cane sugar, and a precisely dosed THC lift in every can. Four potency tiers — 5mg, 10mg, 30mg, and 60mg — so you can pick the experience that fits the moment. Each can is two servings.",
+  },
+  {
+    q: "Is hemp-derived Delta-9 THC legal?",
+    a: "Yes. The 2018 Farm Bill made hemp-derived products federally legal at or below 0.3% Delta-9 THC by dry weight. SUNRISE is formulated to that spec and sold only in states whose laws permit it.",
+  },
+  {
+    q: "What does it feel like?",
+    a: "That's the point of having four tiers. 5mg is a light, easy lift — aperitif territory. 60mg is a full evening. Each step up is a deliberate choice, not a surprise. Effects are personal; start at 5mg or 10mg if it's your first time, and move up only when you know how your body responds.",
+  },
+  {
+    q: "How is SUNRISE different from a CBD seltzer or a dispensary drink?",
+    a: "CBD seltzers don't produce a noticeable lift — CBD is non-intoxicating. Dispensary drinks live inside state marijuana programs and can't travel outside the state that made them. SUNRISE is a federally compliant hemp beverage, which means it can sit on a standard retail shelf — grocery, liquor, bar, restaurant — the same way any other seltzer does.",
+  },
+  {
+    q: "Will it show up on a drug test?",
+    a: "Possibly. Standard drug panels test for THC metabolites and don't distinguish hemp-derived Delta-9 from any other source. If your job or situation requires a clean test, SUNRISE isn't for you.",
+  },
+  {
+    q: "Where can I buy SUNRISE?",
+    a: "Check the store locator on our Find page, or order directly through Shop. If your local spot doesn't carry it yet, tell them — retailer requests move faster than you'd think.",
+  },
+];
+
 function HomePage() {
   const heroWmRef = useRef<HTMLDivElement>(null);
   const lockup5Ref = useRef<HTMLDivElement>(null);
@@ -442,6 +476,35 @@ function HomePage() {
                 </div>
                 <div className="s09-attribution">— Emma T., Phoenix, AZ</div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 09 · FAQ ──────────────────────────────────────────────────── */}
+        {/* Home-level FAQ. Broader than Product Detail — first-time-visitor */}
+        {/* questions (brand, legality, effect, category, risk, purchase).  */}
+        {/* SKU-specific questions (dose, onset, variants, COAs) stay on    */}
+        {/* Product Detail. Visual pattern mirrors .pd-faq so the two feel  */}
+        {/* like family. Class prefix s10-faq-* to avoid collision with the */}
+        {/* existing s09-reviews block above.                               */}
+        <section className="s10-faq">
+          <div className="container">
+            <div className="s10-faq-head">
+              <div className="s10-faq-eyebrow">Questions</div>
+              <h2 className="s10-faq-headline">
+                The questions we hear <span className="accent">most.</span>
+              </h2>
+            </div>
+            <div className="s10-faq-list">
+              {FAQS.map((item, idx) => (
+                <details key={idx} className="s10-faq-item">
+                  <summary className="s10-faq-q">
+                    <span>{item.q}</span>
+                    <span className="s10-faq-chev" aria-hidden="true">+</span>
+                  </summary>
+                  <div className="s10-faq-a">{item.a}</div>
+                </details>
+              ))}
             </div>
           </div>
         </section>
