@@ -44,6 +44,9 @@ export const Route = createFileRoute("/contact")({
           "Questions, wholesale inquiries, press, or just saying hi — reach the SUNRISE team by form or email.",
       },
     ],
+    links: [
+      { rel: "canonical", href: "https://savorsunrise.com/contact" },
+    ],
   }),
 });
 
