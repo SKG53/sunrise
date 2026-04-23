@@ -1,8 +1,7 @@
 /* ==========================================================================
    SUNRISE — home.css
-   Session: SBev.BC.WebBuild.2 · Home route styles
-   All styles here are scoped with .s0X-* or .home-* / .hero-* prefixes.
-   Tokens, type scale classes, button classes, header/footer live in sunrise-shell.css.
+   Scoped with .s0X-* / .home-* / .hero-* prefixes. Tokens, type scale,
+   buttons, header/footer live in sunrise-shell.css.
    ========================================================================== */
 
 /* ── SECTION 01 · HERO ──────────────────────────────────────────────────── */

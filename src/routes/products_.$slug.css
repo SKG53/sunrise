@@ -1,8 +1,5 @@
 /* ==========================================================================
    SUNRISE — products.$slug.css
-   Path: src/routes/products.$slug.css
-   Session: SBev.BC.WebsiteDesign.ProductDetail.1
-   ==========================================================================
    Scoped .pd-* styles for the dynamic product detail route. All 24 SKUs
    render through this stylesheet. Per-SKU color is injected inline via
    style={{ background: product.color }}; this file handles everything else.

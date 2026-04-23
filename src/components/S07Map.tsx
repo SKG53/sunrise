@@ -1,15 +1,9 @@
-// =============================================================================
-// SUNRISE — S07Map.tsx
-// Path: src/components/S07Map.tsx
-//
 // Homepage "Find Near You" map teaser. Renders Google Maps with one brand-
 // styled marker per city where SUNRISE is stocked. No store-level data is
-// exposed here; users click through to /find for that. Interaction is fully
-// locked (no drag, no zoom, no UI controls) — this is a visual hook only.
+// exposed — users click through to /find for that. Interaction is fully
+// locked (no drag, no zoom, no UI controls); this is a visual hook only.
 //
-// Data source: src/data/retailers.ts → CITY_PINS (derived, one entry per
-// unique city, coordinates averaged from the retailers in that city).
-// =============================================================================
+// Data source: src/data/retailers.ts → CITY_PINS.
 
 import { useEffect, useRef } from "react";
 import { loadGoogleMaps, MAP_STYLE } from "../lib/googleMaps";

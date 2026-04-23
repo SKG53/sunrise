@@ -1,16 +1,3 @@
-// =============================================================================
-// SUNRISE — home.tsx (route: /)
-// Session: SBev.BC.WebBuild.2 · Home route
-//
-// PATTERN NOTES:
-//   • Imports the existing SiteHeader / SiteFooter from shell.
-//   • Canonical render functions (renderWordmark, render[N]mgLockup) produce
-//     pixel-accurate HTML strings. We mount them via ref.current.innerHTML
-//     so the exact brand mark output is preserved byte-for-byte.
-//   • All styling scoped via .s0X-* / .home-* / .hero-* classes in home.css.
-//   • Placeholder image boxes are empty <div>s — intended as image-slot targets.
-// =============================================================================
-
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import { SiteHeader } from "../components/SiteHeader";
@@ -44,12 +31,9 @@ export const Route = createFileRoute("/")({
 });
 
 // ── FAQ DATA ─────────────────────────────────────────────────────────────
-// Home-level FAQs. Broader than Product Detail's SKU-moment FAQs — these
-// are cold-traffic, first-time-visitor questions about the brand, category,
-// legality, effect, risk, and purchase path. If editing, also review the
-// /products/$slug FAQs to make sure the two don't start to overlap. The
-// two sets are intentionally disjoint so visitors who see both read them
-// as complementary, not duplicative.
+// Cold-traffic first-time-visitor questions (brand, category, legality,
+// effect, risk, purchase). Intentionally disjoint from the SKU-specific
+// FAQs on product detail pages — the two sets read as complementary.
 const FAQS = [
   {
     q: "What is SUNRISE?",
@@ -78,11 +62,7 @@ const FAQS = [
 ];
 
 // ── LIFESTYLE REEL ────────────────────────────────────────────────────────
-// Placeholder image paths for the closing scroll reel. Swap the src values
-// with real asset paths once the images are uploaded — the alt strings too.
-// The section renders two copies of this array back-to-back to create a
-// seamless marquee loop; add or remove entries here and the duplication
-// handles itself.
+// Rendered twice back-to-back to produce a seamless marquee loop.
 const IMAGES = [
   { src: "/reel-1.jpg", alt: "SUNRISE lifestyle moment 1" },
   { src: "/reel-2.jpg", alt: "SUNRISE lifestyle moment 2" },
@@ -178,9 +158,6 @@ function HomePage() {
         </section>
 
         {/* ── 03 · PRODUCT INTRO ────────────────────────────────────────── */}
-        {/* New section — replaces the Origin block. Centered typographic */}
-        {/* statement followed by a horizontal row of fruit illustrations. */}
-        {/* Fruit slots are styled placeholders awaiting real PNG assets.  */}
         <section className="s03-product-intro">
           <div className="container">
             <h2 className="s03-pi-headline">
@@ -224,8 +201,6 @@ function HomePage() {
         </section>
 
         {/* ── 04 · FOUR TIERS ───────────────────────────────────────────── */}
-        {/* Relocated from the previous S06 slot. Markup unchanged except   */}
-        {/* for CSS-driven edits (italic removed, pill alignment fixed).   */}
         <section className="s06-tiers">
           <div className="container">
             <h2 className="s06-headline">
@@ -285,10 +260,6 @@ function HomePage() {
         </section>
 
         {/* ── 05 · WHAT'S INSIDE ────────────────────────────────────────── */}
-        {/* Rebuilt layout: centered headline, can-in-middle with 4        */}
-        {/* ingredients flanking each side. Copy pulled from live site     */}
-        {/* (www.savorsunrise.com) exactly. Class kept as .s04-whats-inside */}
-        {/* for CSS continuity; inner structure fully replaced.            */}
         <section id="whats-inside" className="s04-whats-inside">
           <div className="container">
             <h2 className="s04-headline">What's Inside?</h2>
@@ -361,7 +332,6 @@ function HomePage() {
         </section>
 
         {/* ── 06 · STORY TEASER ─────────────────────────────────────────── */}
-        {/* Content unchanged from prior S07 placement.                    */}
         <section className="s07-story">
           <div className="container">
             <div className="s07-layout">
@@ -384,9 +354,6 @@ function HomePage() {
         </section>
 
         {/* ── 07 · NEAR YOU TEASER ──────────────────────────────────────── */}
-        {/* Content unchanged. Real Google Maps integration pending a      */}
-        {/* locations list from founder; current map background is a      */}
-        {/* styled placeholder.                                            */}
         <section className="s08-near-you">
           <div className="s08-inner">
             <S07Map />
@@ -406,10 +373,9 @@ function HomePage() {
         </section>
 
         {/* ── 08 · REVIEWS ──────────────────────────────────────────────── */}
-        {/* Rebuilt as a continuous right-to-left marquee. Track is        */}
-        {/* duplicated (6 cards × 2) to produce a seamless loop via        */}
-        {/* translateX(0) → translateX(-50%). Hover pauses the animation. */}
-        {/* Heading added. All quote content is placeholder.               */}
+        {/* Continuous right-to-left marquee. Track is duplicated (6 cards */}
+        {/* × 2) to produce a seamless loop via translateX(0 → -50%).     */}
+        {/* Hover pauses. All quote content is placeholder.                */}
         <section className="s09-reviews">
           <h2 className="s09-heading">What people say.</h2>
           <div className="s09-marquee" aria-label="Customer reviews carousel">

@@ -1,21 +1,6 @@
-// =============================================================================
-// SUNRISE — products.$slug.tsx
-// Path: src/routes/products.$slug.tsx
-// Session: SBev.BC.WebsiteDesign.ProductDetail.1 · Product detail route
-//
 // Dynamic route rendering a product detail page for each of the 24 SKUs.
 // URL pattern: /products/{tier}mg-{flavor-slug}[-{cannabinoid}]
-// Example: /products/10mg-blackberry-lemonade-cbn
-//
-// Section order (per mid-fi v4):
-// 01 Breadcrumb  02 Product Hero  03 Stat Strip  04 Ingredients
-// 05 Others in Tier  06 Cannabinoid Story (variant only)
-// 07 FAQ  08 PtP band  09 Footer
-//
-// Data source: PAG v5 flavors/descriptors/blurbs + Color Codes xlsx per-SKU
-// hex. 60mg cannabinoid variant positions confirmed by mockup filenames;
-// other tiers follow the same 4/5/6 = CBG/CBN/THCV convention.
-// =============================================================================
+// Example:     /products/10mg-blackberry-lemonade-cbn
 
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";

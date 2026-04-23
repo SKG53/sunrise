@@ -1,25 +1,3 @@
-// =============================================================================
-// SUNRISE — products.tsx
-// Path: src/routes/products.tsx
-// Session: SBev.BC.WebsiteDesign.AllPages.2 · Products restructure
-//
-// Change summary vs previous version:
-// · Section reorder: Hero → Find Your Effect (promoted from below) → Tier
-//   Switcher + Panel → What's Inside (ported from About) → Transparency →
-//   Find Near You → FAQ (new, last section before footer)
-// · Ticker section removed entirely
-// · Find Your Effect: 3 cards → 4 cards (CORE added as the classic THC-only
-//   baseline, paired-descriptor "Pure · Classic")
-// · Tier switcher buttons: plain "MG" text → real potency lockups per tier
-// · Panel head: lockup-right / text-left flipped to lockup-left / text-right
-// · Lockup sizes unified at base × 2.2 across all four tiers
-//   (previous 5mg ×2.6 bump overcorrected for single-digit visual weight)
-// · Descriptor tweaks: 30mg "Bold" → "Rich"; 60mg "Potent · Rich" → "Bold · Potent"
-// · 60mg short name: "Elevated" → "Elevated Experience"
-// · Hero subhead expanded to acknowledge three-effects axis
-// · New: FAQ accordion, 8 product-focused Qs
-// =============================================================================
-
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
@@ -145,9 +123,7 @@ const TIERS: Record<TierKey, TierData> = {
   },
 };
 
-// Unified lockup size across all four tiers. Previous version bumped 5mg to
-// 2.6 for single-digit visual weight parity; that overcorrected — 5mg read
-// larger than the other tiers. 2.2 is the target for all four.
+// Unified lockup size across all four tiers.
 const LOCKUP_SIZE = 2.2;
 
 // ── EFFECTS DATA (4-card Find Your Effect grid) ──────────────────────────
@@ -190,9 +166,9 @@ const EFFECTS: EffectCardData[] = [
   },
 ];
 
-// ── FAQ DATA (Products-specific, 8 Qs) ───────────────────────────────────
-// Home FAQ will use a broader sibling list in a follow-up patch; format
-// (accordion) and layout are shared.
+// ── FAQ DATA ─────────────────────────────────────────────────────────────
+// SKU-moment questions (dose, onset, variants, ingredients). Intentionally
+// disjoint from the broader first-time-visitor FAQs on the home page.
 const FAQS: Array<{ q: string; a: string }> = [
   {
     q: "How do I pick the right potency?",
@@ -310,9 +286,6 @@ function ProductsPage() {
 
       <main>
         {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
-        {/* Giant color-flood page title. Tier-5 amber with near-black text */}
-        {/* (amber + cream fails contrast). Establishes page identity as    */}
-        {/* the first screenful; old hero content shifts to S02.            */}
         <section className="p-pagehero">
           <h1 className="p-pagehero-title" aria-label="Products">
             {"Products".split("").map((ch, i) => (
@@ -404,7 +377,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 04 · WHAT'S INSIDE (ported from About S05) ────────────────── */}
+        {/* ── 04 · WHAT'S INSIDE ────────────────────────────────────────── */}
         <section className="p-inside">
           <div className="container">
             <div className="p-inside-head">
@@ -454,7 +427,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 05 · TRANSPARENCY (unchanged) ─────────────────────────────── */}
+        {/* ── 05 · TRANSPARENCY ─────────────────────────────────────────── */}
         <section className="p-transparency">
           <div className="container">
             <div className="p-transparency-inner">
@@ -481,7 +454,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 06 · CTA BAND (matches About S05 pattern) ─────────────────── */}
+        {/* ── 06 · CTA BAND ─────────────────────────────────────────────── */}
         <section className="p-ptp">
           <div className="container">
             <div className="p-ptp-inner">
@@ -501,7 +474,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 07 · FAQ (new, last section before footer) ──────────────── */}
+        {/* ── 07 · FAQ ──────────────────────────────────────────────────── */}
         <section className="p-faq">
           <div className="container">
             <h2 className="p-faq-headline">

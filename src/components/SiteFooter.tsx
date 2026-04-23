@@ -1,9 +1,5 @@
-// =============================================================================
-// SUNRISE — SiteFooter.tsx
-// Path: src/components/SiteFooter.tsx
-// Dark 5-column footer: Logo+Signup | Shop | Company | Support | Follow
-// Disclaimer row + legal bar. Verbatim copy locked from brand docs.
-// =============================================================================
+// Dark 5-column footer: Logo+Signup | Shop | Company | Support | Follow.
+// Disclaimer row + legal bar. Copy locked from brand docs.
 
 import { useEffect, useRef } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";

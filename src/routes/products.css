@@ -1,18 +1,7 @@
 /* ==========================================================================
    SUNRISE — products.css
-   Session: SBev.BC.WebsiteDesign.AllPages.2 · Products restructure
-   Scoped with .p-* prefix. Relies on tokens + btn + container from shell.
-
-   Changes vs previous version:
-   · .p-cannabinoids* / .p-cannabinoid* classes retired
-   · New .p-effects* / .p-effect* (4-card grid for Find Your Effect)
-   · New .p-switch-lockup (slot for rendered potency lockup per button)
-   · .p-switch-mg retired (plain "MG" text replaced by lockup slot)
-   · .p-switch refactored to flex column (lockup + name)
-   · .p-panel-head grid-template-columns flipped to auto 1.2fr (lockup left)
-   · .p-ticker* and @keyframes p-ticker-scroll removed entirely
-   · New .p-inside* block (ported from about.css with class rename)
-   · New .p-faq* block (accordion pattern, shared with future Home FAQ)
+   Scoped with .p-* prefix. Relies on tokens, buttons, and container from
+   sunrise-shell.css.
    ========================================================================== */
 
 /* ── PAGE HERO ──────────────────────────────────────────────────────────── */

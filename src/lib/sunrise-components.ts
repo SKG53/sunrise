@@ -1,16 +1,10 @@
-// =============================================================================
-// SUNRISE — Canonical Component Render Functions
-// Path: src/lib/sunrise-components.ts
-//
-// Pixel-accurate brand mark output. These functions produce HTML strings that
-// match the locked .js canonical specifications exactly. Mount via
-// dangerouslySetInnerHTML or ref.current.innerHTML assignment.
+// Canonical brand mark render functions. Produce HTML strings matching the
+// locked .js specs exactly. Mount via ref.current.innerHTML assignment.
 //
 // Sources:
 //   - SUNRISE_Logo_with_TM.js
 //   - [5|10|30|60]MG_THC_Potency_Lockup.js
 //   - 12_OUNCE_CAN_Lockup.js
-// =============================================================================
 
 export type WordmarkMode = "gradient" | "cream" | "dark";
 

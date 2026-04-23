@@ -1,9 +1,4 @@
-// =============================================================================
-// SUNRISE — SiteHeader.tsx
-// Path: src/components/SiteHeader.tsx
-// Sticky cream header. Wordmark left, nav center, COAs + Shop CTAs right.
-// activeNav prop highlights current route in gold.
-// =============================================================================
+// Sticky cream header. activeNav prop highlights the current route in gold.
 
 import { useEffect, useRef } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";

@@ -1,14 +1,3 @@
-// =============================================================================
-// SUNRISE — about.tsx
-// Path: src/routes/about.tsx
-// Session: SBev.BC.WebsiteDesign.About.1 · About route — full build
-//
-// OVERWRITES the scaffolded placeholder.
-// Brand voice per Voice Guide v5. Section order: Hero, Origin (with
-// emphasizers + interruptors), American Heartland (green flood), How We
-// Build, Path to Purchase (red flood).
-// =============================================================================
-
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";

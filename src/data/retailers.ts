@@ -1,12 +1,8 @@
-// =============================================================================
-// SUNRISE — retailers.ts
-// Path: src/data/retailers.ts
-//
 // Single source of truth for retailer locations. Consumed by:
-//   - src/routes/find.tsx            (full filterable list + interactive map)
-//   - src/components/S07Map.tsx     (home-page US overview map, city-level)
+//   - src/routes/find.tsx         (full filterable list + interactive map)
+//   - src/components/S07Map.tsx   (home-page US overview map, city-level)
 //
-// Schema note — fields required even when not surfaced in UI:
+// Schema fields are required even when not surfaced in UI:
 //   name, address      — displayed to users
 //   city, state, zip   — search/filter logic on Find
 //   lat, lng           — map plotting on both pages
@@ -15,10 +11,6 @@
 // list when it arrives. Swap is a one-file operation — no consuming code
 // changes required. Find route ships with <meta name="robots" content="noindex">
 // during this placeholder phase; remove that meta entry when real data lands.
-//
-// FUTURE SCHEMA — when LocalBusiness JSON-LD is added to Find, these same
-// fields (plus phone, hours) are the input. Structure retained accordingly.
-// =============================================================================
 
 export type Retailer = {
   name: string;
