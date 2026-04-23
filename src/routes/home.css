@@ -44,7 +44,7 @@
 .hero-wordmark-slot { line-height: 1; display: block; }
 .hero-subtitle {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.28);
+  font-size: calc(var(--base) * 0.56);
   font-weight: 500;
   letter-spacing: 0.42em;
   text-transform: uppercase;
