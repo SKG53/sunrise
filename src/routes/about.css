@@ -27,7 +27,7 @@
 /* pattern on Products / Find / Contact with its own assigned tier color. */
 .a-pagehero {
   background: var(--tier-10);
-  min-height: 40vh;
+  min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;

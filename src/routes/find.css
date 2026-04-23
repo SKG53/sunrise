@@ -28,7 +28,7 @@
 /* hero pattern on Products / About / Contact with its own tier color.    */
 .f-pagehero {
   background: var(--tier-30);
-  min-height: 40vh;
+  min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;

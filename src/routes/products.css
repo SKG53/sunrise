@@ -17,12 +17,13 @@
 
 /* ── PAGE HERO ──────────────────────────────────────────────────────────── */
 /* Giant color-flood page title — first screenful of the page. Tier-5     */
-/* amber with near-black text (amber + cream fails contrast). Matches the */
-/* page-hero pattern on About / Find / Contact — each subpage gets its    */
-/* assigned tier color at this slot.                                       */
+/* amber background. Cream text unifies the four subpage heroes visually  */
+/* (same treatment on every page, only the bg color changes); amber +     */
+/* cream runs close to WCAG large-text contrast — monitor in production   */
+/* and add a subtle text-shadow if it reads too soft.                     */
 .p-pagehero {
   background: var(--tier-5);
-  min-height: 40vh;
+  min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,38 +37,8 @@
   line-height: 0.9;
   text-transform: uppercase;
   text-align: center;
-  color: var(--near-black);
+  color: var(--cream);
   margin: 0;
-}
-
-/* ── HERO ───────────────────────────────────────────────────────────────── */
-.p-hero {
-  background: var(--cream);
-  padding: calc(var(--base) * 2.4) 0 calc(var(--base) * 2.0);
-  text-align: center;
-}
-.p-hero .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: calc(var(--base) * 0.5);
-}
-.p-hero-headline {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.6);
-  font-weight: 900;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  color: var(--near-black);
-  line-height: 0.95;
-}
-.p-hero-body {
-  font-size: calc(var(--base) * 0.42);
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--text-body);
-  max-width: 52ch;
-  margin: 0 auto;
 }
 
 /* ── FIND YOUR EFFECT (4-card: Core + CBG/CBN/THCV) ─────────────────────── */
@@ -638,7 +609,6 @@
 @media (max-width: 520px) {
   .p-flavor-grid { grid-template-columns: 1fr; }
   .p-effects-grid { grid-template-columns: 1fr; }
-  .p-hero-headline { font-size: calc(var(--base) * 1.2); }
   .p-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .p-ptp-ctas { flex-direction: column; width: 100%; }
   .p-ptp-ctas .btn { width: 100%; text-align: center; }
