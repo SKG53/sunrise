@@ -339,9 +339,15 @@
   flex-wrap: wrap;
 }
 
-/* ── 05 · RETAILER GATEWAY (dark band) ──────────────────────────────────── */
+/* ── 05 · RETAILER GATEWAY (forest-green band) ─────────────────────────── */
 .f-gateway {
-  background: var(--near-black);
+  /* Using tier-30 (#0A6034) — same forest green as the retailer map pins
+     above. Deliberately NOT var(--near-black): that tone is reserved for
+     the footer, and two stacked near-black bands flatten into one visual
+     mass. Green gives separation from the footer and carries the
+     agricultural/retail/grow-the-shelf semantics that fit the wholesale
+     pitch copy. */
+  background: var(--tier-30);
   color: var(--cream);
   padding: calc(var(--base) * 1.6) 0;
 }

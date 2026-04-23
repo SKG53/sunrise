@@ -405,20 +405,17 @@ function FindPage() {
           <div className="container">
             <div className="f-fallback-inner">
               <h2 className="f-fallback-headline">
-                We're rolling out. <span className="accent">Region</span> by region.
+                No store nearby? <span className="accent">No problem.</span>
               </h2>
               <p className="f-fallback-body">
-                Tell us where you'd like to see SUNRISE on shelves, or order
-                online while we catch up to your zip code.
+                Order SUNRISE direct to your door, or get to know us before
+                you buy.
               </p>
               <div className="f-fallback-ctas">
-                <a
-                  href="/contact?topic=retailer-request"
-                  className="btn btn-secondary"
-                >
-                  Request a Retailer →
+                <a href="/about" className="btn btn-secondary">
+                  Our Story →
                 </a>
-                <a href="#" className="btn btn-primary">
+                <a href="/products" className="btn btn-primary">
                   Shop Online →
                 </a>
               </div>
