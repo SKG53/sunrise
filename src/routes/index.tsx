@@ -110,10 +110,23 @@ function HomePage() {
       if (target === 0) return;
       const lines = stack.querySelectorAll<HTMLDivElement>(".s02-manifesto-line");
       lines.forEach((line) => {
-        // measure natural width at a reference size, then scale so natural width === stack width
+        // Pass 1: measure natural width at a reference size, scale so rendered
+        // width ≈ stack width.
         line.style.fontSize = "100px";
         const natural = line.getBoundingClientRect().width;
-        if (natural > 0) line.style.fontSize = (100 * target) / natural + "px";
+        if (natural === 0) return;
+        const firstPass = (100 * target) / natural;
+        line.style.fontSize = firstPass + "px";
+        // Pass 2: remeasure at the computed size. Letter glyphs scale linearly
+        // with fontSize, but space-character widths include word-spacing
+        // metrics that round non-linearly — so lines with more spaces drift
+        // slightly from target width after pass 1. A single correction pass
+        // drives the rendered width to within sub-pixel of target regardless
+        // of how many spaces the line contains.
+        const actual = line.getBoundingClientRect().width;
+        if (actual > 0 && Math.abs(actual - target) > 0.5) {
+          line.style.fontSize = (firstPass * target) / actual + "px";
+        }
       });
     };
     const paint = () => {
