@@ -427,7 +427,9 @@
 }
 .s07-cta-row { margin-top: calc(var(--base) * 0.2); }
 
-/* ── SECTION 08 · NEAR YOU TEASER ───────────────────────────────────────── */
+/* ── SECTION 07 · NEAR YOU TEASER ───────────────────────────────────────── */
+/* Leaflet map fills .s08-map-bg via the <S07Map /> component. The cream    */
+/* .s08-card floats over the map via position: absolute + z-index.          */
 .s08-near-you {
   background: var(--tier-30);
   padding: 0;
@@ -436,12 +438,17 @@
 }
 .s08-inner {
   position: relative;
-  height: calc(var(--base) * 9);
+  height: calc(var(--base) * 11);
 }
 .s08-map-bg {
   position: absolute;
   inset: 0;
+  /* Leaflet tiles fill this element; no explicit background so the map    */
+  /* shows through without a conflicting color while tiles load.           */
+  background: #F5F3ED;
 }
+/* Leaflet marker pane sits at z-index 600 by default; the card must be   */
+/* higher to stay clickable and visually on top.                          */
 .s08-card {
   position: absolute;
   bottom: calc(var(--base) * 1.0);
@@ -454,7 +461,25 @@
   flex-direction: column;
   gap: calc(var(--base) * 0.3);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
+
+/* S07 map pins — brand-styled divIcon markers */
+.s07-pin {
+  /* divIcon wrapper — Leaflet adds its own position/transform here.      */
+  /* Keep box invisible; the inner element carries all visual styling.    */
+  background: none !important;
+  border: none !important;
+}
+.s07-pin-inner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--tier-30);
+  border: 2px solid var(--cream);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
 .s08-card-eyebrow {
   font-size: calc(var(--base) * 0.22);
   font-weight: 800;

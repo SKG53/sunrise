@@ -15,6 +15,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { S07Map } from "../components/S07Map";
 import {
   renderWordmark,
   render5mgLockup,
@@ -321,7 +322,7 @@ function HomePage() {
         {/* styled placeholder.                                            */}
         <section className="s08-near-you">
           <div className="s08-inner">
-            <div className="s08-map-bg" />
+            <S07Map />
             <div className="s08-card">
               <div className="s08-card-eyebrow">Near You</div>
               <h2 className="s08-card-headline">
