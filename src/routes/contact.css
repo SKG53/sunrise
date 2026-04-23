@@ -335,6 +335,89 @@
 }
 .c-direct-note strong { font-weight: 700; color: var(--near-black); }
 
+/* ── 05 · FOLLOW ALONG (tier-10 flood) ──────────────────────────────────── */
+/* Matches the site-wide red-flood closer pattern — same structural family
+   as .a-ptp / .f-fallback / .s08-near-you. Three-tile horizontal layout
+   for parallel social channels; on a color flood the tiles drop any card
+   background and rely on a cream top-rule + cream text hierarchy for
+   readability. Icons render in cream via currentColor. */
+.c-social {
+  background: var(--tier-10);
+  color: var(--cream);
+  padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
+}
+.c-social-head {
+  margin-bottom: calc(var(--base) * 1.0);
+}
+.c-social-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.4);
+  letter-spacing: 0.01em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin: 0;
+}
+.c-social-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(var(--base) * 0.6);
+}
+.c-social-card {
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--base) * 0.7) 0 0;
+  border-top: 2px solid var(--cream);
+  color: var(--cream);
+  text-decoration: none;
+  transition: transform 180ms ease-out;
+}
+.c-social-card:hover {
+  transform: translateY(-2px);
+}
+.c-social-card:hover .c-social-handle {
+  border-bottom-color: #F2D480;
+  color: #F2D480;
+}
+.c-social-icon {
+  width: calc(var(--base) * 0.9);
+  height: calc(var(--base) * 0.9);
+  color: var(--cream);
+  margin-bottom: calc(var(--base) * 0.4);
+  display: block;
+}
+.c-social-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #F2D480; /* Heartland cream-gold — reused for on-color accent */
+  margin-bottom: calc(var(--base) * 0.24);
+}
+.c-social-handle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.44);
+  font-weight: 800;
+  letter-spacing: 0.005em;
+  color: var(--cream);
+  line-height: 1.25;
+  margin-bottom: calc(var(--base) * 0.3);
+  border-bottom: 1.5px solid var(--cream);
+  width: max-content;
+  max-width: 100%;
+  padding-bottom: 2px;
+  transition: color 160ms, border-color 160ms;
+}
+.c-social-note {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.32);
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(254, 251, 224, 0.85);
+}
+
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .c-form-grid { grid-template-columns: 1fr; }
@@ -343,14 +426,23 @@
   .c-direct-grid .c-direct-card:last-child {
     grid-column: 1 / -1;
   }
+  .c-social-grid { grid-template-columns: 1fr 1fr; }
+  .c-social-grid .c-social-card:last-child {
+    grid-column: 1 / -1;
+  }
 }
 @media (max-width: 768px) {
   .c-hero-headline { font-size: calc(var(--base) * 1.35); }
   .c-form-headline { font-size: calc(var(--base) * 1.0); }
   .c-direct-headline { font-size: calc(var(--base) * 1.0); }
+  .c-social-headline { font-size: calc(var(--base) * 1.0); }
   .c-form-row-split { grid-template-columns: 1fr; }
   .c-direct-grid { grid-template-columns: 1fr; }
   .c-direct-grid .c-direct-card:last-child {
+    grid-column: auto;
+  }
+  .c-social-grid { grid-template-columns: 1fr; }
+  .c-social-grid .c-social-card:last-child {
     grid-column: auto;
   }
   .c-form-card {
