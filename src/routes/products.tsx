@@ -1,14 +1,28 @@
 // =============================================================================
 // SUNRISE — products.tsx
 // Path: src/routes/products.tsx
-// Session: SBev.BC.WebsiteDesign.Products.1 · Products route — full build
+// Session: SBev.BC.WebsiteDesign.AllPages.2 · Products restructure
 //
-// OVERWRITES the scaffolded placeholder.
-// Data is canonical from SUNRISE Product Architecture Guide v5 + Color Codes xlsx.
+// Change summary vs previous version:
+// · Section reorder: Hero → Find Your Effect (promoted from below) → Tier
+//   Switcher + Panel → What's Inside (ported from About) → Transparency →
+//   Find Near You → FAQ (new, last section before footer)
+// · Ticker section removed entirely
+// · Find Your Effect: 3 cards → 4 cards (CORE added as the classic THC-only
+//   baseline, paired-descriptor "Pure · Classic")
+// · Tier switcher buttons: plain "MG" text → real potency lockups per tier
+// · Panel head: lockup-right / text-left flipped to lockup-left / text-right
+// · Lockup sizes unified at base × 2.2 across all four tiers
+//   (previous 5mg ×2.6 bump overcorrected for single-digit visual weight)
+// · Descriptor tweaks: 30mg "Bold" → "Rich"; 60mg "Potent · Rich" → "Bold · Potent"
+// · 60mg short name: "Elevated" → "Elevated Experience"
+// · Hero subhead expanded to acknowledge three-effects axis
+// · New: FAQ accordion, 8 product-focused Qs
 // =============================================================================
 
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import {
@@ -16,6 +30,7 @@ import {
   render10mgLockup,
   render30mgLockup,
   render60mgLockup,
+  render12ozStatBlock,
   getBasePx,
 } from "../lib/sunrise-components";
 import "./products.css";
@@ -39,9 +54,6 @@ type TierKey = "5" | "10" | "30" | "60";
 type Cannabinoid = "CBG" | "CBN" | "THCV";
 
 // ── SLUG HELPER ──────────────────────────────────────────────────────────
-// Maps tier + flavor to the canonical slug registered in products.$slug.tsx.
-// Pattern: {tier}mg-{flavor-slug}[-{cannabinoid-lowercase}]
-// Examples: "5mg-blackberry", "10mg-blackberry-lemonade-cbn".
 function toSlug(tier: TierKey, flavor: { name: string; cannabinoid?: Cannabinoid }): string {
   const flavorPart = flavor.name.toLowerCase().replace(/\s+/g, "-");
   const variantSuffix = flavor.cannabinoid ? `-${flavor.cannabinoid.toLowerCase()}` : "";
@@ -102,7 +114,7 @@ const TIERS: Record<TierKey, TierData> = {
     color: "#0A6034",
     name: "A Deeper Dive",
     short: "Deeper Dive",
-    descriptors: "Bold · Vibrant · Spirited",
+    descriptors: "Rich · Vibrant · Spirited",
     copy: "Extended sessions, creative inspirations, or evening unwinds. For when the mood calls for something richer.",
     flavors: [
       { name: "Peach Mango",           descriptor: "Lush + Tropical",   flavorColor: "#E89B5B" },
@@ -116,8 +128,8 @@ const TIERS: Record<TierKey, TierData> = {
   "60": {
     color: "#2E1E3D",
     name: "Elevated Experience",
-    short: "Elevated",
-    descriptors: "Potent · Rich · Immersive",
+    short: "Elevated Experience",
+    descriptors: "Bold · Potent · Immersive",
     copy: "Late nights, deep decompressions, or weekend relaxation. The full expression — patience and respect required.",
     flavors: [
       { name: "Passionfruit Mango",  descriptor: "Bright + Breezy", flavorColor: "#60203A" },
@@ -130,20 +142,108 @@ const TIERS: Record<TierKey, TierData> = {
   },
 };
 
-// 5mg lockup bumped 18% to correct for single-digit visual weight parity.
-const LOCKUP_SIZES: Record<TierKey, number> = {
-  "5": 2.6,
-  "10": 2.2,
-  "30": 2.2,
-  "60": 2.2,
+// Unified lockup size across all four tiers. Previous version bumped 5mg to
+// 2.6 for single-digit visual weight parity; that overcorrected — 5mg read
+// larger than the other tiers. 2.2 is the target for all four.
+const LOCKUP_SIZE = 2.2;
+
+// ── EFFECTS DATA (4-card Find Your Effect grid) ──────────────────────────
+// Positions: 1 = CORE (classic THC baseline), 2-4 = +CBG / +CBN / +THCV.
+type EffectCardData = {
+  bg: string;
+  eyebrow: string;
+  symbol: string;
+  body: string;
+  foot: string;
 };
+const EFFECTS: EffectCardData[] = [
+  {
+    bg: "#1A1A1A",
+    eyebrow: "Pure · Classic",
+    symbol: "Core",
+    body: "Just THC, no minor cannabinoids added. Clean, balanced, uncomplicated — the SUNRISE baseline.",
+    foot: "Three flavors per tier",
+  },
+  {
+    bg: "#2E1E3D",
+    eyebrow: "Focus · Uplift",
+    symbol: "+CBG",
+    body: "Cannabigerol. The sharpener. Lifts without pulling focus.",
+    foot: "One flavor per tier",
+  },
+  {
+    bg: "#36121D",
+    eyebrow: "Relax · Unwind",
+    symbol: "+CBN",
+    body: "Cannabinol. The settler. Evening weight, softer edges.",
+    foot: "One flavor per tier",
+  },
+  {
+    bg: "#DD756B",
+    eyebrow: "Elevate · Engage",
+    symbol: "+THCV",
+    body: "Tetrahydrocannabivarin. The lift. Cleaner, clearer, forward-leaning.",
+    foot: "One flavor per tier",
+  },
+];
+
+// ── FAQ DATA (Products-specific, 8 Qs) ───────────────────────────────────
+// Home FAQ will use a broader sibling list in a follow-up patch; format
+// (accordion) and layout are shared.
+const FAQS: Array<{ q: string; a: string }> = [
+  {
+    q: "How do I pick the right potency?",
+    a: "If you've never had a hemp-infused seltzer — or never above 5mg — start with 5MG. One serving is a light, social lift. If you're already comfortable with THC beverages, 10MG is the everyday middle. 30MG and 60MG are for longer sessions and deeper unwinds. Start low, go slow.",
+  },
+  {
+    q: "What's the difference between the base flavors and the ones with +CBG, +CBN, or +THCV?",
+    a: "Every tier has six flavors — three base and three enhanced with a minor cannabinoid. CBG leans toward focus and uplift. CBN leans toward relax and unwind. THCV leans toward elevate and engage. The THC dose is identical between the two; the minor cannabinoid shifts the character of the experience.",
+  },
+  {
+    q: "How many servings are in a can?",
+    a: "Two. Every SUNRISE can is 12 fl oz and contains two servings. One serving of a 10MG can is 5mg THC. One serving of a 60MG can is 30mg THC. Plan your pour accordingly.",
+  },
+  {
+    q: "Can I mix tiers in one session?",
+    a: "We wouldn't recommend it. Stacking a 10MG and a 30MG is around 40mg of THC — a big swing if you paced for 10. Pick a tier and stay with it.",
+  },
+  {
+    q: "What's actually inside a SUNRISE?",
+    a: "Purified water, pure cane sugar, natural flavoring, emulsified hemp extract, B12, citric acid, and sodium benzoate. That is the ingredient list. Lemonade and Limeade flavors also contain fresh lemon or lime juice.",
+  },
+  {
+    q: "Is SUNRISE gluten-free, vegan, or allergen-safe?",
+    a: "Gluten-free and vegan. Free of the eight major allergens. Manufactured in a facility that handles lemon and lime juice for Lemonade and Limeade varieties.",
+  },
+  {
+    q: "Can I drink SUNRISE on an empty stomach?",
+    a: "Yes, but expect a faster onset. Emulsified THC absorbs more quickly without food slowing it down. For your first time with a new tier, eat something first and pace yourself.",
+  },
+  {
+    q: "How should I store my cans?",
+    a: "Cool, upright, out of direct sunlight. Heat and sunlight degrade cannabinoids over time. Best-by date printed on every can.",
+  },
+];
 
 // ── COMPONENT ────────────────────────────────────────────────────────────
 function ProductsPage() {
   const [activeTier, setActiveTier] = useState<TierKey>("10");
-  const lockupRef = useRef<HTMLDivElement>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  // Read ?tier= URL param on mount so Home S06 tier cards (and any other
+  const panelLockupRef = useRef<HTMLDivElement>(null);
+  const stat12Ref = useRef<HTMLDivElement>(null);
+  const switch5Ref = useRef<HTMLDivElement>(null);
+  const switch10Ref = useRef<HTMLDivElement>(null);
+  const switch30Ref = useRef<HTMLDivElement>(null);
+  const switch60Ref = useRef<HTMLDivElement>(null);
+  const switchRefs: Record<TierKey, RefObject<HTMLDivElement | null>> = {
+    "5": switch5Ref,
+    "10": switch10Ref,
+    "30": switch30Ref,
+    "60": switch60Ref,
+  };
+
+  // Read ?tier= URL param on mount so Home tier cards (and any other
   // /products?tier=X deep-links) land on the correct panel. Invalid values
   // are silently ignored and the default 10mg panel remains active.
   useEffect(() => {
@@ -155,18 +255,43 @@ function ProductsPage() {
     }
   }, []);
 
+  // Paint brand-mark slots: panel lockup, four switcher-button lockups,
+  // and the 12oz stat block in What's Inside. Runs on mount, on font load,
+  // on resize, and when activeTier changes.
   useEffect(() => {
     const paint = () => {
-      if (!lockupRef.current) return;
       const base = getBasePx();
-      const size = base * LOCKUP_SIZES[activeTier];
-      const color = "#FEFBE0";
-      let html = "";
-      if (activeTier === "5")  html = render5mgLockup(size, color);
-      if (activeTier === "10") html = render10mgLockup(size, color);
-      if (activeTier === "30") html = render30mgLockup(size, color);
-      if (activeTier === "60") html = render60mgLockup(size, color);
-      lockupRef.current.innerHTML = html;
+
+      // ── Panel lockup — cream on tier bg ──
+      if (panelLockupRef.current) {
+        const size = base * LOCKUP_SIZE;
+        let html = "";
+        if (activeTier === "5")  html = render5mgLockup(size, "#FEFBE0");
+        if (activeTier === "10") html = render10mgLockup(size, "#FEFBE0");
+        if (activeTier === "30") html = render30mgLockup(size, "#FEFBE0");
+        if (activeTier === "60") html = render60mgLockup(size, "#FEFBE0");
+        panelLockupRef.current.innerHTML = html;
+      }
+
+      // ── Switcher button lockups — cream on active tier bg, near-black on inactive cream bg ──
+      (["5", "10", "30", "60"] as TierKey[]).forEach((tier) => {
+        const ref = switchRefs[tier].current;
+        if (!ref) return;
+        const isActive = tier === activeTier;
+        const color = isActive ? "#FEFBE0" : "#1A1A1A";
+        const size = base * 0.9;
+        let html = "";
+        if (tier === "5")  html = render5mgLockup(size, color);
+        if (tier === "10") html = render10mgLockup(size, color);
+        if (tier === "30") html = render30mgLockup(size, color);
+        if (tier === "60") html = render60mgLockup(size, color);
+        ref.innerHTML = html;
+      });
+
+      // ── 12oz stat block (same scale as About) ──
+      if (stat12Ref.current) {
+        stat12Ref.current.innerHTML = render12ozStatBlock(base * 0.95);
+      }
     };
     paint();
     if (document.fonts) document.fonts.ready.then(paint);
@@ -188,20 +313,42 @@ function ProductsPage() {
               Pick your<br />pace.
             </h1>
             <p className="p-hero-body">
-              Twenty-four flavors across four potency tiers. From a light lift
+              Twenty-four flavors. Four tiers. Three effects. From a light lift
               to a full experience — find the SUNRISE that fits.
             </p>
           </div>
         </section>
 
-        {/* ── 02 · TIER SWITCHER + PANEL ────────────────────────────────── */}
+        {/* ── 02 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
+        <section className="p-effects">
+          <div className="container">
+            <h2 className="p-effects-headline">
+              Find your <span className="accent">effect.</span>
+            </h2>
+            <p className="p-effects-subhead">
+              Every tier offers four paths — a classic THC core, or three enhanced with a minor cannabinoid for a more specific lift.
+            </p>
+            <div className="p-effects-grid">
+              {EFFECTS.map((e, i) => (
+                <div key={i} className="p-effect-card" style={{ background: e.bg }}>
+                  <div className="p-effect-eyebrow">{e.eyebrow}</div>
+                  <div className="p-effect-symbol">{e.symbol}</div>
+                  <div className="p-effect-body">{e.body}</div>
+                  <div className="p-effect-foot">{e.foot}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── 03 · TIER SWITCHER + PANEL ──────────────────────────────── */}
         <section className="p-switcher">
           <div className="container">
             <h2 className="p-switcher-headline">
               Find your <span className="accent">potency.</span>
             </h2>
             <p className="p-switcher-subhead">
-              Every tier carries six flavors — three base, three enhanced with a minor cannabinoid. Tap a tier to explore.
+              Six flavors per tier. Tap a tier to explore.
             </p>
 
             <div className="p-switcher-bar">
@@ -214,7 +361,7 @@ function ProductsPage() {
                   style={activeTier === k ? { background: TIERS[k].color } : undefined}
                   aria-pressed={activeTier === k}
                 >
-                  <div className="p-switch-mg">{k}MG</div>
+                  <div className="p-switch-lockup" ref={switchRefs[k]} />
                   <div className="p-switch-name">{TIERS[k].short}</div>
                 </button>
               ))}
@@ -222,12 +369,12 @@ function ProductsPage() {
 
             <div className="p-panel" style={{ background: tier.color }}>
               <div className="p-panel-head">
+                <div className="p-panel-lockup" ref={panelLockupRef} />
                 <div className="p-panel-head-text">
                   <div className="p-panel-eyebrow">{tier.descriptors}</div>
                   <h3 className="p-panel-tier-name">{tier.name}</h3>
                   <p className="p-panel-copy">{tier.copy}</p>
                 </div>
-                <div className="p-panel-lockup" ref={lockupRef} />
               </div>
 
               <div className="p-flavor-grid">
@@ -255,62 +402,57 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 03 · MINOR CANNABINOIDS ───────────────────────────────────── */}
-        <section className="p-cannabinoids">
+        {/* ── 04 · WHAT'S INSIDE (ported from About S05) ────────────────── */}
+        <section className="p-inside">
           <div className="container">
-            <h2 className="p-cannabinoids-headline">
-              Find your <span className="accent">effect.</span>
-            </h2>
-            <p className="p-cannabinoids-subhead">
-              Select flavors in every tier carry a minor cannabinoid — CBG, CBN, or THCV — for a nuanced lift beyond THC alone.
-            </p>
-            <div className="p-cannabinoid-grid">
-              <div className="p-cannabinoid-card" style={{ background: "#2E1E3D" }}>
-                <div className="p-cannabinoid-eyebrow">Focus · Uplift</div>
-                <div className="p-cannabinoid-symbol">+CBG</div>
-                <div className="p-cannabinoid-body">
-                  Cannabigerol. The sharpener. Lifts without pulling focus.
-                </div>
-                <div className="p-cannabinoid-foot">In select flavors · all tiers</div>
+            <div className="p-inside-head">
+              <h2 className="p-inside-headline">
+                Real ingredients.<br />
+                Real <span className="accent">effects.</span>
+              </h2>
+              <p className="p-inside-lead">
+                Every SUNRISE seltzer starts with real fruit, pure cane sugar, and hemp extract
+                emulsified in small batches — nothing artificial, nothing you can't pronounce.
+              </p>
+            </div>
+
+            <div className="p-inside-pillars">
+              <div className="p-inside-pillar">
+                <div className="p-inside-pillar-title">Flavor</div>
+                <p className="p-inside-pillar-body">
+                  Real, natural fruit and pure cane sugar. A crisp, mid-calorie profile
+                  that tastes as good as it looks — no artificial sweeteners, no shortcuts.
+                </p>
               </div>
-              <div className="p-cannabinoid-card" style={{ background: "#36121D" }}>
-                <div className="p-cannabinoid-eyebrow">Relax · Unwind</div>
-                <div className="p-cannabinoid-symbol">+CBN</div>
-                <div className="p-cannabinoid-body">
-                  Cannabinol. The settler. Evening weight, softer edges.
-                </div>
-                <div className="p-cannabinoid-foot">In select flavors · all tiers</div>
+              <div className="p-inside-pillar">
+                <div className="p-inside-pillar-title">Consistency</div>
+                <p className="p-inside-pillar-body">
+                  Expertly emulsified hemp extracts deliver a reliable experience every
+                  single time. Can to can, batch to batch, sip to sip.
+                </p>
               </div>
-              <div className="p-cannabinoid-card" style={{ background: "#DD756B" }}>
-                <div className="p-cannabinoid-eyebrow">Elevate · Engage</div>
-                <div className="p-cannabinoid-symbol">+THCV</div>
-                <div className="p-cannabinoid-body">
-                  Tetrahydrocannabivarin. The lift. Cleaner, clearer, forward-leaning.
-                </div>
-                <div className="p-cannabinoid-foot">In select flavors · all tiers</div>
+              <div className="p-inside-pillar">
+                <div className="p-inside-pillar-title">Transparency</div>
+                <p className="p-inside-pillar-body">
+                  Certified production facilities and third-party full-panel testing
+                  ensure every can is perfectly dosed and fully compliant.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-inside-stats">
+              <div className="p-inside-stats-stat" ref={stat12Ref} />
+              <div className="p-inside-stats-badges">
+                <div className="p-inside-badge">Natural Vegan</div>
+                <div className="p-inside-badge">Gluten Free</div>
+                <div className="p-inside-badge">Zero Alcohol</div>
+                <div className="p-inside-badge">Infused with B12</div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── 04 · MARQUEE TICKER ───────────────────────────────────────── */}
-        <section className="p-ticker" aria-hidden="true">
-          <div className="p-ticker-track">
-            {[1, 2].map((loop) => (
-              <span key={loop} style={{ display: "contents" }}>
-                <span>24 Flavors</span><span className="p-ticker-dot" />
-                <span>4 Potencies</span><span className="p-ticker-dot" />
-                <span>12 Fl Oz</span><span className="p-ticker-dot" />
-                <span>Full-Panel Tested</span><span className="p-ticker-dot" />
-                <span>Zero Alcohol</span><span className="p-ticker-dot" />
-                <span>Infused with B12</span><span className="p-ticker-dot" />
-                <span>Made in USA</span><span className="p-ticker-dot" />
-              </span>
-            ))}
-          </div>
-        </section>
-
-        {/* ── 05 · TRANSPARENCY ─────────────────────────────────────────── */}
+        {/* ── 05 · TRANSPARENCY (unchanged) ─────────────────────────────── */}
         <section className="p-transparency">
           <div className="container">
             <div className="p-transparency-inner">
@@ -337,7 +479,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 06 · FIND NEAR YOU BAND (reusable element — plum) ─────────── */}
+        {/* ── 06 · FIND NEAR YOU BAND (unchanged) ──────────────────────── */}
         <section className="p-ptp">
           <div className="container">
             <div className="p-ptp-inner">
@@ -352,6 +494,39 @@ function ProductsPage() {
                   Find Near You →
                 </a>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 07 · FAQ (new, last section before footer) ──────────────── */}
+        <section className="p-faq">
+          <div className="container">
+            <h2 className="p-faq-headline">
+              Frequently <span className="accent">asked.</span>
+            </h2>
+            <p className="p-faq-subhead">
+              The questions shoppers actually ask. If yours isn't here, reach us at hello@savorsunrise.com.
+            </p>
+            <div className="p-faq-list">
+              {FAQS.map((item, i) => {
+                const isOpen = openFaq === i;
+                return (
+                  <div key={i} className={"p-faq-item" + (isOpen ? " open" : "")}>
+                    <button
+                      type="button"
+                      className="p-faq-q"
+                      aria-expanded={isOpen}
+                      onClick={() => setOpenFaq(isOpen ? null : i)}
+                    >
+                      <span className="p-faq-q-text">{item.q}</span>
+                      <span className="p-faq-q-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div className="p-faq-a">
+                      <div className="p-faq-a-inner">{item.a}</div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
