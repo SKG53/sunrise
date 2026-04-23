@@ -574,11 +574,11 @@
   max-width: 62ch;
 }
 
-/* ── 08 · PATH TO PURCHASE (red flood, matches About S05 / Products S06) ── */
+/* ── 08 · PATH TO PURCHASE (per-SKU flavor color flood, inline-styled) ──── */
 .pd-ptp {
-  background: var(--tier-10);
   color: var(--cream);
   padding: calc(var(--base) * 1.6) 0;
+  /* background set inline via product.color per-SKU */
 }
 .pd-ptp-inner {
   display: grid;
@@ -610,6 +610,28 @@
   gap: calc(var(--base) * 0.3);
   align-items: flex-start;
   justify-self: end;
+}
+
+/* Dark-text mode — applied when flavor bg has YIQ brightness >= 128.
+   Swaps cream treatment to near-black for WCAG AA contrast on light SKUs.
+   CTAs invert too: cream pill → dark pill, cream-bordered ghost → dark-bordered. */
+.pd-ptp.is-dark-text { color: var(--near-black); }
+.pd-ptp.is-dark-text .pd-ptp-headline { color: var(--near-black); }
+.pd-ptp.is-dark-text .pd-ptp-body { color: rgba(26, 26, 26, 0.78); }
+.pd-ptp.is-dark-text .btn-on-color {
+  background: var(--near-black);
+  color: var(--cream);
+}
+.pd-ptp.is-dark-text .btn-on-color:hover {
+  background: var(--near-black-hover);
+}
+.pd-ptp.is-dark-text .btn-on-color-ghost {
+  color: var(--near-black);
+  border-color: var(--near-black);
+}
+.pd-ptp.is-dark-text .btn-on-color-ghost:hover {
+  background: var(--near-black);
+  color: var(--cream);
 }
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
