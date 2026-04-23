@@ -37,6 +37,9 @@ export const Route = createFileRoute("/")({
           "Hemp-infused Delta-9 seltzer. Real fruit, pure cane sugar, clean lift — four potency tiers from easy to elevated, engineered for refreshment.",
       },
     ],
+    links: [
+      { rel: "canonical", href: "https://savorsunrise.com/" },
+    ],
   }),
 });
 
@@ -92,6 +95,7 @@ function HomePage() {
             <div className="hero-strip-col tier-60-bg" />
           </div>
           <div className="hero-overlay">
+            <h1 className="sr-only">SUNRISE — Hemp-Infused Seltzers</h1>
             <div className="hero-wordmark-slot" ref={heroWmRef} />
             <div className="hero-subtitle">Crafted Beverages</div>
           </div>

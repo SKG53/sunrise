@@ -25,6 +25,9 @@ export const Route = createFileRoute("/about")({
           "A family-owned beverage company built along Route 66 in Tulsa, Oklahoma. Hemp-derived Delta-9 THC seltzers made in-house, full-panel tested, and crafted in the American heartland.",
       },
     ],
+    links: [
+      { rel: "canonical", href: "https://savorsunrise.com/about" },
+    ],
   }),
 });
 

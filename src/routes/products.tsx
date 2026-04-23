@@ -46,6 +46,9 @@ export const Route = createFileRoute("/products")({
           "Twenty-four hemp-infused seltzer flavors across four potency tiers: 5mg, 10mg, 30mg, and 60mg THC. Real fruit, pure cane sugar, federally-legal Delta-9.",
       },
     ],
+    links: [
+      { rel: "canonical", href: "https://savorsunrise.com/products" },
+    ],
   }),
 });
 

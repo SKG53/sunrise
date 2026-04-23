@@ -275,7 +275,12 @@ export const Route = createFileRoute("/products_/$slug")({
   },
   head: ({ loaderData }) => {
     const p = loaderData?.product;
-    if (!p) return { meta: [{ title: "Product · SUNRISE" }] };
+    if (!p) {
+      return {
+        meta: [{ title: "Product · SUNRISE" }],
+        links: [{ rel: "canonical", href: "https://savorsunrise.com/products" }],
+      };
+    }
     const variant = p.cannabinoid ? ` +${p.cannabinoid}` : "";
     return {
       meta: [
@@ -284,6 +289,9 @@ export const Route = createFileRoute("/products_/$slug")({
           name: "description",
           content: `${p.flavor}${variant}. ${p.tier}mg THC hemp-infused seltzer. ${p.blurb}`,
         },
+      ],
+      links: [
+        { rel: "canonical", href: `https://savorsunrise.com/products/${p.slug}` },
       ],
     };
   },
