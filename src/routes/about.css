@@ -80,6 +80,33 @@
   color: var(--text-body);
 }
 .a-origin-body p + p { margin-top: calc(var(--base) * 0.4); }
+
+/* Emphasizer: short bold phrase at paragraph opening or closing.
+   Inline with body text, Montserrat 900, brand gradient fill. */
+.a-origin-emphasizer {
+  font-weight: 900;
+  background: linear-gradient(90deg, #4F308D, #822665, #94264B, #BF252D, #CC382C, #DC531F, #E76B37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Interruptor: single pulled sentence breaking the paragraph flow.
+   Italic, Montserrat 900, near-black, larger than body, centered, with
+   generous vertical breathing room. */
+.a-origin-interruptor {
+  margin: calc(var(--base) * 0.9) 0;
+  font-family: 'Montserrat', sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.62);
+  line-height: 1.2;
+  color: var(--near-black);
+  text-align: center;
+  letter-spacing: 0.005em;
+}
+.a-origin-interruptor em { font-style: italic; }
 .a-origin-image-wrap {
   position: relative;
   aspect-ratio: 4 / 5;
@@ -194,101 +221,9 @@
   max-width: 42ch;
 }
 
-/* ── 05 · WHAT'S INSIDE ─────────────────────────────────────────────────── */
-.a-inside {
-  border-top: 1px solid var(--warm-gray-faint);
-  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
-}
-.a-inside-head {
-  margin-bottom: calc(var(--base) * 1.2);
-}
-.a-inside-headline {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-  font-size: calc(var(--base) * 1.15);
-  letter-spacing: 0.005em;
-  line-height: 1.0;
-  text-transform: uppercase;
-  color: var(--near-black);
-  margin-bottom: calc(var(--base) * 0.4);
-  max-width: 18ch;
-}
-.a-inside-headline .accent { color: var(--green-accent); }
-.a-inside-lead {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.38);
-  font-weight: 400;
-  line-height: 1.55;
-  color: var(--text-body);
-  max-width: 56ch;
-}
-.a-inside-pillars {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: calc(var(--base) * 0.8);
-  margin-bottom: calc(var(--base) * 1.4);
-}
-.a-inside-pillar {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--base) * 0.3);
-  padding-top: calc(var(--base) * 0.55);
-  border-top: 2px solid var(--gold);
-}
-.a-inside-pillar-title {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-  font-size: calc(var(--base) * 0.7);
-  letter-spacing: 0.02em;
-  line-height: 1.0;
-  text-transform: uppercase;
-  color: var(--near-black);
-}
-.a-inside-pillar-body {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.34);
-  font-weight: 400;
-  line-height: 1.55;
-  color: var(--text-body);
-}
-.a-inside-stats {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--base) * 1.0);
-  flex-wrap: wrap;
-  padding-top: calc(var(--base) * 0.95);
-  border-top: 1px solid var(--warm-gray-faint);
-}
-.a-inside-stats-stat {
-  line-height: 0;
-  flex-shrink: 0;
-}
-.a-inside-stats-badges {
-  display: flex;
-  gap: calc(var(--base) * 0.3);
-  flex-wrap: wrap;
-  flex: 1;
-  justify-content: flex-end;
-}
-.a-inside-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: calc(var(--base) * 0.22) calc(var(--base) * 0.5);
-  border: 1.5px solid var(--near-black);
-  border-radius: 9999px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--near-black);
-  white-space: nowrap;
-  line-height: 1;
-}
-
-/* ── 06 · PATH TO PURCHASE (dark band — matches products.css) ───────────── */
+/* ── 04 · PATH TO PURCHASE (tier-10 flood) ──────────────────────────────── */
 .a-ptp {
-  background: var(--near-black);
+  background: var(--tier-10);
   color: var(--cream);
   padding: calc(var(--base) * 1.6) 0;
 }
@@ -333,21 +268,17 @@
   .a-origin-inner,
   .a-ptp-inner { grid-template-columns: 1fr; }
   .a-ptp-ctas { justify-self: start; flex-direction: row; }
-  .a-inside-pillars { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 768px) {
   .a-approach-grid { grid-template-columns: 1fr; }
-  .a-inside-pillars { grid-template-columns: 1fr; }
-  .a-inside-stats-badges { justify-content: flex-start; }
   .a-hero-headline { font-size: calc(var(--base) * 1.35); }
   .a-heartland-headline { font-size: calc(var(--base) * 1.35); }
   .a-origin-headline,
-  .a-approach-headline,
-  .a-inside-headline { font-size: calc(var(--base) * 1.0); }
+  .a-approach-headline { font-size: calc(var(--base) * 1.0); }
   .a-ptp-headline { font-size: calc(var(--base) * 1.0); }
+  .a-origin-interruptor { font-size: calc(var(--base) * 0.5); }
 }
 @media (max-width: 520px) {
   .a-ptp-ctas { flex-direction: column; width: 100%; }
   .a-ptp-ctas .btn { width: 100%; text-align: center; }
-  .a-inside-stats { gap: calc(var(--base) * 0.7); }
 }

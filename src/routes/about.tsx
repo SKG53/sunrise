@@ -4,15 +4,14 @@
 // Session: SBev.BC.WebsiteDesign.About.1 · About route — full build
 //
 // OVERWRITES the scaffolded placeholder.
-// Brand voice per Voice Guide v5. Section order: Hero, Origin, How We Build,
-// American Heartland (green flood), What's Inside, Path to Purchase.
+// Brand voice per Voice Guide v5. Section order: Hero, Origin (with
+// emphasizers + interruptors), American Heartland (green flood), How We
+// Build, Path to Purchase (red flood).
 // =============================================================================
 
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
-import { render12ozStatBlock, getBasePx } from "../lib/sunrise-components";
 import "./about.css";
 
 export const Route = createFileRoute("/about")({
@@ -31,20 +30,6 @@ export const Route = createFileRoute("/about")({
 
 // ── COMPONENT ────────────────────────────────────────────────────────────
 function AboutPage() {
-  const stat12Ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const paint = () => {
-      if (!stat12Ref.current) return;
-      const base = getBasePx();
-      stat12Ref.current.innerHTML = render12ozStatBlock(base * 0.95);
-    };
-    paint();
-    if (document.fonts) document.fonts.ready.then(paint);
-    window.addEventListener("resize", paint);
-    return () => window.removeEventListener("resize", paint);
-  }, []);
-
   return (
     <>
       <SiteHeader activeNav="about" />
@@ -77,17 +62,42 @@ function AboutPage() {
                 </h2>
                 <div className="a-origin-body">
                   <p>
-                    Founded along America's historic Route 66 and proudly family-owned,
-                    SUNRISE is a beverage company reimagining drinks for today's consumers.
+                    <span className="a-origin-emphasizer">A family company. A new kind of drink.</span>
+                    {" "}SUNRISE started the way the best beverages always have —
+                    with a family, a workshop, and a conviction that what's on
+                    the shelf could be better. Founded along America's historic
+                    Route 66, we build every can the way we always have: in small
+                    batches, by people who've been in beverage longer than most
+                    brands have existed.
                   </p>
                   <p>
-                    With deep roots in multi-state beverage formulation and manufacturing,
-                    our team is uniquely positioned to lead the non-alcoholic beverage boom.
-                    Every product is created in-house and proudly made in the USA.
+                    Our team brings decades of beverage manufacturing to the
+                    work — formulation, production, blending, testing. What's
+                    new is the category. What's not new is how we approach it.
+                    Every SUNRISE is made from real fruit and pure cane sugar,
+                    emulsified with hemp extract in our own facility, tested
+                    batch by batch before it ever reaches a can.
                   </p>
+                  <div className="a-origin-interruptor">
+                    <em>An old craft. A new category.</em>
+                  </div>
                   <p>
-                    Paired with an uncompromising focus on quality and simple ingredients,
-                    SUNRISE offers an experience like no other.
+                    We built SUNRISE for a specific moment — the quiet one, the
+                    in-between one, the one where people used to reach for
+                    something stronger and are now looking for something
+                    smarter. A drink for the small gatherings. The mid-week
+                    reset. The dinner that used to need wine and doesn't
+                    anymore. Something you can actually share, remember, and
+                    reach for again.
+                  </p>
+                  <div className="a-origin-interruptor">
+                    <em>Sipped, savored, and shared.</em>
+                  </div>
+                  <p>
+                    <span className="a-origin-emphasizer">Every can, every batch.</span>
+                    {" "}Made in-house. Made in Oklahoma. Made to be what the
+                    category has been missing — real ingredients, real effects,
+                    real people behind the work.
                   </p>
                 </div>
               </div>
@@ -98,7 +108,24 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 03 · HOW WE BUILD ─────────────────────────────────────────── */}
+        {/* ── 03 · AMERICAN HEARTLAND (tier-30 flood) ─────────────────────── */}
+        <section className="a-heartland">
+          <div className="container">
+            <div className="a-heartland-inner">
+              <h2 className="a-heartland-headline">
+                Route 66.<br />
+                Tulsa, <span className="accent">Oklahoma.</span>
+              </h2>
+              <p className="a-heartland-body">
+                Not a coastal beverage brand. Built in the American heartland,
+                where the supply chain is short, the roots run deep,
+                and the work still happens where it's named.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 04 · HOW WE BUILD ─────────────────────────────────────────── */}
         <section className="a-approach">
           <div className="container">
             <div className="a-approach-head">
@@ -147,74 +174,7 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 04 · AMERICAN HEARTLAND (tier-30 flood, can imagery to come) ─ */}
-        <section className="a-heartland">
-          <div className="container">
-            <div className="a-heartland-inner">
-              <h2 className="a-heartland-headline">
-                Route 66.<br />
-                Tulsa, <span className="accent">Oklahoma.</span>
-              </h2>
-              <p className="a-heartland-body">
-                Not a coastal beverage brand. Built in the American heartland,
-                where the supply chain is short, the roots run deep,
-                and the work still happens where it's named.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* ── 05 · WHAT'S INSIDE ────────────────────────────────────────── */}
-        <section className="a-inside">
-          <div className="container">
-            <div className="a-inside-head">
-              <h2 className="a-inside-headline">
-                Real ingredients.<br />
-                Real <span className="accent">effects.</span>
-              </h2>
-              <p className="a-inside-lead">
-                Every SUNRISE seltzer starts with real fruit, pure cane sugar, and hemp extract
-                emulsified in small batches — nothing artificial, nothing you can't pronounce.
-              </p>
-            </div>
-
-            <div className="a-inside-pillars">
-              <div className="a-inside-pillar">
-                <div className="a-inside-pillar-title">Flavor</div>
-                <p className="a-inside-pillar-body">
-                  Real, natural fruit and pure cane sugar. A crisp, mid-calorie profile
-                  that tastes as good as it looks — no artificial sweeteners, no shortcuts.
-                </p>
-              </div>
-              <div className="a-inside-pillar">
-                <div className="a-inside-pillar-title">Consistency</div>
-                <p className="a-inside-pillar-body">
-                  Expertly emulsified hemp extracts deliver a reliable experience every
-                  single time. Can to can, batch to batch, sip to sip.
-                </p>
-              </div>
-              <div className="a-inside-pillar">
-                <div className="a-inside-pillar-title">Transparency</div>
-                <p className="a-inside-pillar-body">
-                  Certified production facilities and third-party full-panel testing
-                  ensure every can is perfectly dosed and fully compliant.
-                </p>
-              </div>
-            </div>
-
-            <div className="a-inside-stats">
-              <div className="a-inside-stats-stat" ref={stat12Ref} />
-              <div className="a-inside-stats-badges">
-                <div className="a-inside-badge">Natural Vegan</div>
-                <div className="a-inside-badge">Gluten Free</div>
-                <div className="a-inside-badge">Zero Alcohol</div>
-                <div className="a-inside-badge">Infused with B12</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── 06 · PATH TO PURCHASE ─────────────────────────────────────── */}
+        {/* ── 05 · PATH TO PURCHASE (tier-10 flood) ─────────────────────── */}
         <section className="a-ptp">
           <div className="container">
             <div className="a-ptp-inner">
