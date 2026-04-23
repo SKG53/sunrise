@@ -261,7 +261,14 @@ function FindPage() {
       <SiteHeader activeNav="find" />
 
       <main>
-        {/* ── 01 · HERO ─────────────────────────────────────────────────── */}
+        {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
+        {/* Giant color-flood page title. Tier-30 green — Find's coded      */}
+        {/* color via the map pins and map-adjacent wayfinding palette.    */}
+        <section className="f-pagehero">
+          <h1 className="f-pagehero-title">Find Us</h1>
+        </section>
+
+        {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
         <section className="f-hero">
           <div className="container">
             <div className="f-hero-inner">
@@ -277,7 +284,7 @@ function FindPage() {
           </div>
         </section>
 
-        {/* ── 02 · SEARCH ───────────────────────────────────────────────── */}
+        {/* ── 03 · SEARCH ───────────────────────────────────────────────── */}
         <section className="f-search">
           <div className="container">
             <form className="f-search-form" onSubmit={handleSubmit}>
@@ -317,7 +324,7 @@ function FindPage() {
           </div>
         </section>
 
-        {/* ── 03 · RESULTS (Map + List) ─────────────────────────────────── */}
+        {/* ── 04 · RESULTS (Map + List) ─────────────────────────────────── */}
         <section className="f-results">
           <div className="container">
             <div className="f-results-grid">
@@ -400,7 +407,7 @@ function FindPage() {
           </div>
         </section>
 
-        {/* ── 04 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────── */}
+        {/* ── 05 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────── */}
         <section className="f-fallback">
           <div className="container">
             <div className="f-fallback-inner">
@@ -424,7 +431,7 @@ function FindPage() {
           </div>
         </section>
 
-        {/* ── 05 · RETAILER GATEWAY (cream band) ─────────────────────────── */}
+        {/* ── 06 · RETAILER GATEWAY (cream band) ─────────────────────────── */}
         <section className="f-gateway">
           <div className="container">
             <div className="f-gateway-inner">

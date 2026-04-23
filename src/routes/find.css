@@ -22,7 +22,31 @@
 }
 .f-eyebrow-on-color { color: rgba(254, 251, 224, 0.75); }
 
-/* ── 01 · HERO ──────────────────────────────────────────────────────────── */
+/* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
+/* Giant color-flood page title. Tier-30 green — Find's coded color via   */
+/* the map pins and map-adjacent wayfinding palette. Matches the page-    */
+/* hero pattern on Products / About / Contact with its own tier color.    */
+.f-pagehero {
+  background: var(--tier-30);
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 2) calc(var(--base) * 1);
+}
+.f-pagehero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 1.8), 8vw, calc(var(--base) * 3.5));
+  letter-spacing: 0.015em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  margin: 0;
+}
+
+/* ── 02 · HERO ──────────────────────────────────────────────────────────── */
 .f-hero {
   padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 1.4);
 }
@@ -47,7 +71,7 @@
   max-width: 46ch;
 }
 
-/* ── 02 · SEARCH ────────────────────────────────────────────────────────── */
+/* ── 03 · SEARCH ────────────────────────────────────────────────────────── */
 .f-search {
   border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.1) 0 calc(var(--base) * 1.1);
@@ -107,7 +131,7 @@
   /* Matches field height by rolling with btn baseline padding */
 }
 
-/* ── 03 · RESULTS (Map + List) ──────────────────────────────────────────── */
+/* ── 04 · RESULTS (Map + List) ──────────────────────────────────────────── */
 .f-results {
   border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.1) 0 calc(var(--base) * 1.8);
@@ -306,7 +330,7 @@
   color: var(--text-body);
 }
 
-/* ── 04 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────────────── */
+/* ── 05 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────────────── */
 .f-fallback {
   /* Mirrors .a-ptp on the About page: full tier-10 red flood, cream text,
      horizontal copy | ctas split. This is the primary consumer conversion
@@ -352,7 +376,7 @@
   justify-self: end;
 }
 
-/* ── 05 · RETAILER GATEWAY (cream band) ─────────────────────────────────── */
+/* ── 06 · RETAILER GATEWAY (cream band) ─────────────────────────────────── */
 .f-gateway {
   /* Cream background, quiet B2B wholesale call-out. Previously this was
      a forest-green flood to separate it from the footer — superseded now

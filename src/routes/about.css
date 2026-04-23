@@ -21,7 +21,31 @@
 }
 .a-eyebrow-on-color { color: rgba(254, 251, 224, 0.75); }
 
-/* ── 01 · HERO ──────────────────────────────────────────────────────────── */
+/* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
+/* Giant color-flood page title. Tier-10 red — brand heritage color also  */
+/* used in S06 ptp section below and on home S06. Matches the page-hero   */
+/* pattern on Products / Find / Contact with its own assigned tier color. */
+.a-pagehero {
+  background: var(--tier-10);
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 2) calc(var(--base) * 1);
+}
+.a-pagehero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 1.8), 8vw, calc(var(--base) * 3.5));
+  letter-spacing: 0.015em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  margin: 0;
+}
+
+/* ── 02 · HERO ──────────────────────────────────────────────────────────── */
 .a-hero {
   padding: calc(var(--base) * 2.4) 0 calc(var(--base) * 2.0);
 }
@@ -46,7 +70,7 @@
   max-width: 42ch;
 }
 
-/* ── 02 · ORIGIN ────────────────────────────────────────────────────────── */
+/* ── 03 · ORIGIN ────────────────────────────────────────────────────────── */
 .a-origin {
   border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
@@ -124,7 +148,7 @@
   );
 }
 
-/* ── 03 · HOW WE BUILD ──────────────────────────────────────────────────── */
+/* ── 05 · HOW WE BUILD ──────────────────────────────────────────────────── */
 .a-approach {
   background: var(--cream);
   border-top: 1px solid var(--warm-gray-faint);
@@ -211,7 +235,7 @@
   max-width: 42ch;
 }
 
-/* ── 04 · PATH TO PURCHASE (tier-10 flood) ──────────────────────────────── */
+/* ── 06 · PATH TO PURCHASE (tier-10 flood) ──────────────────────────────── */
 .a-ptp {
   background: var(--tier-10);
   color: var(--cream);

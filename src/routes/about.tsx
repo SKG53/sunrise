@@ -38,7 +38,14 @@ function AboutPage() {
       <SiteHeader activeNav="about" />
 
       <main>
-        {/* ── 01 · HERO ─────────────────────────────────────────────────── */}
+        {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
+        {/* Giant color-flood page title. Tier-10 red reinforces brand     */}
+        {/* heritage color also used in ptp section below and on home S06. */}
+        <section className="a-pagehero">
+          <h1 className="a-pagehero-title">About Us</h1>
+        </section>
+
+        {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
         <section className="a-hero">
           <div className="container">
             <div className="a-hero-inner">
@@ -54,7 +61,7 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 02 · ORIGIN ───────────────────────────────────────────────── */}
+        {/* ── 03 · ORIGIN ───────────────────────────────────────────────── */}
         <section className="a-origin">
           <div className="container">
             <div className="a-origin-inner">
@@ -111,7 +118,7 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 03 · AMERICAN HEARTLAND (tier-30 flood) ─────────────────────── */}
+        {/* ── 04 · AMERICAN HEARTLAND (tier-30 flood) ─────────────────────── */}
         <section className="a-heartland">
           <div className="container">
             <div className="a-heartland-inner">
@@ -128,7 +135,7 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 04 · HOW WE BUILD ─────────────────────────────────────────── */}
+        {/* ── 05 · HOW WE BUILD ─────────────────────────────────────────── */}
         <section className="a-approach">
           <div className="container">
             <div className="a-approach-head">
@@ -166,7 +173,7 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 05 · PATH TO PURCHASE (tier-10 flood) ─────────────────────── */}
+        {/* ── 06 · PATH TO PURCHASE (tier-10 flood) ─────────────────────── */}
         <section className="a-ptp">
           <div className="container">
             <div className="a-ptp-inner">

@@ -15,6 +15,31 @@
    · New .p-faq* block (accordion pattern, shared with future Home FAQ)
    ========================================================================== */
 
+/* ── PAGE HERO ──────────────────────────────────────────────────────────── */
+/* Giant color-flood page title — first screenful of the page. Tier-5     */
+/* amber with near-black text (amber + cream fails contrast). Matches the */
+/* page-hero pattern on About / Find / Contact — each subpage gets its    */
+/* assigned tier color at this slot.                                       */
+.p-pagehero {
+  background: var(--tier-5);
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 2) calc(var(--base) * 1);
+}
+.p-pagehero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 1.8), 8vw, calc(var(--base) * 3.5));
+  letter-spacing: 0.015em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--near-black);
+  margin: 0;
+}
+
 /* ── HERO ───────────────────────────────────────────────────────────────── */
 .p-hero {
   background: var(--cream);

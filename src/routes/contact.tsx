@@ -94,7 +94,15 @@ function ContactPage() {
       <SiteHeader activeNav="contact" />
 
       <main>
-        {/* ── 01 · HERO ─────────────────────────────────────────────────── */}
+        {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
+        {/* Giant color-flood page title. Tier-60 deep purple — quieter   */}
+        {/* register for the sign-off/reach-us page; completes the tier    */}
+        {/* color cycle across the four subpage heroes.                    */}
+        <section className="c-pagehero">
+          <h1 className="c-pagehero-title">Contact</h1>
+        </section>
+
+        {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
         <section className="c-hero">
           <div className="container">
             <div className="c-hero-inner">
@@ -110,7 +118,7 @@ function ContactPage() {
           </div>
         </section>
 
-        {/* ── 02 · FORM ─────────────────────────────────────────────────── */}
+        {/* ── 03 · FORM ─────────────────────────────────────────────────── */}
         <section className="c-form-section">
           <div className="container">
             <div className="c-form-grid">
@@ -240,7 +248,7 @@ function ContactPage() {
           </div>
         </section>
 
-        {/* ── 03 · DIRECT CHANNELS ──────────────────────────────────────── */}
+        {/* ── 04 · DIRECT CHANNELS ──────────────────────────────────────── */}
         <section className="c-direct">
           <div className="container">
             <div className="c-direct-head">
