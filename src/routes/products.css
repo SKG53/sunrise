@@ -32,13 +32,21 @@
 .p-pagehero-title {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: clamp(calc(var(--base) * 1.8), 8vw, calc(var(--base) * 3.5));
+  font-size: clamp(calc(var(--base) * 2.0), 9vw, calc(var(--base) * 4.2));
   letter-spacing: 0.015em;
   line-height: 0.9;
   text-transform: uppercase;
   text-align: center;
   color: var(--cream);
   margin: 0;
+  animation: pagehero-type 1.2s steps(8) both;
+}
+@keyframes pagehero-type {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .p-pagehero-title { animation: none; }
 }
 
 /* ── FIND YOUR EFFECT (4-card: Core + CBG/CBN/THCV) ─────────────────────── */
