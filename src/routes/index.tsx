@@ -77,6 +77,23 @@ const FAQS = [
   },
 ];
 
+// ── LIFESTYLE REEL ────────────────────────────────────────────────────────
+// Placeholder image paths for the closing scroll reel. Swap the src values
+// with real asset paths once the images are uploaded — the alt strings too.
+// The section renders two copies of this array back-to-back to create a
+// seamless marquee loop; add or remove entries here and the duplication
+// handles itself.
+const IMAGES = [
+  { src: "/reel-1.jpg", alt: "SUNRISE lifestyle moment 1" },
+  { src: "/reel-2.jpg", alt: "SUNRISE lifestyle moment 2" },
+  { src: "/reel-3.jpg", alt: "SUNRISE lifestyle moment 3" },
+  { src: "/reel-4.jpg", alt: "SUNRISE lifestyle moment 4" },
+  { src: "/reel-5.jpg", alt: "SUNRISE lifestyle moment 5" },
+  { src: "/reel-6.jpg", alt: "SUNRISE lifestyle moment 6" },
+  { src: "/reel-7.jpg", alt: "SUNRISE lifestyle moment 7" },
+  { src: "/reel-8.jpg", alt: "SUNRISE lifestyle moment 8" },
+];
+
 function HomePage() {
   const heroWmRef = useRef<HTMLDivElement>(null);
   const lockup5Ref = useRef<HTMLDivElement>(null);
@@ -506,6 +523,25 @@ function HomePage() {
                 </details>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ── 10 · LIFESTYLE REEL ───────────────────────────────────────── */}
+        {/* Silent visual closer before footer — no header, no borders,    */}
+        {/* edge-to-edge filmstrip. Track renders IMAGES twice back-to-back */}
+        {/* and animates translateX(0) → translateX(-50%) for a seamless    */}
+        {/* loop. Hover pauses. prefers-reduced-motion disables animation.  */}
+        <section className="s11-reel" aria-label="Lifestyle imagery">
+          <div className="s11-reel-track">
+            {[...IMAGES, ...IMAGES].map((img, idx) => (
+              <div
+                key={idx}
+                className="s11-reel-tile"
+                aria-hidden={idx >= IMAGES.length ? "true" : undefined}
+              >
+                <img src={img.src} alt={img.alt} loading="lazy" />
+              </div>
+            ))}
           </div>
         </section>
       </main>
