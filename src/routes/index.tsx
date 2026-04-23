@@ -108,95 +108,55 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── 03 · ORIGIN ───────────────────────────────────────────────── */}
-        <section className="s03-origin">
+        {/* ── 03 · PRODUCT INTRO ────────────────────────────────────────── */}
+        {/* New section — replaces the Origin block. Centered typographic */}
+        {/* statement followed by a horizontal row of fruit illustrations. */}
+        {/* Fruit slots are styled placeholders awaiting real PNG assets.  */}
+        <section className="s03-product-intro">
           <div className="container">
-            <div className="s03-origin-inner">
-              <div className="s03-copy">
-                <div className="s03-eyebrow">Origin</div>
-                <h2 className="s03-headline">
-                  Born in the<br />Heart of America.
-                </h2>
-                <p className="s03-body">
-                  Founded along America's historic Route 66 and proudly family-owned,
-                  SUNRISE is a beverage company reimagining drinks for today's consumers.
-                  With deep roots in multi-state beverage formulation, our team is built
-                  to lead the non-alcoholic beverage boom. Every product is created in-house
-                  and proudly made in the USA.
-                </p>
-              </div>
-              <div className="s03-image-wrap">
-                <div className="s03-image" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── 04 · WHAT'S INSIDE ────────────────────────────────────────── */}
-        <section id="whats-inside" className="s04-whats-inside">
-          <div className="container">
-            <h2 className="s04-headline">
-              Simple. Transparent. <span className="accent">Delicious.</span>
+            <h2 className="s03-pi-headline">
+              Infused Seltzers.<br />
+              Made with <span className="accent">real fruit.</span>
             </h2>
-            <div className="s04-layout">
-              <div className="s04-image-wrap">
-                <div className="s04-image" />
+            <p className="s03-pi-subhead">
+              Clean, carbonated, and crafted to showcase real fruit character.
+              Federally-legal Delta-9 THC, emulsified for precise dosing — so every
+              can delivers exactly the experience you chose.
+            </p>
+            <div className="s03-pi-fruits" aria-hidden="true">
+              {/* Placeholder fruit chips — swap .s03-pi-fruit inner content */}
+              {/*  with <img src="..." /> once real illustrations are available. */}
+              <div className="s03-pi-fruit fruit-strawberry">
+                <div className="s03-pi-fruit-placeholder" />
+                <div className="s03-pi-fruit-label">Strawberry</div>
               </div>
-              <div className="s04-list">
-                <div className="s04-row">
-                  <div className="s04-ingredient-name">Purified Water</div>
-                  <div className="s04-ingredient-desc">The base. Clean, crisp, carbonated.</div>
-                </div>
-                <div className="s04-row">
-                  <div className="s04-ingredient-name">Pure Cane Sugar</div>
-                  <div className="s04-ingredient-desc">
-                    Real sweetness. No corn syrup, no artificial substitutes.
-                  </div>
-                </div>
-                <div className="s04-row">
-                  <div className="s04-ingredient-name">Natural Flavoring</div>
-                  <div className="s04-ingredient-desc">
-                    Real fruit character, sourced from real fruit.
-                  </div>
-                </div>
-                <div className="s04-row">
-                  <div className="s04-ingredient-name">Emulsified Hemp Extract</div>
-                  <div className="s04-ingredient-desc">
-                    Federally-legal Delta-9 THC, expertly emulsified for consistent
-                    dosing in every can.
-                  </div>
-                </div>
-                <div className="s04-row">
-                  <div className="s04-ingredient-name">Natural Enhancers (B12)</div>
-                  <div className="s04-ingredient-desc">
-                    Added to support and elevate the experience.
-                  </div>
-                </div>
-                <div className="s04-row">
-                  <div className="s04-ingredient-name">Citric Acid · Sodium Benzoate</div>
-                  <div className="s04-ingredient-desc">
-                    For freshness and natural preservation.
-                  </div>
-                </div>
-                <div className="s04-footnote">
-                  Every batch full-panel tested.{" "}
-                  <a href="#">View COAs for your flavor →</a>
-                </div>
+              <div className="s03-pi-fruit fruit-watermelon">
+                <div className="s03-pi-fruit-placeholder" />
+                <div className="s03-pi-fruit-label">Watermelon</div>
+              </div>
+              <div className="s03-pi-fruit fruit-lemon">
+                <div className="s03-pi-fruit-placeholder" />
+                <div className="s03-pi-fruit-label">Lemon</div>
+              </div>
+              <div className="s03-pi-fruit fruit-blueberry">
+                <div className="s03-pi-fruit-placeholder" />
+                <div className="s03-pi-fruit-label">Blueberry</div>
+              </div>
+              <div className="s03-pi-fruit fruit-bloodorange">
+                <div className="s03-pi-fruit-placeholder" />
+                <div className="s03-pi-fruit-label">Blood Orange</div>
+              </div>
+              <div className="s03-pi-fruit fruit-blackberry">
+                <div className="s03-pi-fruit-placeholder" />
+                <div className="s03-pi-fruit-label">Blackberry</div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── 05 · WHY SUNRISE ──────────────────────────────────────────── */}
-        <section className="s05-why">
-          <div className="container">
-            <div className="s05-manifesto-line">Built with intention.</div>
-            <div className="s05-manifesto-line">Dosed with precision.</div>
-            <div className="s05-manifesto-line">Made to be enjoyed.</div>
-          </div>
-        </section>
-
-        {/* ── 06 · FOUR TIERS ───────────────────────────────────────────── */}
+        {/* ── 04 · FOUR TIERS ───────────────────────────────────────────── */}
+        {/* Relocated from the previous S06 slot. Markup unchanged except   */}
+        {/* for CSS-driven edits (italic removed, pill alignment fixed).   */}
         <section className="s06-tiers">
           <div className="container">
             <h2 className="s06-headline">
@@ -255,7 +215,84 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── 07 · STORY TEASER ─────────────────────────────────────────── */}
+        {/* ── 05 · WHAT'S INSIDE ────────────────────────────────────────── */}
+        {/* Rebuilt layout: centered headline, can-in-middle with 4        */}
+        {/* ingredients flanking each side. Copy pulled from live site     */}
+        {/* (www.savorsunrise.com) exactly. Class kept as .s04-whats-inside */}
+        {/* for CSS continuity; inner structure fully replaced.            */}
+        <section id="whats-inside" className="s04-whats-inside">
+          <div className="container">
+            <h2 className="s04-headline">What's Inside?</h2>
+            <div className="s04-trifecta">
+              <div className="s04-col s04-col-left">
+                <div className="s04-ing">
+                  <div className="s04-ing-name">Purified Water</div>
+                  <div className="s04-ing-desc">
+                    Reverse-osmosis filtered water carefully chosen for exceptional
+                    hydration &amp; uncompromising flavor.
+                  </div>
+                </div>
+                <div className="s04-ing">
+                  <div className="s04-ing-name">Pure Cane Sugar</div>
+                  <div className="s04-ing-desc">
+                    A touch of real sugar for smooth, naturally derived sweetness.
+                  </div>
+                </div>
+                <div className="s04-ing">
+                  <div className="s04-ing-name">Natural Flavoring</div>
+                  <div className="s04-ing-desc">
+                    Sourced from real fruits and botanicals, our flavors deliver
+                    bright, authentic notes true to their names.
+                  </div>
+                </div>
+                <div className="s04-ing">
+                  <div className="s04-ing-name">Fresh Lemon Juice</div>
+                  <div className="s04-ing-desc">
+                    Used exclusively in our Lemonade flavors, this ingredient brings
+                    a hint of crisp acidity with a natural citrus lift.
+                  </div>
+                </div>
+              </div>
+              <div className="s04-center">
+                {/* Placeholder center can — swap background for real image */}
+                <div className="s04-can-placeholder" aria-hidden="true" />
+              </div>
+              <div className="s04-col s04-col-right">
+                <div className="s04-ing">
+                  <div className="s04-ing-name">Emulsified Hemp Extract</div>
+                  <div className="s04-ing-desc">
+                    The good stuff — expertly blended cannabis extract for a clean
+                    and consistent experience with every sip.
+                  </div>
+                </div>
+                <div className="s04-ing">
+                  <div className="s04-ing-name">Naturally Sourced Enhancers</div>
+                  <div className="s04-ing-desc">
+                    Functional ingredients like B12 that allow for a healthier,
+                    more balanced experience without altering flavors.
+                  </div>
+                </div>
+                <div className="s04-ing">
+                  <div className="s04-ing-name">Citric Acid</div>
+                  <div className="s04-ing-desc">
+                    A naturally occurring acid found in citrus fruits, this is used
+                    to balance flavors and keep things bubbly.
+                  </div>
+                </div>
+                <div className="s04-ing">
+                  <div className="s04-ing-name">Sodium Benzoate</div>
+                  <div className="s04-ing-desc">
+                    A widely used food-safe preservative that helps keep each can
+                    fresh without altering its flavor profile.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 06 · STORY TEASER ─────────────────────────────────────────── */}
+        {/* Content unchanged from prior S07 placement.                    */}
         <section className="s07-story">
           <div className="container">
             <div className="s07-layout">
@@ -278,7 +315,10 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── 08 · NEAR YOU TEASER ──────────────────────────────────────── */}
+        {/* ── 07 · NEAR YOU TEASER ──────────────────────────────────────── */}
+        {/* Content unchanged. Real Google Maps integration pending a      */}
+        {/* locations list from founder; current map background is a      */}
+        {/* styled placeholder.                                            */}
         <section className="s08-near-you">
           <div className="s08-inner">
             <div className="s08-map-bg" />
@@ -298,17 +338,106 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── 09 · REVIEWS ──────────────────────────────────────────────── */}
+        {/* ── 08 · REVIEWS ──────────────────────────────────────────────── */}
+        {/* Rebuilt as a continuous right-to-left marquee. Track is        */}
+        {/* duplicated (6 cards × 2) to produce a seamless loop via        */}
+        {/* translateX(0) → translateX(-50%). Hover pauses the animation. */}
+        {/* Heading added. All quote content is placeholder.               */}
         <section className="s09-reviews">
-          <div className="container">
-            <div className="s09-inner">
-              <div className="s09-quote-mark">"</div>
-              <div className="s09-quote" />
-              <div className="s09-attribution" />
-              <div className="s09-progress">
-                <div className="s09-progress-seg active" />
-                <div className="s09-progress-seg" />
-                <div className="s09-progress-seg" />
+          <h2 className="s09-heading">What people say.</h2>
+          <div className="s09-marquee" aria-label="Customer reviews carousel">
+            <div className="s09-marquee-track">
+              {/* Set A */}
+              <div className="s09-card">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  Smoother than any edible I've had. Finally something that actually
+                  tastes like a drink.
+                </div>
+                <div className="s09-attribution">— James K., Austin, TX</div>
+              </div>
+              <div className="s09-card">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  The 10mg is my Friday night wind-down. Strawberry is unreal.
+                </div>
+                <div className="s09-attribution">— Priya S., Denver, CO</div>
+              </div>
+              <div className="s09-card">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  Most of these drinks taste like medicine. This one doesn't.
+                </div>
+                <div className="s09-attribution">— Marcus D., Nashville, TN</div>
+              </div>
+              <div className="s09-card">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  Beautifully carbonated, actually fruit-forward. A rare combination.
+                </div>
+                <div className="s09-attribution">— Lauren H., Portland, OR</div>
+              </div>
+              <div className="s09-card">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  Found these at my local shop and now they're at every gathering
+                  I host.
+                </div>
+                <div className="s09-attribution">— Dan R., Kansas City, MO</div>
+              </div>
+              <div className="s09-card">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  The Blood Orange 60mg is a perfect evening. Exactly the experience
+                  I chose.
+                </div>
+                <div className="s09-attribution">— Emma T., Phoenix, AZ</div>
+              </div>
+              {/* Set B — duplicate for seamless loop. aria-hidden to avoid SR double-read. */}
+              <div className="s09-card" aria-hidden="true">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  Smoother than any edible I've had. Finally something that actually
+                  tastes like a drink.
+                </div>
+                <div className="s09-attribution">— James K., Austin, TX</div>
+              </div>
+              <div className="s09-card" aria-hidden="true">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  The 10mg is my Friday night wind-down. Strawberry is unreal.
+                </div>
+                <div className="s09-attribution">— Priya S., Denver, CO</div>
+              </div>
+              <div className="s09-card" aria-hidden="true">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  Most of these drinks taste like medicine. This one doesn't.
+                </div>
+                <div className="s09-attribution">— Marcus D., Nashville, TN</div>
+              </div>
+              <div className="s09-card" aria-hidden="true">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  Beautifully carbonated, actually fruit-forward. A rare combination.
+                </div>
+                <div className="s09-attribution">— Lauren H., Portland, OR</div>
+              </div>
+              <div className="s09-card" aria-hidden="true">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  Found these at my local shop and now they're at every gathering
+                  I host.
+                </div>
+                <div className="s09-attribution">— Dan R., Kansas City, MO</div>
+              </div>
+              <div className="s09-card" aria-hidden="true">
+                <div className="s09-quote-mark">"</div>
+                <div className="s09-quote-text">
+                  The Blood Orange 60mg is a perfect evening. Exactly the experience
+                  I chose.
+                </div>
+                <div className="s09-attribution">— Emma T., Phoenix, AZ</div>
               </div>
             </div>
           </div>

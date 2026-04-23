@@ -97,102 +97,128 @@
 .s02-ml-drinks  { font-size: calc(var(--base) * 2.6); }
 
 /* ── SECTION 03 · ORIGIN ────────────────────────────────────────────────── */
-.s03-origin {
+/* ── SECTION 03 · PRODUCT INTRO ─────────────────────────────────────────── */
+/* Centered typographic statement + horizontal fruit strip beneath.         */
+/* Fruit slots are styled circular placeholders with colored backgrounds    */
+/* and a label below each — to be replaced with real fruit illustration     */
+/* PNGs when available. Slot sizes are fixed in `base` units so the strip   */
+/* scales proportionally with the page.                                     */
+.s03-product-intro {
   background: var(--cream);
-  padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
+  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
   border-top: 1px solid var(--warm-gray-faint);
 }
-.s03-origin-inner {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: calc(var(--base) * 1.4);
-  align-items: center;
-}
-.s03-copy {
+.s03-product-intro .container {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: calc(var(--base) * 0.5);
 }
-.s03-eyebrow {
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 800;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.s03-headline {
+.s03-pi-headline {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 1.1);
-  font-weight: 900;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  color: var(--near-black);
-  line-height: 0.98;
-}
-.s03-body {
-  font-size: calc(var(--base) * 0.4);
-  font-weight: 400;
-  line-height: 1.55;
-  color: var(--text-body);
-  max-width: 48ch;
-}
-.s03-image {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  min-height: calc(var(--base) * 7);
-  background: var(--warm-gray-faint);
-  border-radius: 4px;
-}
-
-/* ── SECTION 04 · WHAT'S INSIDE ─────────────────────────────────────────── */
-.s04-whats-inside {
-  background: var(--cream);
-  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
-  border-top: 1px solid var(--warm-gray-faint);
-}
-.s04-whats-inside .container {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--base) * 0.5);
-}
-.s04-headline {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
   color: var(--near-black);
   line-height: 1.0;
-  max-width: 20ch;
+  margin: 0;
 }
-.s04-headline .accent { color: var(--green-accent); }
-.s04-layout {
-  display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  gap: calc(var(--base) * 1.4);
-  align-items: center;
-  margin-top: calc(var(--base) * 0.8);
+.s03-pi-headline .accent { color: var(--green-accent); }
+.s03-pi-subhead {
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-body);
+  max-width: 58ch;
+  margin: 0;
 }
-.s04-image-wrap { display: flex; justify-content: center; }
-.s04-image {
+.s03-pi-fruits {
   width: 100%;
-  max-width: calc(var(--base) * 7.5);
-  aspect-ratio: 3 / 4;
-  background: var(--warm-gray-faint);
-  border-radius: 4px;
-}
-.s04-list { display: flex; flex-direction: column; }
-.s04-row {
-  padding: calc(var(--base) * 0.42) 0;
-  border-bottom: 1px solid var(--warm-gray-faint);
+  margin-top: calc(var(--base) * 0.8);
   display: grid;
-  grid-template-columns: minmax(calc(var(--base) * 4.2), auto) 1fr;
-  gap: calc(var(--base) * 0.8);
-  align-items: baseline;
+  grid-template-columns: repeat(6, 1fr);
+  gap: calc(var(--base) * 0.4);
+  align-items: start;
 }
-.s04-row:first-child { padding-top: 0; }
-.s04-row:last-of-type { border-bottom: none; }
-.s04-ingredient-name {
+.s03-pi-fruit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.18);
+}
+.s03-pi-fruit-placeholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: calc(var(--base) * 2.2);
+  border-radius: 50%;
+  /* base fill — individual fruit classes override below */
+  background: var(--warm-gray-faint);
+  box-shadow: inset 0 calc(var(--base) * 0.06) calc(var(--base) * 0.2) rgba(255, 255, 255, 0.25),
+              inset 0 calc(var(--base) * -0.06) calc(var(--base) * 0.3) rgba(0, 0, 0, 0.12);
+}
+.s03-pi-fruit.fruit-strawberry  .s03-pi-fruit-placeholder { background: #C8102E; }
+.s03-pi-fruit.fruit-watermelon  .s03-pi-fruit-placeholder { background: #E8516A; }
+.s03-pi-fruit.fruit-lemon       .s03-pi-fruit-placeholder { background: #F6D046; }
+.s03-pi-fruit.fruit-blueberry   .s03-pi-fruit-placeholder { background: #3B4D9C; }
+.s03-pi-fruit.fruit-bloodorange .s03-pi-fruit-placeholder { background: #D94E1F; }
+.s03-pi-fruit.fruit-blackberry  .s03-pi-fruit-placeholder { background: #3B1E4C; }
+.s03-pi-fruit-label {
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+/* ── SECTION 04 · WHAT'S INSIDE ─────────────────────────────────────────── */
+/* Three-column trifecta layout mirroring the live savorsunrise.com site:  */
+/* four ingredients (left-aligned) on the left, large can in the middle,   */
+/* four ingredients (right-aligned) on the right. On mobile, stacks to     */
+/* single column with the can between the two ingredient groups.           */
+.s04-whats-inside {
+  background: var(--cream);
+  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.s04-whats-inside .container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 1.0);
+}
+.s04-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.1);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.0;
+  text-align: center;
+  margin: 0;
+}
+.s04-trifecta {
+  display: grid;
+  grid-template-columns: 1fr minmax(calc(var(--base) * 5), 1.1fr) 1fr;
+  gap: calc(var(--base) * 1.0);
+  align-items: center;
+}
+.s04-col {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.7);
+}
+.s04-col-left  { text-align: left;  align-items: flex-start; }
+.s04-col-right { text-align: right; align-items: flex-end; }
+.s04-ing {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.12);
+  max-width: calc(var(--base) * 6);
+}
+.s04-ing-name {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.32);
   font-weight: 800;
@@ -201,54 +227,24 @@
   color: var(--near-black);
   line-height: 1.2;
 }
-.s04-ingredient-desc {
+.s04-ing-desc {
   font-size: calc(var(--base) * 0.28);
   font-weight: 400;
   color: var(--text-body);
   line-height: 1.5;
 }
-.s04-footnote {
-  margin-top: calc(var(--base) * 0.6);
-  font-size: calc(var(--base) * 0.26);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-.s04-footnote a {
-  color: var(--near-black);
-  font-weight: 700;
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 4px;
-  transition: color 200ms ease;
-}
-.s04-footnote a:hover { color: var(--gold); }
-
-/* ── SECTION 05 · WHY SUNRISE ───────────────────────────────────────────── */
-.s05-why {
-  background: var(--cream);
-  padding: calc(var(--base) * 2.6) 0;
-  border-top: 1px solid var(--warm-gray-faint);
-}
-.s05-why .container {
+.s04-center {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  text-align: center;
-  gap: calc(var(--base) * 0.05);
 }
-.s05-manifesto-line {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.6);
-  font-weight: 900;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  line-height: 1.0;
-  background: linear-gradient(90deg, #4F308D, #822665, #94264B, #BF252D, #CC382C, #DC531F, #E76B37);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.s04-can-placeholder {
+  width: 100%;
+  max-width: calc(var(--base) * 6);
+  aspect-ratio: 3 / 5;
+  background: var(--warm-gray-faint);
+  border-radius: calc(var(--base) * 0.1);
+  /* Placeholder — swap with `background: url(...)` or <img> when real asset is available */
 }
 
 /* ── SECTION 06 · FOUR TIERS ────────────────────────────────────────────── */
@@ -312,7 +308,6 @@
 .s06-card-name {
   font-size: calc(var(--base) * 0.425);
   font-weight: 900;
-  font-style: italic;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--cream);
@@ -361,11 +356,13 @@
   z-index: 1;
 }
 .s06-card-footer-label {
+  line-height: 1;
   transition: color 200ms ease-out;
 }
 .s06-card-footer-arrow {
   display: inline-block;
   font-size: 1.35em;
+  line-height: 1;
   transition: color 200ms ease-out;
 }
 /* Hover: pill wipes left-to-right, text colors flip to tier color, arrow fades out at 100% and slides smoothly from 75% -> 100% */
@@ -482,69 +479,104 @@
   margin-bottom: calc(var(--base) * 0.2);
 }
 
-/* ── SECTION 09 · REVIEWS ───────────────────────────────────────────────── */
+/* ── SECTION 08 · REVIEWS ───────────────────────────────────────────────── */
+/* Continuous horizontal marquee. Track holds two identical sets of 6      */
+/* cards; animation translates from 0 → -50% so the second set slides in   */
+/* as the first exits, creating a seamless loop. Hover pauses motion so    */
+/* readers can linger. Direction: content enters from the right and exits  */
+/* to the left, preserving natural left-to-right reading flow.             */
 .s09-reviews {
   background: var(--cream);
-  padding: calc(var(--base) * 2.0) 0;
-  text-align: center;
+  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
   border-top: 1px solid var(--warm-gray-faint);
+  overflow: hidden;
 }
-.s09-inner {
-  max-width: calc(var(--base) * 16);
-  margin: 0 auto;
+.s09-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.1);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.0;
+  text-align: center;
+  margin: 0 0 calc(var(--base) * 1.0);
+  padding: 0 var(--section-pad-x);
+}
+.s09-marquee {
+  width: 100%;
+  overflow: hidden;
+  /* Feathered edges — fades the first/last card into the cream background */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+.s09-marquee-track {
+  display: flex;
+  gap: calc(var(--base) * 0.6);
+  width: max-content;
+  animation: s09-marquee-scroll 60s linear infinite;
+  will-change: transform;
+}
+.s09-marquee:hover .s09-marquee-track { animation-play-state: paused; }
+@keyframes s09-marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.s09-card {
+  flex: 0 0 auto;
+  width: calc(var(--base) * 9);
+  min-height: calc(var(--base) * 5.5);
+  padding: calc(var(--base) * 0.9) calc(var(--base) * 0.8);
+  background: var(--cream);
+  border: 1px solid var(--warm-gray-faint);
+  border-radius: calc(var(--base) * 0.15);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: calc(var(--base) * 0.4);
+  gap: calc(var(--base) * 0.3);
+  position: relative;
 }
-.s09-quote-mark {
+.s09-card .s09-quote-mark {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: calc(var(--base) * 1.8);
+  font-size: calc(var(--base) * 1.4);
   color: var(--warm-gray-light);
-  line-height: 1;
+  line-height: 0.7;
+  margin-bottom: calc(var(--base) * -0.1);
 }
-.s09-quote {
-  font-size: calc(var(--base) * 0.58);
+.s09-card .s09-quote-text {
+  font-size: calc(var(--base) * 0.38);
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.45;
   color: var(--near-black);
-  max-width: 32ch;
-  min-height: calc(var(--base) * 2.4);
+  flex: 1;
 }
-.s09-attribution {
+.s09-card .s09-attribution {
   font-size: calc(var(--base) * 0.22);
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-secondary);
-  min-height: calc(var(--base) * 0.3);
 }
-.s09-progress {
-  display: flex;
-  gap: calc(var(--base) * 0.08);
-  justify-content: center;
-  width: 100%;
-  max-width: calc(var(--base) * 7);
-  margin-top: calc(var(--base) * 0.3);
-}
-.s09-progress-seg {
-  flex: 1;
-  height: 2px;
-  background: var(--warm-gray-light);
-  transition: background 200ms ease;
-}
-.s09-progress-seg.active { background: var(--near-black); }
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 980px) {
-  .s03-origin-inner,
-  .s04-layout,
+  .s04-trifecta {
+    grid-template-columns: 1fr;
+    gap: calc(var(--base) * 1.2);
+  }
+  .s04-col-left,
+  .s04-col-right {
+    text-align: left;
+    align-items: flex-start;
+  }
+  .s04-ing { max-width: none; }
+  .s04-center { order: -1; }   /* can appears above ingredients on stacked layouts */
   .s07-layout {
     grid-template-columns: 1fr;
     gap: calc(var(--base) * 0.8);
   }
   .s06-grid { grid-template-columns: repeat(2, 1fr); }
   .s02-manifesto-stack { --s02-stack-width: 78%; }
+  .s03-pi-fruits { grid-template-columns: repeat(3, 1fr); row-gap: calc(var(--base) * 0.7); }
 }
 @media (max-width: 768px) {
   .home-hero { height: 440px; }
@@ -552,6 +584,7 @@
   .s08-inner { height: calc(var(--base) * 11); }
   .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }
+  .s09-card { width: calc(var(--base) * 8); }
 }
 @media (max-width: 520px) {
   .s02-manifesto-stack { --s02-stack-width: 100%; }
@@ -559,5 +592,7 @@
   .s02-ml-theway  { font-size: calc(var(--base) * 1.4); }
   .s02-ml-world   { font-size: calc(var(--base) * 1.2); }
   .s02-ml-drinks  { font-size: calc(var(--base) * 1.8); }
-  .s05-manifesto-line { font-size: calc(var(--base) * 1.1); }
+  .s03-pi-fruits { grid-template-columns: repeat(3, 1fr); gap: calc(var(--base) * 0.3); }
+  .s03-pi-fruit-placeholder { max-width: calc(var(--base) * 1.6); }
+  .s09-card { width: calc(var(--base) * 7); }
 }
