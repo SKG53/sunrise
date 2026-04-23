@@ -1,6 +1,10 @@
 // Dynamic route rendering a product detail page for each of the 24 SKUs.
 // URL pattern: /products/{tier}mg-{flavor-slug}[-{cannabinoid}]
 // Example:     /products/10mg-blackberry-lemonade-cbn
+//
+// Section order (visual; code section numbers kept stable for reference):
+// 01 Breadcrumb → 02 Hero → 06 Cannabinoid (variant only) → 03 Stat Strip
+// → 05 Others in Tier → 04 Ingredients → 07 FAQ → 08 PtP band → Footer
 
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -582,15 +586,17 @@ function ProductDetailPage() {
           </div>
         </section>
 
-        {/* ── 08 · PATH TO PURCHASE (red flood, matches About S05) ──────── */}
-        <section className="pd-ptp">
+        {/* ── 08 · PATH TO PURCHASE (per-SKU flavor color flood) ────────── */}
+        <section
+          className={`pd-ptp${darkTextMod}`}
+          style={{ background: product.color }}
+        >
           <div className="container">
             <div className="pd-ptp-inner">
               <div className="pd-ptp-copy">
                 <h2 className="pd-ptp-headline">
                   Now you know<br />
-                  {product.flavor}
-                  {product.cannabinoid && <> +{product.cannabinoid}</>}.
+                  {product.flavor}.
                 </h2>
                 <p className="pd-ptp-body">
                   Find one near you or explore other flavors and potencies.
