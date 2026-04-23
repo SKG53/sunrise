@@ -661,6 +661,45 @@
   max-width: 72ch;
 }
 
+/* ── SECTION 10 · LIFESTYLE REEL ────────────────────────────────────────── */
+/* Continuously scrolling horizontal image strip. Silent visual closer — no */
+/* header, no borders, edge-to-edge filmstrip. Track holds two identical    */
+/* copies of IMAGES; animation translates 0 → -50% for a seamless loop.     */
+/* Hover pauses. prefers-reduced-motion disables the animation entirely.    */
+.s11-reel {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 1.4);
+  overflow: hidden;
+}
+.s11-reel-track {
+  display: flex;
+  gap: calc(var(--base) * 0.2);
+  width: max-content;
+  animation: s11-reel-scroll 70s linear infinite;
+  will-change: transform;
+}
+.s11-reel:hover .s11-reel-track { animation-play-state: paused; }
+@keyframes s11-reel-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.s11-reel-tile {
+  flex: 0 0 auto;
+  height: calc(var(--base) * 9);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--warm-gray-light);
+}
+.s11-reel-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+@media (prefers-reduced-motion: reduce) {
+  .s11-reel-track { animation: none; }
+}
+
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 980px) {
   .s04-trifecta {
@@ -689,6 +728,7 @@
   .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }
   .s09-card { width: calc(var(--base) * 8); }
+  .s11-reel-tile { height: calc(var(--base) * 7); }
 }
 @media (max-width: 520px) {
   .s02-manifesto-stack { --s02-stack-width: 100%; }
@@ -699,4 +739,5 @@
   .s03-pi-fruits { grid-template-columns: repeat(3, 1fr); gap: calc(var(--base) * 0.3); }
   .s03-pi-fruit-placeholder { max-width: calc(var(--base) * 1.6); }
   .s09-card { width: calc(var(--base) * 7); }
+  .s11-reel-tile { height: calc(var(--base) * 6); }
 }
