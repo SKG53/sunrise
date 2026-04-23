@@ -303,15 +303,15 @@ function ContactPage() {
         {/* ── 05 · FOLLOW ALONG (tier-10 flood) ─────────────────────────── */}
         {/* Matches the red-flood closer pattern used on other subpages     */}
         {/* (About .a-ptp, Find .f-fallback, Home .s08-near-you). Three     */}
-        {/* social tiles: Instagram / TikTok / LinkedIn. Placeholder        */}
-        {/* handles with "#" hrefs — swap to real URLs when accounts live.  */}
+        {/* social channels inline: icon + linked handle per row. Only the  */}
+        {/* handle text is the link target — icon is a decorative sibling.  */}
         <section className="c-social">
           <div className="container">
             <div className="c-social-head">
               <h2 className="c-social-headline">Follow along.</h2>
             </div>
             <div className="c-social-grid">
-              <a href="#" className="c-social-card" aria-label="SUNRISE on Instagram">
+              <div className="c-social-card">
                 <svg
                   className="c-social-icon"
                   viewBox="0 0 24 24"
@@ -326,14 +326,16 @@ function ContactPage() {
                   <circle cx="12" cy="12" r="4" />
                   <circle cx="17.5" cy="6.5" r="0.9" fill="currentColor" stroke="none" />
                 </svg>
-                <div className="c-social-label">Instagram</div>
-                <div className="c-social-handle">@savorsunrise</div>
-                <div className="c-social-note">
-                  Product drops, flavor launches, and behind-the-scenes from Tulsa.
-                </div>
-              </a>
+                <a
+                  href="#"
+                  className="c-social-handle"
+                  aria-label="SUNRISE on Instagram"
+                >
+                  @savorsunrise
+                </a>
+              </div>
 
-              <a href="#" className="c-social-card" aria-label="SUNRISE on TikTok">
+              <div className="c-social-card">
                 <svg
                   className="c-social-icon"
                   viewBox="0 0 24 24"
@@ -342,14 +344,16 @@ function ContactPage() {
                 >
                   <path d="M16.5 3.5c.3 2.2 1.6 4 3.5 4.8v3.1c-1.5-.1-2.9-.6-4.1-1.5v6.8c0 3.5-2.9 6.3-6.4 6.3-3.5 0-6.3-2.8-6.3-6.3s2.8-6.3 6.3-6.3c.3 0 .6 0 .9.1v3.2c-.3-.1-.6-.1-.9-.1-1.8 0-3.2 1.4-3.2 3.1s1.4 3.2 3.2 3.2 3.2-1.4 3.2-3.2V3.5h3.8z" />
                 </svg>
-                <div className="c-social-label">TikTok</div>
-                <div className="c-social-handle">@savorsunrise</div>
-                <div className="c-social-note">
-                  Taste tests, tasting-room moments, and the occasional recipe.
-                </div>
-              </a>
+                <a
+                  href="#"
+                  className="c-social-handle"
+                  aria-label="SUNRISE on TikTok"
+                >
+                  @savorsunrise
+                </a>
+              </div>
 
-              <a href="#" className="c-social-card" aria-label="SUNRISE on LinkedIn">
+              <div className="c-social-card">
                 <svg
                   className="c-social-icon"
                   viewBox="0 0 24 24"
@@ -358,12 +362,14 @@ function ContactPage() {
                 >
                   <path d="M4.5 3.5C4.5 4.6 3.6 5.5 2.5 5.5S.5 4.6.5 3.5 1.4 1.5 2.5 1.5 4.5 2.4 4.5 3.5zM.8 7.5h3.4v15.5H.8V7.5zm6.4 0h3.2v2.1h.1c.5-.9 1.7-1.9 3.6-1.9 3.8 0 4.5 2.5 4.5 5.8V23h-3.4v-7.8c0-1.9 0-4.3-2.6-4.3s-3 2-3 4.2V23H7.2V7.5z" />
                 </svg>
-                <div className="c-social-label">LinkedIn</div>
-                <div className="c-social-handle">SUNRISE Beverage</div>
-                <div className="c-social-note">
-                  Company updates, wholesale news, and what we're building.
-                </div>
-              </a>
+                <a
+                  href="#"
+                  className="c-social-handle"
+                  aria-label="SUNRISE on LinkedIn"
+                >
+                  SUNRISE Beverage
+                </a>
+              </div>
             </div>
           </div>
         </section>
