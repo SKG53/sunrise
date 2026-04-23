@@ -360,35 +360,17 @@
 }
 .c-social-card {
   display: flex;
-  flex-direction: column;
-  padding: calc(var(--base) * 0.7) 0 0;
-  border-top: 2px solid var(--cream);
+  flex-direction: row;
+  align-items: center;
+  gap: calc(var(--base) * 0.32);
   color: var(--cream);
-  text-decoration: none;
-  transition: transform 180ms ease-out;
-}
-.c-social-card:hover {
-  transform: translateY(-2px);
-}
-.c-social-card:hover .c-social-handle {
-  border-bottom-color: #F2D480;
-  color: #F2D480;
 }
 .c-social-icon {
-  width: calc(var(--base) * 0.9);
-  height: calc(var(--base) * 0.9);
+  width: calc(var(--base) * 0.7);
+  height: calc(var(--base) * 0.7);
   color: var(--cream);
-  margin-bottom: calc(var(--base) * 0.4);
+  flex-shrink: 0;
   display: block;
-}
-.c-social-label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 800;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #F2D480; /* Heartland cream-gold — reused for on-color accent */
-  margin-bottom: calc(var(--base) * 0.24);
 }
 .c-social-handle {
   font-family: 'Montserrat', sans-serif;
@@ -397,19 +379,15 @@
   letter-spacing: 0.005em;
   color: var(--cream);
   line-height: 1.25;
-  margin-bottom: calc(var(--base) * 0.3);
   border-bottom: 1.5px solid var(--cream);
-  width: max-content;
-  max-width: 100%;
   padding-bottom: 2px;
+  text-decoration: none;
+  display: inline-block;
   transition: color 160ms, border-color 160ms;
 }
-.c-social-note {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.32);
-  font-weight: 400;
-  line-height: 1.5;
-  color: rgba(254, 251, 224, 0.85);
+.c-social-handle:hover {
+  color: #F2D480; /* Heartland cream-gold — same on-color accent used elsewhere */
+  border-bottom-color: #F2D480;
 }
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
