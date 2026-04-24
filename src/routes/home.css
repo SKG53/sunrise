@@ -283,13 +283,11 @@
   justify-content: center;
   align-items: center;
 }
-.s04-can-placeholder {
+.s04-can {
   width: 100%;
   max-width: calc(var(--base) * 6);
-  aspect-ratio: 3 / 5;
-  background: var(--warm-gray-faint);
-  border-radius: calc(var(--base) * 0.1);
-  /* Placeholder — swap with `background: url(...)` or <img> when real asset is available */
+  height: auto;
+  display: block;
 }
 
 /* ── SECTION 06 · FOUR TIERS ────────────────────────────────────────────── */
