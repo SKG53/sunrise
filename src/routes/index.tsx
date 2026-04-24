@@ -386,28 +386,28 @@ function HomePage() {
               </div>
               <div className="s04-col s04-col-right">
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Emulsified Hemp Extract</div>
+                  <div className="s04-ing-name">Emulsified<br />Hemp Extract</div>
                   <div className="s04-ing-desc">
                     The good stuff — expertly blended cannabis extract for a clean
                     and consistent experience with every sip.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Naturally Sourced Enhancers</div>
+                  <div className="s04-ing-name">Naturally Sourced<br />Enhancers</div>
                   <div className="s04-ing-desc">
                     Functional ingredients like B12 that allow for a healthier,
                     more balanced experience without altering flavors.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Citric Acid</div>
+                  <div className="s04-ing-name">Citric<br />Acid</div>
                   <div className="s04-ing-desc">
                     A naturally occurring acid found in citrus fruits, this is used
                     to balance flavors and keep things bubbly.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Sodium Benzoate</div>
+                  <div className="s04-ing-name">Sodium<br />Benzoate</div>
                   <div className="s04-ing-desc">
                     A widely used food-safe preservative that helps keep each can
                     fresh without altering its flavor profile.
