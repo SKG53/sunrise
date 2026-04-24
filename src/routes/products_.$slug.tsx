@@ -171,14 +171,12 @@ const CANNABINOID_COPY: Record<Cannabinoid, { bestFor: string; body1: string; bo
   },
 };
 
-// Two-word effect phrases shown on related-card pills for +CBG / +CBN /
-// +THCV variants. Mirrors CANNABINOID_EFFECT in /products so PD related
-// cards read identically to the tier-panel flavor cards.
-const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
-  CBG:  "Focus + Uplift",
-  CBN:  "Relax + Unwind",
-  THCV: "Elevate + Engage",
-};
+// Two-word effect phrases were previously surfaced on related-card pills
+// (Focus + Uplift / Relax + Unwind / Elevate + Engage). Pills were removed
+// per founder direction — the rotated +CBG/+CBN/+THCV lockup on the card's
+// right edge now carries that information visually. The CANNABINOID_EFFECT
+// map is preserved on /products (p-flavor-pill) and remains available for
+// future PD reuse if a copy block reintroduces effect language.
 
 function renderLockup(tier: Tier, base: number, color: string): string {
   if (tier === 5) return render5mgLockup(base, color);
@@ -268,7 +266,7 @@ function ProductDetailPage() {
         lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.8, product.color);
       }
       if (stat12Ref.current) {
-        stat12Ref.current.innerHTML = render12ozStatBlock(base * 2.4);
+        stat12Ref.current.innerHTML = render12ozStatBlock(base * 1.32);
       }
 
       // ── Cannabinoid lockups (variant SKUs only) ──────────────────────
@@ -318,9 +316,9 @@ function ProductDetailPage() {
         if (!ref || !o.cannabinoid) return;
         const size = base * 0.7;
         const html =
-          o.cannabinoid === "CBG"  ? renderCBGLockup(size, "#1A1A1A")  :
-          o.cannabinoid === "CBN"  ? renderCBNLockup(size, "#1A1A1A")  :
-                                     renderTHCVLockup(size, "#1A1A1A");
+          o.cannabinoid === "CBG"  ? renderCBGLockup(size, "#FEFBE0")  :
+          o.cannabinoid === "CBN"  ? renderCBNLockup(size, "#FEFBE0")  :
+                                     renderTHCVLockup(size, "#FEFBE0");
         ref.innerHTML = html;
       });
     };
@@ -640,28 +638,22 @@ function ProductDetailPage() {
                 <img
                   className="pd-claim-icon"
                   src="/icons/gluten-free.svg"
-                  alt=""
-                  aria-hidden="true"
+                  alt="Gluten Free"
                 />
-                <div className="pd-claim-label"><span>Gluten</span><span>Free</span></div>
               </div>
               <div className="pd-claim">
                 <img
                   className="pd-claim-icon"
                   src="/icons/natural-vegan.svg"
-                  alt=""
-                  aria-hidden="true"
+                  alt="Natural Vegan"
                 />
-                <div className="pd-claim-label"><span>Natural</span><span>Vegan</span></div>
               </div>
               <div className="pd-claim">
                 <img
                   className="pd-claim-icon"
                   src="/icons/zero-alcohol.svg"
-                  alt=""
-                  aria-hidden="true"
+                  alt="Zero Alcohol"
                 />
-                <div className="pd-claim-label"><span>Zero</span><span>Alcohol</span></div>
               </div>
             </div>
           </div>
@@ -683,15 +675,10 @@ function ProductDetailPage() {
                   params={{ slug: o.slug }}
                   className="pd-related-card"
                 >
-                  <RelatedCan slug={o.slug} flavorName={o.flavor} />
+                  <RelatedCan slug={o.slug} flavorName={o.flavor} color={o.color} />
                   <div className="pd-related-meta">
                     <div className="pd-related-name">{o.flavor}</div>
                     <div className="pd-related-descriptor">{o.descriptor}</div>
-                    {o.cannabinoid && (
-                      <div className="pd-related-pill">
-                        {CANNABINOID_EFFECT[o.cannabinoid]}
-                      </div>
-                    )}
                   </div>
                   {o.cannabinoid && (
                     <span
@@ -798,7 +785,7 @@ function ProductDetailPage() {
             <div className="pd-section-head">
               <div className="pd-eyebrow">Questions</div>
               <h2 className="pd-section-headline">
-                The things people <span className="accent">ask</span>
+                What are people <span className="accent">asking?</span>
               </h2>
             </div>
             <div className="pd-faq-list">
@@ -827,8 +814,8 @@ function ProductDetailPage() {
             <div className="pd-ptp-inner">
               <div className="pd-ptp-copy">
                 <h2 className="pd-ptp-headline">
-                  Now you know<br />
-                  {product.flavor}
+                  <span className="pd-ptp-line-1">Now you know</span><br />
+                  <span className="pd-ptp-line-2">{product.flavor}</span>
                 </h2>
                 <p className="pd-ptp-body">
                   Find one near you or explore other flavors and potencies.
@@ -853,15 +840,16 @@ function ProductDetailPage() {
 // the FlavorCan helper on /products: prefers a live Shopify image for
 // mapped SKUs, falls back to the local /images/cans/{slug}.webp asset that
 // every SKU ships with. The colored placeholder branch is effectively
-// unreachable in practice.
-function RelatedCan({ slug, flavorName }: { slug: string; flavorName: string }) {
+// unreachable in practice. The `color` prop floods the frame in the
+// sibling SKU's flavor color so each card carries its own identity.
+function RelatedCan({ slug, flavorName, color }: { slug: string; flavorName: string; color: string }) {
   const mapping = getShopifyMapping(slug);
   const { product } = useShopifyProduct(mapping?.handle);
   const image = product?.node.images.edges[0]?.node;
 
   if (image?.url) {
     return (
-      <div className="pd-related-can has-image">
+      <div className="pd-related-can has-image" style={{ background: color }}>
         <img
           src={image.url}
           alt={image.altText ?? `SUNRISE ${flavorName} can`}
@@ -871,7 +859,7 @@ function RelatedCan({ slug, flavorName }: { slug: string; flavorName: string }) 
     );
   }
   return (
-    <div className="pd-related-can has-image">
+    <div className="pd-related-can has-image" style={{ background: color }}>
       <img
         src={`/images/cans/${slug}.webp`}
         alt={`SUNRISE ${flavorName} can`}
