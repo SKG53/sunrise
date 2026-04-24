@@ -676,23 +676,30 @@ function ProductDetailPage() {
               </h2>
             </div>
             <div className="pd-related-grid">
-              {othersInTier.map((o) => (
+              {othersInTier.map((o, i) => (
                 <Link
                   key={o.slug}
                   to="/products/$slug"
                   params={{ slug: o.slug }}
                   className="pd-related-card"
                 >
-                  <div className="pd-related-can" style={{ background: o.color }}>
-                    <span>{o.flavor}</span>
-                  </div>
+                  <RelatedCan slug={o.slug} flavorName={o.flavor} />
                   <div className="pd-related-meta">
-                    <div className="pd-related-name">
-                      {o.flavor}
-                      {o.cannabinoid && <span className="pd-related-variant"> +{o.cannabinoid}</span>}
-                    </div>
+                    <div className="pd-related-name">{o.flavor}</div>
                     <div className="pd-related-descriptor">{o.descriptor}</div>
+                    {o.cannabinoid && (
+                      <div className="pd-related-pill">
+                        {CANNABINOID_EFFECT[o.cannabinoid]}
+                      </div>
+                    )}
                   </div>
+                  {o.cannabinoid && (
+                    <span
+                      className="pd-related-corner"
+                      ref={(el) => { relatedCornerRefs.current[i] = el; }}
+                      aria-label={`+${o.cannabinoid}`}
+                    />
+                  )}
                 </Link>
               ))}
             </div>
