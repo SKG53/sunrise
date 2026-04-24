@@ -231,8 +231,8 @@ function HomePage() {
         <section className="s03-product-intro">
           <div className="container">
             <h2 className="s03-pi-headline">
-              Infused Seltzers.<br />
-              Made with <span className="accent">real fruit.</span>
+              Infused Seltzers<br />
+              Made with <span className="accent">real fruit</span>
             </h2>
             <p className="s03-pi-subhead">
               Clean, carbonated, and crafted to showcase real fruit character.
@@ -259,8 +259,8 @@ function HomePage() {
         <section className="s06-tiers">
           <div className="container">
             <h2 className="s06-headline">
-              Four options.<br />
-              Find your <span className="accent">perfect dose.</span>
+              Four options<br />
+              Find your <span className="accent">perfect dose</span>
             </h2>
             <p className="s06-subhead">
               Mellow moments to enhanced relaxation, find your favorite SUNRISE experience below.
@@ -393,7 +393,7 @@ function HomePage() {
               <div className="s07-portrait" />
               <div className="s07-copy">
                 <h2 className="s07-headline">
-                  A family business.<br />A new kind of drink.
+                  A family business<br />A new kind of drink
                 </h2>
                 <p className="s07-body">
                   SUNRISE was born from a simple conviction: the world of non-alcoholic
@@ -414,7 +414,7 @@ function HomePage() {
             <S07Map />
             <div className="s08-card">
               <h2 className="s08-card-headline">
-                Find SUNRISE<br />near you.
+                Find SUNRISE<br />near you
               </h2>
               <p className="s08-card-body">
                 Available at select retailers across the country. Check the locator
@@ -432,7 +432,7 @@ function HomePage() {
         {/* × 2) to produce a seamless loop via translateX(0 → -50%).     */}
         {/* Hover pauses. All quote content is placeholder.                */}
         <section className="s09-reviews">
-          <h2 className="s09-heading">What people say.</h2>
+          <h2 className="s09-heading">What people say</h2>
           <div className="s09-marquee" aria-label="Customer reviews carousel">
             <div className="s09-marquee-track">
               {/* Set A */}
@@ -543,7 +543,7 @@ function HomePage() {
             <div className="s10-faq-head">
               <div className="s10-faq-eyebrow">Questions</div>
               <h2 className="s10-faq-headline">
-                The questions we hear <span className="accent">most.</span>
+                The questions we hear <span className="accent">most</span>
               </h2>
             </div>
             <div className="s10-faq-list">

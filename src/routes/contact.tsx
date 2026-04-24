@@ -101,7 +101,7 @@ function ContactPage() {
           <div className="container">
             <div className="c-hero-inner">
               <h1 className="c-hero-headline">
-                Say hello.<br />
+                Say hello<br />
                 Give us a <em className="accent-italic">buzz</em>
               </h1>
               <p className="c-hero-body">
@@ -119,7 +119,7 @@ function ContactPage() {
               <div className="c-form-side">
                 <div className="c-eyebrow">General Inquiry</div>
                 <h2 className="c-form-headline">
-                  Tell us what's on your <span className="accent">mind.</span>
+                  Tell us what's on your <span className="accent">mind</span>
                 </h2>
                 <p className="c-form-sub">
                   We respond to most messages within two business days. Please
@@ -131,7 +131,7 @@ function ContactPage() {
                 {submitted ? (
                   <div className="c-success" role="status" aria-live="polite">
                     <div className="c-success-eyebrow">Message Sent</div>
-                    <div className="c-success-headline">Thanks for reaching out.</div>
+                    <div className="c-success-headline">Thanks for reaching out</div>
                     <p className="c-success-body">
                       We've got your note and will be in touch soon. In the
                       meantime, feel free to explore the lineup.
@@ -247,7 +247,7 @@ function ContactPage() {
           <div className="container">
             <div className="c-direct-head">
               <h2 className="c-direct-headline">
-                Three ways to find <span className="accent">us.</span>
+                Three ways to find <span className="accent">us</span>
               </h2>
             </div>
             <div className="c-direct-grid">
@@ -294,7 +294,7 @@ function ContactPage() {
         <section className="c-social">
           <div className="container">
             <div className="c-social-head">
-              <h2 className="c-social-headline">Follow along.</h2>
+              <h2 className="c-social-headline">Follow along</h2>
             </div>
             <div className="c-social-grid">
               <div className="c-social-card">

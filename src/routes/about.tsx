@@ -60,8 +60,8 @@ function AboutPage() {
             <div className="a-origin-inner">
               <div className="a-origin-copy">
                 <h2 className="a-origin-headline">
-                  Generations in beverage.<br />
-                  A new kind of <span className="accent">drink.</span>
+                  Generations in beverage<br />
+                  A new kind of <span className="accent">drink</span>
                 </h2>
                 <div className="a-origin-body">
                   <p>
@@ -116,8 +116,8 @@ function AboutPage() {
           <div className="container">
             <div className="a-heartland-inner">
               <h2 className="a-heartland-headline">
-                Route 66.<br />
-                Tulsa, <span className="accent">Oklahoma.</span>
+                Route 66<br />
+                Tulsa, <span className="accent">Oklahoma</span>
               </h2>
               <p className="a-heartland-body">
                 Not a coastal beverage brand. Built in the American heartland,
@@ -133,8 +133,8 @@ function AboutPage() {
           <div className="container">
             <div className="a-approach-head">
               <h2 className="a-approach-headline">
-                Built in-house.<br />
-                Tested <span className="accent">every batch.</span>
+                Built in-house<br />
+                Tested <span className="accent">every batch</span>
               </h2>
               <p className="a-approach-lead">
                 Three principles shape every can. None of them are shortcuts.
@@ -171,7 +171,7 @@ function AboutPage() {
           <div className="container">
             <div className="a-ptp-inner">
               <div className="a-ptp-copy">
-                <h2 className="a-ptp-headline">Now that you know us.</h2>
+                <h2 className="a-ptp-headline">Now that you know us</h2>
                 <p className="a-ptp-body">
                   Find SUNRISE direct, or in stores near you.
                 </p>

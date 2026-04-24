@@ -336,8 +336,8 @@ function ProductsPage() {
           <div className="container">
             <div className="p-hero-inner">
               <h1 className="p-hero-headline">
-                Twenty-four seltzers.<br />
-                Made the same <span className="accent">way.</span>
+                Twenty-four seltzers<br />
+                Made the same <span className="accent">way</span>
               </h1>
               <p className="p-hero-body">
                 Four potency tiers, six flavors each, three cannabinoid variants per tier.
@@ -351,7 +351,7 @@ function ProductsPage() {
         <section className="p-effects">
           <div className="container">
             <h2 className="p-effects-headline">
-              Find your <span className="accent">effect.</span>
+              Find your <span className="accent">effect</span>
             </h2>
             <p className="p-effects-subhead">
               Every tier offers four paths — a classic THC core, or three enhanced with a minor cannabinoid for a more specific lift.
@@ -382,7 +382,7 @@ function ProductsPage() {
         <section className="p-switcher">
           <div className="container">
             <h2 className="p-switcher-headline">
-              Find your <span className="accent">potency.</span>
+              Find your <span className="accent">potency</span>
             </h2>
             <p className="p-switcher-subhead">
               Six flavors per tier. Tap a tier to explore.
@@ -447,8 +447,8 @@ function ProductsPage() {
           <div className="container">
             <div className="p-inside-head">
               <h2 className="p-inside-headline">
-                Real ingredients.<br />
-                Real <span className="accent">effects.</span>
+                Real ingredients<br />
+                Real <span className="accent">effects</span>
               </h2>
               <p className="p-inside-lead">
                 Every SUNRISE seltzer starts with real fruit, pure cane sugar, and hemp extract
@@ -498,7 +498,7 @@ function ProductsPage() {
             <div className="p-transparency-inner">
               <div className="p-transparency-copy">
                 <h2 className="p-transparency-headline">
-                  Every batch, <span className="accent">full-panel tested.</span>
+                  Every batch, <span className="accent">full-panel tested</span>
                 </h2>
                 <p className="p-transparency-body">
                   Purified water, pure cane sugar, real fruit flavoring, emulsified
@@ -524,7 +524,7 @@ function ProductsPage() {
           <div className="container">
             <div className="p-ptp-inner">
               <div className="p-ptp-copy">
-                <h2 className="p-ptp-headline">Now you know<br />our products.</h2>
+                <h2 className="p-ptp-headline">Now you know<br />our products</h2>
                 <p className="p-ptp-body">
                   Get to know us, or find a can near you.
                 </p>
@@ -543,7 +543,7 @@ function ProductsPage() {
         <section className="p-faq">
           <div className="container">
             <h2 className="p-faq-headline">
-              Frequently <span className="accent">asked.</span>
+              Frequently <span className="accent">asked</span>
             </h2>
             <p className="p-faq-subhead">
               The questions shoppers actually ask. If yours isn't here, reach us at hello@savorsunrise.com.
