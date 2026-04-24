@@ -177,6 +177,12 @@ function HomePage() {
         </section>
 
         {/* ── 03 · PRODUCT INTRO ────────────────────────────────────────── */}
+        {/* Centered copy inside the container, followed by an edge-to-edge   */}
+        {/* continuously scrolling can strip pulled outside the container so  */}
+        {/* cans run past the text column on both sides. Marquee renders      */}
+        {/* S03_CANS twice back-to-back and animates translateX(0) →          */}
+        {/* translateX(-50%) for a seamless loop. Hover pauses;               */}
+        {/* prefers-reduced-motion disables animation.                        */}
         <section className="s03-product-intro">
           <div className="container">
             <h2 className="s03-pi-headline">
@@ -188,33 +194,18 @@ function HomePage() {
               Federally-legal Delta-9 THC, emulsified for precise dosing — so every
               can delivers exactly the experience you chose.
             </p>
-            <div className="s03-pi-fruits" aria-hidden="true">
-              {/* Placeholder fruit chips — swap .s03-pi-fruit inner content */}
-              {/*  with <img src="..." /> once real illustrations are available. */}
-              <div className="s03-pi-fruit fruit-strawberry">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Strawberry</div>
-              </div>
-              <div className="s03-pi-fruit fruit-watermelon">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Watermelon</div>
-              </div>
-              <div className="s03-pi-fruit fruit-lemon">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Lemon</div>
-              </div>
-              <div className="s03-pi-fruit fruit-blueberry">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Blueberry</div>
-              </div>
-              <div className="s03-pi-fruit fruit-bloodorange">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Blood Orange</div>
-              </div>
-              <div className="s03-pi-fruit fruit-blackberry">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Blackberry</div>
-              </div>
+          </div>
+          <div className="s03-reel" aria-label="SUNRISE can lineup">
+            <div className="s03-reel-track">
+              {[...S03_CANS, ...S03_CANS].map((can, idx) => (
+                <div
+                  key={idx}
+                  className="s03-reel-tile"
+                  aria-hidden={idx >= S03_CANS.length ? "true" : undefined}
+                >
+                  <img src={can.src} alt={can.alt} loading="lazy" />
+                </div>
+              ))}
             </div>
           </div>
         </section>
