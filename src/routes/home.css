@@ -397,7 +397,7 @@
 .s06-card-footer::before {
   content: "";
   position: absolute;
-  inset: calc(var(--base) * 0.085) calc(var(--base) * -0.15) calc(var(--base) * -0.115) calc(var(--base) * -0.15);
+  inset: calc(var(--base) * 0.123) calc(var(--base) * -0.15) calc(var(--base) * -0.077) calc(var(--base) * -0.15);
   background: #FEFBE0;
   border-radius: 4px;
   clip-path: inset(0 100% 0 0);
