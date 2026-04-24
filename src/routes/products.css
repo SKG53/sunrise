@@ -526,6 +526,10 @@
   line-height: 1.0;
   margin-bottom: calc(var(--base) * 0.4);
 }
+.p-ptp-headline span {
+  display: block;
+  white-space: nowrap;
+}
 .p-ptp-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.4);
@@ -654,7 +658,6 @@
   .p-switch:nth-child(2) { border-bottom: 1.5px solid var(--near-black); }
   .p-switch:nth-child(2) { border-right: none; }
   .p-inside-pillars { grid-template-columns: 1fr; }
-  .p-inside-stats-badges { justify-content: flex-start; }
   .p-inside-headline { font-size: calc(var(--base) * 1.0); }
   .p-hero-headline { font-size: calc(var(--base) * 1.35); }
 }
@@ -665,5 +668,4 @@
   .p-ptp-ctas { flex-direction: column; width: 100%; }
   .p-ptp-ctas .btn { width: 100%; text-align: center; }
   .p-faq-q-text { font-size: calc(var(--base) * 0.38); }
-  .p-inside-stats { gap: calc(var(--base) * 0.7); }
 }
