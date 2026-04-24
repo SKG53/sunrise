@@ -848,3 +848,36 @@ function ProductDetailPage() {
     </>
   );
 }
+
+// ── RelatedCan ───────────────────────────────────────────────────────────
+// Renders the can thumbnail for each "Others in Tier" sibling card. Mirrors
+// the FlavorCan helper on /products: prefers a live Shopify image for
+// mapped SKUs, falls back to the local /images/cans/{slug}.webp asset that
+// every SKU ships with. The colored placeholder branch is effectively
+// unreachable in practice.
+function RelatedCan({ slug, flavorName }: { slug: string; flavorName: string }) {
+  const mapping = getShopifyMapping(slug);
+  const { product } = useShopifyProduct(mapping?.handle);
+  const image = product?.node.images.edges[0]?.node;
+
+  if (image?.url) {
+    return (
+      <div className="pd-related-can has-image">
+        <img
+          src={image.url}
+          alt={image.altText ?? `SUNRISE ${flavorName} can`}
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+  return (
+    <div className="pd-related-can has-image">
+      <img
+        src={`/images/cans/${slug}.webp`}
+        alt={`SUNRISE ${flavorName} can`}
+        loading="lazy"
+      />
+    </div>
+  );
+}
