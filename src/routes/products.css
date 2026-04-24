@@ -408,7 +408,10 @@
   text-transform: uppercase;
   color: var(--near-black);
   margin: 0 auto calc(var(--base) * 0.4);
-  max-width: 18ch;
+}
+.p-inside-headline > span {
+  display: block;
+  white-space: nowrap;
 }
 .p-inside-headline .accent { color: var(--green-accent); }
 .p-inside-lead {
@@ -668,4 +671,5 @@
   .p-ptp-ctas { flex-direction: column; width: 100%; }
   .p-ptp-ctas .btn { width: 100%; text-align: center; }
   .p-faq-q-text { font-size: calc(var(--base) * 0.38); }
+  .p-inside-headline > span { white-space: normal; }
 }
