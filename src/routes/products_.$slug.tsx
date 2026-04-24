@@ -470,8 +470,8 @@ function ProductDetailPage() {
                     <span ref={eyebrowCbRef} aria-label={`+${product.cannabinoid}`} />
                   </div>
                   <h2 className="pd-cannabinoid-headline">
-                    {cbCopy.name}. For{" "}
-                    <span className="accent-on-color">{cbCopy.effect.toLowerCase()}.</span>
+                    {cbCopy.name} for{" "}
+                    <span className="accent-on-color">{cbCopy.effect.toLowerCase()}</span>
                   </h2>
                 </div>
                 <p className="pd-cannabinoid-body">{cbCopy.description}</p>
@@ -540,7 +540,7 @@ function ProductDetailPage() {
             <div className="pd-section-head">
               <div className="pd-eyebrow">Also in {product.tier}mg</div>
               <h2 className="pd-section-headline">
-                More at your <span className="accent">pace.</span>
+                More at your <span className="accent">pace</span>
               </h2>
             </div>
             <div className="pd-related-grid">
@@ -610,7 +610,7 @@ function ProductDetailPage() {
             <div className="pd-section-head">
               <div className="pd-eyebrow">Questions</div>
               <h2 className="pd-section-headline">
-                The things people <span className="accent">ask.</span>
+                The things people <span className="accent">ask</span>
               </h2>
             </div>
             <div className="pd-faq-list">
@@ -640,7 +640,7 @@ function ProductDetailPage() {
               <div className="pd-ptp-copy">
                 <h2 className="pd-ptp-headline">
                   Now you know<br />
-                  {product.flavor}.
+                  {product.flavor}
                 </h2>
                 <p className="pd-ptp-body">
                   Find one near you or explore other flavors and potencies.

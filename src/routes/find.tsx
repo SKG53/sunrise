@@ -266,8 +266,8 @@ function FindPage() {
           <div className="container">
             <div className="f-hero-inner">
               <h1 className="f-hero-headline">
-                Stocked on real shelves.<br />
-                <span className="accent">Near</span> you.
+                Stocked on real shelves<br />
+                <span className="accent">Near</span> you
               </h1>
               <p className="f-hero-body">
                 Retailers carrying SUNRISE right now. Search by zip, city, or
@@ -351,7 +351,7 @@ function FindPage() {
 
                 {results.length === 0 ? (
                   <div className="f-empty">
-                    <p className="f-empty-headline">No retailers match that search.</p>
+                    <p className="f-empty-headline">No retailers match that search</p>
                     <p className="f-empty-body">
                       Try a different zip, or clear filters to see all locations.
                     </p>
@@ -406,7 +406,7 @@ function FindPage() {
             <div className="f-fallback-inner">
               <div className="f-fallback-copy">
                 <h2 className="f-fallback-headline">
-                  No store nearby? No problem.
+                  No store nearby? No problem
                 </h2>
                 <p className="f-fallback-body">
                   Order SUNRISE direct to your door — or get to know us first.
@@ -430,7 +430,7 @@ function FindPage() {
             <div className="f-gateway-inner">
               <div className="f-gateway-left">
                 <h2 className="f-gateway-headline">
-                  Let's stock <span className="accent">your</span> shelves.
+                  Let's stock <span className="accent">your</span> shelves
                 </h2>
                 <p className="f-gateway-body">
                   Wholesale inquiries welcome. Small-batch craft, full-panel
