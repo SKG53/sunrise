@@ -252,9 +252,14 @@
   max-width: 42ch;
 }
 
-/* ── 06 · PATH TO PURCHASE (tier-10 flood) ──────────────────────────────── */
+/* ── 06 · PATH TO PURCHASE ──────────────────────────────────────────────────
+   Tier-10 red flood — bookends the page to its S01 pagehero. --on-color-text
+   is the token .btn-on-color uses for its text color, keeping the solid CTA
+   in brand-color harmony with the band flood.
+   ========================================================================== */
 .a-ptp {
   background: var(--tier-10);
+  --on-color-text: var(--tier-10);
   color: var(--cream);
   padding: calc(var(--base) * 1.6) 0;
 }

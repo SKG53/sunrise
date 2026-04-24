@@ -571,7 +571,10 @@ function ProductDetailPage() {
         {/* ── 08 · PATH TO PURCHASE (per-SKU flavor color flood) ────────── */}
         <section
           className="pd-ptp"
-          style={{ background: product.color }}
+          style={{
+            background: product.color,
+            ["--on-color-text" as string]: product.color,
+          } as React.CSSProperties}
         >
           <div className="container">
             <div className="pd-ptp-inner">
