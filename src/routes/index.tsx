@@ -95,19 +95,19 @@ const S02_GRADIENT_STOPS: { o: number; c: string }[] = [
 function S02Line({
   text,
   width,
-  viewBoxW,
+  xShift,
   gradId,
 }: {
   text: string;
   width: number;
-  viewBoxW?: number;
+  xShift?: number;
   gradId: string;
 }) {
-  const vbW = viewBoxW ?? width;
+  const tx = xShift ?? 0;
   return (
     <svg
       className="s02-manifesto-line"
-      viewBox={`0 0 ${vbW} 100`}
+      viewBox={`0 0 ${width} 100`}
       preserveAspectRatio="xMidYMid meet"
       aria-hidden="true"
     >
@@ -119,14 +119,12 @@ function S02Line({
         </linearGradient>
       </defs>
       <text
-        x="0"
+        x={tx}
         y="82"
         fontFamily="Montserrat, sans-serif"
         fontWeight="900"
         fontSize="100"
         letterSpacing="1"
-        textLength={width}
-        lengthAdjust="spacingAndGlyphs"
         fill={`url(#${gradId})`}
       >
         {text}
@@ -183,10 +181,10 @@ function HomePage() {
           <div className="container">
             <h2 className="sr-only">Refresh the way the world drinks.</h2>
             <div className="s02-manifesto-stack">
-              <S02Line text="REFRESH"   width={501.11} gradId="s02-grad-refresh" />
-              <S02Line text="THE WAY"   width={514.80} viewBoxW={517.11} gradId="s02-grad-theway" />
-              <S02Line text="THE WORLD" width={673.81} gradId="s02-grad-world" />
-              <S02Line text="DRINKS"    width={419.20} gradId="s02-grad-drinks" />
+              <S02Line text="REFRESH"   width={488.41} xShift={-5.62} gradId="s02-grad-refresh" />
+              <S02Line text="THE WAY"   width={514}                    gradId="s02-grad-theway" />
+              <S02Line text="THE WORLD" width={669.72}                 gradId="s02-grad-world" />
+              <S02Line text="DRINKS"    width={410.96} xShift={-5.84} gradId="s02-grad-drinks" />
             </div>
           </div>
         </section>
