@@ -108,13 +108,23 @@ function S02Line({
   width,
   xShift,
   gradId,
+  charOffset,
 }: {
   text: string;
   width: number;
   xShift?: number;
   gradId: string;
+  charOffset: number;
 }) {
   const tx = xShift ?? 0;
+  // Character-reveal typing animation: each character is a <tspan> with a
+  // staggered animation-delay. Gradient still flows across the full <text>
+  // element, so letters "arrive at their color" without gradient jank.
+  // Stream is continuous across all four lines in reading order — charOffset
+  // places this line's characters in the global sequence. Timing: 200ms
+  // settle + 100ms/char stride + 0.05s snap. See .s02-char CSS in home.css.
+  const SETTLE_MS = 200;
+  const STRIDE_MS = 100;
   return (
     <svg
       className="s02-manifesto-line"
@@ -138,7 +148,15 @@ function S02Line({
         letterSpacing="1"
         fill={`url(#${gradId})`}
       >
-        {text}
+        {text.split("").map((ch, i) => (
+          <tspan
+            key={i}
+            className="s02-char"
+            style={{ animationDelay: `${SETTLE_MS + (charOffset + i) * STRIDE_MS}ms` }}
+          >
+            {ch === " " ? "\u00A0" : ch}
+          </tspan>
+        ))}
       </text>
     </svg>
   );
@@ -191,11 +209,14 @@ function HomePage() {
         <section className="s02-brand-statement">
           <div className="container">
             <h2 className="sr-only">Refresh the way the world drinks.</h2>
-            <div className="s02-manifesto-stack">
-              <S02Line text="REFRESH"   width={488.41} xShift={-5.62} gradId="s02-grad-refresh" />
-              <S02Line text="THE WAY"   width={514}                    gradId="s02-grad-theway" />
-              <S02Line text="THE WORLD" width={669.72}                 gradId="s02-grad-world" />
-              <S02Line text="DRINKS"    width={410.96} xShift={-5.84} gradId="s02-grad-drinks" />
+            <div
+              className="s02-manifesto-stack"
+              aria-label="Refresh the way the world drinks."
+            >
+              <S02Line text="REFRESH"   width={488.41} xShift={-5.62} gradId="s02-grad-refresh" charOffset={0}  />
+              <S02Line text="THE WAY"   width={514}                    gradId="s02-grad-theway"  charOffset={7}  />
+              <S02Line text="THE WORLD" width={669.72}                 gradId="s02-grad-world"   charOffset={14} />
+              <S02Line text="DRINKS"    width={410.96} xShift={-5.84} gradId="s02-grad-drinks"  charOffset={23} />
             </div>
           </div>
         </section>
