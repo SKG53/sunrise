@@ -607,9 +607,8 @@ function HomePage() {
         <section className="s10-faq">
           <div className="container">
             <div className="s10-faq-head">
-              <div className="s10-faq-eyebrow">Questions</div>
               <h2 className="s10-faq-headline">
-                The questions we hear <span className="accent">most</span>
+                Looking for some <span className="accent">quick info?</span>
               </h2>
             </div>
             <div className="s10-faq-list">
