@@ -725,6 +725,13 @@
   .s02-manifesto-stack { --s02-stack-width: 92%; }
   .s09-card { width: calc(var(--base) * 8); }
   .s03-reel-tile { height: calc(var(--base) * 5.6); }
+  /* Section headlines — match subpage S02 responsive scale (1.5 → 1.35). */
+  .s03-pi-headline,
+  .s04-headline,
+  .s06-headline,
+  .s07-headline,
+  .s09-heading,
+  .s10-faq-headline { font-size: calc(var(--base) * 1.35); }
 }
 @media (max-width: 520px) {
   .s02-manifesto-stack { --s02-stack-width: 100%; }
