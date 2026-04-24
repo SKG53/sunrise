@@ -381,6 +381,7 @@
   gap: calc(var(--base) * 0.4);
 }
 .pd-related-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   background: var(--cream);
@@ -395,25 +396,35 @@
   border-color: var(--near-black);
 }
 .pd-related-can {
+  position: relative;
   aspect-ratio: 3 / 4;
+  background: rgba(26, 26, 26, 0.04);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: calc(var(--base) * 0.3);
-}
-.pd-related-can span {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.28);
-  font-weight: 900;
-  letter-spacing: 0.02em;
+  font-size: calc(var(--base) * 0.18);
+  font-weight: 700;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--cream);
-  text-align: center;
-  line-height: 1.15;
+  color: rgba(26, 26, 26, 0.32);
+  overflow: hidden;
+}
+.pd-related-can:not(.has-image)::before {
+  content: 'Can Image';
+}
+.pd-related-can img {
+  width: 75%;
+  height: 75%;
+  object-fit: contain;
+  object-position: center;
 }
 .pd-related-meta {
   padding: calc(var(--base) * 0.32) calc(var(--base) * 0.32) calc(var(--base) * 0.4);
   background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.1);
 }
 .pd-related-name {
   font-family: 'Montserrat', sans-serif;
@@ -423,9 +434,7 @@
   text-transform: uppercase;
   color: var(--near-black);
   line-height: 1.2;
-  margin-bottom: calc(var(--base) * 0.1);
 }
-.pd-related-variant { color: var(--gold); }
 .pd-related-descriptor {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.22);
@@ -433,6 +442,31 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--green-accent);
+}
+/* Cannabinoid effect pill — mirrors .p-flavor-pill on /products but tuned   */
+/* for the cream-on-near-black PD card surface.                             */
+.pd-related-pill {
+  display: inline-block;
+  align-self: flex-start;
+  padding: calc(var(--base) * 0.08) calc(var(--base) * 0.24);
+  border: 1px solid rgba(26, 26, 26, 0.35);
+  border-radius: 9999px;
+  font-size: calc(var(--base) * 0.18);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin-top: calc(var(--base) * 0.18);
+}
+/* Cannabinoid lockup badge — absolute-positioned in the card's bottom-right */
+/* corner on +CBG / +CBN / +THCV siblings. Sibling of .pd-related-meta so   */
+/* it anchors to the full card. pointer-events: none keeps the link clean.  */
+.pd-related-corner {
+  position: absolute;
+  right: calc(var(--base) * 0.32);
+  bottom: calc(var(--base) * 0.36);
+  line-height: 0;
+  pointer-events: none;
 }
 
 /* ── 06 · CANNABINOID STORY (variant only — two-column band on flavor flood) ─
