@@ -298,6 +298,49 @@ function ProductDetailPage() {
     ? CANNABINOID_COPY[product.cannabinoid as Cannabinoid]
     : null;
 
+  // ── Shopify wiring (pilot: only mapped SKUs hit Shopify) ───────────────
+  const shopifyMapping = getShopifyMapping(product.slug);
+  const { product: shopifyProduct, loading: shopifyLoading } = useShopifyProduct(
+    shopifyMapping?.handle
+  );
+  const [selectedPack, setSelectedPack] = useState<string>(
+    shopifyMapping?.defaultPackOption ?? "Single Can"
+  );
+  const addItem = useCartStore((s) => s.addItem);
+  const cartLoading = useCartStore((s) => s.isLoading);
+
+  const selectedVariant = shopifyProduct?.node.variants.edges.find((edge) =>
+    edge.node.selectedOptions.some(
+      (opt) => opt.name === "Pack" && opt.value === selectedPack
+    )
+  )?.node ?? shopifyProduct?.node.variants.edges[0]?.node;
+
+  const packOptions =
+    shopifyProduct?.node.options.find((o) => o.name === "Pack")?.values ?? [];
+
+  const displayPrice = selectedVariant?.price.amount;
+  const priceUnit =
+    selectedVariant?.selectedOptions.find((o) => o.name === "Pack")?.value ===
+    "4-Pack Carton"
+      ? "/ 4-pack"
+      : "/ can";
+  const isInStock = selectedVariant?.availableForSale ?? false;
+
+  const handleAddToCart = async () => {
+    if (!shopifyProduct || !selectedVariant) return;
+    await addItem({
+      variantId: selectedVariant.id,
+      productHandle: shopifyProduct.node.handle,
+      productTitle: shopifyProduct.node.title,
+      variantTitle: selectedVariant.title,
+      imageUrl:
+        shopifyProduct.node.images.edges[0]?.node.url ?? null,
+      price: selectedVariant.price,
+      quantity: qty,
+      selectedOptions: selectedVariant.selectedOptions,
+    });
+  };
+
   return (
     <>
       <SiteHeader activeNav="products" />
