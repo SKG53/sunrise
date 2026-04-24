@@ -371,7 +371,12 @@ function ProductDetailPage() {
               <li aria-hidden="true">·</li>
               <li className="pd-breadcrumb-current">
                 {product.flavor}
-                {product.cannabinoid && <span> +{product.cannabinoid}</span>}
+                {product.cannabinoid && (
+                  <>
+                    {" "}
+                    <span ref={bcCbRef} aria-label={`+${product.cannabinoid}`} />
+                  </>
+                )}
               </li>
             </ol>
           </div>
@@ -389,7 +394,9 @@ function ProductDetailPage() {
                     <div className="pd-hero-can-flavor">{product.flavor}</div>
                     <div className="pd-hero-can-sub">{product.tier}mg THC</div>
                     {product.cannabinoid && (
-                      <div className="pd-hero-can-variant">+{product.cannabinoid}</div>
+                      <div className="pd-hero-can-variant">
+                        <span ref={placeholderCbRef} aria-label={`+${product.cannabinoid}`} />
+                      </div>
                     )}
                   </div>
                 )}
@@ -400,7 +407,7 @@ function ProductDetailPage() {
                   <div className="pd-variant-pill">
                     <span>{product.tier}mg</span>
                     <span className="pd-variant-dot">·</span>
-                    <span>+{product.cannabinoid}</span>
+                    <span ref={variantPillCbRef} aria-label={`+${product.cannabinoid}`} />
                     <span className="pd-variant-dot">·</span>
                     <span>{cbCopy.effect}</span>
                   </div>
@@ -459,7 +466,8 @@ function ProductDetailPage() {
               <div className="pd-cannabinoid-grid">
                 <div className="pd-cannabinoid-copy">
                   <div className="pd-eyebrow pd-eyebrow-on-color">
-                    About the +{product.cannabinoid}
+                    About the{" "}
+                    <span ref={eyebrowCbRef} aria-label={`+${product.cannabinoid}`} />
                   </div>
                   <h2 className="pd-cannabinoid-headline">
                     {cbCopy.name}. For{" "}
@@ -473,8 +481,12 @@ function ProductDetailPage() {
                     <div className="pd-cannabinoid-stat-label">THC per can</div>
                   </div>
                   <div className="pd-cannabinoid-stat">
-                    <div className="pd-cannabinoid-stat-value">30<span>mg</span></div>
-                    <div className="pd-cannabinoid-stat-label">{product.cannabinoid} per can</div>
+                    <div
+                      className="pd-cannabinoid-stat-lockup"
+                      ref={stat30mgCbRef}
+                      aria-label={`+30mg ${product.cannabinoid} per can`}
+                    />
+                    <div className="pd-cannabinoid-stat-label">per can</div>
                   </div>
                 </div>
               </div>
