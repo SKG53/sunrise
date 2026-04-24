@@ -276,7 +276,7 @@ function ProductsPage() {
         if (!ref) return;
         const isActive = tier === activeTier;
         const color = isActive ? "#FEFBE0" : TIERS[tier].color;
-        const size = base * 0.9;
+        const size = base * 1.2;
         let html = "";
         if (tier === "5")  html = render5mgLockup(size, color);
         if (tier === "10") html = render10mgLockup(size, color);
@@ -284,11 +284,6 @@ function ProductsPage() {
         if (tier === "60") html = render60mgLockup(size, color);
         ref.innerHTML = html;
       });
-
-      // ── 12oz stat block (same scale as About) ──
-      if (stat12Ref.current) {
-        stat12Ref.current.innerHTML = render12ozStatBlock(base * 0.95);
-      }
 
       // ── Effect-card +CBG / +CBN / +THCV lockups — cream on tier bg ──
       // Matches .p-effect-symbol font-size (calc(--base * 1.05)).
@@ -303,12 +298,13 @@ function ProductsPage() {
         ref.innerHTML = html;
       });
 
-      // ── Flavor-pill +CBG / +CBN / +THCV lockups — cream on tier bg ──
-      // Matches .p-flavor-pill font-size (calc(--base * 0.18)).
+      // ── Flavor-corner +CBG / +CBN / +THCV lockups — cream on tier bg ──
+      // Placed at bottom-right of enhanced flavor cards. Matches
+      // .p-flavor-corner CSS positioning.
       TIERS[activeTier].flavors.forEach((f, i) => {
-        const ref = pillRefs.current[i];
+        const ref = cornerRefs.current[i];
         if (!ref || !f.cannabinoid) return;
-        const size = base * 0.18;
+        const size = base * 0.5;
         let html = "";
         if (f.cannabinoid === "CBG")  html = renderCBGLockup(size, "#FEFBE0");
         else if (f.cannabinoid === "CBN")  html = renderCBNLockup(size, "#FEFBE0");
