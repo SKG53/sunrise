@@ -74,41 +74,70 @@ const IMAGES = [
   { src: "/reel-8.jpg", alt: "SUNRISE lifestyle moment 8" },
 ];
 
+// ── S02 BRAND STATEMENT LINES ────────────────────────────────────────────
+// Each line is an inline SVG sized by a hardcoded natural-width viewBox,
+// outer width: 100% of the stack. preserveAspectRatio="xMidYMid meet" makes
+// every line fill the stack's width exactly, regardless of character count
+// — perfect L/R alignment at every breakpoint with zero JS and no hydration
+// flash. Widths calibrated once in Montserrat 900, fs=100, letter-spacing
+// 0.01em. Only re-measure if the typeface, weight, letter-spacing, or the
+// word set changes.
+const S02_GRADIENT_STOPS: { o: number; c: string }[] = [
+  { o: 0,      c: "#4F308D" },
+  { o: 0.1667, c: "#822665" },
+  { o: 0.3333, c: "#94264B" },
+  { o: 0.5,    c: "#BF252D" },
+  { o: 0.6667, c: "#CC382C" },
+  { o: 0.8333, c: "#DC531F" },
+  { o: 1,      c: "#E76B37" },
+];
+
+function S02Line({
+  text,
+  width,
+  gradId,
+}: {
+  text: string;
+  width: number;
+  gradId: string;
+}) {
+  return (
+    <svg
+      className="s02-manifesto-line"
+      viewBox={`0 0 ${width} 100`}
+      preserveAspectRatio="xMidYMid meet"
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
+          {S02_GRADIENT_STOPS.map((s) => (
+            <stop key={s.o} offset={s.o} stopColor={s.c} />
+          ))}
+        </linearGradient>
+      </defs>
+      <text
+        x="0"
+        y="82"
+        fontFamily="Montserrat, sans-serif"
+        fontWeight="900"
+        fontSize="100"
+        letterSpacing="1"
+        fill={`url(#${gradId})`}
+      >
+        {text}
+      </text>
+    </svg>
+  );
+}
+
 function HomePage() {
   const heroWmRef = useRef<HTMLDivElement>(null);
   const lockup5Ref = useRef<HTMLDivElement>(null);
   const lockup10Ref = useRef<HTMLDivElement>(null);
   const lockup30Ref = useRef<HTMLDivElement>(null);
   const lockup60Ref = useRef<HTMLDivElement>(null);
-  const s02StackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const justifyS02 = () => {
-      const stack = s02StackRef.current;
-      if (!stack) return;
-      const target = stack.getBoundingClientRect().width;
-      if (target === 0) return;
-      const lines = stack.querySelectorAll<HTMLDivElement>(".s02-manifesto-line");
-      lines.forEach((line) => {
-        // Pass 1: measure natural width at a reference size, scale so rendered
-        // width ≈ stack width.
-        line.style.fontSize = "100px";
-        const natural = line.getBoundingClientRect().width;
-        if (natural === 0) return;
-        const firstPass = (100 * target) / natural;
-        line.style.fontSize = firstPass + "px";
-        // Pass 2: remeasure at the computed size. Letter glyphs scale linearly
-        // with fontSize, but space-character widths include word-spacing
-        // metrics that round non-linearly — so lines with more spaces drift
-        // slightly from target width after pass 1. A single correction pass
-        // drives the rendered width to within sub-pixel of target regardless
-        // of how many spaces the line contains.
-        const actual = line.getBoundingClientRect().width;
-        if (actual > 0 && Math.abs(actual - target) > 0.5) {
-          line.style.fontSize = (firstPass * target) / actual + "px";
-        }
-      });
-    };
     const paint = () => {
       const base = getBasePx();
       const lockupBase = window.innerWidth <= 520 ? 48 : 80;
@@ -117,7 +146,6 @@ function HomePage() {
       if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(lockupBase, "#FEFBE0");
       if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(lockupBase, "#FEFBE0");
       if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(lockupBase, "#FEFBE0");
-      justifyS02();
     };
     paint();
     if (document.fonts) document.fonts.ready.then(paint);
@@ -148,11 +176,12 @@ function HomePage() {
         {/* ── 02 · BRAND STATEMENT ──────────────────────────────────────── */}
         <section className="s02-brand-statement">
           <div className="container">
-            <div className="s02-manifesto-stack" ref={s02StackRef}>
-              <div className="s02-manifesto-line s02-ml-refresh">Refresh</div>
-              <div className="s02-manifesto-line s02-ml-theway">The Way</div>
-              <div className="s02-manifesto-line s02-ml-world">The World</div>
-              <div className="s02-manifesto-line s02-ml-drinks">Drinks</div>
+            <h2 className="sr-only">Refresh the way the world drinks.</h2>
+            <div className="s02-manifesto-stack">
+              <S02Line text="REFRESH"   width={501.11} gradId="s02-grad-refresh" />
+              <S02Line text="THE WAY"   width={514.80} gradId="s02-grad-theway" />
+              <S02Line text="THE WORLD" width={673.81} gradId="s02-grad-world" />
+              <S02Line text="DRINKS"    width={419.20} gradId="s02-grad-drinks" />
             </div>
           </div>
         </section>
