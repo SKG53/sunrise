@@ -171,14 +171,12 @@ const CANNABINOID_COPY: Record<Cannabinoid, { bestFor: string; body1: string; bo
   },
 };
 
-// Two-word effect phrases shown on related-card pills for +CBG / +CBN /
-// +THCV variants. Mirrors CANNABINOID_EFFECT in /products so PD related
-// cards read identically to the tier-panel flavor cards.
-const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
-  CBG:  "Focus + Uplift",
-  CBN:  "Relax + Unwind",
-  THCV: "Elevate + Engage",
-};
+// Two-word effect phrases were previously surfaced on related-card pills
+// (Focus + Uplift / Relax + Unwind / Elevate + Engage). Pills were removed
+// per founder direction — the rotated +CBG/+CBN/+THCV lockup on the card's
+// right edge now carries that information visually. The CANNABINOID_EFFECT
+// map is preserved on /products (p-flavor-pill) and remains available for
+// future PD reuse if a copy block reintroduces effect language.
 
 function renderLockup(tier: Tier, base: number, color: string): string {
   if (tier === 5) return render5mgLockup(base, color);
@@ -268,7 +266,7 @@ function ProductDetailPage() {
         lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.8, product.color);
       }
       if (stat12Ref.current) {
-        stat12Ref.current.innerHTML = render12ozStatBlock(base * 2.4);
+        stat12Ref.current.innerHTML = render12ozStatBlock(base * 1.32);
       }
 
       // ── Cannabinoid lockups (variant SKUs only) ──────────────────────
@@ -318,9 +316,9 @@ function ProductDetailPage() {
         if (!ref || !o.cannabinoid) return;
         const size = base * 0.7;
         const html =
-          o.cannabinoid === "CBG"  ? renderCBGLockup(size, "#1A1A1A")  :
-          o.cannabinoid === "CBN"  ? renderCBNLockup(size, "#1A1A1A")  :
-                                     renderTHCVLockup(size, "#1A1A1A");
+          o.cannabinoid === "CBG"  ? renderCBGLockup(size, "#FEFBE0")  :
+          o.cannabinoid === "CBN"  ? renderCBNLockup(size, "#FEFBE0")  :
+                                     renderTHCVLockup(size, "#FEFBE0");
         ref.innerHTML = html;
       });
     };
