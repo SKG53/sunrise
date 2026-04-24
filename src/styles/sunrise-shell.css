@@ -75,6 +75,11 @@ main { flex: 1; width: 100%; }
 .type-nav            { font-size: calc(var(--base) * 0.25); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
 
 /* ── BUTTONS ────────────────────────────────────────────────────────────── */
+/* Single site-wide button system. Two treatments × two contexts = four variants.
+   Hierarchy rule: solid variants are HORIZONTALLY WIDER than ghost variants.
+   Vertical size, font-size, typographic treatment are identical across all.
+   Width hierarchy holds regardless of text content via min-width floors, so
+   stacked button pairs always read "top wider than bottom."                       */
 .btn {
   display: inline-block;
   padding: calc(var(--base) * 0.28) calc(var(--base) * 0.75);
@@ -84,23 +89,48 @@ main { flex: 1; width: 100%; }
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  text-align: center;
   cursor: pointer;
   transition: all 200ms ease-out;
   border: none;
   white-space: nowrap;
   line-height: 1;
 }
-.btn-primary   { background: var(--btn-primary-bg); color: var(--btn-primary-color); }
-.btn-primary:hover { background: var(--btn-primary-bg-hover); }
+/* SOLID — primary hierarchy. Wider horizontal padding + higher min-width floor. */
+.btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-color);
+  border: 2px solid var(--btn-primary-bg);
+  padding: calc(var(--base) * 0.26) calc(var(--base) * 1.0);
+  min-width: calc(var(--base) * 5.5);
+}
+.btn-primary:hover { background: var(--btn-primary-bg-hover); border-color: var(--btn-primary-bg-hover); }
+/* GHOST — secondary hierarchy. Narrower padding + lower min-width floor. */
 .btn-secondary {
   background: transparent; color: var(--near-black); border: 2px solid var(--near-black);
   padding: calc(var(--base) * 0.26) calc(var(--base) * 0.73);
+  min-width: calc(var(--base) * 4.5);
 }
 .btn-secondary:hover { background: var(--near-black); color: var(--cream); }
-.btn-on-color { background: #ffffff; color: var(--tier-10); }
-.btn-on-color:hover { background: var(--cream); }
-.btn-on-color-ghost { background: transparent; color: var(--cream); border: 2px solid var(--cream); padding: calc(var(--base) * 0.26) calc(var(--base) * 0.73); }
+/* ON-COLOR SOLID — cream fill (not white), band-color text via --on-color-text. */
+.btn-on-color {
+  background: var(--cream);
+  color: var(--on-color-text, var(--tier-10));
+  border: 2px solid var(--cream);
+  padding: calc(var(--base) * 0.26) calc(var(--base) * 1.0);
+  min-width: calc(var(--base) * 5.5);
+}
+.btn-on-color:hover { background: #ffffff; border-color: #ffffff; }
+/* ON-COLOR GHOST — cream outline + cream text. Narrower width. */
+.btn-on-color-ghost {
+  background: transparent; color: var(--cream); border: 2px solid var(--cream);
+  padding: calc(var(--base) * 0.26) calc(var(--base) * 0.73);
+  min-width: calc(var(--base) * 4.5);
+}
 .btn-on-color-ghost:hover { background: var(--cream); color: var(--near-black); }
+/* Utility — opt a span out of the button's uppercase/tracking. Used for "COAs"
+   where the lowercase "s" signals plurality, not uppercase drift.                */
+.no-transform { text-transform: none; letter-spacing: normal; }
 
 /* ── SITE HEADER ────────────────────────────────────────────────────────── */
 .site-header {
@@ -143,7 +173,6 @@ main { flex: 1; width: 100%; }
 .nav-cta.outline:hover { background: var(--near-black); color: var(--cream); }
 .nav-cta.solid { background: var(--tier-10); color: var(--cream); border: 1.5px solid var(--tier-10); }
 .nav-cta.solid:hover { background: var(--tier-10-hover); border-color: var(--tier-10-hover); }
-.nav-cta .no-transform { text-transform: none; }
 
 /* ── SITE FOOTER ────────────────────────────────────────────────────────── */
 .site-footer {

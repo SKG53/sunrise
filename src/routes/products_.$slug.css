@@ -578,7 +578,7 @@
 .pd-ptp-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.1);
+  font-size: calc(var(--base) * 1.4);
   letter-spacing: 0.01em;
   line-height: 1.0;
   text-transform: uppercase;

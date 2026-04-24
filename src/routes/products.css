@@ -489,13 +489,16 @@
   align-items: flex-start;
 }
 
-/* ── CTA BAND (matches About S05 / .a-ptp) ─────────────────────────────────
-   Products S06 + About S05 share this pattern. Future cleanup: promote to a
-   generic .cta-band class in sunrise-shell.css and share across both pages
-   plus Home when that section is added.
+/* ── CTA BAND — Products S06 path-to-purchase ──────────────────────────────
+   Background flood matches this page's S01 (page-hero is also tier-5). Each
+   page's PTP is bookended to its own tier color; see about.css (tier-10) and
+   products_.$slug.css (per-SKU flavor color). --on-color-text is the token
+   that .btn-on-color uses for its text color, keeping the solid CTA's type
+   in sync with the band flood.
    ========================================================================== */
 .p-ptp {
-  background: var(--tier-10);
+  background: var(--tier-5);
+  --on-color-text: var(--tier-5);
   color: var(--cream);
   padding: calc(var(--base) * 1.6) 0;
 }
