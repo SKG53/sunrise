@@ -348,27 +348,27 @@ function HomePage() {
             <div className="s04-trifecta">
               <div className="s04-col s04-col-left">
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Purified Water</div>
+                  <div className="s04-ing-name">Purified<br />Water</div>
                   <div className="s04-ing-desc">
                     Reverse-osmosis filtered water carefully chosen for exceptional
                     hydration &amp; uncompromising flavor.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Pure Cane Sugar</div>
+                  <div className="s04-ing-name">Pure Cane<br />Sugar</div>
                   <div className="s04-ing-desc">
                     A touch of real sugar for smooth, naturally derived sweetness.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Natural Flavoring</div>
+                  <div className="s04-ing-name">Natural<br />Flavoring</div>
                   <div className="s04-ing-desc">
                     Sourced from real fruits and botanicals, our flavors deliver
                     bright, authentic notes true to their names.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Fresh Lemon Juice</div>
+                  <div className="s04-ing-name">Fresh Lemon<br />Juice</div>
                   <div className="s04-ing-desc">
                     Used exclusively in our Lemonade flavors, this ingredient brings
                     a hint of crisp acidity with a natural citrus lift.
