@@ -243,7 +243,6 @@ function ProductDetailPage() {
   // non-variant SKUs (Core flavors have no cannabinoid) and on placeholder
   // paths that don't render that DOM node.
   const bcCbRef = useRef<HTMLSpanElement>(null);            // breadcrumb
-  const placeholderCbRef = useRef<HTMLSpanElement>(null);   // hero can placeholder
   const hero30mgCbRef = useRef<HTMLSpanElement>(null);      // hero row: +30mg cannabinoid inline with potency lockup
   const cannabinoidLockupRef = useRef<HTMLDivElement>(null); // big +CBG/+CBN/+THCV lockup in cannabinoid section
   const [qty, setQty] = useState(1);
@@ -273,10 +272,6 @@ function ProductDetailPage() {
       // Breadcrumb — near-black on cream. Matches .pd-breadcrumb li font-size.
       if (bcCbRef.current) {
         bcCbRef.current.innerHTML = plusLockup(base * 0.30, "#1A1A1A");
-      }
-      // Hero-can placeholder — cream on flavor-color bg.
-      if (placeholderCbRef.current) {
-        placeholderCbRef.current.innerHTML = plusLockup(base * 0.28, "#FEFBE0");
       }
       // Hero row: +30mg cannabinoid lockup, flavor color, same base as potency lockup.
       if (hero30mgCbRef.current) {
@@ -382,7 +377,10 @@ function ProductDetailPage() {
               <div className="pd-hero-gallery">
               <div className="pd-hero-can" style={{ background: product.color }}>
                 {(() => {
-                  // Priority: Shopify image (mapped SKUs) → local imagePath → colored placeholder.
+                  // Priority: Shopify image (mapped SKUs) → local slug image →
+                  // colored placeholder (only hit if the local file is missing).
+                  // Every SKU has a companion /images/cans/{slug}.webp, so the
+                  // placeholder branch is effectively unreachable in practice.
                   // When multiple Shopify images exist, the selected thumb (rendered below the
                   // can) drives which one shows here via selectedImageIdx; default index is 0.
                   const shopifyImages = shopifyProduct?.node.images.edges ?? [];
@@ -399,24 +397,11 @@ function ProductDetailPage() {
                       />
                     );
                   }
-                  if (product.imagePath) {
-                    return (
-                      <img
-                        src={product.imagePath}
-                        alt={`SUNRISE ${product.flavor} ${product.tier}mg THC hemp-infused seltzer can`}
-                      />
-                    );
-                  }
                   return (
-                    <div className="pd-hero-can-placeholder">
-                      <div className="pd-hero-can-flavor">{product.flavor}</div>
-                      <div className="pd-hero-can-sub">{product.tier}mg THC</div>
-                      {product.cannabinoid && (
-                        <div className="pd-hero-can-variant">
-                          <span ref={placeholderCbRef} aria-label={`+${product.cannabinoid}`} />
-                        </div>
-                      )}
-                    </div>
+                    <img
+                      src={`/images/cans/${product.slug}.webp`}
+                      alt={`SUNRISE ${product.flavor} ${product.tier}mg THC hemp-infused seltzer can`}
+                    />
                   );
                 })()}
               </div>
@@ -724,7 +709,7 @@ function ProductDetailPage() {
               <div className="pd-inside-center">
                 <img
                   className="pd-inside-can"
-                  src="/images/cans/SUNRISE__10MG_THC__Lemonade__Can_Mockup.webp"
+                  src="/images/cans/10mg-lemonade.webp"
                   alt="SUNRISE 10mg THC Lemonade hemp-infused seltzer can"
                   loading="lazy"
                   decoding="async"
