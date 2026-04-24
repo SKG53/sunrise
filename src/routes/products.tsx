@@ -492,16 +492,6 @@ function ProductsPage() {
                 </p>
               </div>
             </div>
-
-            <div className="p-inside-stats">
-              <div className="p-inside-stats-stat" ref={stat12Ref} />
-              <div className="p-inside-stats-badges">
-                <div className="p-inside-badge">Natural Vegan</div>
-                <div className="p-inside-badge">Gluten Free</div>
-                <div className="p-inside-badge">Zero Alcohol</div>
-                <div className="p-inside-badge">Infused with B12</div>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -537,7 +527,10 @@ function ProductsPage() {
           <div className="container">
             <div className="p-ptp-inner">
               <div className="p-ptp-copy">
-                <h2 className="p-ptp-headline">Now you know<br />our products</h2>
+                <h2 className="p-ptp-headline">
+                  <span>Now you know</span>
+                  <span>our products</span>
+                </h2>
                 <p className="p-ptp-body">
                   Get to know us, or find a can near you.
                 </p>
