@@ -13,6 +13,8 @@ import {
   renderTHCVLockup,
   getBasePx,
 } from "../lib/sunrise-components";
+import { getShopifyMapping } from "@/lib/shopifyProductMap";
+import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import "./products.css";
 
 export const Route = createFileRoute("/products")({
@@ -431,7 +433,7 @@ function ProductsPage() {
                     className="p-flavor-card"
                     aria-label={`${f.name} — ${tier.name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ""}`}
                   >
-                    <div className="p-flavor-can" />
+                    <FlavorCan slug={toSlug(activeTier, f)} flavorName={f.name} />
                     <div className="p-flavor-meta">
                       <div className="p-flavor-name">{f.name}</div>
                       <div className="p-flavor-descriptor">{f.descriptor}</div>
