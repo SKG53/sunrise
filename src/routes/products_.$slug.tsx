@@ -291,7 +291,9 @@ function ProductDetailPage() {
   }, [product]);
 
   const othersInTier = PRODUCTS.filter((p) => p.tier === product.tier && p.slug !== product.slug);
-  const cbCopy = product.cannabinoid ? CANNABINOID_COPY[product.cannabinoid] : null;
+  const cbCopy = product.cannabinoid
+    ? CANNABINOID_COPY[product.cannabinoid as Cannabinoid]
+    : null;
 
   return (
     <>

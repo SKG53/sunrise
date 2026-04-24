@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
+import { CartDrawer } from "./CartDrawer";
 
 type NavKey = "home" | "products" | "about" | "find" | "contact";
 
@@ -36,6 +37,7 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
       <div className="nav-right">
         <a href="#" className="nav-cta outline"><span className="no-transform">COAs</span></a>
         <a href="/products" className="nav-cta solid">Shop</a>
+        <CartDrawer />
       </div>
     </header>
   );
