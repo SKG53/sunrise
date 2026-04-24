@@ -254,6 +254,11 @@ function ProductDetailPage() {
   const bcCbRef = useRef<HTMLSpanElement>(null);            // breadcrumb
   const hero30mgCbRef = useRef<HTMLSpanElement>(null);      // hero row: +30mg cannabinoid inline with potency lockup
   const cannabinoidLockupRef = useRef<HTMLDivElement>(null); // big +CBG/+CBN/+THCV lockup in cannabinoid section
+  // Related-card corner lockups — one slot per "Others in Tier" card. Null
+  // entries correspond to base-flavor siblings (no cannabinoid). Repopulated
+  // via React's ref callback whenever the SKU (and therefore the sibling
+  // list) changes.
+  const relatedCornerRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [qty, setQty] = useState(1);
 
   useEffect(() => {
@@ -301,6 +306,29 @@ function ProductDetailPage() {
   const cbCopy = product.cannabinoid
     ? CANNABINOID_COPY[product.cannabinoid as Cannabinoid]
     : null;
+
+  // Paint related-card cannabinoid corner lockups. Runs after the related
+  // grid renders (othersInTier in deps) so refs are attached. Only variant
+  // siblings get a lockup; base-flavor refs stay null.
+  useEffect(() => {
+    const paint = () => {
+      const base = getBasePx();
+      othersInTier.forEach((o, i) => {
+        const ref = relatedCornerRefs.current[i];
+        if (!ref || !o.cannabinoid) return;
+        const size = base * 0.7;
+        const html =
+          o.cannabinoid === "CBG"  ? renderCBGLockup(size, "#1A1A1A")  :
+          o.cannabinoid === "CBN"  ? renderCBNLockup(size, "#1A1A1A")  :
+                                     renderTHCVLockup(size, "#1A1A1A");
+        ref.innerHTML = html;
+      });
+    };
+    paint();
+    if (document.fonts) document.fonts.ready.then(paint);
+    window.addEventListener("resize", paint);
+    return () => window.removeEventListener("resize", paint);
+  }, [othersInTier]);
 
   // ── Shopify wiring (pilot: only mapped SKUs hit Shopify) ───────────────
   const shopifyMapping = getShopifyMapping(product.slug);
