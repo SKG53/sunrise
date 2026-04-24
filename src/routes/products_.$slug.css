@@ -45,7 +45,7 @@
 }
 .pd-breadcrumb li {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.24);
+  font-size: calc(var(--base) * 0.30);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -127,28 +127,27 @@
   padding-top: calc(var(--base) * 0.1);
   min-width: 0;
 }
-.pd-variant-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--base) * 0.16);
-  padding: calc(var(--base) * 0.18) calc(var(--base) * 0.42);
-  border: 1.5px solid var(--near-black);
-  border-radius: 9999px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--near-black);
-  line-height: 1;
-  margin-bottom: calc(var(--base) * 0.5);
+/* Hero lockup row — potency lockup on the left; on +CBG/+CBN/+THCV SKUs
+   the +30mg cannabinoid lockup sits inline-right at the same base size.
+   Margin + line-height live on the row so the two lockups share a rhythm. */
+.pd-hero-lockup-row {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--base) * 0.6);
+  margin-bottom: calc(var(--base) * 0.6);
+  line-height: 0;
+  flex-wrap: wrap;
 }
-.pd-variant-dot { color: var(--gold); font-weight: 900; }
+.pd-hero-lockup,
+.pd-hero-lockup-30mg {
+  display: inline-block;
+  line-height: 0;
+}
 
 .pd-hero-flavor {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.255);
+  font-size: calc(var(--base) * 1.15);
   letter-spacing: 0.005em;
   line-height: 0.98;
   text-transform: uppercase;
@@ -168,10 +167,6 @@
   border-radius: 9999px;
   line-height: 1;
   margin-bottom: calc(var(--base) * 0.6);
-}
-.pd-hero-lockup {
-  margin-bottom: calc(var(--base) * 0.6);
-  line-height: 0;
 }
 .pd-hero-blurb {
   font-family: 'Montserrat', sans-serif;
@@ -267,16 +262,11 @@
   align-items: flex-start;
 }
 .pd-stat-lockup { line-height: 0; }
-.pd-stat-label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
 
-/* Claim badges: inline-svg icon in brand orange + stacked two-line label */
+/* Claim badges: brand-SVG icon at .pd-claim-icon + stacked two-line label.
+   Icons render via <img src="/icons/*.svg"> (uploaded brand art, not inline
+   path data), so fill/stroke live inside the SVG file itself — no color or
+   currentColor inheritance on the container. */
 .pd-claim {
   display: flex;
   flex-direction: column;
@@ -286,7 +276,7 @@
 .pd-claim-icon {
   width: calc(var(--base) * 1.0);
   height: calc(var(--base) * 1.0);
-  color: #DC7F27;
+  display: block;
 }
 .pd-claim-label {
   display: flex;
@@ -306,10 +296,13 @@
   color: var(--text-secondary);
 }
 
-/* ── 04 · INGREDIENTS (trifecta layout, ported from home .s04-whats-inside) ─ */
+/* ── 04 · WHAT'S INSIDE (verbatim mirror of home .s04-whats-inside) ─────── */
+/* Markup, classes, and values mirror home's S05 exactly so the section is    */
+/* visually indistinguishable from home. If home.css changes, update both.    */
 .pd-ingredients {
   background: var(--cream);
   padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
+  border-top: 1px solid var(--warm-gray-faint);
 }
 .pd-ingredients .container {
   display: flex;
@@ -318,7 +311,7 @@
 }
 .pd-inside-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.1);
+  font-size: calc(var(--base) * 1.0);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -366,16 +359,13 @@
   justify-content: center;
   align-items: center;
 }
-.pd-inside-can {
+.pd-inside-can-placeholder {
   width: 100%;
   max-width: calc(var(--base) * 6);
   aspect-ratio: 3 / 5;
+  background: var(--warm-gray-faint);
   border-radius: calc(var(--base) * 0.1);
-  object-fit: contain;
-  object-position: center;
-}
-.pd-inside-can--placeholder {
-  /* solid color block until per-SKU mockup asset is wired */
+  /* Placeholder — swap with background-image or <img> when real asset is available. */
 }
 
 /* ── 05 · OTHERS IN TIER ────────────────────────────────────────────────── */
@@ -443,33 +433,47 @@
   color: var(--green-accent);
 }
 
-/* ── 06 · CANNABINOID STORY (variant only, slim on-color band) ─────────── */
+/* ── 06 · CANNABINOID STORY (variant only — two-column band on flavor flood) ─
+   LEFT  .pd-cannabinoid-lockup — host for the brand-locked +CBG/+CBN/+THCV
+                                  lockup; painted via innerHTML in useEffect
+                                  at base * 2.4 in cream. Sits on the flavor-
+                                  color section background.
+   RIGHT .pd-cannabinoid-right   — italic "Best for {X}" subhead + three
+                                  stacked body lines. Body rules mirror the
+                                  prior single-paragraph .pd-cannabinoid-body
+                                  sizing (base * 0.32, line-height 1.5). */
 .pd-cannabinoid {
   color: var(--cream);
-  padding: calc(var(--base) * 0.9) 0;
+  padding: calc(var(--base) * 1.6) 0;
 }
 .pd-cannabinoid-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr auto;
-  gap: calc(var(--base) * 0.9);
+  grid-template-columns: auto 1fr;
+  gap: calc(var(--base) * 1.4);
   align-items: center;
 }
-.pd-cannabinoid-copy {
+.pd-cannabinoid-lockup {
+  display: inline-block;
+  line-height: 0;
+  /* Host for the brand-locked +CBG/+CBN/+THCV lockup. Empty in SSR markup;
+     hydration-time useEffect writes the lockup HTML via innerHTML at base
+     * 2.4 in cream against the flavor-color flood background. */
+}
+.pd-cannabinoid-right {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.28);
   min-width: 0;
 }
-.pd-cannabinoid-headline {
+.pd-cannabinoid-bestfor {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-  font-size: calc(var(--base) * 0.85);
+  font-style: italic;
+  font-weight: 800;
+  font-size: calc(var(--base) * 0.52);
   letter-spacing: 0.005em;
-  line-height: 1.05;
-  text-transform: uppercase;
+  line-height: 1.15;
   color: var(--cream);
-  margin-bottom: 0;
-  margin-top: calc(var(--base) * 0.15);
-}
-.pd-cannabinoid-headline .accent-on-color {
-  color: #F2D480;
+  margin-bottom: calc(var(--base) * 0.2);
 }
 .pd-cannabinoid-body {
   font-family: 'Montserrat', sans-serif;
@@ -478,49 +482,7 @@
   line-height: 1.5;
   color: rgba(254, 251, 224, 0.9);
   max-width: 54ch;
-}
-.pd-cannabinoid-stats {
-  display: flex;
-  gap: calc(var(--base) * 0.3);
-  align-items: stretch;
-  white-space: nowrap;
-}
-.pd-cannabinoid-stat {
-  padding: calc(var(--base) * 0.28) calc(var(--base) * 0.42);
-  border: 1.5px solid rgba(254, 251, 224, 0.35);
-  border-radius: 6px;
-}
-.pd-cannabinoid-stat-value {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.7);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  color: var(--cream);
-  line-height: 1.0;
-  margin-bottom: calc(var(--base) * 0.08);
-}
-/* Host for the brand-locked render30mg[CBG|CBN|THCV]Lockup output. Empty in
-   SSR markup; hydration-time useEffect writes the lockup HTML via innerHTML.
-   Height comes from the rendered lockup itself (base * 0.7 scale, same as
-   the sibling .pd-cannabinoid-stat-value for the THC stat). Margin-bottom
-   mirrors that sibling so the "per can" label below sits at the same rhythm. */
-.pd-cannabinoid-stat-lockup {
-  margin-bottom: calc(var(--base) * 0.08);
-  line-height: 1.0;
-}
-.pd-cannabinoid-stat-value span {
-  font-size: calc(var(--base) * 0.24);
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  margin-left: calc(var(--base) * 0.05);
-}
-.pd-cannabinoid-stat-label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.18);
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(254, 251, 224, 0.75);
+  margin: 0;
 }
 
 /* ── 07 · FAQ ───────────────────────────────────────────────────────────── */
@@ -638,16 +600,11 @@
   .pd-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .pd-related-grid { grid-template-columns: repeat(2, 1fr); }
   .pd-cannabinoid-grid { gap: calc(var(--base) * 0.55); }
-  .pd-cannabinoid-stats { justify-content: flex-start; }
+  .pd-cannabinoid-bestfor { font-size: calc(var(--base) * 0.42); }
 }
 @media (max-width: 520px) {
   .pd-ptp-ctas { flex-direction: column; width: 100%; }
   .pd-ptp-ctas .btn { width: 100%; text-align: center; }
   .pd-hero-ctas { flex-direction: column; width: 100%; }
   .pd-hero-ctas .btn { width: 100%; text-align: center; }
-  .pd-cannabinoid-stats { flex-direction: column; align-items: stretch; }
-  .pd-variant-pill {
-    font-size: calc(var(--base) * 0.2);
-    letter-spacing: 0.14em;
-  }
 }

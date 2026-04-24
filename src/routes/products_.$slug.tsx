@@ -143,24 +143,28 @@ const PRODUCTS: Product[] = [
 ];
 
 // ── HELPERS ──────────────────────────────────────────────────────────────
-const CANNABINOID_COPY: Record<Cannabinoid, { name: string; effect: string; description: string }> = {
+// Per-cannabinoid copy surfaced in Section 02 (variant SKUs only). "bestFor"
+// maps to the small italic subhead; body1/2/3 map to the three stacked
+// paragraphs that follow. Content is locked to the SUNRISE +CBG / +CBN /
+// +THCV functional copy block.
+const CANNABINOID_COPY: Record<Cannabinoid, { bestFor: string; body1: string; body2: string; body3: string }> = {
   CBG: {
-    name: "CBG",
-    effect: "Focus",
-    description:
-      "Cannabigerol, often called the 'parent cannabinoid.' Paired with THC, it leans clear-headed — the right profile when the day still has something on its schedule.",
+    bestFor: "Daytime",
+    body1: "Mildly energizing and mood-uplifting.",
+    body2: "Enhances mental focus and alertness.",
+    body3: "Pairs well with morning or early afternoon consumption.",
   },
   CBN: {
-    name: "CBN",
-    effect: "Relax",
-    description:
-      "Cannabinol develops as THC ages. Paired with THC in a finished drink, it rounds the experience downward — the right profile when the day is winding down.",
+    bestFor: "Nighttime",
+    body1: "Gently restful and calming.",
+    body2: "Supports better relaxation without heavy sedation.",
+    body3: "Pairs well as a late-evening or end-of-shift drink.",
   },
   THCV: {
-    name: "THCV",
-    effect: "Elevate",
-    description:
-      "Tetrahydrocannabivarin is a rarer minor cannabinoid with a lifted, clear character. Paired with THC, it holds a bright edge — the right profile when the moment has momentum.",
+    bestFor: "Focus & Clarity",
+    body1: "Cleanly stimulating and smoothly energizing.",
+    body2: "Promotes clear-headed focus and physical motivation.",
+    body3: "Pairs well with dynamic adventures or productivity boosts.",
   },
 };
 
@@ -171,68 +175,10 @@ function renderLockup(tier: Tier, base: number, color: string): string {
   return render60mgLockup(base, color);
 }
 
-// Canonical ingredient list per pitch deck p5 "What's Inside."
-// Universal across all 24 SKUs except for the conditional Lemon/Lime Juice
-// row — Fresh Lemon Juice appears only on Lemonade SKUs, Fresh Lime Juice
-// only on Limeade SKUs. The minor cannabinoid in +CBG / +CBN / +THCV
-// variants is covered under Emulsified Hemp Extract and is NOT broken
-// out as a separate ingredient. "Cannabis extract" in the original deck
-// description is swapped to "hemp extract" to stay compliant with the
-// website Voice Guide Never List.
-function getIngredients(p: Product): { name: string; note: string }[] {
-  const list: { name: string; note: string }[] = [];
-
-  list.push({
-    name: "Purified Water",
-    note: "Reverse-osmosis filtered water carefully chosen for exceptional hydration and uncompromising flavor.",
-  });
-
-  list.push({
-    name: "Pure Cane Sugar",
-    note: "A touch of real sugar for smooth, naturally derived sweetness.",
-  });
-
-  if (p.isLemonade) {
-    list.push({
-      name: "Fresh Lemon Juice",
-      note: "Used exclusively in our Lemonade flavors, this ingredient brings a hint of crisp acidity with a natural citrus lift.",
-    });
-  }
-
-  if (p.isLimeade) {
-    list.push({
-      name: "Fresh Lime Juice",
-      note: "Used exclusively in our Limeade flavors, this ingredient brings a hint of crisp acidity with a natural citrus lift.",
-    });
-  }
-
-  list.push({
-    name: "Natural Flavoring",
-    note: "Sourced from real fruits and botanicals, our flavors deliver bright, authentic notes true to their names.",
-  });
-
-  list.push({
-    name: "Emulsified Hemp Extract",
-    note: "The good stuff — expertly blended hemp extract for a clean and consistent experience with every sip.",
-  });
-
-  list.push({
-    name: "Natural Enhancers",
-    note: "Functional ingredients such as Vitamin B12 that allow for a healthier, more balanced experience without altering flavors.",
-  });
-
-  list.push({
-    name: "Citric Acid",
-    note: "Naturally occurring acid found in citrus fruit that is used to balance flavors and keep things bubbly.",
-  });
-
-  list.push({
-    name: "Sodium Benzoate",
-    note: "Widely used food-safe preservative that helps keep each can fresh without altering its flavor profile.",
-  });
-
-  return list;
-}
+// Canonical ingredient list per pitch deck p5 "What's Inside." This section
+// is a verbatim replica of home S05 — identical content, identical markup
+// pattern, identical styling. Ingredients are hardcoded (not per-SKU) to
+// match home exactly.
 
 const FAQS = [
   {
@@ -293,21 +239,20 @@ function ProductDetailPage() {
   // Cannabinoid lockup refs — painted in useEffect below. Each is null on
   // non-variant SKUs (Core flavors have no cannabinoid) and on placeholder
   // paths that don't render that DOM node.
-  const bcCbRef = useRef<HTMLSpanElement>(null);       // breadcrumb
-  const placeholderCbRef = useRef<HTMLSpanElement>(null); // hero can placeholder
-  const variantPillCbRef = useRef<HTMLSpanElement>(null); // hero variant pill
-  const eyebrowCbRef = useRef<HTMLSpanElement>(null);  // cannabinoid section eyebrow
-  const stat30mgCbRef = useRef<HTMLDivElement>(null);  // 30mg minor-cannabinoid stat
+  const bcCbRef = useRef<HTMLSpanElement>(null);            // breadcrumb
+  const placeholderCbRef = useRef<HTMLSpanElement>(null);   // hero can placeholder
+  const hero30mgCbRef = useRef<HTMLSpanElement>(null);      // hero row: +30mg cannabinoid inline with potency lockup
+  const cannabinoidLockupRef = useRef<HTMLDivElement>(null); // big +CBG/+CBN/+THCV lockup in cannabinoid section
   const [qty, setQty] = useState(1);
 
   useEffect(() => {
     const paint = () => {
       const base = getBasePx();
       if (lockupRef.current) {
-        lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.2, product.color);
+        lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.8, product.color);
       }
       if (stat12Ref.current) {
-        stat12Ref.current.innerHTML = render12ozStatBlock(base * 0.8);
+        stat12Ref.current.innerHTML = render12ozStatBlock(base * 2.4);
       }
 
       // ── Cannabinoid lockups (variant SKUs only) ──────────────────────
@@ -324,23 +269,19 @@ function ProductDetailPage() {
 
       // Breadcrumb — near-black on cream. Matches .pd-breadcrumb li font-size.
       if (bcCbRef.current) {
-        bcCbRef.current.innerHTML = plusLockup(base * 0.24, "#1A1A1A");
+        bcCbRef.current.innerHTML = plusLockup(base * 0.30, "#1A1A1A");
       }
-      // Hero-can placeholder — cream on flavor-color bg. Matches .pd-hero-can-variant.
+      // Hero-can placeholder — cream on flavor-color bg.
       if (placeholderCbRef.current) {
         placeholderCbRef.current.innerHTML = plusLockup(base * 0.28, "#FEFBE0");
       }
-      // Variant pill — near-black on cream. Matches .pd-variant-pill font-size.
-      if (variantPillCbRef.current) {
-        variantPillCbRef.current.innerHTML = plusLockup(base * 0.22, "#1A1A1A");
+      // Hero row: +30mg cannabinoid lockup, flavor color, same base as potency lockup.
+      if (hero30mgCbRef.current) {
+        hero30mgCbRef.current.innerHTML = mg30Lockup(base * 1.8, product.color);
       }
-      // Cannabinoid section eyebrow — cream-on-color (75% alpha). Matches .pd-eyebrow.
-      if (eyebrowCbRef.current) {
-        eyebrowCbRef.current.innerHTML = plusLockup(base * 0.24, "rgba(254, 251, 224, 0.75)");
-      }
-      // 30mg cannabinoid stat — cream on flavor-color bg. Matches .pd-cannabinoid-stat-value.
-      if (stat30mgCbRef.current) {
-        stat30mgCbRef.current.innerHTML = mg30Lockup(base * 0.7, "#FEFBE0");
+      // Cannabinoid section big lockup — cream on flavor-color flood.
+      if (cannabinoidLockupRef.current) {
+        cannabinoidLockupRef.current.innerHTML = plusLockup(base * 2.4, "#FEFBE0");
       }
     };
     paint();
@@ -350,10 +291,6 @@ function ProductDetailPage() {
   }, [product]);
 
   const othersInTier = PRODUCTS.filter((p) => p.tier === product.tier && p.slug !== product.slug);
-  const ingredients = getIngredients(product);
-  const halfPoint = Math.ceil(ingredients.length / 2);
-  const ingredientsLeft = ingredients.slice(0, halfPoint);
-  const ingredientsRight = ingredients.slice(halfPoint);
   const cbCopy = product.cannabinoid ? CANNABINOID_COPY[product.cannabinoid] : null;
 
   return (
@@ -403,17 +340,16 @@ function ProductDetailPage() {
               </div>
 
               <div className="pd-hero-meta">
-                {product.cannabinoid && cbCopy && (
-                  <div className="pd-variant-pill">
-                    <span>{product.tier}mg</span>
-                    <span className="pd-variant-dot">·</span>
-                    <span ref={variantPillCbRef} aria-label={`+${product.cannabinoid}`} />
-                    <span className="pd-variant-dot">·</span>
-                    <span>{cbCopy.effect}</span>
-                  </div>
-                )}
-
-                <div className="pd-hero-lockup" ref={lockupRef} aria-hidden="true" />
+                <div className="pd-hero-lockup-row">
+                  <span className="pd-hero-lockup" ref={lockupRef} aria-hidden="true" />
+                  {product.cannabinoid && (
+                    <span
+                      className="pd-hero-lockup-30mg"
+                      ref={hero30mgCbRef}
+                      aria-label={`+30mg ${product.cannabinoid}`}
+                    />
+                  )}
+                </div>
 
                 <h1 className="pd-hero-flavor">{product.flavor}</h1>
 
@@ -448,7 +384,13 @@ function ProductDetailPage() {
                 </div>
 
                 <div className="pd-hero-ctas">
-                  <a href="#" className="btn btn-primary">Add to Cart →</a>
+                  <a
+                    href="#"
+                    className="btn btn-flavor"
+                    style={{ ["--flavor-color" as string]: product.color } as React.CSSProperties}
+                  >
+                    Add to Cart →
+                  </a>
                   <a href="/find" className="btn btn-secondary">Find Near You</a>
                 </div>
               </div>
@@ -457,6 +399,11 @@ function ProductDetailPage() {
         </section>
 
         {/* ── 06 · CANNABINOID STORY (variant only) ─────────────────────── */}
+        {/* Two-column band on flavor-color flood. Left: big +{cannabinoid}   */}
+        {/* lockup in cream. Right: italic "Best for {X}" subhead + three     */}
+        {/* body lines of functional copy. Stats boxes removed per brand      */}
+        {/* direction — the dose information lives on the hero now via the    */}
+        {/* potency lockup + inline +30mg cannabinoid lockup pairing.         */}
         {product.cannabinoid && cbCopy && (
           <section
             className="pd-cannabinoid"
@@ -464,30 +411,18 @@ function ProductDetailPage() {
           >
             <div className="container">
               <div className="pd-cannabinoid-grid">
-                <div className="pd-cannabinoid-copy">
-                  <div className="pd-eyebrow pd-eyebrow-on-color">
-                    About the{" "}
-                    <span ref={eyebrowCbRef} aria-label={`+${product.cannabinoid}`} />
+                <div
+                  className="pd-cannabinoid-lockup"
+                  ref={cannabinoidLockupRef}
+                  aria-label={`+${product.cannabinoid}`}
+                />
+                <div className="pd-cannabinoid-right">
+                  <div className="pd-cannabinoid-bestfor">
+                    Best for {cbCopy.bestFor}
                   </div>
-                  <h2 className="pd-cannabinoid-headline">
-                    {cbCopy.name} for{" "}
-                    <span className="accent-on-color">{cbCopy.effect.toLowerCase()}</span>
-                  </h2>
-                </div>
-                <p className="pd-cannabinoid-body">{cbCopy.description}</p>
-                <div className="pd-cannabinoid-stats">
-                  <div className="pd-cannabinoid-stat">
-                    <div className="pd-cannabinoid-stat-value">{product.tier}<span>mg</span></div>
-                    <div className="pd-cannabinoid-stat-label">THC per can</div>
-                  </div>
-                  <div className="pd-cannabinoid-stat">
-                    <div
-                      className="pd-cannabinoid-stat-lockup"
-                      ref={stat30mgCbRef}
-                      aria-label={`+30mg ${product.cannabinoid} per can`}
-                    />
-                    <div className="pd-cannabinoid-stat-label">per can</div>
-                  </div>
+                  <p className="pd-cannabinoid-body">{cbCopy.body1}</p>
+                  <p className="pd-cannabinoid-body">{cbCopy.body2}</p>
+                  <p className="pd-cannabinoid-body">{cbCopy.body3}</p>
                 </div>
               </div>
             </div>
@@ -500,34 +435,32 @@ function ProductDetailPage() {
             <div className="pd-stats-grid">
               <div className="pd-stat">
                 <div className="pd-stat-lockup" ref={stat12Ref} aria-hidden="true" />
-                <div className="pd-stat-label">Can Size</div>
               </div>
               <div className="pd-claim">
-                <svg className="pd-claim-icon" viewBox="0 0 80 80" aria-hidden="true">
-                  <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" strokeWidth="4" />
-                  <line x1="18" y1="62" x2="62" y2="18" stroke="currentColor" strokeWidth="4" />
-                  <line x1="40" y1="26" x2="40" y2="56" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                  <path d="M40 33 L34 29 M40 33 L46 29 M40 42 L34 38 M40 42 L46 38 M40 51 L34 47 M40 51 L46 47" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
-                </svg>
+                <img
+                  className="pd-claim-icon"
+                  src="/icons/gluten-free.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
                 <div className="pd-claim-label"><span>Gluten</span><span>Free</span></div>
               </div>
               <div className="pd-claim">
-                <svg className="pd-claim-icon" viewBox="0 0 80 80" aria-hidden="true">
-                  <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" strokeWidth="4" />
-                  <path d="M40 26 C 30 34, 26 46, 32 56 C 40 50, 44 40, 40 26 Z" fill="currentColor" />
-                  <path d="M40 26 C 50 34, 54 46, 48 56 C 40 50, 36 40, 40 26 Z" fill="currentColor" fillOpacity="0.7" />
-                </svg>
+                <img
+                  className="pd-claim-icon"
+                  src="/icons/natural-vegan.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
                 <div className="pd-claim-label"><span>Natural</span><span>Vegan</span></div>
               </div>
               <div className="pd-claim">
-                <svg className="pd-claim-icon" viewBox="0 0 80 80" aria-hidden="true">
-                  <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" strokeWidth="4" />
-                  <line x1="18" y1="62" x2="62" y2="18" stroke="currentColor" strokeWidth="4" />
-                  <rect x="43" y="30" width="8" height="22" fill="currentColor" />
-                  <rect x="45" y="26" width="4" height="4" fill="currentColor" />
-                  <path d="M28 34 L38 34 L35 44 Q35 48, 31 48 Q27 48, 27 44 Z" fill="currentColor" />
-                  <line x1="31" y1="48" x2="31" y2="52" stroke="currentColor" strokeWidth="2" />
-                </svg>
+                <img
+                  className="pd-claim-icon"
+                  src="/icons/zero-alcohol.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
                 <div className="pd-claim-label"><span>Zero</span><span>Alcohol</span></div>
               </div>
             </div>
@@ -538,9 +471,8 @@ function ProductDetailPage() {
         <section className="pd-related">
           <div className="container">
             <div className="pd-section-head">
-              <div className="pd-eyebrow">Also in {product.tier}mg</div>
               <h2 className="pd-section-headline">
-                More at your <span className="accent">pace</span>
+                Try our other <span className="accent">flavors.</span>
               </h2>
             </div>
             <div className="pd-related-grid">
@@ -567,38 +499,78 @@ function ProductDetailPage() {
           </div>
         </section>
 
-        {/* ── 04 · INGREDIENTS (home-style trifecta, per-SKU can) ───────── */}
+        {/* ── 04 · WHAT'S INSIDE ────────────────────────────────────────── */}
+        {/* Verbatim replica of home S05 — same markup pattern, same content, */}
+        {/* same grey placeholder. Ingredient list is hardcoded (not per-SKU) */}
+        {/* and wording mirrors home exactly. Class prefix stays pd-inside-*   */}
+        {/* for route-scoped styling; the rules in products_.$slug.css mirror  */}
+        {/* home's .s04-whats-inside block one-for-one.                        */}
         <section className="pd-ingredients">
           <div className="container">
             <h2 className="pd-inside-headline">What's Inside?</h2>
             <div className="pd-inside-trifecta">
               <div className="pd-inside-col pd-inside-col-left">
-                {ingredientsLeft.map((i, idx) => (
-                  <div key={idx} className="pd-inside-ing">
-                    <div className="pd-inside-ing-name">{i.name}</div>
-                    <div className="pd-inside-ing-desc">{i.note}</div>
+                <div className="pd-inside-ing">
+                  <div className="pd-inside-ing-name">Purified Water</div>
+                  <div className="pd-inside-ing-desc">
+                    Reverse-osmosis filtered water carefully chosen for exceptional
+                    hydration &amp; uncompromising flavor.
                   </div>
-                ))}
+                </div>
+                <div className="pd-inside-ing">
+                  <div className="pd-inside-ing-name">Pure Cane Sugar</div>
+                  <div className="pd-inside-ing-desc">
+                    A touch of real sugar for smooth, naturally derived sweetness.
+                  </div>
+                </div>
+                <div className="pd-inside-ing">
+                  <div className="pd-inside-ing-name">Natural Flavoring</div>
+                  <div className="pd-inside-ing-desc">
+                    Sourced from real fruits and botanicals, our flavors deliver
+                    bright, authentic notes true to their names.
+                  </div>
+                </div>
+                <div className="pd-inside-ing">
+                  <div className="pd-inside-ing-name">Fresh Lemon Juice</div>
+                  <div className="pd-inside-ing-desc">
+                    Used exclusively in our Lemonade flavors, this ingredient brings
+                    a hint of crisp acidity with a natural citrus lift.
+                  </div>
+                </div>
               </div>
               <div className="pd-inside-center">
-                {product.imagePath ? (
-                  <img
-                    className="pd-inside-can"
-                    src={product.imagePath}
-                    alt={`SUNRISE ${product.flavor} ${product.tier}mg THC hemp-infused seltzer can`}
-                    style={{ background: product.color }}
-                  />
-                ) : (
-                  <div className="pd-inside-can pd-inside-can--placeholder" style={{ background: product.color }} aria-hidden="true" />
-                )}
+                {/* Placeholder center can — swap background for real image */}
+                <div className="pd-inside-can-placeholder" aria-hidden="true" />
               </div>
               <div className="pd-inside-col pd-inside-col-right">
-                {ingredientsRight.map((i, idx) => (
-                  <div key={idx} className="pd-inside-ing">
-                    <div className="pd-inside-ing-name">{i.name}</div>
-                    <div className="pd-inside-ing-desc">{i.note}</div>
+                <div className="pd-inside-ing">
+                  <div className="pd-inside-ing-name">Emulsified Hemp Extract</div>
+                  <div className="pd-inside-ing-desc">
+                    The good stuff — expertly blended cannabis extract for a clean
+                    and consistent experience with every sip.
                   </div>
-                ))}
+                </div>
+                <div className="pd-inside-ing">
+                  <div className="pd-inside-ing-name">Naturally Sourced Enhancers</div>
+                  <div className="pd-inside-ing-desc">
+                    Functional ingredients like B12 that allow for a healthier,
+                    more balanced experience without altering flavors.
+                  </div>
+                </div>
+                <div className="pd-inside-ing">
+                  <div className="pd-inside-ing-name">Citric Acid</div>
+                  <div className="pd-inside-ing-desc">
+                    A naturally occurring acid found in citrus fruits, this is used
+                    to balance flavors and keep things bubbly.
+                  </div>
+                </div>
+                <div className="pd-inside-ing">
+                  <div className="pd-inside-ing-name">Sodium Benzoate</div>
+                  <div className="pd-inside-ing-desc">
+                    A widely used food-safe preservative that helps keep each can
+                    fresh without altering its flavor profile.
+                  </div>
+                </div>
               </div>
             </div>
           </div>
