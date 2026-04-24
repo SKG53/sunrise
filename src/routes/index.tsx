@@ -11,6 +11,12 @@ import {
   render60mgLockup,
   getBasePx,
 } from "../lib/sunrise-components";
+// S06 Story Teaser can composition — imported as module URLs so Vite bundles
+// them with content hashes. Kept inline here because this is the only home
+// section that references src/assets/cans/ directly (reel uses public/images).
+import canS07Large  from "@/assets/cans/10mg-strawberry.webp";
+import canS07Medium from "@/assets/cans/30mg-kiwi-watermelon-cbg.webp";
+import canS07Small  from "@/assets/cans/5mg-blackberry.webp";
 import "./home.css";
 
 export const Route = createFileRoute("/")({
@@ -431,15 +437,32 @@ function HomePage() {
         <section className="s07-story">
           <div className="container">
             <div className="s07-layout">
-              <div className="s07-portrait" />
+              <div className="s07-cans" aria-hidden="true">
+                <img
+                  className="s07-can s07-can-lg"
+                  src={canS07Large}
+                  alt=""
+                />
+                <img
+                  className="s07-can s07-can-md"
+                  src={canS07Medium}
+                  alt=""
+                />
+                <img
+                  className="s07-can s07-can-sm"
+                  src={canS07Small}
+                  alt=""
+                />
+              </div>
               <div className="s07-copy">
                 <h2 className="s07-headline">
-                  A family business<br />A new kind of drink
+                  A family business.<br />Designed to deliver.
                 </h2>
                 <p className="s07-body">
-                  SUNRISE was born from a simple conviction: the world of non-alcoholic
-                  drinks was due for a reinvention. Our team brings decades of beverage
-                  manufacturing to the problem, and every can reflects that work.
+                  SUNRISE was born with a simple conviction: it's about quality
+                  and simple ingredients. Our team brings almost a decade of
+                  beverage and branding experience to drinks for an experience
+                  like no other.
                 </p>
                 <div className="s07-cta-row">
                   <a href="/about" className="btn btn-on-color-ghost">Read Our Story →</a>
@@ -473,7 +496,9 @@ function HomePage() {
         {/* × 2) to produce a seamless loop via translateX(0 → -50%).     */}
         {/* Hover pauses. All quote content is placeholder.                */}
         <section className="s09-reviews">
-          <h2 className="s09-heading">What people say</h2>
+          <h2 className="s09-heading">
+            What are people <span className="accent">saying?</span>
+          </h2>
           <div className="s09-marquee" aria-label="Customer reviews carousel">
             <div className="s09-marquee-track">
               {/* Set A */}
@@ -582,9 +607,8 @@ function HomePage() {
         <section className="s10-faq">
           <div className="container">
             <div className="s10-faq-head">
-              <div className="s10-faq-eyebrow">Questions</div>
               <h2 className="s10-faq-headline">
-                The questions we hear <span className="accent">most</span>
+                Looking for some <span className="accent">quick info?</span>
               </h2>
             </div>
             <div className="s10-faq-list">
