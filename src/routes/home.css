@@ -161,22 +161,26 @@
   width: 100%;
   overflow: hidden;
   margin-top: calc(var(--base) * 1.0);
+  /* Decorative — not interactive. Blocks clicks, drags, right-click-save,  */
+  /* text-cursor on hover, and any future accidental link behavior. Also    */
+  /* makes hover-pause impossible (intentional — reel never stops).         */
+  pointer-events: none;
+  user-select: none;
 }
 .s03-reel-track {
   display: flex;
-  gap: calc(var(--base) * 0.6);
+  gap: calc(var(--base) * 0.15);
   width: max-content;
-  animation: s03-reel-scroll 80s linear infinite;
+  animation: s03-reel-scroll 60s linear infinite;
   will-change: transform;
 }
-.s03-reel:hover .s03-reel-track { animation-play-state: paused; }
 @keyframes s03-reel-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
 .s03-reel-tile {
   flex: 0 0 auto;
-  height: calc(var(--base) * 11);
+  height: calc(var(--base) * 4.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -707,7 +711,7 @@
   }
   .s06-grid { grid-template-columns: repeat(2, 1fr); }
   .s02-manifesto-stack { --s02-stack-width: 78%; }
-  .s03-reel-tile { height: calc(var(--base) * 9); }
+  .s03-reel-tile { height: calc(var(--base) * 3.85); }
 }
 @media (max-width: 768px) {
   .home-hero { height: 440px; }
@@ -716,10 +720,10 @@
   .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }
   .s09-card { width: calc(var(--base) * 8); }
-  .s03-reel-tile { height: calc(var(--base) * 7.5); }
+  .s03-reel-tile { height: calc(var(--base) * 3.2); }
 }
 @media (max-width: 520px) {
   .s02-manifesto-stack { --s02-stack-width: 100%; }
   .s09-card { width: calc(var(--base) * 7); }
-  .s03-reel-tile { height: calc(var(--base) * 6.5); }
+  .s03-reel-tile { height: calc(var(--base) * 2.8); }
 }
