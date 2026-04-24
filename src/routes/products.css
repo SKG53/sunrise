@@ -328,6 +328,7 @@
   transform: translateY(-2px);
 }
 .p-flavor-can {
+  position: relative;
   aspect-ratio: 3 / 4;
   background: rgba(254, 251, 224, 0.09);
   display: flex;
@@ -338,9 +339,16 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(254, 251, 224, 0.38);
+  overflow: hidden;
 }
-.p-flavor-can::before {
+.p-flavor-can:not(.has-image)::before {
   content: 'Can Image';
+}
+.p-flavor-can img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 .p-flavor-meta {
   padding: calc(var(--base) * 0.42) calc(var(--base) * 0.38) calc(var(--base) * 0.46);
