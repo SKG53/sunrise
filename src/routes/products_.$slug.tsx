@@ -406,9 +406,48 @@ function ProductDetailPage() {
                 <p className="pd-hero-blurb">{product.blurb}</p>
 
                 <div className="pd-hero-price">
-                  <span className="pd-price-amount">$X.XX</span>
-                  <span className="pd-price-unit">/ can</span>
+                  {shopifyMapping ? (
+                    shopifyLoading ? (
+                      <span className="pd-price-amount">…</span>
+                    ) : displayPrice ? (
+                      <>
+                        <span className="pd-price-amount">
+                          ${parseFloat(displayPrice).toFixed(2)}
+                        </span>
+                        <span className="pd-price-unit">{priceUnit}</span>
+                      </>
+                    ) : (
+                      <span className="pd-price-amount">Coming soon</span>
+                    )
+                  ) : (
+                    <>
+                      <span className="pd-price-amount">$X.XX</span>
+                      <span className="pd-price-unit">/ can</span>
+                    </>
+                  )}
                 </div>
+
+                {shopifyMapping && packOptions.length > 1 && (
+                  <div className="pd-hero-pack" role="radiogroup" aria-label="Pack size">
+                    {packOptions.map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        role="radio"
+                        aria-checked={selectedPack === opt}
+                        className={`pd-pack-btn${selectedPack === opt ? " is-selected" : ""}`}
+                        style={
+                          selectedPack === opt
+                            ? ({ ["--flavor-color" as string]: product.color } as React.CSSProperties)
+                            : undefined
+                        }
+                        onClick={() => setSelectedPack(opt)}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 <div className="pd-hero-qty">
                   <span className="pd-qty-label">Qty</span>
@@ -432,13 +471,34 @@ function ProductDetailPage() {
                 </div>
 
                 <div className="pd-hero-ctas">
-                  <a
-                    href="#"
-                    className="btn btn-flavor"
-                    style={{ ["--flavor-color" as string]: product.color } as React.CSSProperties}
-                  >
-                    Add to Cart →
-                  </a>
+                  {shopifyMapping ? (
+                    <button
+                      type="button"
+                      className="btn btn-flavor"
+                      style={{ ["--flavor-color" as string]: product.color } as React.CSSProperties}
+                      onClick={handleAddToCart}
+                      disabled={
+                        shopifyLoading ||
+                        cartLoading ||
+                        !selectedVariant ||
+                        !isInStock
+                      }
+                    >
+                      {cartLoading
+                        ? "Adding…"
+                        : !isInStock && !shopifyLoading
+                        ? "Sold Out"
+                        : "Add to Cart →"}
+                    </button>
+                  ) : (
+                    <a
+                      href="#"
+                      className="btn btn-flavor"
+                      style={{ ["--flavor-color" as string]: product.color } as React.CSSProperties}
+                    >
+                      Add to Cart →
+                    </a>
+                  )}
                   <a href="/find" className="btn btn-secondary">Find Near You</a>
                 </div>
               </div>
