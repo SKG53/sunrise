@@ -192,7 +192,7 @@
 }
 .s03-reel-track {
   display: flex;
-  gap: calc(var(--base) * 0.9);
+  gap: calc(var(--base) * 2.7);
   width: max-content;
   animation: s03-reel-scroll 60s linear infinite;
   will-change: transform;
