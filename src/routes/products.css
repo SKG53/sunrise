@@ -189,6 +189,7 @@
   text-transform: uppercase;
   color: var(--near-black);
   line-height: 1.0;
+  text-align: center;
 }
 .p-switcher-headline .accent { color: var(--green-accent); }
 .p-switcher-subhead {
@@ -197,6 +198,9 @@
   line-height: 1.5;
   color: var(--text-body);
   max-width: 58ch;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .p-switcher-bar {
@@ -228,16 +232,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(var(--base) * 0.9);
+  min-height: calc(var(--base) * 1.2);
 }
 .p-switch-name {
   font-size: calc(var(--base) * 0.34);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--text-secondary);
-  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.04);
+  line-height: 1.1;
 }
+.p-switch-name span { white-space: nowrap; }
 .p-switch.active .p-switch-name { color: var(--cream); }
 .p-switch.active:hover { filter: brightness(0.95); }
 
