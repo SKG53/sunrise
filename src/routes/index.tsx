@@ -283,8 +283,8 @@ function HomePage() {
         <section className="s06-tiers">
           <div className="container">
             <h2 className="s06-headline">
-              Four options<br />
-              Find your <span className="accent">perfect dose</span>
+              Find your<br />
+              <span className="accent">perfect dose.</span>
             </h2>
             <p className="s06-subhead">
               Mellow moments to enhanced relaxation, find your favorite SUNRISE experience below.
