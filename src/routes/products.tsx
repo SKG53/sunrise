@@ -336,12 +336,11 @@ function ProductsPage() {
           <div className="container">
             <div className="p-hero-inner">
               <h1 className="p-hero-headline">
-                Twenty-four seltzers<br />
-                Made the same <span className="accent">way</span>
+                Enjoy every last<br />
+                <span className="accent">sip and pour.</span>
               </h1>
               <p className="p-hero-body">
-                Four potency tiers, six flavors each, three cannabinoid variants per tier.
-                Real fruit. Small batches. Oklahoma.
+                Try one and try them all. Savor the SUNRISE with each and every one — all made with natural flavors.
               </p>
             </div>
           </div>

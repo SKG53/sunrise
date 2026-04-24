@@ -101,7 +101,7 @@ function ContactPage() {
           <div className="container">
             <div className="c-hero-inner">
               <h1 className="c-hero-headline">
-                Say hello<br />
+                Say hello.<br />
                 Give us a <em className="accent-italic">buzz</em>
               </h1>
               <p className="c-hero-body">
