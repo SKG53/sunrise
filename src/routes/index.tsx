@@ -348,27 +348,27 @@ function HomePage() {
             <div className="s04-trifecta">
               <div className="s04-col s04-col-left">
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Purified Water</div>
+                  <div className="s04-ing-name">Purified<br />Water</div>
                   <div className="s04-ing-desc">
                     Reverse-osmosis filtered water carefully chosen for exceptional
                     hydration &amp; uncompromising flavor.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Pure Cane Sugar</div>
+                  <div className="s04-ing-name">Pure Cane<br />Sugar</div>
                   <div className="s04-ing-desc">
                     A touch of real sugar for smooth, naturally derived sweetness.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Natural Flavoring</div>
+                  <div className="s04-ing-name">Natural<br />Flavoring</div>
                   <div className="s04-ing-desc">
                     Sourced from real fruits and botanicals, our flavors deliver
                     bright, authentic notes true to their names.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Fresh Lemon Juice</div>
+                  <div className="s04-ing-name">Fresh Lemon<br />Juice</div>
                   <div className="s04-ing-desc">
                     Used exclusively in our Lemonade flavors, this ingredient brings
                     a hint of crisp acidity with a natural citrus lift.
@@ -386,28 +386,28 @@ function HomePage() {
               </div>
               <div className="s04-col s04-col-right">
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Emulsified Hemp Extract</div>
+                  <div className="s04-ing-name">Emulsified<br />Hemp Extract</div>
                   <div className="s04-ing-desc">
                     The good stuff — expertly blended cannabis extract for a clean
                     and consistent experience with every sip.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Naturally Sourced Enhancers</div>
+                  <div className="s04-ing-name">Naturally Sourced<br />Enhancers</div>
                   <div className="s04-ing-desc">
                     Functional ingredients like B12 that allow for a healthier,
                     more balanced experience without altering flavors.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Citric Acid</div>
+                  <div className="s04-ing-name">Citric<br />Acid</div>
                   <div className="s04-ing-desc">
                     A naturally occurring acid found in citrus fruits, this is used
                     to balance flavors and keep things bubbly.
                   </div>
                 </div>
                 <div className="s04-ing">
-                  <div className="s04-ing-name">Sodium Benzoate</div>
+                  <div className="s04-ing-name">Sodium<br />Benzoate</div>
                   <div className="s04-ing-desc">
                     A widely used food-safe preservative that helps keep each can
                     fresh without altering its flavor profile.
