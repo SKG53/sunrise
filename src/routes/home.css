@@ -255,8 +255,8 @@
   flex-direction: column;
   gap: calc(var(--base) * 0.7);
 }
-.s04-col-left  { text-align: left;  align-items: flex-start; }
-.s04-col-right { text-align: right; align-items: flex-end; }
+.s04-col-left  { text-align: left;  align-items: flex-end; }
+.s04-col-right { text-align: right; align-items: flex-start; }
 .s04-ing {
   display: flex;
   flex-direction: column;
