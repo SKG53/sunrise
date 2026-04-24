@@ -70,30 +70,17 @@
   gap: calc(var(--base) * 0.05);
   width: var(--s02-stack-width, 65%);
 }
+/* Each line is an inline SVG with a hardcoded natural-width viewBox and
+   outer width: 100% of the stack. preserveAspectRatio="xMidYMid meet"
+   scales each SVG uniformly to fill stack width — perfect L/R alignment
+   at every breakpoint with zero JS. Gradient lives inside each SVG
+   (<linearGradient>). See S02Line in index.tsx. */
 .s02-manifesto-line {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  line-height: 0.95;
-  white-space: nowrap;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
 }
-/* All four lines share the brand gradient fill — JS auto-fit sets font-size per line at runtime */
-.s02-ml-refresh,
-.s02-ml-theway,
-.s02-ml-world,
-.s02-ml-drinks {
-  background: linear-gradient(90deg, #4F308D, #822665, #94264B, #BF252D, #CC382C, #DC531F, #E76B37);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-}
-/* Per-line font-size fallbacks — used for SSR render and as a pre-hydration safety net. JS overrides once fonts load. */
-.s02-ml-refresh { font-size: calc(var(--base) * 2.2); }
-.s02-ml-theway  { font-size: calc(var(--base) * 2.0); }
-.s02-ml-world   { font-size: calc(var(--base) * 1.7); }
-.s02-ml-drinks  { font-size: calc(var(--base) * 2.6); }
 
 /* ── SECTION 03 · ORIGIN ────────────────────────────────────────────────── */
 /* ── SECTION 03 · PRODUCT INTRO ─────────────────────────────────────────── */
@@ -740,10 +727,6 @@
 }
 @media (max-width: 520px) {
   .s02-manifesto-stack { --s02-stack-width: 100%; }
-  .s02-ml-refresh { font-size: calc(var(--base) * 1.5); }
-  .s02-ml-theway  { font-size: calc(var(--base) * 1.4); }
-  .s02-ml-world   { font-size: calc(var(--base) * 1.2); }
-  .s02-ml-drinks  { font-size: calc(var(--base) * 1.8); }
   .s03-pi-fruits { grid-template-columns: repeat(3, 1fr); gap: calc(var(--base) * 0.3); }
   .s03-pi-fruit-placeholder { max-width: calc(var(--base) * 1.6); }
   .s09-card { width: calc(var(--base) * 7); }
