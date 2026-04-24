@@ -437,15 +437,32 @@ function HomePage() {
         <section className="s07-story">
           <div className="container">
             <div className="s07-layout">
-              <div className="s07-portrait" />
+              <div className="s07-cans" aria-hidden="true">
+                <img
+                  className="s07-can s07-can-lg"
+                  src={canS07Large}
+                  alt=""
+                />
+                <img
+                  className="s07-can s07-can-md"
+                  src={canS07Medium}
+                  alt=""
+                />
+                <img
+                  className="s07-can s07-can-sm"
+                  src={canS07Small}
+                  alt=""
+                />
+              </div>
               <div className="s07-copy">
                 <h2 className="s07-headline">
-                  A family business<br />A new kind of drink
+                  A family business.<br />Designed to deliver.
                 </h2>
                 <p className="s07-body">
-                  SUNRISE was born from a simple conviction: the world of non-alcoholic
-                  drinks was due for a reinvention. Our team brings decades of beverage
-                  manufacturing to the problem, and every can reflects that work.
+                  SUNRISE was born with a simple conviction: it's about quality
+                  and simple ingredients. Our team brings almost a decade of
+                  beverage and branding experience to drinks for an experience
+                  like no other.
                 </p>
                 <div className="s07-cta-row">
                   <a href="/about" className="btn btn-on-color-ghost">Read Our Story →</a>
