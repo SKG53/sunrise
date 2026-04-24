@@ -151,7 +151,7 @@
   letter-spacing: 0.005em;
   line-height: 0.98;
   text-transform: uppercase;
-  color: var(--near-black);
+  color: var(--flavor-color, var(--near-black));
   margin-bottom: calc(var(--base) * 0.35);
 }
 .pd-hero-descriptor {
@@ -254,46 +254,34 @@
   grid-template-columns: repeat(4, 1fr);
   gap: calc(var(--base) * 0.9);
   align-items: center;
+  justify-items: center;
 }
 .pd-stat {
   display: flex;
   flex-direction: column;
   gap: calc(var(--base) * 0.22);
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
 }
-.pd-stat-lockup { line-height: 0; }
+.pd-stat-lockup {
+  line-height: 0;
+  white-space: nowrap;
+}
 
-/* Claim badges: brand-SVG icon at .pd-claim-icon + stacked two-line label.
-   Icons render via <img src="/icons/*.svg"> (uploaded brand art, not inline
-   path data), so fill/stroke live inside the SVG file itself — no color or
-   currentColor inheritance on the container. */
+/* Claim badges: brand-SVG icon at .pd-claim-icon. Icons render via
+   <img src="/icons/*.svg"> (uploaded brand art, not inline path data) and
+   already contain their own GLUTEN FREE / NATURAL VEGAN / ZERO ALCOHOL
+   wordmarks within the SVG, so no companion text label is rendered. */
 .pd-claim {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--base) * 0.22);
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
 }
 .pd-claim-icon {
-  width: calc(var(--base) * 1.0);
-  height: calc(var(--base) * 1.0);
+  width: calc(var(--base) * 2.5);
+  height: calc(var(--base) * 2.5);
   display: block;
-}
-.pd-claim-label {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.05;
-}
-.pd-claim-label span {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.28);
-  font-weight: 900;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--near-black);
-}
-.pd-claim-label span:first-child {
-  font-weight: 700;
-  color: var(--text-secondary);
 }
 
 /* ── 04 · WHAT'S INSIDE (verbatim mirror of home .s04-whats-inside) ─────── */
@@ -443,30 +431,30 @@
   text-transform: uppercase;
   color: var(--green-accent);
 }
-/* Cannabinoid effect pill — mirrors .p-flavor-pill on /products but tuned   */
-/* for the cream-on-near-black PD card surface.                             */
-.pd-related-pill {
-  display: inline-block;
-  align-self: flex-start;
-  padding: calc(var(--base) * 0.08) calc(var(--base) * 0.24);
-  border: 1px solid rgba(26, 26, 26, 0.35);
-  border-radius: 9999px;
-  font-size: calc(var(--base) * 0.18);
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--near-black);
-  margin-top: calc(var(--base) * 0.18);
-}
-/* Cannabinoid lockup badge — absolute-positioned in the card's bottom-right */
-/* corner on +CBG / +CBN / +THCV siblings. Sibling of .pd-related-meta so   */
-/* it anchors to the full card. pointer-events: none keeps the link clean.  */
+/* Cannabinoid lockup — vertical strip on the card's right edge,            */
+/* visually centered. Span fills card height as a flex container; child     */
+/* lockup is rotated -90deg (CCW) so the cannabinoid word reads bottom-to-  */
+/* top. The strip lives over the flavor-color flooded can portion (the     */
+/* card's vertical center always falls within the can area at 3:4), so the */
+/* lockup is painted in cream for on-color contrast. pointer-events: none  */
+/* keeps clicks on the parent <Link>.                                       */
 .pd-related-corner {
   position: absolute;
-  right: calc(var(--base) * 0.32);
-  bottom: calc(var(--base) * 0.36);
-  line-height: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: calc(var(--base) * 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
+  z-index: 2;
+}
+.pd-related-corner > * {
+  display: inline-block;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  white-space: nowrap;
 }
 
 /* ── 06 · CANNABINOID STORY (variant only — two-column band on flavor flood) ─
@@ -592,6 +580,17 @@
   color: var(--cream);
   margin-bottom: calc(var(--base) * 0.35);
 }
+/* PtP headline wrap rules:                                                  */
+/*   line 1 ("Now you know") — must always render on a single line; nowrap.  */
+/*   line 2 (flavor name)    — natural wrap, allowed to break onto 1–2 lines */
+/*                             for longer flavors (e.g. "Strawberry          */
+/*                             Watermelon", "Blueberry Pomegranate").        */
+.pd-ptp-line-1 {
+  white-space: nowrap;
+}
+.pd-ptp-line-2 {
+  display: inline;
+}
 .pd-ptp-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.4);
@@ -650,7 +649,7 @@
 .pd-hero-pack {
   display: flex;
   gap: 0.5rem;
-  margin: 0.75rem 0 0.25rem;
+  margin: 0.75rem 0 calc(var(--base) * 0.55);
   flex-wrap: wrap;
 }
 .pd-pack-btn {
