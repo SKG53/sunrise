@@ -4,26 +4,13 @@
    ==========================================================================
    Scoped .a-* styles for the About route. No @font-face — inherits Montserrat
    from sunrise-shell.css via __root.tsx. All design tokens (--cream, --gold,
-   --near-black, --base, --tier-30, etc.) are defined globally in the shell.
+   --near-black, --base, --tier-10, etc.) are defined globally in the shell.
    ========================================================================== */
 
-/* ── EYEBROW (reusable across sections) ─────────────────────────────────── */
-.a-eyebrow {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.24);
-  font-weight: 800;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold);
-  line-height: 1;
-  margin-bottom: calc(var(--base) * 0.45);
-}
-.a-eyebrow-on-color { color: rgba(254, 251, 224, 0.75); }
-
 /* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
-/* Giant color-flood page title. Tier-10 red — brand heritage color also  */
-/* used in S06 ptp section below and on home S06. Matches the page-hero   */
-/* pattern on Products / Find / Contact with its own assigned tier color. */
+/* Giant color-flood page title. Tier-10 red — brand heritage color also   */
+/* used in S04 ptp section below and on home S06. Matches the page-hero    */
+/* pattern on Products / Find / Contact with its own assigned tier color.  */
 .a-pagehero {
   background: var(--tier-10);
   min-height: 50vh;
