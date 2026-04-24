@@ -675,16 +675,6 @@
 .s10-faq-head {
   margin-bottom: calc(var(--base) * 1.0);
 }
-.s10-faq-eyebrow {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.24);
-  font-weight: 800;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold);
-  line-height: 1;
-  margin-bottom: calc(var(--base) * 0.45);
-}
 .s10-faq-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
@@ -693,7 +683,7 @@
   line-height: 1.0;
   text-transform: uppercase;
   color: var(--near-black);
-  max-width: 16ch;
+  max-width: 22ch;
   margin: 0;
 }
 .s10-faq-headline .accent { color: var(--green-accent); }
