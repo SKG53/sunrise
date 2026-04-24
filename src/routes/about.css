@@ -5,12 +5,19 @@
    Scoped .a-* styles for the About route. No @font-face — inherits Montserrat
    from sunrise-shell.css via __root.tsx. All design tokens (--cream, --gold,
    --near-black, --base, --tier-10, etc.) are defined globally in the shell.
+
+   Section map (7 sections before footer):
+     01 · Pagehero              (tier-10 flood, unchanged)
+     02+03 · Intro              (centered, old S02 heading + old S03 paragraphs)
+     04 · Cans                  (3-can lifestyle trio)
+     05 · Icons                 (3 icons with explanations)
+     06 · Build                 (old Heartland + How We Build, on cream)
+     07 · PTP                   (tier-10 flood, unchanged)
    ========================================================================== */
 
 /* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
 /* Giant color-flood page title. Tier-10 red — brand heritage color also   */
-/* used in S04 ptp section below and on home S06. Matches the page-hero    */
-/* pattern on Products / Find / Contact with its own assigned tier color.  */
+/* used in S07 ptp section below and on home S06.                          */
 .a-pagehero {
   background: var(--tier-10);
   min-height: 50vh;
@@ -49,14 +56,18 @@
   .a-pagehero-title span { opacity: 1; animation: none; }
 }
 
-/* ── 02 · HERO ──────────────────────────────────────────────────────────── */
-.a-hero {
-  padding: calc(var(--base) * 2.4) 0 calc(var(--base) * 2.0);
+/* ── 02 + 03 · INTRO (centered) ─────────────────────────────────────────── */
+/* Centered layout. Old S02 heading "Born in the heart of America" + 3     */
+/* paragraphs from old S03. No image. Occupies S02 and S03 slots.          */
+.a-intro {
+  padding: calc(var(--base) * 2.4) 0 calc(var(--base) * 2.4);
 }
-.a-hero-inner {
+.a-intro-inner {
   text-align: center;
+  max-width: 52ch;
+  margin: 0 auto;
 }
-.a-hero-headline {
+.a-intro-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
   font-size: calc(var(--base) * 1.5);
@@ -64,59 +75,23 @@
   line-height: 0.98;
   text-transform: uppercase;
   color: var(--near-black);
-  margin: 0 auto calc(var(--base) * 0.6);
+  margin: 0 auto calc(var(--base) * 0.9);
   max-width: 18ch;
 }
-.a-hero-headline .accent { color: var(--tier-10); }
-.a-hero-body {
+.a-intro-headline .accent { color: var(--tier-10); }
+.a-intro-body {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.42);
+  font-size: calc(var(--base) * 0.4);
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.65;
   color: var(--text-body);
-  max-width: 42ch;
-  margin-left: auto;
-  margin-right: auto;
+  text-align: left;
 }
+.a-intro-body p + p { margin-top: calc(var(--base) * 0.5); }
 
-/* ── 03 · ORIGIN ────────────────────────────────────────────────────────── */
-.a-origin {
-  border-top: 1px solid var(--warm-gray-faint);
-  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
-}
-.a-origin-inner {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: calc(var(--base) * 1.2);
-  align-items: start;
-}
-.a-origin-copy {
-  padding-top: calc(var(--base) * 0.2);
-}
-.a-origin-headline {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-  font-size: calc(var(--base) * 1.0);
-  letter-spacing: 0.005em;
-  line-height: 1.0;
-  text-transform: uppercase;
-  color: var(--near-black);
-  margin-bottom: calc(var(--base) * 0.55);
-  max-width: 18ch;
-}
-.a-origin-headline .accent { color: var(--green-accent); }
-.a-origin-body {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.38);
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--text-body);
-}
-.a-origin-body p + p { margin-top: calc(var(--base) * 0.4); }
-
-/* Emphasizer: short bold phrase at paragraph opening or closing.
-   Inline with body text, Montserrat 900, brand gradient fill. */
-.a-origin-emphasizer {
+/* Emphasizer: short bold phrase inline with body text.
+   Montserrat 900, brand gradient fill. */
+.a-intro-emphasizer {
   font-weight: 900;
   background: linear-gradient(90deg, #4F308D, #822665, #94264B, #BF252D, #CC382C, #DC531F, #E76B37);
   -webkit-background-clip: text;
@@ -125,80 +100,118 @@
   color: transparent;
 }
 
-/* Interruptor: single pulled sentence breaking the paragraph flow.
-   Italic, Montserrat 900, near-black, larger than body, centered, with
-   generous vertical breathing room. */
-.a-origin-interruptor {
-  margin: calc(var(--base) * 0.9) 0;
-  font-family: 'Montserrat', sans-serif;
-  font-style: italic;
-  font-weight: 900;
-  font-size: calc(var(--base) * 0.62);
-  line-height: 1.2;
-  color: var(--near-black);
-  text-align: center;
-  letter-spacing: 0.005em;
+/* ── 04 · CANS ROW ──────────────────────────────────────────────────────── */
+/* Three-can lifestyle trio. No copy. On cream. Cans baseline-aligned.     */
+.a-cans {
+  padding: calc(var(--base) * 1.4) 0 calc(var(--base) * 2.0);
 }
-.a-origin-interruptor em { font-style: italic; }
-.a-origin-image-wrap {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  background: #E8E2C4;
-  border-radius: 2px;
-  overflow: hidden;
+.a-cans-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: calc(var(--base) * 0.6);
+  flex-wrap: wrap;
 }
-.a-origin-image {
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    #E8E2C4, #E8E2C4 10px,
-    #DED5B3 10px, #DED5B3 20px
-  );
+.a-cans-can {
+  width: 100%;
+  max-width: calc(var(--base) * 5.4);
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
 
-/* ── 05 · HOW WE BUILD ──────────────────────────────────────────────────── */
-.a-approach {
+/* ── 05 · ICONS ─────────────────────────────────────────────────────────── */
+/* Three icons with titles and body copy. Stacked vertically. Icon at     */
+/* left (tier-colored circle), title + body at right.                     */
+.a-icons {
   background: var(--cream);
   border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
 }
-.a-approach-head {
-  margin-bottom: calc(var(--base) * 1.2);
+.a-icons-list {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.8);
 }
-.a-approach-headline {
+.a-icons-item {
+  display: grid;
+  grid-template-columns: calc(var(--base) * 1.6) 1fr;
+  gap: calc(var(--base) * 0.6);
+  align-items: start;
+}
+.a-icons-icon {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  display: block;
+}
+.a-icons-content {
+  padding-top: calc(var(--base) * 0.1);
+}
+.a-icons-title {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 0.52);
   letter-spacing: 0.005em;
-  line-height: 1.0;
+  line-height: 1.1;
+  color: var(--near-black);
+  margin-bottom: calc(var(--base) * 0.18);
+}
+.a-icons-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.36);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-body);
+  margin: 0;
+}
+
+/* ── 06 · BUILD (old Heartland + How We Build merged) ───────────────────── */
+/* Route 66 heartland intro + three in-house pillars. On cream — no green */
+/* flood.                                                                 */
+.a-build {
+  background: var(--cream);
+  border-top: 1px solid var(--warm-gray-faint);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
+}
+.a-build-head {
+  margin-bottom: calc(var(--base) * 1.2);
+}
+.a-build-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.2);
+  letter-spacing: 0.005em;
+  line-height: 0.98;
   text-transform: uppercase;
   color: var(--near-black);
-  margin-bottom: calc(var(--base) * 0.4);
+  margin-bottom: calc(var(--base) * 0.5);
   max-width: 18ch;
 }
-.a-approach-headline .accent { color: var(--green-accent); }
-.a-approach-lead {
+.a-build-headline .accent { color: var(--green-accent); }
+.a-build-lead {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.38);
+  font-size: calc(var(--base) * 0.4);
   font-weight: 400;
   line-height: 1.55;
   color: var(--text-body);
   max-width: 56ch;
 }
-.a-approach-pillars {
+.a-build-pillars {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: calc(var(--base) * 0.8);
 }
-.a-approach-pillar {
+.a-build-pillar {
   display: flex;
   flex-direction: column;
   gap: calc(var(--base) * 0.3);
   padding-top: calc(var(--base) * 0.55);
   border-top: 2px solid var(--gold);
 }
-.a-approach-pillar-title {
+.a-build-pillar-title {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
   font-size: calc(var(--base) * 0.7);
@@ -207,7 +220,7 @@
   text-transform: uppercase;
   color: var(--near-black);
 }
-.a-approach-pillar-body {
+.a-build-pillar-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.34);
   font-weight: 400;
@@ -215,36 +228,7 @@
   color: var(--text-body);
 }
 
-/* ── 04 · AMERICAN HEARTLAND (tier-30 flood) ────────────────────────────── */
-.a-heartland {
-  background: var(--tier-30);
-  color: var(--cream);
-  padding: calc(var(--base) * 2.8) 0 calc(var(--base) * 3.0);
-}
-.a-heartland-inner {
-  max-width: 36ch;
-}
-.a-heartland-headline {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-  font-size: calc(var(--base) * 1.5);
-  letter-spacing: 0.005em;
-  line-height: 0.98;
-  text-transform: uppercase;
-  color: var(--cream);
-  margin-bottom: calc(var(--base) * 0.55);
-}
-.a-heartland-headline .accent { color: #F2D480; }
-.a-heartland-body {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.4);
-  font-weight: 400;
-  line-height: 1.55;
-  color: rgba(254, 251, 224, 0.88);
-  max-width: 42ch;
-}
-
-/* ── 06 · PATH TO PURCHASE ──────────────────────────────────────────────────
+/* ── 07 · PATH TO PURCHASE ──────────────────────────────────────────────────
    Tier-10 red flood — bookends the page to its S01 pagehero. --on-color-text
    is the token .btn-on-color uses for its text color, keeping the solid CTA
    in brand-color harmony with the band flood.
@@ -293,19 +277,16 @@
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  .a-origin-inner,
   .a-ptp-inner { grid-template-columns: 1fr; }
   .a-ptp-ctas { justify-self: start; flex-direction: row; }
-  .a-approach-pillars { grid-template-columns: 1fr 1fr; }
+  .a-build-pillars { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 768px) {
-  .a-approach-pillars { grid-template-columns: 1fr; }
-  .a-hero-headline { font-size: calc(var(--base) * 1.35); }
-  .a-heartland-headline { font-size: calc(var(--base) * 1.35); }
-  .a-origin-headline,
-  .a-approach-headline { font-size: calc(var(--base) * 1.0); }
+  .a-build-pillars { grid-template-columns: 1fr; }
+  .a-intro-headline { font-size: calc(var(--base) * 1.35); }
+  .a-build-headline { font-size: calc(var(--base) * 1.0); }
   .a-ptp-headline { font-size: calc(var(--base) * 1.0); }
-  .a-origin-interruptor { font-size: calc(var(--base) * 0.5); }
+  .a-icons-item { grid-template-columns: calc(var(--base) * 1.3) 1fr; }
 }
 @media (max-width: 520px) {
   .a-ptp-ctas { flex-direction: column; width: 100%; }
