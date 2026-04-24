@@ -127,6 +127,15 @@ const TIERS: Record<TierKey, TierData> = {
 // Unified lockup size across all four tiers.
 const LOCKUP_SIZE = 2.2;
 
+// Two-word effect phrases shown on flavor-card pills for +CBG / +CBN / +THCV
+// variants. Canonical per Brand memory ("+CBG = FOCUS + UPLIFT" etc.). Mirrors
+// the eyebrow text on the matching S03 effect cards.
+const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
+  CBG:  "Focus + Uplift",
+  CBN:  "Relax + Unwind",
+  THCV: "Elevate + Engage",
+};
+
 // ── EFFECTS DATA (4-card Find Your Effect grid) ──────────────────────────
 // Positions: 1 = CORE (classic THC baseline), 2-4 = +CBG / +CBN / +THCV.
 type EffectCardData = {
@@ -141,7 +150,7 @@ const EFFECTS: EffectCardData[] = [
     bg: "#1A1A1A",
     eyebrow: "Pure · Classic",
     symbol: "Core",
-    body: "Just THC, no minor cannabinoids added. Clean, balanced, uncomplicated — the SUNRISE baseline.",
+    body: "Just THC. Clean, balanced, uncomplicated — the SUNRISE baseline.",
     foot: "Three flavors per tier",
   },
   {
@@ -211,7 +220,6 @@ function ProductsPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const panelLockupRef = useRef<HTMLDivElement>(null);
-  const stat12Ref = useRef<HTMLDivElement>(null);
   const switch5Ref = useRef<HTMLDivElement>(null);
   const switch10Ref = useRef<HTMLDivElement>(null);
   const switch30Ref = useRef<HTMLDivElement>(null);
@@ -227,9 +235,10 @@ function ProductsPage() {
   // Array indexed 0-3 to match EFFECTS positions. null when ref not yet attached.
   const effectRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
-  // Flavor-pill lockup refs — 6 per active tier. Repopulated on tier switch via
-  // React's ref callback; null slots correspond to base flavors (no cannabinoid).
-  const pillRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  // Flavor-corner lockup refs — one per cannabinoid flavor (positions 4–6 of
+  // each tier). Repopulated on tier switch via React's ref callback; null
+  // slots correspond to base flavors (no cannabinoid).
+  const cornerRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   // Read ?tier= URL param on mount so Home tier cards (and any other
   // /products?tier=X deep-links) land on the correct panel. Invalid values
