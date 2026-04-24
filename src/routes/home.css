@@ -122,16 +122,23 @@
 /* character, streamed in reading order across all four lines). The        */
 /* character appears instantly (0.05s snap) rather than fades — that's     */
 /* what gives the "typed" rhythm. Gradient fill stays on the parent <text>,*/
-/* so each letter arrives already correctly colored.                       */
+/* so each letter arrives already correctly colored. Animation is gated on */
+/* the .in-view class, which an IntersectionObserver in index.tsx attaches */
+/* to .s02-manifesto-stack when the element is 15% visible in the          */
+/* viewport. This prevents the animation from firing and completing silently*/
+/* while the user is still looking at the hero above.                      */
 .s02-char {
   opacity: 0;
+}
+.s02-manifesto-stack.in-view .s02-char {
   animation: s02-char-in 0.05s ease-out forwards;
 }
 @keyframes s02-char-in {
   to { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .s02-char { opacity: 1; animation: none; }
+  .s02-char { opacity: 1; }
+  .s02-manifesto-stack.in-view .s02-char { animation: none; }
 }
 
 /* ── SECTION 03 · ORIGIN ────────────────────────────────────────────────── */

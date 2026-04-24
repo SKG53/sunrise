@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { S07Map } from "../components/S07Map";
@@ -168,6 +168,8 @@ function HomePage() {
   const lockup10Ref = useRef<HTMLDivElement>(null);
   const lockup30Ref = useRef<HTMLDivElement>(null);
   const lockup60Ref = useRef<HTMLDivElement>(null);
+  const manifestoRef = useRef<HTMLDivElement>(null);
+  const [manifestoInView, setManifestoInView] = useState(false);
 
   useEffect(() => {
     const paint = () => {
@@ -183,6 +185,27 @@ function HomePage() {
     if (document.fonts) document.fonts.ready.then(paint);
     window.addEventListener("resize", paint);
     return () => window.removeEventListener("resize", paint);
+  }, []);
+
+  // S02 manifesto typewriter trigger. Animation fires when the stack is 15%
+  // visible in the viewport. Observer disconnects on first fire — animation
+  // plays exactly once per page load. If the stack is already in view on
+  // mount (short hero, deep link, anchor), IntersectionObserver calls the
+  // callback on initial check, so the animation still fires correctly.
+  useEffect(() => {
+    const el = manifestoRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setManifestoInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -210,7 +233,8 @@ function HomePage() {
           <div className="container">
             <h2 className="sr-only">Refresh the way the world drinks.</h2>
             <div
-              className="s02-manifesto-stack"
+              ref={manifestoRef}
+              className={`s02-manifesto-stack${manifestoInView ? " in-view" : ""}`}
               aria-label="Refresh the way the world drinks."
             >
               <S02Line text="REFRESH"   width={488.41} xShift={-5.62} gradId="s02-grad-refresh" charOffset={0}  />
