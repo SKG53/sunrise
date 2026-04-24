@@ -29,7 +29,7 @@
   color: var(--near-black);
   max-width: 16ch;
 }
-.pd-section-headline .accent { color: var(--green-accent); }
+.pd-section-headline .accent { color: var(--flavor-color, var(--green-accent)); }
 
 /* ── 01 · BREADCRUMB ────────────────────────────────────────────────────── */
 .pd-breadcrumb {
@@ -320,7 +320,7 @@
   text-align: center;
   margin: 0;
 }
-.pd-inside-headline .accent { color: var(--green-accent); }
+.pd-inside-headline .accent { color: var(--flavor-color, var(--green-accent)); }
 .pd-inside-trifecta {
   display: grid;
   grid-template-columns: 1fr minmax(calc(var(--base) * 8), 1.1fr) 1fr;
