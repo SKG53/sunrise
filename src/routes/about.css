@@ -196,19 +196,15 @@
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  .a-origin-inner,
   .a-ptp-inner { grid-template-columns: 1fr; }
   .a-ptp-ctas { justify-self: start; flex-direction: row; }
-  .a-approach-pillars { grid-template-columns: 1fr 1fr; }
+  .a-method-pillars { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 768px) {
-  .a-approach-pillars { grid-template-columns: 1fr; }
-  .a-hero-headline { font-size: calc(var(--base) * 1.35); }
-  .a-heartland-headline { font-size: calc(var(--base) * 1.35); }
-  .a-origin-headline,
-  .a-approach-headline { font-size: calc(var(--base) * 1.0); }
+  .a-method-pillars { grid-template-columns: 1fr; }
+  .a-story-headline { font-size: calc(var(--base) * 1.35); }
+  .a-method-headline { font-size: calc(var(--base) * 1.35); }
   .a-ptp-headline { font-size: calc(var(--base) * 1.0); }
-  .a-origin-interruptor { font-size: calc(var(--base) * 0.5); }
 }
 @media (max-width: 520px) {
   .a-ptp-ctas { flex-direction: column; width: 100%; }
