@@ -282,6 +282,32 @@ function ProductsPage() {
       if (stat12Ref.current) {
         stat12Ref.current.innerHTML = render12ozStatBlock(base * 0.95);
       }
+
+      // ── Effect-card +CBG / +CBN / +THCV lockups — cream on tier bg ──
+      // Matches .p-effect-symbol font-size (calc(--base * 1.05)).
+      EFFECTS.forEach((e, i) => {
+        const ref = effectRefs.current[i];
+        if (!ref) return;
+        const size = base * 1.05;
+        let html = "";
+        if (e.symbol === "+CBG")  html = renderCBGLockup(size, "#FEFBE0");
+        else if (e.symbol === "+CBN")  html = renderCBNLockup(size, "#FEFBE0");
+        else if (e.symbol === "+THCV") html = renderTHCVLockup(size, "#FEFBE0");
+        ref.innerHTML = html;
+      });
+
+      // ── Flavor-pill +CBG / +CBN / +THCV lockups — cream on tier bg ──
+      // Matches .p-flavor-pill font-size (calc(--base * 0.18)).
+      TIERS[activeTier].flavors.forEach((f, i) => {
+        const ref = pillRefs.current[i];
+        if (!ref || !f.cannabinoid) return;
+        const size = base * 0.18;
+        let html = "";
+        if (f.cannabinoid === "CBG")  html = renderCBGLockup(size, "#FEFBE0");
+        else if (f.cannabinoid === "CBN")  html = renderCBNLockup(size, "#FEFBE0");
+        else if (f.cannabinoid === "THCV") html = renderTHCVLockup(size, "#FEFBE0");
+        ref.innerHTML = html;
+      });
     };
     paint();
     if (document.fonts) document.fonts.ready.then(paint);
@@ -334,7 +360,16 @@ function ProductsPage() {
               {EFFECTS.map((e, i) => (
                 <div key={i} className="p-effect-card" style={{ background: e.bg }}>
                   <div className="p-effect-eyebrow">{e.eyebrow}</div>
-                  <div className="p-effect-symbol">{e.symbol}</div>
+                  <div className="p-effect-symbol">
+                    {e.symbol.startsWith("+") ? (
+                      <span
+                        ref={(el) => { effectRefs.current[i] = el; }}
+                        aria-label={e.symbol}
+                      />
+                    ) : (
+                      e.symbol
+                    )}
+                  </div>
                   <div className="p-effect-body">{e.body}</div>
                   <div className="p-effect-foot">{e.foot}</div>
                 </div>
@@ -393,7 +428,10 @@ function ProductsPage() {
                       <div className="p-flavor-descriptor">{f.descriptor}</div>
                       {f.cannabinoid && (
                         <div className="p-flavor-pill">
-                          +{f.cannabinoid} · {f.effect}
+                          <span
+                            ref={(el) => { pillRefs.current[i] = el; }}
+                            aria-label={`+${f.cannabinoid}`}
+                          /> · {f.effect}
                         </div>
                       )}
                     </div>
