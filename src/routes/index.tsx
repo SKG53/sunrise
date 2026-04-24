@@ -342,8 +342,8 @@ function HomePage() {
         <section id="whats-inside" className="s04-whats-inside">
           <div className="container">
             <h2 className="s04-headline">
-              What's Inside?<br />
-              <span className="accent">Each can</span>
+              What's Inside<br />
+              <span className="accent">Each can?</span>
             </h2>
             <div className="s04-trifecta">
               <div className="s04-col s04-col-left">
