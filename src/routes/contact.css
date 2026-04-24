@@ -120,7 +120,7 @@
   margin-bottom: calc(var(--base) * 0.5);
   max-width: 14ch;
 }
-.c-form-headline .accent { color: var(--green-accent); }
+.c-form-headline .accent { color: var(--tier-60); }
 .c-form-sub {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.36);
@@ -281,7 +281,7 @@
   text-transform: uppercase;
   color: var(--near-black);
 }
-.c-direct-headline .accent { color: var(--green-accent); }
+.c-direct-headline .accent { color: var(--tier-60); }
 .c-direct-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
