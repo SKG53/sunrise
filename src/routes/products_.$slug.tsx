@@ -171,6 +171,15 @@ const CANNABINOID_COPY: Record<Cannabinoid, { bestFor: string; body1: string; bo
   },
 };
 
+// Two-word effect phrases shown on related-card pills for +CBG / +CBN /
+// +THCV variants. Mirrors CANNABINOID_EFFECT in /products so PD related
+// cards read identically to the tier-panel flavor cards.
+const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
+  CBG:  "Focus + Uplift",
+  CBN:  "Relax + Unwind",
+  THCV: "Elevate + Engage",
+};
+
 function renderLockup(tier: Tier, base: number, color: string): string {
   if (tier === 5) return render5mgLockup(base, color);
   if (tier === 10) return render10mgLockup(base, color);
