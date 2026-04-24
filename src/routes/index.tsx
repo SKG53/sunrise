@@ -61,19 +61,6 @@ const FAQS = [
   },
 ];
 
-// ── LIFESTYLE REEL ────────────────────────────────────────────────────────
-// Rendered twice back-to-back to produce a seamless marquee loop.
-const IMAGES = [
-  { src: "/reel-1.jpg", alt: "SUNRISE lifestyle moment 1" },
-  { src: "/reel-2.jpg", alt: "SUNRISE lifestyle moment 2" },
-  { src: "/reel-3.jpg", alt: "SUNRISE lifestyle moment 3" },
-  { src: "/reel-4.jpg", alt: "SUNRISE lifestyle moment 4" },
-  { src: "/reel-5.jpg", alt: "SUNRISE lifestyle moment 5" },
-  { src: "/reel-6.jpg", alt: "SUNRISE lifestyle moment 6" },
-  { src: "/reel-7.jpg", alt: "SUNRISE lifestyle moment 7" },
-  { src: "/reel-8.jpg", alt: "SUNRISE lifestyle moment 8" },
-];
-
 // ── S02 BRAND STATEMENT LINES ────────────────────────────────────────────
 // Each line is an inline SVG sized by a hardcoded natural-width viewBox,
 // outer width: 100% of the stack. preserveAspectRatio="xMidYMid meet" makes
@@ -537,24 +524,6 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── 10 · LIFESTYLE REEL ───────────────────────────────────────── */}
-        {/* Silent visual closer before footer — no header, no borders,    */}
-        {/* edge-to-edge filmstrip. Track renders IMAGES twice back-to-back */}
-        {/* and animates translateX(0) → translateX(-50%) for a seamless    */}
-        {/* loop. Hover pauses. prefers-reduced-motion disables animation.  */}
-        <section className="s11-reel" aria-label="Lifestyle imagery">
-          <div className="s11-reel-track">
-            {[...IMAGES, ...IMAGES].map((img, idx) => (
-              <div
-                key={idx}
-                className="s11-reel-tile"
-                aria-hidden={idx >= IMAGES.length ? "true" : undefined}
-              >
-                <img src={img.src} alt={img.alt} loading="lazy" />
-              </div>
-            ))}
-          </div>
-        </section>
       </main>
 
       <SiteFooter />
