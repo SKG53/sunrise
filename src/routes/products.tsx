@@ -294,7 +294,23 @@ function ProductsPage() {
           </h1>
         </section>
 
-        {/* ── 02 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
+        {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
+        <section className="p-hero">
+          <div className="container">
+            <div className="p-hero-inner">
+              <h1 className="p-hero-headline">
+                Twenty-four seltzers.<br />
+                Made the same <span className="accent">way.</span>
+              </h1>
+              <p className="p-hero-body">
+                Four potency tiers, six flavors each, three cannabinoid variants per tier.
+                Real fruit. Small batches. Oklahoma.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 03 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
         <section className="p-effects">
           <div className="container">
             <h2 className="p-effects-headline">
@@ -316,7 +332,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 03 · TIER SWITCHER + PANEL ──────────────────────────────── */}
+        {/* ── 04 · TIER SWITCHER + PANEL ──────────────────────────────── */}
         <section className="p-switcher">
           <div className="container">
             <h2 className="p-switcher-headline">
@@ -377,7 +393,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 04 · WHAT'S INSIDE ────────────────────────────────────────── */}
+        {/* ── 05 · WHAT'S INSIDE ────────────────────────────────────────── */}
         <section className="p-inside">
           <div className="container">
             <div className="p-inside-head">
@@ -427,7 +443,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 05 · TRANSPARENCY ─────────────────────────────────────────── */}
+        {/* ── 06 · TRANSPARENCY ─────────────────────────────────────────── */}
         <section className="p-transparency">
           <div className="container">
             <div className="p-transparency-inner">
@@ -454,7 +470,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 06 · CTA BAND ─────────────────────────────────────────────── */}
+        {/* ── 07 · CTA BAND ─────────────────────────────────────────────── */}
         <section className="p-ptp">
           <div className="container">
             <div className="p-ptp-inner">
@@ -474,7 +490,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 07 · FAQ ──────────────────────────────────────────────────── */}
+        {/* ── 08 · FAQ ──────────────────────────────────────────────────── */}
         <section className="p-faq">
           <div className="container">
             <h2 className="p-faq-headline">

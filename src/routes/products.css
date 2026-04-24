@@ -54,6 +54,37 @@
   .p-pagehero-title span { opacity: 1; animation: none; }
 }
 
+/* ── 02 · HERO ──────────────────────────────────────────────────────────── */
+/* Page-level intro between pagehero and the first content section. Mirrors */
+/* the .a-hero / .f-hero pattern on About and Find so all three content     */
+/* pages share a parallel opening rhythm: tier-colored page-label block,    */
+/* then a cream page-intro module (bold H1 + short body), then the first    */
+/* dense content section. Padding tuned to ABOUT's values (2.4 / 2.0) —     */
+/* the Effects grid below has the visual weight of About's Origin section. */
+.p-hero {
+  padding: calc(var(--base) * 2.4) 0 calc(var(--base) * 2.0);
+}
+.p-hero-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.5);
+  letter-spacing: 0.005em;
+  line-height: 0.98;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin-bottom: calc(var(--base) * 0.6);
+  max-width: 18ch;
+}
+.p-hero-headline .accent { color: var(--green-accent); }
+.p-hero-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.42);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-body);
+  max-width: 42ch;
+}
+
 /* ── FIND YOUR EFFECT (4-card: Core + CBG/CBN/THCV) ─────────────────────── */
 .p-effects {
   background: var(--cream);
@@ -618,6 +649,7 @@
   .p-inside-pillars { grid-template-columns: 1fr; }
   .p-inside-stats-badges { justify-content: flex-start; }
   .p-inside-headline { font-size: calc(var(--base) * 1.0); }
+  .p-hero-headline { font-size: calc(var(--base) * 1.35); }
 }
 @media (max-width: 520px) {
   .p-flavor-grid { grid-template-columns: 1fr; }
