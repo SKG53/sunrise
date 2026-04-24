@@ -297,8 +297,8 @@
 }
 
 /* ── 04 · WHAT'S INSIDE (verbatim mirror of home .s04-whats-inside) ─────── */
-/* Markup, classes, and values mirror home's S05 exactly so the section is    */
-/* visually indistinguishable from home. If home.css changes, update both.    */
+/* Markup, classes, values, and ingredient alignment mirror home's S05       */
+/* exactly. If home.css s04-* values change, update both in the same patch.  */
 .pd-ingredients {
   background: var(--cream);
   padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
@@ -311,7 +311,7 @@
 }
 .pd-inside-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -320,19 +320,23 @@
   text-align: center;
   margin: 0;
 }
+.pd-inside-headline .accent { color: var(--green-accent); }
 .pd-inside-trifecta {
   display: grid;
-  grid-template-columns: 1fr minmax(calc(var(--base) * 5), 1.1fr) 1fr;
-  gap: calc(var(--base) * 1.0);
-  align-items: center;
+  grid-template-columns: 1fr minmax(calc(var(--base) * 8), 1.1fr) 1fr;
+  gap: calc(var(--base) * 0.2);
+  align-items: stretch;
 }
 .pd-inside-col {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--base) * 0.7);
+  justify-content: center;
+  gap: calc(var(--base) * 0.6);
 }
-.pd-inside-col-left  { text-align: left;  align-items: flex-start; }
-.pd-inside-col-right { text-align: right; align-items: flex-end; }
+/* Inward-pointing alignment: left column right-aligned, right column left-
+   aligned, so both columns' ingredient lines hug the center can.            */
+.pd-inside-col-left  { text-align: left;  align-items: flex-end; }
+.pd-inside-col-right { text-align: right; align-items: flex-start; }
 .pd-inside-ing {
   display: flex;
   flex-direction: column;
@@ -341,15 +345,15 @@
 }
 .pd-inside-ing-name {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.32);
+  font-size: calc(var(--base) * 0.38);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--near-black);
-  line-height: 1.2;
+  line-height: 1.1;
 }
 .pd-inside-ing-desc {
-  font-size: calc(var(--base) * 0.28);
+  font-size: calc(var(--base) * 0.32);
   font-weight: 400;
   color: var(--text-body);
   line-height: 1.5;
@@ -359,13 +363,11 @@
   justify-content: center;
   align-items: center;
 }
-.pd-inside-can-placeholder {
+.pd-inside-can {
   width: 100%;
-  max-width: calc(var(--base) * 6);
-  aspect-ratio: 3 / 5;
-  background: var(--warm-gray-faint);
-  border-radius: calc(var(--base) * 0.1);
-  /* Placeholder — swap with background-image or <img> when real asset is available. */
+  max-width: calc(var(--base) * 8);
+  height: auto;
+  display: block;
 }
 
 /* ── 05 · OTHERS IN TIER ────────────────────────────────────────────────── */
@@ -598,6 +600,7 @@
 @media (max-width: 768px) {
   .pd-section-headline { font-size: calc(var(--base) * 1.0); }
   .pd-ptp-headline { font-size: calc(var(--base) * 1.0); }
+  .pd-inside-headline { font-size: calc(var(--base) * 1.35); }
   .pd-related-grid { grid-template-columns: repeat(2, 1fr); }
   .pd-cannabinoid-grid { gap: calc(var(--base) * 0.55); }
   .pd-cannabinoid-bestfor { font-size: calc(var(--base) * 0.42); }
