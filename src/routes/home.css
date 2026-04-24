@@ -21,11 +21,14 @@
   position: relative;
   width: 100%;
   height: 100%;
+  opacity: 0;
+  transform: translateX(-40px);
+  animation: hero-tile-in 450ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
-.hero-strip-col.tier-5-bg  { background: var(--tier-5); }
-.hero-strip-col.tier-10-bg { background: var(--tier-10); }
-.hero-strip-col.tier-30-bg { background: var(--tier-30); }
-.hero-strip-col.tier-60-bg { background: var(--tier-60); }
+.hero-strip-col.tier-5-bg  { background: var(--tier-5);  animation-delay: 0ms;   }
+.hero-strip-col.tier-10-bg { background: var(--tier-10); animation-delay: 110ms; }
+.hero-strip-col.tier-30-bg { background: var(--tier-30); animation-delay: 220ms; }
+.hero-strip-col.tier-60-bg { background: var(--tier-60); animation-delay: 330ms; }
 
 .hero-overlay {
   position: absolute;
@@ -40,7 +43,13 @@
   padding: 0 calc(var(--base) * 0.8);
   pointer-events: none;
 }
-.hero-wordmark-slot { line-height: 1; display: block; }
+.hero-wordmark-slot {
+  line-height: 1;
+  display: block;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: hero-wordmark-in 600ms cubic-bezier(0.22, 0.61, 0.36, 1) 550ms forwards;
+}
 .hero-subtitle {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.56);
@@ -50,6 +59,33 @@
   color: var(--cream);
   line-height: 1;
   padding-left: 0.42em; /* optical center compensate for trailing letter-spacing */
+  opacity: 0;
+  transform: translateY(12px);
+  animation: hero-subtitle-in 500ms cubic-bezier(0.22, 0.61, 0.36, 1) 1100ms forwards;
+}
+
+/* S01 staggered reveal: tiles sweep in L→R (0 / 110 / 220 / 330ms),
+   wordmark rises at 550ms, subtitle rises at 1100ms. Full reveal ~1.6s. */
+@keyframes hero-tile-in {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes hero-wordmark-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-subtitle-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-strip-col,
+  .hero-wordmark-slot,
+  .hero-subtitle {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
 }
 
 /* ── SECTION 02 · BRAND STATEMENT ───────────────────────────────────────── */

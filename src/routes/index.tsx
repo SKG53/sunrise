@@ -95,16 +95,19 @@ const S02_GRADIENT_STOPS: { o: number; c: string }[] = [
 function S02Line({
   text,
   width,
+  viewBoxW,
   gradId,
 }: {
   text: string;
   width: number;
+  viewBoxW?: number;
   gradId: string;
 }) {
+  const vbW = viewBoxW ?? width;
   return (
     <svg
       className="s02-manifesto-line"
-      viewBox={`0 0 ${width} 100`}
+      viewBox={`0 0 ${vbW} 100`}
       preserveAspectRatio="xMidYMid meet"
       aria-hidden="true"
     >
@@ -122,6 +125,8 @@ function S02Line({
         fontWeight="900"
         fontSize="100"
         letterSpacing="1"
+        textLength={width}
+        lengthAdjust="spacingAndGlyphs"
         fill={`url(#${gradId})`}
       >
         {text}
@@ -179,7 +184,7 @@ function HomePage() {
             <h2 className="sr-only">Refresh the way the world drinks.</h2>
             <div className="s02-manifesto-stack">
               <S02Line text="REFRESH"   width={501.11} gradId="s02-grad-refresh" />
-              <S02Line text="THE WAY"   width={514.80} gradId="s02-grad-theway" />
+              <S02Line text="THE WAY"   width={514.80} viewBoxW={517.11} gradId="s02-grad-theway" />
               <S02Line text="THE WORLD" width={673.81} gradId="s02-grad-world" />
               <S02Line text="DRINKS"    width={419.20} gradId="s02-grad-drinks" />
             </div>
