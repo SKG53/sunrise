@@ -38,126 +38,163 @@ function AboutPage() {
           </h1>
         </section>
 
-        {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
-        <section className="a-hero">
+        {/* ── 02 + 03 · INTRO (centered) ────────────────────────────────── */}
+        {/* Old S02 heading + 3 paragraphs from old S03. Image removed.    */}
+        {/* Occupies S02 and S03 slots in new numbering.                   */}
+        <section className="a-intro">
           <div className="container">
-            <div className="a-hero-inner">
-              <h1 className="a-hero-headline">
+            <div className="a-intro-inner">
+              <h2 className="a-intro-headline">
                 Born in the<br />
                 <span className="accent">heart</span> of America
-              </h1>
-              <p className="a-hero-body">
-                Founded along America's historic Route 66 and proudly family-owned,
-                SUNRISE is a beverage company reimagining drinks for today's consumers.
-              </p>
+              </h2>
+              <div className="a-intro-body">
+                <p>
+                  <span className="a-intro-emphasizer">A family company. A new kind of drink.</span>
+                  {" "}SUNRISE started the way the best beverages always have —
+                  with a family, a workshop, and a conviction that what's on
+                  the shelf could be better. Founded along America's historic
+                  Route 66, we build every can the way we always have: in small
+                  batches, by people who've been in beverage longer than most
+                  brands have existed.
+                </p>
+                <p>
+                  Our team brings decades of beverage manufacturing to the
+                  work — formulation, production, blending, testing. What's
+                  new is the category. What's not new is how we approach it.
+                  Every SUNRISE is made from real fruit and pure cane sugar,
+                  emulsified with hemp extract in our own facility, tested
+                  batch by batch before it ever reaches a can.
+                </p>
+                <p>
+                  <span className="a-intro-emphasizer">Every can, every batch.</span>
+                  {" "}Made in-house. Made in Oklahoma. Made to be what the
+                  category has been missing — real ingredients, real effects,
+                  real people behind the work.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ── 03 · ORIGIN ───────────────────────────────────────────────── */}
-        <section className="a-origin">
+        {/* ── 04 · CANS ROW ─────────────────────────────────────────────── */}
+        {/* Three cans in lifestyle trio format. No copy, no labels.       */}
+        <section className="a-cans">
           <div className="container">
-            <div className="a-origin-inner">
-              <div className="a-origin-copy">
-                <h2 className="a-origin-headline">
-                  Generations in beverage<br />
-                  A new kind of <span className="accent">drink</span>
-                </h2>
-                <div className="a-origin-body">
-                  <p>
-                    <span className="a-origin-emphasizer">A family company. A new kind of drink.</span>
-                    {" "}SUNRISE started the way the best beverages always have —
-                    with a family, a workshop, and a conviction that what's on
-                    the shelf could be better. Founded along America's historic
-                    Route 66, we build every can the way we always have: in small
-                    batches, by people who've been in beverage longer than most
-                    brands have existed.
-                  </p>
-                  <p>
-                    Our team brings decades of beverage manufacturing to the
-                    work — formulation, production, blending, testing. What's
-                    new is the category. What's not new is how we approach it.
-                    Every SUNRISE is made from real fruit and pure cane sugar,
-                    emulsified with hemp extract in our own facility, tested
-                    batch by batch before it ever reaches a can.
-                  </p>
-                  <div className="a-origin-interruptor">
-                    <em>An old craft. A new category.</em>
-                  </div>
-                  <p>
-                    We built SUNRISE for a specific moment — the quiet one, the
-                    in-between one, the one where people used to reach for
-                    something stronger and are now looking for something
-                    smarter. A drink for the small gatherings. The mid-week
-                    reset. The dinner that used to need wine and doesn't
-                    anymore. Something you can actually share, remember, and
-                    reach for again.
-                  </p>
-                  <div className="a-origin-interruptor">
-                    <em>Sipped, savored, and shared.</em>
-                  </div>
-                  <p>
-                    <span className="a-origin-emphasizer">Every can, every batch.</span>
-                    {" "}Made in-house. Made in Oklahoma. Made to be what the
-                    category has been missing — real ingredients, real effects,
-                    real people behind the work.
+            <div className="a-cans-row">
+              <img
+                className="a-cans-can"
+                src="/images/cans/60mg-blueberry-lemonade.webp"
+                alt="SUNRISE 60mg THC Blueberry Lemonade"
+                loading="lazy"
+              />
+              <img
+                className="a-cans-can"
+                src="/images/cans/10mg-lemonade.webp"
+                alt="SUNRISE 10mg THC Lemonade"
+                loading="lazy"
+              />
+              <img
+                className="a-cans-can"
+                src="/images/cans/60mg-blood-orange-cbg.webp"
+                alt="SUNRISE 60mg THC + 30mg CBG Blood Orange"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ── 05 · ICONS ────────────────────────────────────────────────── */}
+        {/* Three icons with titles and body copy. Stacked vertically.     */}
+        <section className="a-icons">
+          <div className="container">
+            <div className="a-icons-list">
+              <div className="a-icons-item">
+                <img
+                  className="a-icons-icon"
+                  src="/icons/real-fruit.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <div className="a-icons-content">
+                  <div className="a-icons-title">Real Fruit, Real Flavor</div>
+                  <p className="a-icons-body">
+                    Real fruit flavors and natural ingredients ensure a delicious
+                    experience without any weedy aftertastes.
                   </p>
                 </div>
               </div>
-              <div className="a-origin-image-wrap">
-                <div className="a-origin-image" aria-hidden="true" />
+              <div className="a-icons-item">
+                <img
+                  className="a-icons-icon"
+                  src="/icons/consistent-formulation.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <div className="a-icons-content">
+                  <div className="a-icons-title">Consistent &amp; Reliable Formulation</div>
+                  <p className="a-icons-body">
+                    Carefully blended in small batches, our proprietary
+                    nano-emulsification means you'll enjoy reliable experiences
+                    with each and every can.
+                  </p>
+                </div>
+              </div>
+              <div className="a-icons-item">
+                <img
+                  className="a-icons-icon"
+                  src="/icons/elevated-experience.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <div className="a-icons-content">
+                  <div className="a-icons-title">Elevated Experience</div>
+                  <p className="a-icons-body">
+                    From first sip to full effect, our carefully chosen flavors
+                    offer a balanced, enjoyable experience that feels as good as
+                    it tastes.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── 04 · AMERICAN HEARTLAND (tier-30 flood) ─────────────────────── */}
-        <section className="a-heartland">
+        {/* ── 06 · BUILD (old Heartland + How We Build merged) ──────────── */}
+        {/* Route 66 heartland intro + three in-house pillars. On cream —  */}
+        {/* no green flood.                                                */}
+        <section className="a-build">
           <div className="container">
-            <div className="a-heartland-inner">
-              <h2 className="a-heartland-headline">
+            <div className="a-build-head">
+              <h2 className="a-build-headline">
                 Route 66<br />
                 Tulsa, <span className="accent">Oklahoma</span>
               </h2>
-              <p className="a-heartland-body">
+              <p className="a-build-lead">
                 Not a coastal beverage brand. Built in the American heartland,
-                where the supply chain is short, the roots run deep,
-                and the work still happens where it's named.
+                where the supply chain is short, the roots run deep, and the
+                work still happens where it's named. Three principles shape
+                every can. None of them are shortcuts.
               </p>
             </div>
-          </div>
-        </section>
-
-        {/* ── 05 · HOW WE BUILD ─────────────────────────────────────────── */}
-        <section className="a-approach">
-          <div className="container">
-            <div className="a-approach-head">
-              <h2 className="a-approach-headline">
-                Built in-house<br />
-                Tested <span className="accent">every batch</span>
-              </h2>
-              <p className="a-approach-lead">
-                Three principles shape every can. None of them are shortcuts.
-              </p>
-            </div>
-            <div className="a-approach-pillars">
-              <div className="a-approach-pillar">
-                <div className="a-approach-pillar-title">In-House Formulation</div>
-                <p className="a-approach-pillar-body">
+            <div className="a-build-pillars">
+              <div className="a-build-pillar">
+                <div className="a-build-pillar-title">In-House Formulation</div>
+                <p className="a-build-pillar-body">
                   Every product is built from scratch by our own team — no contract outsourcing,
                   no white-label shortcuts. Formulation is a craft we own end-to-end.
                 </p>
               </div>
-              <div className="a-approach-pillar">
-                <div className="a-approach-pillar-title">Small-Batch Craft</div>
-                <p className="a-approach-pillar-body">
+              <div className="a-build-pillar">
+                <div className="a-build-pillar-title">Small-Batch Craft</div>
+                <p className="a-build-pillar-body">
                   Deliberate batch sizes. Quality over scale. Every run gets the attention
                   that makes the difference you taste from the first sip to the last.
                 </p>
               </div>
-              <div className="a-approach-pillar">
-                <div className="a-approach-pillar-title">Full-Panel Testing</div>
-                <p className="a-approach-pillar-body">
+              <div className="a-build-pillar">
+                <div className="a-build-pillar-title">Full-Panel Testing</div>
+                <p className="a-build-pillar-body">
                   Every batch is third-party tested for cannabinoid content and contaminants.
                   Every COA is published. Nothing to hide, and nothing ever does.
                 </p>
@@ -166,7 +203,7 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 06 · PATH TO PURCHASE (tier-10 flood) ─────────────────────── */}
+        {/* ── 07 · PATH TO PURCHASE (tier-10 flood) ─────────────────────── */}
         <section className="a-ptp">
           <div className="container">
             <div className="a-ptp-inner">
