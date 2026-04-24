@@ -171,6 +171,15 @@ const CANNABINOID_COPY: Record<Cannabinoid, { bestFor: string; body1: string; bo
   },
 };
 
+// Two-word effect phrases shown on related-card pills for +CBG / +CBN /
+// +THCV variants. Mirrors CANNABINOID_EFFECT in /products so PD related
+// cards read identically to the tier-panel flavor cards.
+const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
+  CBG:  "Focus + Uplift",
+  CBN:  "Relax + Unwind",
+  THCV: "Elevate + Engage",
+};
+
 function renderLockup(tier: Tier, base: number, color: string): string {
   if (tier === 5) return render5mgLockup(base, color);
   if (tier === 10) return render10mgLockup(base, color);
@@ -245,6 +254,11 @@ function ProductDetailPage() {
   const bcCbRef = useRef<HTMLSpanElement>(null);            // breadcrumb
   const hero30mgCbRef = useRef<HTMLSpanElement>(null);      // hero row: +30mg cannabinoid inline with potency lockup
   const cannabinoidLockupRef = useRef<HTMLDivElement>(null); // big +CBG/+CBN/+THCV lockup in cannabinoid section
+  // Related-card corner lockups — one slot per "Others in Tier" card. Null
+  // entries correspond to base-flavor siblings (no cannabinoid). Repopulated
+  // via React's ref callback whenever the SKU (and therefore the sibling
+  // list) changes.
+  const relatedCornerRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [qty, setQty] = useState(1);
 
   useEffect(() => {
@@ -292,6 +306,29 @@ function ProductDetailPage() {
   const cbCopy = product.cannabinoid
     ? CANNABINOID_COPY[product.cannabinoid as Cannabinoid]
     : null;
+
+  // Paint related-card cannabinoid corner lockups. Runs after the related
+  // grid renders (othersInTier in deps) so refs are attached. Only variant
+  // siblings get a lockup; base-flavor refs stay null.
+  useEffect(() => {
+    const paint = () => {
+      const base = getBasePx();
+      othersInTier.forEach((o, i) => {
+        const ref = relatedCornerRefs.current[i];
+        if (!ref || !o.cannabinoid) return;
+        const size = base * 0.7;
+        const html =
+          o.cannabinoid === "CBG"  ? renderCBGLockup(size, "#1A1A1A")  :
+          o.cannabinoid === "CBN"  ? renderCBNLockup(size, "#1A1A1A")  :
+                                     renderTHCVLockup(size, "#1A1A1A");
+        ref.innerHTML = html;
+      });
+    };
+    paint();
+    if (document.fonts) document.fonts.ready.then(paint);
+    window.addEventListener("resize", paint);
+    return () => window.removeEventListener("resize", paint);
+  }, [othersInTier]);
 
   // ── Shopify wiring (pilot: only mapped SKUs hit Shopify) ───────────────
   const shopifyMapping = getShopifyMapping(product.slug);
@@ -639,23 +676,30 @@ function ProductDetailPage() {
               </h2>
             </div>
             <div className="pd-related-grid">
-              {othersInTier.map((o) => (
+              {othersInTier.map((o, i) => (
                 <Link
                   key={o.slug}
                   to="/products/$slug"
                   params={{ slug: o.slug }}
                   className="pd-related-card"
                 >
-                  <div className="pd-related-can" style={{ background: o.color }}>
-                    <span>{o.flavor}</span>
-                  </div>
+                  <RelatedCan slug={o.slug} flavorName={o.flavor} />
                   <div className="pd-related-meta">
-                    <div className="pd-related-name">
-                      {o.flavor}
-                      {o.cannabinoid && <span className="pd-related-variant"> +{o.cannabinoid}</span>}
-                    </div>
+                    <div className="pd-related-name">{o.flavor}</div>
                     <div className="pd-related-descriptor">{o.descriptor}</div>
+                    {o.cannabinoid && (
+                      <div className="pd-related-pill">
+                        {CANNABINOID_EFFECT[o.cannabinoid]}
+                      </div>
+                    )}
                   </div>
+                  {o.cannabinoid && (
+                    <span
+                      className="pd-related-corner"
+                      ref={(el) => { relatedCornerRefs.current[i] = el; }}
+                      aria-label={`+${o.cannabinoid}`}
+                    />
+                  )}
                 </Link>
               ))}
             </div>
@@ -802,5 +846,38 @@ function ProductDetailPage() {
 
       <SiteFooter />
     </>
+  );
+}
+
+// ── RelatedCan ───────────────────────────────────────────────────────────
+// Renders the can thumbnail for each "Others in Tier" sibling card. Mirrors
+// the FlavorCan helper on /products: prefers a live Shopify image for
+// mapped SKUs, falls back to the local /images/cans/{slug}.webp asset that
+// every SKU ships with. The colored placeholder branch is effectively
+// unreachable in practice.
+function RelatedCan({ slug, flavorName }: { slug: string; flavorName: string }) {
+  const mapping = getShopifyMapping(slug);
+  const { product } = useShopifyProduct(mapping?.handle);
+  const image = product?.node.images.edges[0]?.node;
+
+  if (image?.url) {
+    return (
+      <div className="pd-related-can has-image">
+        <img
+          src={image.url}
+          alt={image.altText ?? `SUNRISE ${flavorName} can`}
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+  return (
+    <div className="pd-related-can has-image">
+      <img
+        src={`/images/cans/${slug}.webp`}
+        alt={`SUNRISE ${flavorName} can`}
+        loading="lazy"
+      />
+    </div>
   );
 }
