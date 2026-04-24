@@ -112,6 +112,19 @@ main { flex: 1; width: 100%; }
   min-width: calc(var(--base) * 4.5);
 }
 .btn-secondary:hover { background: var(--near-black); color: var(--cream); }
+/* FLAVOR — per-SKU solid fill. Caller sets --flavor-color via inline style on
+   the button element (style={{ "--flavor-color": product.color }}). Used on
+   product detail Add-to-Cart CTA so the button reads the flavor identity of
+   the SKU. Falls back to --near-black if the var is absent. Hover dims via
+   opacity to avoid needing a second --flavor-color-hover token per SKU. */
+.btn-flavor {
+  background: var(--flavor-color, var(--near-black));
+  color: var(--cream);
+  border: 2px solid var(--flavor-color, var(--near-black));
+  padding: calc(var(--base) * 0.26) calc(var(--base) * 1.0);
+  min-width: calc(var(--base) * 5.5);
+}
+.btn-flavor:hover { opacity: 0.9; }
 /* ON-COLOR SOLID — cream fill (not white), band-color text via --on-color-text. */
 .btn-on-color {
   background: var(--cream);
