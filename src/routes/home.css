@@ -139,7 +139,7 @@
 }
 .s03-pi-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -212,7 +212,7 @@
 }
 .s04-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -282,13 +282,15 @@
 }
 .s06-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
   color: var(--near-black);
   line-height: 1.0;
   max-width: 22ch;
+  text-align: center;
+  align-self: center;
 }
 .s06-headline .accent { color: var(--green-accent); }
 .s06-subhead {
@@ -297,6 +299,8 @@
   line-height: 1.5;
   color: var(--text-body);
   max-width: 54ch;
+  text-align: center;
+  align-self: center;
 }
 .s06-grid {
   display: grid;
@@ -438,7 +442,7 @@
 }
 .s07-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   font-weight: 900;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -549,7 +553,7 @@
 }
 .s09-heading {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -639,7 +643,7 @@
 .s10-faq-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   letter-spacing: 0.005em;
   line-height: 1.0;
   text-transform: uppercase;
@@ -721,6 +725,13 @@
   .s02-manifesto-stack { --s02-stack-width: 92%; }
   .s09-card { width: calc(var(--base) * 8); }
   .s03-reel-tile { height: calc(var(--base) * 5.6); }
+  /* Section headlines — match subpage S02 responsive scale (1.5 → 1.35). */
+  .s03-pi-headline,
+  .s04-headline,
+  .s06-headline,
+  .s07-headline,
+  .s09-heading,
+  .s10-faq-headline { font-size: calc(var(--base) * 1.35); }
 }
 @media (max-width: 520px) {
   .s02-manifesto-stack { --s02-stack-width: 100%; }
