@@ -242,7 +242,7 @@ function ProductDetailPage() {
   const bcCbRef = useRef<HTMLSpanElement>(null);            // breadcrumb
   const placeholderCbRef = useRef<HTMLSpanElement>(null);   // hero can placeholder
   const hero30mgCbRef = useRef<HTMLSpanElement>(null);      // hero row: +30mg cannabinoid inline with potency lockup
-  const cannabinoidLockupRef = useRef<HTMLSpanElement>(null); // big +CBG/+CBN/+THCV lockup in cannabinoid section
+  const cannabinoidLockupRef = useRef<HTMLDivElement>(null); // big +CBG/+CBN/+THCV lockup in cannabinoid section
   const [qty, setQty] = useState(1);
 
   useEffect(() => {
