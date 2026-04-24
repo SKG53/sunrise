@@ -316,7 +316,7 @@ function HomePage() {
                   <div className="s06-card-name">Perfect<br />Buzz</div>
                   <div className="s06-card-descriptor">Smooth · Social</div>
                   <div className="s06-card-occasion">
-                    Casual sips, afternoon resets, or social gatherings.
+                    Casual sips, afternoon resets, or fun social gatherings.
                   </div>
                 </div>
                 <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
