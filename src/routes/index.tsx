@@ -66,23 +66,32 @@ const FAQS = [
 // seamless marquee loop. Order is interleaved 10mg / 60mg to avoid adjacent
 // color repeats and to keep the wrap seam (last tile → first tile) visually
 // distinct. Swap filenames or order here — no JSX changes required.
+// Tile order scatters potency tiers — 5 → 10 → 30 → 60 round-robin — so the
+// reel never clusters the same strength in a row. With 2×5mg, 3×10mg, 2×30mg,
+// 3×60mg available, the pattern holds through two clean cycles and closes on
+// the two oversubscribed tiers' leftovers (10mg, 60mg). Base and
+// cannabinoid-enhanced variants are mixed across the run rather than grouped.
 const S03_CANS = [
+  { src: "/images/cans/SUNRISE__5MG_THC__Blackberry__Can_Mockup.webp",
+    alt: "SUNRISE 5mg THC Blackberry hemp-infused seltzer can" },
   { src: "/images/cans/SUNRISE__10MG_THC__Strawberry__Can_Mockup.webp",
     alt: "SUNRISE 10mg THC Strawberry hemp-infused seltzer can" },
-  { src: "/images/cans/SUNRISE__60MG_THC__Blueberry_Lemonade__Can_Mockup.webp",
-    alt: "SUNRISE 60mg THC Blueberry Lemonade hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__30MG_THC__30MG_CBG__Kiwi_Watermelon__Can_Mockup.webp",
+    alt: "SUNRISE 30mg THC +30mg CBG Kiwi Watermelon hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__60MG_THC__Wild_Cherry_Peach__Can_Mockup.webp",
+    alt: "SUNRISE 60mg THC Wild Cherry Peach hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__5MG_THC__30MG_THCV__Strawberry_Peach__Can_Mockup.webp",
+    alt: "SUNRISE 5mg THC +30mg THCV Strawberry Peach hemp-infused seltzer can" },
   { src: "/images/cans/SUNRISE__10MG_THC__Watermelon__Can_Mockup.webp",
     alt: "SUNRISE 10mg THC Watermelon hemp-infused seltzer can" },
-  { src: "/images/cans/SUNRISE__60MG_THC__30MG_CBN__Blackberry__Can_Mockup.webp",
-    alt: "SUNRISE 60mg THC +30mg CBN Blackberry hemp-infused seltzer can" },
-  { src: "/images/cans/SUNRISE__10MG_THC__Lemonade__Can_Mockup.webp",
-    alt: "SUNRISE 10mg THC Lemonade hemp-infused seltzer can" },
-  { src: "/images/cans/SUNRISE__60MG_THC__Passionfruit_Mango__Can_Mockup.webp",
-    alt: "SUNRISE 60mg THC Passionfruit Mango hemp-infused seltzer can" },
-  { src: "/images/cans/SUNRISE__60MG_THC__30MG_THCV__Strawberry_Kiwi__Can_Mockup.webp",
-    alt: "SUNRISE 60mg THC +30mg THCV Strawberry Kiwi hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__30MG_THC__30MG_THCV__Strawberry_Watermelon__Can_Mockup.webp",
+    alt: "SUNRISE 30mg THC +30mg THCV Strawberry Watermelon hemp-infused seltzer can" },
   { src: "/images/cans/SUNRISE__60MG_THC__30MG_CBG__Blood_Orange__Can_Mockup.webp",
     alt: "SUNRISE 60mg THC +30mg CBG Blood Orange hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__10MG_THC__30MG_THCV__Blueberry_Acai__Can_Mockup.webp",
+    alt: "SUNRISE 10mg THC +30mg THCV Blueberry Acai hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__60MG_THC__30MG_THCV__Strawberry_Kiwi__Can_Mockup.webp",
+    alt: "SUNRISE 60mg THC +30mg THCV Strawberry Kiwi hemp-infused seltzer can" },
 ];
 
 // ── S02 BRAND STATEMENT LINES ────────────────────────────────────────────
