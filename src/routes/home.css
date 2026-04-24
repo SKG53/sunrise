@@ -118,7 +118,7 @@
   overflow: visible;
 }
 /* Typewriter reveal: each character is a <tspan.s02-char> with an inline   */
-/* animation-delay set per-character in S02Line (200ms settle + 100ms per   */
+/* animation-delay set per-character in S02Line (200ms settle + 50ms per    */
 /* character, streamed in reading order across all four lines). The        */
 /* character appears instantly (0.05s snap) rather than fades — that's     */
 /* what gives the "typed" rhythm. Gradient fill stays on the parent <text>,*/

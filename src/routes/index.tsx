@@ -122,9 +122,9 @@ function S02Line({
   // element, so letters "arrive at their color" without gradient jank.
   // Stream is continuous across all four lines in reading order — charOffset
   // places this line's characters in the global sequence. Timing: 200ms
-  // settle + 100ms/char stride + 0.05s snap. See .s02-char CSS in home.css.
+  // settle + 50ms/char stride + 0.05s snap. See .s02-char CSS in home.css.
   const SETTLE_MS = 200;
-  const STRIDE_MS = 100;
+  const STRIDE_MS = 50;
   return (
     <svg
       className="s02-manifesto-line"
