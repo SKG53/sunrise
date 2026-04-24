@@ -313,6 +313,7 @@
   gap: calc(var(--base) * 0.4);
 }
 .p-flavor-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   background: rgba(254, 251, 224, 0.08);
@@ -375,6 +376,17 @@
   text-transform: uppercase;
   color: var(--cream);
   margin-top: calc(var(--base) * 0.18);
+}
+/* Cannabinoid lockup badge — absolute-positioned in card's bottom-right     */
+/* corner on +CBG / +CBN / +THCV flavors. Sibling of .p-flavor-meta (not    */
+/* nested inside it) so position is anchored to the full card, not the      */
+/* meta padding box. pointer-events: none lets clicks still hit the link.    */
+.p-flavor-corner {
+  position: absolute;
+  right: calc(var(--base) * 0.38);
+  bottom: calc(var(--base) * 0.42);
+  line-height: 0;
+  pointer-events: none;
 }
 
 /* ── WHAT'S INSIDE (ported from about.css) ──────────────────────────────── */
