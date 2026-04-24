@@ -411,30 +411,18 @@ function ProductDetailPage() {
           >
             <div className="container">
               <div className="pd-cannabinoid-grid">
-                <div className="pd-cannabinoid-copy">
-                  <div className="pd-eyebrow pd-eyebrow-on-color">
-                    About the{" "}
-                    <span ref={eyebrowCbRef} aria-label={`+${product.cannabinoid}`} />
+                <div
+                  className="pd-cannabinoid-lockup"
+                  ref={cannabinoidLockupRef}
+                  aria-label={`+${product.cannabinoid}`}
+                />
+                <div className="pd-cannabinoid-right">
+                  <div className="pd-cannabinoid-bestfor">
+                    Best for {cbCopy.bestFor}
                   </div>
-                  <h2 className="pd-cannabinoid-headline">
-                    {cbCopy.name} for{" "}
-                    <span className="accent-on-color">{cbCopy.effect.toLowerCase()}</span>
-                  </h2>
-                </div>
-                <p className="pd-cannabinoid-body">{cbCopy.description}</p>
-                <div className="pd-cannabinoid-stats">
-                  <div className="pd-cannabinoid-stat">
-                    <div className="pd-cannabinoid-stat-value">{product.tier}<span>mg</span></div>
-                    <div className="pd-cannabinoid-stat-label">THC per can</div>
-                  </div>
-                  <div className="pd-cannabinoid-stat">
-                    <div
-                      className="pd-cannabinoid-stat-lockup"
-                      ref={stat30mgCbRef}
-                      aria-label={`+30mg ${product.cannabinoid} per can`}
-                    />
-                    <div className="pd-cannabinoid-stat-label">per can</div>
-                  </div>
+                  <p className="pd-cannabinoid-body">{cbCopy.body1}</p>
+                  <p className="pd-cannabinoid-body">{cbCopy.body2}</p>
+                  <p className="pd-cannabinoid-body">{cbCopy.body3}</p>
                 </div>
               </div>
             </div>
@@ -483,9 +471,8 @@ function ProductDetailPage() {
         <section className="pd-related">
           <div className="container">
             <div className="pd-section-head">
-              <div className="pd-eyebrow">Also in {product.tier}mg</div>
               <h2 className="pd-section-headline">
-                More at your <span className="accent">pace</span>
+                Try our other <span className="accent">flavors.</span>
               </h2>
             </div>
             <div className="pd-related-grid">
