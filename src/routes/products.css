@@ -227,7 +227,7 @@
   min-height: calc(var(--base) * 0.9);
 }
 .p-switch-name {
-  font-size: calc(var(--base) * 0.22);
+  font-size: calc(var(--base) * 0.34);
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -247,7 +247,11 @@
 }
 .p-panel-head {
   display: grid;
-  grid-template-columns: auto 1.2fr;
+  /* Fixed first column = widest lockup (60mg ≈ 5.43× base at panel scale).
+     5.5 leaves a small residual gap inside the column plus the 1.2× gap
+     below, so the text column starts at the same x across all four tiers
+     regardless of which lockup is rendered. */
+  grid-template-columns: calc(var(--base) * 5.5) 1fr;
   gap: calc(var(--base) * 1.2);
   align-items: center;
   padding-bottom: calc(var(--base) * 0.9);

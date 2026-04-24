@@ -66,7 +66,7 @@ type TierData = {
 const TIERS: Record<TierKey, TierData> = {
   "5": {
     color: "#DC7F27",
-    name: "A Subtle Lift",
+    name: "Subtle Lift",
     short: "Subtle Lift",
     descriptors: "Light · Bright · Casual",
     copy: "First times, mid-week refreshments, or social sessions. Crisp, casual, easy to like.",
@@ -81,7 +81,7 @@ const TIERS: Record<TierKey, TierData> = {
   },
   "10": {
     color: "#CC1F39",
-    name: "The Perfect Buzz",
+    name: "Perfect Buzz",
     short: "Perfect Buzz",
     descriptors: "Smooth · Balanced · Social",
     copy: "Casual sips, afternoon resets, or social gatherings. The go-to tier — a steady, social lift.",
@@ -96,7 +96,7 @@ const TIERS: Record<TierKey, TierData> = {
   },
   "30": {
     color: "#0A6034",
-    name: "A Deeper Dive",
+    name: "Deeper Dive",
     short: "Deeper Dive",
     descriptors: "Rich · Vibrant · Spirited",
     copy: "Extended sessions, creative inspirations, or evening unwinds. For when the mood calls for something richer.",
@@ -263,12 +263,12 @@ function ProductsPage() {
         panelLockupRef.current.innerHTML = html;
       }
 
-      // ── Switcher button lockups — cream on active tier bg, near-black on inactive cream bg ──
+      // ── Switcher button lockups — cream on active tier bg, tier-color on inactive cream bg ──
       (["5", "10", "30", "60"] as TierKey[]).forEach((tier) => {
         const ref = switchRefs[tier].current;
         if (!ref) return;
         const isActive = tier === activeTier;
-        const color = isActive ? "#FEFBE0" : "#1A1A1A";
+        const color = isActive ? "#FEFBE0" : TIERS[tier].color;
         const size = base * 0.9;
         let html = "";
         if (tier === "5")  html = render5mgLockup(size, color);
