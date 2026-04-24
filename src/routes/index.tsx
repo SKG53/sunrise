@@ -459,7 +459,7 @@ function HomePage() {
                   like no other.
                 </p>
                 <div className="s07-cta-row">
-                  <a href="/about" className="btn btn-on-color-ghost">Read Our Story →</a>
+                  <a href="/about" className="btn btn-on-color-ghost">Read Our Story</a>
                 </div>
               </div>
             </div>
@@ -479,7 +479,7 @@ function HomePage() {
                 to find your nearest store.
               </p>
               <div>
-                <a href="/find" className="btn btn-primary">Find Near You →</a>
+                <a href="/find" className="btn btn-primary">Find Near You</a>
               </div>
             </div>
           </div>

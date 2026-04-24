@@ -75,13 +75,27 @@ main { flex: 1; width: 100%; }
 .type-nav            { font-size: calc(var(--base) * 0.25); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
 
 /* ── BUTTONS ────────────────────────────────────────────────────────────── */
-/* Single site-wide button system. Two treatments × two contexts = four variants.
-   Hierarchy rule: solid variants are HORIZONTALLY WIDER than ghost variants.
-   Vertical size, font-size, typographic treatment are identical across all.
-   Width hierarchy holds regardless of text content via min-width floors, so
-   stacked button pairs always read "top wider than bottom."                       */
+/* Single site-wide button system. Two treatments × two contexts = four variants
+   (plus .btn-flavor for per-SKU PD). Hierarchy rule: solid variants are
+   HORIZONTALLY WIDER than ghost variants. Vertical size, font-size, typographic
+   treatment are identical across all. Width hierarchy holds regardless of text
+   content via min-width floors, so stacked button pairs always read "top wider
+   than bottom."
+
+   HOVER GESTURE — site-wide. Every .btn fills with --btn-wipe-fill via a
+   left-to-right clip-path wipe (400ms), text + arrow flip to --btn-hover-text
+   (200ms), arrow runs the dance animation (fade out at right, teleport to 75%
+   while invisible, slide back). Each variant declares its own wipe + hover-text
+   tokens to handle context inversion (cream on flooded sections, dark on cream
+   pages). Arrow is appended via ::after so any .btn gets it without JSX changes.
+   isolation: isolate contains the wipe pseudo at z-index: -1 — wipe paints
+   above the button's own background but below text content, no wrapping spans
+   needed. */
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--base) * 0.25);
   padding: calc(var(--base) * 0.28) calc(var(--base) * 0.75);
   border-radius: 9999px;
   font-family: 'Montserrat', sans-serif;
@@ -91,56 +105,100 @@ main { flex: 1; width: 100%; }
   text-transform: uppercase;
   text-align: center;
   cursor: pointer;
-  transition: all 200ms ease-out;
   border: none;
   white-space: nowrap;
   line-height: 1;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 200ms ease-out, border-color 200ms ease-out;
 }
-/* SOLID — primary hierarchy. Wider horizontal padding + higher min-width floor. */
+/* Wipe pseudo — fills button left-to-right on hover */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--btn-wipe-fill, transparent);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 400ms ease-out;
+  z-index: -1;
+}
+/* Arrow appended to every button — dances on hover */
+.btn::after {
+  content: "→";
+  display: inline-block;
+  font-size: 1.35em;
+  line-height: 1;
+  position: relative;
+  top: calc(var(--base) * -0.025);
+  transition: color 200ms ease-out;
+}
+.btn:hover { color: var(--btn-hover-text, currentColor); }
+.btn:hover::before { clip-path: inset(0 0 0 0); }
+.btn:hover::after { animation: btn-arrow-dance 400ms ease-out; }
+
+@keyframes btn-arrow-dance {
+  0%   { margin-right: 0;   opacity: 1; }
+  25%  { margin-right: 0;   opacity: 0; }  /* fade out at 100% position */
+  26%  { margin-right: 25%; opacity: 0; }  /* teleport to 75% while invisible */
+  100% { margin-right: 0;   opacity: 1; }  /* smooth slide + fade back to 100% */
+}
+
+/* SOLID — primary hierarchy. Wider horizontal padding + higher min-width floor.
+   Tier-10 red bg → cream wipe → hover text flips to tier-10. */
 .btn-primary {
   background: var(--btn-primary-bg);
   color: var(--btn-primary-color);
   border: 2px solid var(--btn-primary-bg);
   padding: calc(var(--base) * 0.26) calc(var(--base) * 1.0);
   min-width: calc(var(--base) * 5.5);
+  --btn-wipe-fill: var(--cream);
+  --btn-hover-text: var(--btn-primary-bg);
 }
-.btn-primary:hover { background: var(--btn-primary-bg-hover); border-color: var(--btn-primary-bg-hover); }
-/* GHOST — secondary hierarchy. Narrower padding + lower min-width floor. */
+/* GHOST — secondary hierarchy. Narrower padding + lower min-width floor.
+   Transparent bg with near-black border → near-black wipe → hover text cream. */
 .btn-secondary {
   background: transparent; color: var(--near-black); border: 2px solid var(--near-black);
   padding: calc(var(--base) * 0.26) calc(var(--base) * 0.73);
   min-width: calc(var(--base) * 4.5);
+  --btn-wipe-fill: var(--near-black);
+  --btn-hover-text: var(--cream);
 }
-.btn-secondary:hover { background: var(--near-black); color: var(--cream); }
 /* FLAVOR — per-SKU solid fill. Caller sets --flavor-color via inline style on
    the button element (style={{ "--flavor-color": product.color }}). Used on
    product detail Add-to-Cart CTA so the button reads the flavor identity of
-   the SKU. Falls back to --near-black if the var is absent. Hover dims via
-   opacity to avoid needing a second --flavor-color-hover token per SKU. */
+   the SKU. Falls back to --near-black if the var is absent.
+   Flavor-color bg → cream wipe → hover text flips to flavor-color. */
 .btn-flavor {
   background: var(--flavor-color, var(--near-black));
   color: var(--cream);
   border: 2px solid var(--flavor-color, var(--near-black));
   padding: calc(var(--base) * 0.26) calc(var(--base) * 1.0);
   min-width: calc(var(--base) * 5.5);
+  --btn-wipe-fill: var(--cream);
+  --btn-hover-text: var(--flavor-color, var(--near-black));
 }
-.btn-flavor:hover { opacity: 0.9; }
-/* ON-COLOR SOLID — cream fill (not white), band-color text via --on-color-text. */
+/* ON-COLOR SOLID — cream fill (not white), band-color text via --on-color-text.
+   Cream bg → wipe with flood color → hover text flips to cream. Mirrors the
+   tier-card "Explore" pill exactly: cream surface inverts to flood-color fill. */
 .btn-on-color {
   background: var(--cream);
   color: var(--on-color-text, var(--tier-10));
   border: 2px solid var(--cream);
   padding: calc(var(--base) * 0.26) calc(var(--base) * 1.0);
   min-width: calc(var(--base) * 5.5);
+  --btn-wipe-fill: var(--on-color-text, var(--tier-10));
+  --btn-hover-text: var(--cream);
 }
-.btn-on-color:hover { background: #ffffff; border-color: #ffffff; }
-/* ON-COLOR GHOST — cream outline + cream text. Narrower width. */
+/* ON-COLOR GHOST — cream outline + cream text. Narrower width.
+   Transparent bg with cream border → cream wipe → hover text flips to flood. */
 .btn-on-color-ghost {
   background: transparent; color: var(--cream); border: 2px solid var(--cream);
   padding: calc(var(--base) * 0.26) calc(var(--base) * 0.73);
   min-width: calc(var(--base) * 4.5);
+  --btn-wipe-fill: var(--cream);
+  --btn-hover-text: var(--on-color-text, var(--tier-10));
 }
-.btn-on-color-ghost:hover { background: var(--cream); color: var(--near-black); }
 /* Utility — opt a span out of the button's uppercase/tracking. Used for "COAs"
    where the lowercase "s" signals plurality, not uppercase drift.                */
 .no-transform { text-transform: none; letter-spacing: normal; }
