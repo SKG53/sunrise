@@ -248,14 +248,14 @@
 .s04-trifecta {
   display: grid;
   grid-template-columns: 1fr minmax(calc(var(--base) * 8), 1.1fr) 1fr;
-  gap: calc(var(--base) * 0.35);
+  gap: calc(var(--base) * 0.2);
   align-items: stretch;
 }
 .s04-col {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: calc(var(--base) * 0.5);
+  justify-content: center;
+  gap: calc(var(--base) * 0.6);
 }
 .s04-col-left  { text-align: left;  align-items: flex-end; }
 .s04-col-right { text-align: right; align-items: flex-start; }
