@@ -629,38 +629,43 @@ function ProductDetailPage() {
         </section>
 
         {/* ── 04 · WHAT'S INSIDE ────────────────────────────────────────── */}
-        {/* Verbatim replica of home S05 — same markup pattern, same content, */}
-        {/* same grey placeholder. Ingredient list is hardcoded (not per-SKU) */}
-        {/* and wording mirrors home exactly. Class prefix stays pd-inside-*   */}
-        {/* for route-scoped styling; the rules in products_.$slug.css mirror  */}
-        {/* home's .s04-whats-inside block one-for-one.                        */}
+        {/* Verbatim replica of home S05 — same markup, same copy, same     */}
+        {/* static 10mg Lemonade can image. Class prefix stays pd-inside-*  */}
+        {/* for route-scoped styling; the rules in products_.$slug.css      */}
+        {/* mirror home's current .s04-* values one-for-one. Only 8 of 24   */}
+        {/* SKUs have mockup images; using the static home image here keeps */}
+        {/* every product page visually consistent with each other and with */}
+        {/* the home page.                                                  */}
         <section className="pd-ingredients">
           <div className="container">
-            <h2 className="pd-inside-headline">What's Inside?</h2>
+            <h2 className="pd-inside-headline">
+              What's Inside<br />
+              <span className="accent">Each can?</span>
+            </h2>
             <div className="pd-inside-trifecta">
               <div className="pd-inside-col pd-inside-col-left">
                 <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Purified Water</div>
+                  <div className="pd-inside-ing-name">Purified<br />Water</div>
                   <div className="pd-inside-ing-desc">
                     Reverse-osmosis filtered water carefully chosen for exceptional
                     hydration &amp; uncompromising flavor.
                   </div>
                 </div>
                 <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Pure Cane Sugar</div>
+                  <div className="pd-inside-ing-name">Pure Cane<br />Sugar</div>
                   <div className="pd-inside-ing-desc">
                     A touch of real sugar for smooth, naturally derived sweetness.
                   </div>
                 </div>
                 <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Natural Flavoring</div>
+                  <div className="pd-inside-ing-name">Natural<br />Flavoring</div>
                   <div className="pd-inside-ing-desc">
                     Sourced from real fruits and botanicals, our flavors deliver
                     bright, authentic notes true to their names.
                   </div>
                 </div>
                 <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Fresh Lemon Juice</div>
+                  <div className="pd-inside-ing-name">Fresh Lemon<br />Juice</div>
                   <div className="pd-inside-ing-desc">
                     Used exclusively in our Lemonade flavors, this ingredient brings
                     a hint of crisp acidity with a natural citrus lift.
@@ -668,33 +673,38 @@ function ProductDetailPage() {
                 </div>
               </div>
               <div className="pd-inside-center">
-                {/* Placeholder center can — swap background for real image */}
-                <div className="pd-inside-can-placeholder" aria-hidden="true" />
+                <img
+                  className="pd-inside-can"
+                  src="/images/cans/SUNRISE__10MG_THC__Lemonade__Can_Mockup.webp"
+                  alt="SUNRISE 10mg THC Lemonade hemp-infused seltzer can"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
               <div className="pd-inside-col pd-inside-col-right">
                 <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Emulsified Hemp Extract</div>
+                  <div className="pd-inside-ing-name">Emulsified<br />Hemp Extract</div>
                   <div className="pd-inside-ing-desc">
                     The good stuff — expertly blended cannabis extract for a clean
                     and consistent experience with every sip.
                   </div>
                 </div>
                 <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Naturally Sourced Enhancers</div>
+                  <div className="pd-inside-ing-name">Naturally Sourced<br />Enhancers</div>
                   <div className="pd-inside-ing-desc">
                     Functional ingredients like B12 that allow for a healthier,
                     more balanced experience without altering flavors.
                   </div>
                 </div>
                 <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Citric Acid</div>
+                  <div className="pd-inside-ing-name">Citric<br />Acid</div>
                   <div className="pd-inside-ing-desc">
                     A naturally occurring acid found in citrus fruits, this is used
                     to balance flavors and keep things bubbly.
                   </div>
                 </div>
                 <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Sodium Benzoate</div>
+                  <div className="pd-inside-ing-name">Sodium<br />Benzoate</div>
                   <div className="pd-inside-ing-desc">
                     A widely used food-safe preservative that helps keep each can
                     fresh without altering its flavor profile.
