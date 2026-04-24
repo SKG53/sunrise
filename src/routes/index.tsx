@@ -61,6 +61,30 @@ const FAQS = [
   },
 ];
 
+// ── S03 CAN REEL ─────────────────────────────────────────────────────────
+// Continuously scrolling can strip. Rendered twice back-to-back for a
+// seamless marquee loop. Order is interleaved 10mg / 60mg to avoid adjacent
+// color repeats and to keep the wrap seam (last tile → first tile) visually
+// distinct. Swap filenames or order here — no JSX changes required.
+const S03_CANS = [
+  { src: "/images/cans/SUNRISE__10MG_THC__Strawberry__Can_Mockup.webp",
+    alt: "SUNRISE 10mg THC Strawberry hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__60MG_THC__Blueberry_Lemonade__Can_Mockup.webp",
+    alt: "SUNRISE 60mg THC Blueberry Lemonade hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__10MG_THC__Watermelon__Can_Mockup.webp",
+    alt: "SUNRISE 10mg THC Watermelon hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__60MG_THC__30MG_CBN__Blackberry__Can_Mockup.webp",
+    alt: "SUNRISE 60mg THC +30mg CBN Blackberry hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__10MG_THC__Lemonade__Can_Mockup.webp",
+    alt: "SUNRISE 10mg THC Lemonade hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__60MG_THC__Passionfruit_Mango__Can_Mockup.webp",
+    alt: "SUNRISE 60mg THC Passionfruit Mango hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__60MG_THC__30MG_THCV__Strawberry_Kiwi__Can_Mockup.webp",
+    alt: "SUNRISE 60mg THC +30mg THCV Strawberry Kiwi hemp-infused seltzer can" },
+  { src: "/images/cans/SUNRISE__60MG_THC__30MG_CBG__Blood_Orange__Can_Mockup.webp",
+    alt: "SUNRISE 60mg THC +30mg CBG Blood Orange hemp-infused seltzer can" },
+];
+
 // ── S02 BRAND STATEMENT LINES ────────────────────────────────────────────
 // Each line is an inline SVG sized by a hardcoded natural-width viewBox,
 // outer width: 100% of the stack. preserveAspectRatio="xMidYMid meet" makes
@@ -177,6 +201,12 @@ function HomePage() {
         </section>
 
         {/* ── 03 · PRODUCT INTRO ────────────────────────────────────────── */}
+        {/* Centered copy inside the container, followed by an edge-to-edge   */}
+        {/* continuously scrolling can strip pulled outside the container so  */}
+        {/* cans run past the text column on both sides. Marquee renders      */}
+        {/* S03_CANS twice back-to-back and animates translateX(0) →          */}
+        {/* translateX(-50%) for a seamless loop. Hover pauses;               */}
+        {/* prefers-reduced-motion disables animation.                        */}
         <section className="s03-product-intro">
           <div className="container">
             <h2 className="s03-pi-headline">
@@ -188,33 +218,18 @@ function HomePage() {
               Federally-legal Delta-9 THC, emulsified for precise dosing — so every
               can delivers exactly the experience you chose.
             </p>
-            <div className="s03-pi-fruits" aria-hidden="true">
-              {/* Placeholder fruit chips — swap .s03-pi-fruit inner content */}
-              {/*  with <img src="..." /> once real illustrations are available. */}
-              <div className="s03-pi-fruit fruit-strawberry">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Strawberry</div>
-              </div>
-              <div className="s03-pi-fruit fruit-watermelon">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Watermelon</div>
-              </div>
-              <div className="s03-pi-fruit fruit-lemon">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Lemon</div>
-              </div>
-              <div className="s03-pi-fruit fruit-blueberry">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Blueberry</div>
-              </div>
-              <div className="s03-pi-fruit fruit-bloodorange">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Blood Orange</div>
-              </div>
-              <div className="s03-pi-fruit fruit-blackberry">
-                <div className="s03-pi-fruit-placeholder" />
-                <div className="s03-pi-fruit-label">Blackberry</div>
-              </div>
+          </div>
+          <div className="s03-reel" aria-label="SUNRISE can lineup">
+            <div className="s03-reel-track">
+              {[...S03_CANS, ...S03_CANS].map((can, idx) => (
+                <div
+                  key={idx}
+                  className="s03-reel-tile"
+                  aria-hidden={idx >= S03_CANS.length ? "true" : undefined}
+                >
+                  <img src={can.src} alt={can.alt} loading="lazy" />
+                </div>
+              ))}
             </div>
           </div>
         </section>
