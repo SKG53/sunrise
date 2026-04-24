@@ -9,6 +9,9 @@ import {
   render30mgLockup,
   render60mgLockup,
   render12ozStatBlock,
+  renderCBGLockup,
+  renderCBNLockup,
+  renderTHCVLockup,
   getBasePx,
 } from "../lib/sunrise-components";
 import "./products.css";
@@ -221,6 +224,14 @@ function ProductsPage() {
     "30": switch30Ref,
     "60": switch60Ref,
   };
+
+  // Effect-card lockup refs (one per cannabinoid card; Core card has no lockup).
+  // Array indexed 0-3 to match EFFECTS positions. null when ref not yet attached.
+  const effectRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  // Flavor-pill lockup refs — 6 per active tier. Repopulated on tier switch via
+  // React's ref callback; null slots correspond to base flavors (no cannabinoid).
+  const pillRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   // Read ?tier= URL param on mount so Home tier cards (and any other
   // /products?tier=X deep-links) land on the correct panel. Invalid values
