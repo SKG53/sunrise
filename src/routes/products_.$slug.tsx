@@ -306,6 +306,14 @@ function ProductDetailPage() {
   const [selectedPack, setSelectedPack] = useState<string>(
     shopifyMapping?.defaultPackOption ?? "Single Can"
   );
+  // PD gallery: index of the currently displayed Shopify image. Resets to 0
+  // whenever the SKU changes so visiting a sibling product never starts on a
+  // stale image. Only used when Shopify returns multiple images for a SKU;
+  // otherwise the strip is hidden and the main image stays at index 0.
+  const [selectedImageIdx, setSelectedImageIdx] = useState(0);
+  useEffect(() => {
+    setSelectedImageIdx(0);
+  }, [shopifyMapping?.handle]);
   const addItem = useCartStore((s) => s.addItem);
   const cartLoading = useCartStore((s) => s.isLoading);
 
