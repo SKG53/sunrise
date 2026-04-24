@@ -246,7 +246,7 @@
 }
 .s04-trifecta {
   display: grid;
-  grid-template-columns: 1fr minmax(calc(var(--base) * 15), 1.1fr) 1fr;
+  grid-template-columns: 1fr minmax(calc(var(--base) * 7), 1.1fr) 1fr;
   gap: calc(var(--base) * 0.5);
   align-items: center;
 }
@@ -285,7 +285,7 @@
 }
 .s04-can {
   width: 100%;
-  max-width: calc(var(--base) * 18);
+  max-width: calc(var(--base) * 7);
   height: auto;
   display: block;
 }
