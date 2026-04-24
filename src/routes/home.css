@@ -203,7 +203,11 @@
 }
 .s03-reel-tile {
   flex: 0 0 auto;
-  height: calc(var(--base) * 8.25);
+  /* Tile height calibrated against source-image crop tightness. Current       */
+  /* cans fill ~94.3% of their frame height vs. the prior generation's 79.2%.  */
+  /* Scaling factor 0.792 / 0.943 ≈ 0.840 applied to all breakpoints keeps the */
+  /* visible can the same on-screen size as before despite the tighter crop.   */
+  height: calc(var(--base) * 6.95);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -738,7 +742,7 @@
   }
   .s06-grid { grid-template-columns: repeat(2, 1fr); }
   .s02-manifesto-stack { --s02-stack-width: 78%; }
-  .s03-reel-tile { height: calc(var(--base) * 6.75); }
+  .s03-reel-tile { height: calc(var(--base) * 5.7); }
 }
 @media (max-width: 768px) {
   .home-hero { height: 440px; }
@@ -747,7 +751,7 @@
   .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }
   .s09-card { width: calc(var(--base) * 8); }
-  .s03-reel-tile { height: calc(var(--base) * 5.6); }
+  .s03-reel-tile { height: calc(var(--base) * 4.7); }
   /* Section headlines — match subpage S02 responsive scale (1.5 → 1.35). */
   .s03-pi-headline,
   .s04-headline,
@@ -759,5 +763,5 @@
 @media (max-width: 520px) {
   .s02-manifesto-stack { --s02-stack-width: 100%; }
   .s09-card { width: calc(var(--base) * 7); }
-  .s03-reel-tile { height: calc(var(--base) * 4.9); }
+  .s03-reel-tile { height: calc(var(--base) * 4.1); }
 }
