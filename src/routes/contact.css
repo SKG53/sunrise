@@ -62,9 +62,6 @@
   padding: calc(var(--base) * 2.2) 0 calc(var(--base) * 1.6);
 }
 .c-hero-inner {
-  max-width: 22ch;
-  margin-left: auto;
-  margin-right: auto;
   text-align: center;
 }
 .c-hero-headline {
@@ -75,7 +72,8 @@
   line-height: 0.98;
   text-transform: uppercase;
   color: var(--near-black);
-  margin-bottom: calc(var(--base) * 0.55);
+  margin: 0 auto calc(var(--base) * 0.55);
+  max-width: 18ch;
 }
 /* Voice Guide v5: accent line "Give us a buzz" — italic, bold, matches S01 bg */
 .c-hero-headline .accent-italic {
@@ -91,6 +89,8 @@
   line-height: 1.5;
   color: var(--text-body);
   max-width: 44ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ── 03 · FORM ──────────────────────────────────────────────────────────── */
