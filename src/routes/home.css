@@ -442,7 +442,7 @@
 }
 .s07-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   font-weight: 900;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -553,7 +553,7 @@
 }
 .s09-heading {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -643,7 +643,7 @@
 .s10-faq-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   letter-spacing: 0.005em;
   line-height: 1.0;
   text-transform: uppercase;
