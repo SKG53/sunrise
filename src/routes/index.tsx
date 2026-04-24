@@ -11,12 +11,6 @@ import {
   render60mgLockup,
   getBasePx,
 } from "../lib/sunrise-components";
-// S06 Story Teaser can composition — imported as module URLs so Vite bundles
-// them with content hashes. Kept inline here because this is the only home
-// section that references src/assets/cans/ directly (reel uses public/images).
-import canS07Large  from "@/assets/cans/10mg-strawberry.webp";
-import canS07Medium from "@/assets/cans/30mg-kiwi-watermelon-cbg.webp";
-import canS07Small  from "@/assets/cans/5mg-blackberry.webp";
 import "./home.css";
 
 export const Route = createFileRoute("/")({
@@ -440,17 +434,17 @@ function HomePage() {
               <div className="s07-cans" aria-hidden="true">
                 <img
                   className="s07-can s07-can-lg"
-                  src={canS07Large}
+                  src="/images/cans/10mg-blueberry-acai-thcv.webp"
                   alt=""
                 />
                 <img
                   className="s07-can s07-can-md"
-                  src={canS07Medium}
+                  src="/images/cans/30mg-cherry-limeade.webp"
                   alt=""
                 />
                 <img
                   className="s07-can s07-can-sm"
-                  src={canS07Small}
+                  src="/images/cans/5mg-blood-orange.webp"
                   alt=""
                 />
               </div>
