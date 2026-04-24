@@ -379,6 +379,7 @@ function ProductDetailPage() {
         <section className="pd-hero">
           <div className="container">
             <div className="pd-hero-grid">
+              <div className="pd-hero-gallery">
               <div className="pd-hero-can" style={{ background: product.color }}>
                 {(() => {
                   // Priority: Shopify image (mapped SKUs) → local imagePath → colored placeholder.
@@ -454,6 +455,7 @@ function ProductDetailPage() {
                   </div>
                 );
               })()}
+              </div>
 
               <div className="pd-hero-meta">
                 <div className="pd-hero-lockup-row">
