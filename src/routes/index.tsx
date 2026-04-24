@@ -373,8 +373,13 @@ function HomePage() {
                 </div>
               </div>
               <div className="s04-center">
-                {/* Placeholder center can — swap background for real image */}
-                <div className="s04-can-placeholder" aria-hidden="true" />
+                <img
+                  className="s04-can"
+                  src="/images/cans/SUNRISE__10MG_THC__Lemonade__Can_Mockup.webp"
+                  alt="SUNRISE 10mg THC Lemonade hemp-infused seltzer can"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
               <div className="s04-col s04-col-right">
                 <div className="s04-ing">
