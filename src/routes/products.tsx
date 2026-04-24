@@ -8,7 +8,6 @@ import {
   render10mgLockup,
   render30mgLockup,
   render60mgLockup,
-  render12ozStatBlock,
   renderCBGLockup,
   renderCBNLockup,
   renderTHCVLockup,
@@ -49,7 +48,6 @@ type Flavor = {
   descriptor: string;
   flavorColor: string;
   cannabinoid?: Cannabinoid;
-  effect?: string;
 };
 
 type TierData = {
