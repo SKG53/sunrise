@@ -207,16 +207,44 @@
   text-transform: uppercase;
   color: var(--near-black);
 }
-.a-method-pillar-body {
+.a-approach-pillar-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.34);
   font-weight: 400;
   line-height: 1.55;
   color: var(--text-body);
-  margin: 0;
 }
 
-/* ── 04 · PATH TO PURCHASE ──────────────────────────────────────────────────
+/* ── 04 · AMERICAN HEARTLAND (tier-30 flood) ────────────────────────────── */
+.a-heartland {
+  background: var(--tier-30);
+  color: var(--cream);
+  padding: calc(var(--base) * 2.8) 0 calc(var(--base) * 3.0);
+}
+.a-heartland-inner {
+  max-width: 36ch;
+}
+.a-heartland-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.5);
+  letter-spacing: 0.005em;
+  line-height: 0.98;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: calc(var(--base) * 0.55);
+}
+.a-heartland-headline .accent { color: #F2D480; }
+.a-heartland-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.55;
+  color: rgba(254, 251, 224, 0.88);
+  max-width: 42ch;
+}
+
+/* ── 06 · PATH TO PURCHASE ──────────────────────────────────────────────────
    Tier-10 red flood — bookends the page to its S01 pagehero. --on-color-text
    is the token .btn-on-color uses for its text color, keeping the solid CTA
    in brand-color harmony with the band flood.
