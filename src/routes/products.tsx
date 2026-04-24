@@ -13,6 +13,8 @@ import {
   renderTHCVLockup,
   getBasePx,
 } from "../lib/sunrise-components";
+import { getShopifyMapping } from "@/lib/shopifyProductMap";
+import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import "./products.css";
 
 export const Route = createFileRoute("/products")({
@@ -431,7 +433,7 @@ function ProductsPage() {
                     className="p-flavor-card"
                     aria-label={`${f.name} — ${tier.name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ""}`}
                   >
-                    <div className="p-flavor-can" />
+                    <FlavorCan slug={toSlug(activeTier, f)} flavorName={f.name} />
                     <div className="p-flavor-meta">
                       <div className="p-flavor-name">{f.name}</div>
                       <div className="p-flavor-descriptor">{f.descriptor}</div>
@@ -582,4 +584,27 @@ function ProductsPage() {
       <SiteFooter />
     </>
   );
+}
+
+// ── FlavorCan ────────────────────────────────────────────────────────────
+// Renders the small can thumbnail in each /products tier-panel card.
+// For SKUs mapped in shopifyProductMap.ts, fetches the live Shopify image.
+// For unmapped SKUs, falls back to the cream "Can Image" placeholder.
+function FlavorCan({ slug, flavorName }: { slug: string; flavorName: string }) {
+  const mapping = getShopifyMapping(slug);
+  const { product } = useShopifyProduct(mapping?.handle);
+  const image = product?.node.images.edges[0]?.node;
+
+  if (image?.url) {
+    return (
+      <div className="p-flavor-can has-image">
+        <img
+          src={image.url}
+          alt={image.altText ?? `SUNRISE ${flavorName} can`}
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+  return <div className="p-flavor-can" />;
 }
