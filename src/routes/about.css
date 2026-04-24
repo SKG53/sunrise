@@ -49,19 +49,14 @@
   .a-pagehero-title span { opacity: 1; animation: none; }
 }
 
-/* ── 02 · STORY ─────────────────────────────────────────────────────────── */
-/* Combined from original S02 Hero + S03 Origin. Single-column centered    */
-/* typographic block on cream. No 2-column split, no image. Headline sets  */
-/* place, body explains product. Three-paragraph body.                     */
-.a-story {
-  padding: calc(var(--base) * 2.8) 0 calc(var(--base) * 3.0);
+/* ── 02 · HERO ──────────────────────────────────────────────────────────── */
+.a-hero {
+  padding: calc(var(--base) * 2.4) 0 calc(var(--base) * 2.0);
 }
-.a-story-inner {
+.a-hero-inner {
   text-align: center;
-  max-width: 48ch;
-  margin: 0 auto;
 }
-.a-story-headline {
+.a-hero-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
   font-size: calc(var(--base) * 1.5);
@@ -69,67 +64,141 @@
   line-height: 0.98;
   text-transform: uppercase;
   color: var(--near-black);
-  margin: 0 auto calc(var(--base) * 0.7);
+  margin: 0 auto calc(var(--base) * 0.6);
   max-width: 18ch;
 }
-.a-story-headline .accent { color: var(--tier-10); }
-.a-story-body {
+.a-hero-headline .accent { color: var(--tier-10); }
+.a-hero-body {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.4);
+  font-size: calc(var(--base) * 0.42);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-body);
+  max-width: 42ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── 03 · ORIGIN ────────────────────────────────────────────────────────── */
+.a-origin {
+  border-top: 1px solid var(--warm-gray-faint);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
+}
+.a-origin-inner {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: calc(var(--base) * 1.2);
+  align-items: start;
+}
+.a-origin-copy {
+  padding-top: calc(var(--base) * 0.2);
+}
+.a-origin-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.0);
+  letter-spacing: 0.005em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin-bottom: calc(var(--base) * 0.55);
+  max-width: 18ch;
+}
+.a-origin-headline .accent { color: var(--green-accent); }
+.a-origin-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.38);
   font-weight: 400;
   line-height: 1.6;
   color: var(--text-body);
 }
-.a-story-body p { margin: 0; }
-.a-story-body p + p { margin-top: calc(var(--base) * 0.45); }
+.a-origin-body p + p { margin-top: calc(var(--base) * 0.4); }
 
-/* ── 03 · METHOD ────────────────────────────────────────────────────────── */
-/* Combined from original S04 Heartland + S05 Approach. On cream (no       */
-/* tier-30 flood). Heartland framing lives at the top of the section       */
-/* rather than as a visual color flood. Three pillars detail the how.      */
-/* Gold top-bar on each pillar — the narrow-scope geometric accent rule.   */
-.a-method {
+/* Emphasizer: short bold phrase at paragraph opening or closing.
+   Inline with body text, Montserrat 900, brand gradient fill. */
+.a-origin-emphasizer {
+  font-weight: 900;
+  background: linear-gradient(90deg, #4F308D, #822665, #94264B, #BF252D, #CC382C, #DC531F, #E76B37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Interruptor: single pulled sentence breaking the paragraph flow.
+   Italic, Montserrat 900, near-black, larger than body, centered, with
+   generous vertical breathing room. */
+.a-origin-interruptor {
+  margin: calc(var(--base) * 0.9) 0;
+  font-family: 'Montserrat', sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.62);
+  line-height: 1.2;
+  color: var(--near-black);
+  text-align: center;
+  letter-spacing: 0.005em;
+}
+.a-origin-interruptor em { font-style: italic; }
+.a-origin-image-wrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #E8E2C4;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.a-origin-image {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    #E8E2C4, #E8E2C4 10px,
+    #DED5B3 10px, #DED5B3 20px
+  );
+}
+
+/* ── 05 · HOW WE BUILD ──────────────────────────────────────────────────── */
+.a-approach {
+  background: var(--cream);
   border-top: 1px solid var(--warm-gray-faint);
-  padding: calc(var(--base) * 2.2) 0 calc(var(--base) * 2.6);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
 }
-.a-method-head {
-  margin-bottom: calc(var(--base) * 1.4);
-  max-width: 56ch;
+.a-approach-head {
+  margin-bottom: calc(var(--base) * 1.2);
 }
-.a-method-headline {
+.a-approach-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.5);
+  font-size: calc(var(--base) * 1.0);
   letter-spacing: 0.005em;
-  line-height: 0.98;
+  line-height: 1.0;
   text-transform: uppercase;
   color: var(--near-black);
-  margin: 0 0 calc(var(--base) * 0.55);
+  margin-bottom: calc(var(--base) * 0.4);
   max-width: 18ch;
 }
-.a-method-headline .accent { color: var(--tier-10); }
-.a-method-lead {
+.a-approach-headline .accent { color: var(--green-accent); }
+.a-approach-lead {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.4);
+  font-size: calc(var(--base) * 0.38);
   font-weight: 400;
   line-height: 1.55;
   color: var(--text-body);
   max-width: 56ch;
-  margin: 0;
 }
-.a-method-pillars {
+.a-approach-pillars {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: calc(var(--base) * 0.8);
 }
-.a-method-pillar {
+.a-approach-pillar {
   display: flex;
   flex-direction: column;
   gap: calc(var(--base) * 0.3);
   padding-top: calc(var(--base) * 0.55);
   border-top: 2px solid var(--gold);
 }
-.a-method-pillar-title {
+.a-approach-pillar-title {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
   font-size: calc(var(--base) * 0.7);
@@ -138,16 +207,44 @@
   text-transform: uppercase;
   color: var(--near-black);
 }
-.a-method-pillar-body {
+.a-approach-pillar-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.34);
   font-weight: 400;
   line-height: 1.55;
   color: var(--text-body);
-  margin: 0;
 }
 
-/* ── 04 · PATH TO PURCHASE ──────────────────────────────────────────────────
+/* ── 04 · AMERICAN HEARTLAND (tier-30 flood) ────────────────────────────── */
+.a-heartland {
+  background: var(--tier-30);
+  color: var(--cream);
+  padding: calc(var(--base) * 2.8) 0 calc(var(--base) * 3.0);
+}
+.a-heartland-inner {
+  max-width: 36ch;
+}
+.a-heartland-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.5);
+  letter-spacing: 0.005em;
+  line-height: 0.98;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: calc(var(--base) * 0.55);
+}
+.a-heartland-headline .accent { color: #F2D480; }
+.a-heartland-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.55;
+  color: rgba(254, 251, 224, 0.88);
+  max-width: 42ch;
+}
+
+/* ── 06 · PATH TO PURCHASE ──────────────────────────────────────────────────
    Tier-10 red flood — bookends the page to its S01 pagehero. --on-color-text
    is the token .btn-on-color uses for its text color, keeping the solid CTA
    in brand-color harmony with the band flood.
@@ -196,15 +293,19 @@
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
+  .a-origin-inner,
   .a-ptp-inner { grid-template-columns: 1fr; }
   .a-ptp-ctas { justify-self: start; flex-direction: row; }
-  .a-method-pillars { grid-template-columns: 1fr 1fr; }
+  .a-approach-pillars { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 768px) {
-  .a-method-pillars { grid-template-columns: 1fr; }
-  .a-story-headline { font-size: calc(var(--base) * 1.35); }
-  .a-method-headline { font-size: calc(var(--base) * 1.35); }
+  .a-approach-pillars { grid-template-columns: 1fr; }
+  .a-hero-headline { font-size: calc(var(--base) * 1.35); }
+  .a-heartland-headline { font-size: calc(var(--base) * 1.35); }
+  .a-origin-headline,
+  .a-approach-headline { font-size: calc(var(--base) * 1.0); }
   .a-ptp-headline { font-size: calc(var(--base) * 1.0); }
+  .a-origin-interruptor { font-size: calc(var(--base) * 0.5); }
 }
 @media (max-width: 520px) {
   .a-ptp-ctas { flex-direction: column; width: 100%; }
