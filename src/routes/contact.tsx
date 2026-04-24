@@ -102,11 +102,11 @@ function ContactPage() {
             <div className="c-hero-inner">
               <h1 className="c-hero-headline">
                 Say hello.<br />
-                Give us a <em className="accent-italic">buzz.</em>
+                Give us a <em className="accent-italic">buzz</em>
               </h1>
               <p className="c-hero-body">
-                Questions, wholesale, press, or just saying hi — we read
-                everything. Use the form below or drop us a line directly.
+                Wholesale, press, product questions, or anything else — we
+                read every note. Use the form below or drop us an email.
               </p>
             </div>
           </div>
