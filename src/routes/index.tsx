@@ -496,7 +496,9 @@ function HomePage() {
         {/* × 2) to produce a seamless loop via translateX(0 → -50%).     */}
         {/* Hover pauses. All quote content is placeholder.                */}
         <section className="s09-reviews">
-          <h2 className="s09-heading">What people say</h2>
+          <h2 className="s09-heading">
+            What are people <span className="accent">saying?</span>
+          </h2>
           <div className="s09-marquee" aria-label="Customer reviews carousel">
             <div className="s09-marquee-track">
               {/* Set A */}
