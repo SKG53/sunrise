@@ -8,7 +8,6 @@ import {
   render10mgLockup,
   render30mgLockup,
   render60mgLockup,
-  render12ozStatBlock,
   renderCBGLockup,
   renderCBNLockup,
   renderTHCVLockup,
@@ -49,7 +48,6 @@ type Flavor = {
   descriptor: string;
   flavorColor: string;
   cannabinoid?: Cannabinoid;
-  effect?: string;
 };
 
 type TierData = {
@@ -74,9 +72,9 @@ const TIERS: Record<TierKey, TierData> = {
       { name: "Blackberry",          descriptor: "Dark + Smooth",   flavorColor: "#2E1E3D" },
       { name: "Blood Orange",        descriptor: "Tart + Punchy",   flavorColor: "#DC7F27" },
       { name: "Passionfruit Mango",  descriptor: "Bright + Breezy", flavorColor: "#60203A" },
-      { name: "Blueberry Lemonade",  descriptor: "Rich + Tangy",    flavorColor: "#21285A", cannabinoid: "CBG",  effect: "FOCUS"   },
-      { name: "Black Cherry",        descriptor: "Deep + Sweet",    flavorColor: "#36121D", cannabinoid: "CBN",  effect: "RELAX"   },
-      { name: "Strawberry Peach",    descriptor: "Sweet + Mellow",  flavorColor: "#DD756B", cannabinoid: "THCV", effect: "ELEVATE" },
+      { name: "Blueberry Lemonade",  descriptor: "Rich + Tangy",    flavorColor: "#21285A", cannabinoid: "CBG" },
+      { name: "Black Cherry",        descriptor: "Deep + Sweet",    flavorColor: "#36121D", cannabinoid: "CBN" },
+      { name: "Strawberry Peach",    descriptor: "Sweet + Mellow",  flavorColor: "#DD756B", cannabinoid: "THCV" },
     ],
   },
   "10": {
@@ -89,9 +87,9 @@ const TIERS: Record<TierKey, TierData> = {
       { name: "Strawberry",          descriptor: "Fresh + Fruity",  flavorColor: "#CC1F39" },
       { name: "Watermelon",          descriptor: "Sweet + Juicy",   flavorColor: "#0A6034" },
       { name: "Lemonade",            descriptor: "Crisp + Tangy",   flavorColor: "#E0AD2C" },
-      { name: "Tangerine",           descriptor: "Bright + Zesty",  flavorColor: "#F89A1F", cannabinoid: "CBG",  effect: "FOCUS"   },
-      { name: "Blackberry Lemonade", descriptor: "Tart + Bold",     flavorColor: "#2E1E3D", cannabinoid: "CBN",  effect: "RELAX"   },
-      { name: "Blueberry Acai",      descriptor: "Rich + Vibrant",  flavorColor: "#21285A", cannabinoid: "THCV", effect: "ELEVATE" },
+      { name: "Tangerine",           descriptor: "Bright + Zesty",  flavorColor: "#F89A1F", cannabinoid: "CBG" },
+      { name: "Blackberry Lemonade", descriptor: "Tart + Bold",     flavorColor: "#2E1E3D", cannabinoid: "CBN" },
+      { name: "Blueberry Acai",      descriptor: "Rich + Vibrant",  flavorColor: "#21285A", cannabinoid: "THCV" },
     ],
   },
   "30": {
@@ -104,9 +102,9 @@ const TIERS: Record<TierKey, TierData> = {
       { name: "Peach Mango",           descriptor: "Lush + Tropical",   flavorColor: "#E89B5B" },
       { name: "Cherry Limeade",        descriptor: "Tart + Refreshing", flavorColor: "#67092A" },
       { name: "Orange Lemonade",       descriptor: "Bright + Tart",     flavorColor: "#FAA819" },
-      { name: "Kiwi Watermelon",       descriptor: "Crisp + Cool",      flavorColor: "#A4BC47", cannabinoid: "CBG",  effect: "FOCUS"   },
-      { name: "Blueberry Pomegranate", descriptor: "Tart + Vibrant",    flavorColor: "#21285A", cannabinoid: "CBN",  effect: "RELAX"   },
-      { name: "Strawberry Watermelon", descriptor: "Sweet + Fresh",     flavorColor: "#0A6034", cannabinoid: "THCV", effect: "ELEVATE" },
+      { name: "Kiwi Watermelon",       descriptor: "Crisp + Cool",      flavorColor: "#A4BC47", cannabinoid: "CBG" },
+      { name: "Blueberry Pomegranate", descriptor: "Tart + Vibrant",    flavorColor: "#21285A", cannabinoid: "CBN" },
+      { name: "Strawberry Watermelon", descriptor: "Sweet + Fresh",     flavorColor: "#0A6034", cannabinoid: "THCV" },
     ],
   },
   "60": {
@@ -119,15 +117,24 @@ const TIERS: Record<TierKey, TierData> = {
       { name: "Passionfruit Mango",  descriptor: "Bright + Breezy", flavorColor: "#60203A" },
       { name: "Wild Cherry Peach",   descriptor: "Lush + Juicy",    flavorColor: "#861625" },
       { name: "Blueberry Lemonade",  descriptor: "Rich + Tangy",    flavorColor: "#21285A" },
-      { name: "Blood Orange",        descriptor: "Tart + Punchy",   flavorColor: "#DC7F27", cannabinoid: "CBG",  effect: "FOCUS"   },
-      { name: "Blackberry",          descriptor: "Dark + Smooth",   flavorColor: "#2E1E3D", cannabinoid: "CBN",  effect: "RELAX"   },
-      { name: "Strawberry Kiwi",     descriptor: "Sweet + Tangy",   flavorColor: "#CC1F39", cannabinoid: "THCV", effect: "ELEVATE" },
+      { name: "Blood Orange",        descriptor: "Tart + Punchy",   flavorColor: "#DC7F27", cannabinoid: "CBG" },
+      { name: "Blackberry",          descriptor: "Dark + Smooth",   flavorColor: "#2E1E3D", cannabinoid: "CBN" },
+      { name: "Strawberry Kiwi",     descriptor: "Sweet + Tangy",   flavorColor: "#CC1F39", cannabinoid: "THCV" },
     ],
   },
 };
 
 // Unified lockup size across all four tiers.
 const LOCKUP_SIZE = 2.2;
+
+// Two-word effect phrases shown on flavor-card pills for +CBG / +CBN / +THCV
+// variants. Canonical per Brand memory ("+CBG = FOCUS + UPLIFT" etc.). Mirrors
+// the eyebrow text on the matching S03 effect cards.
+const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
+  CBG:  "Focus + Uplift",
+  CBN:  "Relax + Unwind",
+  THCV: "Elevate + Engage",
+};
 
 // ── EFFECTS DATA (4-card Find Your Effect grid) ──────────────────────────
 // Positions: 1 = CORE (classic THC baseline), 2-4 = +CBG / +CBN / +THCV.
@@ -143,7 +150,7 @@ const EFFECTS: EffectCardData[] = [
     bg: "#1A1A1A",
     eyebrow: "Pure · Classic",
     symbol: "Core",
-    body: "Just THC, no minor cannabinoids added. Clean, balanced, uncomplicated — the SUNRISE baseline.",
+    body: "Just THC. Clean, balanced, uncomplicated — the SUNRISE baseline.",
     foot: "Three flavors per tier",
   },
   {
@@ -213,7 +220,6 @@ function ProductsPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const panelLockupRef = useRef<HTMLDivElement>(null);
-  const stat12Ref = useRef<HTMLDivElement>(null);
   const switch5Ref = useRef<HTMLDivElement>(null);
   const switch10Ref = useRef<HTMLDivElement>(null);
   const switch30Ref = useRef<HTMLDivElement>(null);
@@ -229,9 +235,10 @@ function ProductsPage() {
   // Array indexed 0-3 to match EFFECTS positions. null when ref not yet attached.
   const effectRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
-  // Flavor-pill lockup refs — 6 per active tier. Repopulated on tier switch via
-  // React's ref callback; null slots correspond to base flavors (no cannabinoid).
-  const pillRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  // Flavor-corner lockup refs — one per cannabinoid flavor (positions 4–6 of
+  // each tier). Repopulated on tier switch via React's ref callback; null
+  // slots correspond to base flavors (no cannabinoid).
+  const cornerRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   // Read ?tier= URL param on mount so Home tier cards (and any other
   // /products?tier=X deep-links) land on the correct panel. Invalid values
@@ -269,7 +276,7 @@ function ProductsPage() {
         if (!ref) return;
         const isActive = tier === activeTier;
         const color = isActive ? "#FEFBE0" : TIERS[tier].color;
-        const size = base * 0.9;
+        const size = base * 1.2;
         let html = "";
         if (tier === "5")  html = render5mgLockup(size, color);
         if (tier === "10") html = render10mgLockup(size, color);
@@ -277,11 +284,6 @@ function ProductsPage() {
         if (tier === "60") html = render60mgLockup(size, color);
         ref.innerHTML = html;
       });
-
-      // ── 12oz stat block (same scale as About) ──
-      if (stat12Ref.current) {
-        stat12Ref.current.innerHTML = render12ozStatBlock(base * 0.95);
-      }
 
       // ── Effect-card +CBG / +CBN / +THCV lockups — cream on tier bg ──
       // Matches .p-effect-symbol font-size (calc(--base * 1.05)).
@@ -296,12 +298,13 @@ function ProductsPage() {
         ref.innerHTML = html;
       });
 
-      // ── Flavor-pill +CBG / +CBN / +THCV lockups — cream on tier bg ──
-      // Matches .p-flavor-pill font-size (calc(--base * 0.18)).
+      // ── Flavor-corner +CBG / +CBN / +THCV lockups — cream on tier bg ──
+      // Placed at bottom-right of enhanced flavor cards. Matches
+      // .p-flavor-corner CSS positioning.
       TIERS[activeTier].flavors.forEach((f, i) => {
-        const ref = pillRefs.current[i];
+        const ref = cornerRefs.current[i];
         if (!ref || !f.cannabinoid) return;
-        const size = base * 0.18;
+        const size = base * 0.5;
         let html = "";
         if (f.cannabinoid === "CBG")  html = renderCBGLockup(size, "#FEFBE0");
         else if (f.cannabinoid === "CBN")  html = renderCBNLockup(size, "#FEFBE0");
@@ -398,7 +401,14 @@ function ProductsPage() {
                   aria-pressed={activeTier === k}
                 >
                   <div className="p-switch-lockup" ref={switchRefs[k]} />
-                  <div className="p-switch-name">{TIERS[k].short}</div>
+                  <div
+                    className="p-switch-name"
+                    style={activeTier !== k ? { color: TIERS[k].color } : undefined}
+                  >
+                    {TIERS[k].short.split(" ").map((word, wi) => (
+                      <span key={wi}>{word}</span>
+                    ))}
+                  </div>
                 </button>
               ))}
             </div>
@@ -427,13 +437,17 @@ function ProductsPage() {
                       <div className="p-flavor-descriptor">{f.descriptor}</div>
                       {f.cannabinoid && (
                         <div className="p-flavor-pill">
-                          <span
-                            ref={(el) => { pillRefs.current[i] = el; }}
-                            aria-label={`+${f.cannabinoid}`}
-                          /> · {f.effect}
+                          {CANNABINOID_EFFECT[f.cannabinoid]}
                         </div>
                       )}
                     </div>
+                    {f.cannabinoid && (
+                      <span
+                        className="p-flavor-corner"
+                        ref={(el) => { cornerRefs.current[i] = el; }}
+                        aria-label={`+${f.cannabinoid}`}
+                      />
+                    )}
                   </a>
                 ))}
               </div>
@@ -446,7 +460,7 @@ function ProductsPage() {
           <div className="container">
             <div className="p-inside-head">
               <h2 className="p-inside-headline">
-                Real ingredients<br />
+                Natural ingredients<br />
                 Real <span className="accent">effects</span>
               </h2>
               <p className="p-inside-lead">
@@ -476,16 +490,6 @@ function ProductsPage() {
                   Certified production facilities and third-party full-panel testing
                   ensure every can is perfectly dosed and fully compliant.
                 </p>
-              </div>
-            </div>
-
-            <div className="p-inside-stats">
-              <div className="p-inside-stats-stat" ref={stat12Ref} />
-              <div className="p-inside-stats-badges">
-                <div className="p-inside-badge">Natural Vegan</div>
-                <div className="p-inside-badge">Gluten Free</div>
-                <div className="p-inside-badge">Zero Alcohol</div>
-                <div className="p-inside-badge">Infused with B12</div>
               </div>
             </div>
           </div>
@@ -523,7 +527,10 @@ function ProductsPage() {
           <div className="container">
             <div className="p-ptp-inner">
               <div className="p-ptp-copy">
-                <h2 className="p-ptp-headline">Now you know<br />our products</h2>
+                <h2 className="p-ptp-headline">
+                  <span>Now you know</span>
+                  <span>our products</span>
+                </h2>
                 <p className="p-ptp-body">
                   Get to know us, or find a can near you.
                 </p>

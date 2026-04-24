@@ -109,6 +109,7 @@
   text-transform: uppercase;
   color: var(--near-black);
   line-height: 1.0;
+  text-align: center;
 }
 .p-effects-headline .accent { color: var(--green-accent); }
 .p-effects-subhead {
@@ -117,6 +118,9 @@
   line-height: 1.5;
   color: var(--text-body);
   max-width: 64ch;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 .p-effects-grid {
   display: grid;
@@ -130,7 +134,7 @@
   border-radius: 4px;
   display: flex;
   flex-direction: column;
-  min-height: calc(var(--base) * 5.6);
+  min-height: calc(var(--base) * 5.0);
 }
 .p-effect-eyebrow {
   font-size: calc(var(--base) * 0.22);
@@ -185,6 +189,7 @@
   text-transform: uppercase;
   color: var(--near-black);
   line-height: 1.0;
+  text-align: center;
 }
 .p-switcher-headline .accent { color: var(--green-accent); }
 .p-switcher-subhead {
@@ -193,6 +198,9 @@
   line-height: 1.5;
   color: var(--text-body);
   max-width: 58ch;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .p-switcher-bar {
@@ -224,16 +232,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(var(--base) * 0.9);
+  min-height: calc(var(--base) * 1.2);
 }
 .p-switch-name {
   font-size: calc(var(--base) * 0.34);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--text-secondary);
-  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.04);
+  line-height: 1.1;
 }
+.p-switch-name span { white-space: nowrap; }
 .p-switch.active .p-switch-name { color: var(--cream); }
 .p-switch.active:hover { filter: brightness(0.95); }
 
@@ -300,6 +313,7 @@
   gap: calc(var(--base) * 0.4);
 }
 .p-flavor-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   background: rgba(254, 251, 224, 0.08);
@@ -363,6 +377,17 @@
   color: var(--cream);
   margin-top: calc(var(--base) * 0.18);
 }
+/* Cannabinoid lockup badge — absolute-positioned in card's bottom-right     */
+/* corner on +CBG / +CBN / +THCV flavors. Sibling of .p-flavor-meta (not    */
+/* nested inside it) so position is anchored to the full card, not the      */
+/* meta padding box. pointer-events: none lets clicks still hit the link.    */
+.p-flavor-corner {
+  position: absolute;
+  right: calc(var(--base) * 0.38);
+  bottom: calc(var(--base) * 0.42);
+  line-height: 0;
+  pointer-events: none;
+}
 
 /* ── WHAT'S INSIDE (ported from about.css) ──────────────────────────────── */
 .p-inside {
@@ -372,6 +397,7 @@
 }
 .p-inside-head {
   margin-bottom: calc(var(--base) * 1.2);
+  text-align: center;
 }
 .p-inside-headline {
   font-family: 'Montserrat', sans-serif;
@@ -381,7 +407,7 @@
   line-height: 1.0;
   text-transform: uppercase;
   color: var(--near-black);
-  margin-bottom: calc(var(--base) * 0.4);
+  margin: 0 auto calc(var(--base) * 0.4);
   max-width: 18ch;
 }
 .p-inside-headline .accent { color: var(--green-accent); }
@@ -392,12 +418,13 @@
   line-height: 1.55;
   color: var(--text-body);
   max-width: 56ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 .p-inside-pillars {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: calc(var(--base) * 0.8);
-  margin-bottom: calc(var(--base) * 1.4);
 }
 .p-inside-pillar {
   display: flex;
@@ -414,6 +441,7 @@
   line-height: 1.0;
   text-transform: uppercase;
   color: var(--near-black);
+  text-align: center;
 }
 .p-inside-pillar-body {
   font-family: 'Montserrat', sans-serif;
@@ -421,40 +449,7 @@
   font-weight: 400;
   line-height: 1.55;
   color: var(--text-body);
-}
-.p-inside-stats {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--base) * 1.0);
-  flex-wrap: wrap;
-  padding-top: calc(var(--base) * 0.95);
-  border-top: 1px solid var(--warm-gray-faint);
-}
-.p-inside-stats-stat {
-  line-height: 0;
-  flex-shrink: 0;
-}
-.p-inside-stats-badges {
-  display: flex;
-  gap: calc(var(--base) * 0.3);
-  flex-wrap: wrap;
-  flex: 1;
-  justify-content: flex-end;
-}
-.p-inside-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: calc(var(--base) * 0.22) calc(var(--base) * 0.5);
-  border: 1.5px solid var(--near-black);
-  border-radius: 9999px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--near-black);
-  white-space: nowrap;
-  line-height: 1;
+  text-align: center;
 }
 
 /* ── TRANSPARENCY (unchanged) ───────────────────────────────────────────── */
@@ -530,6 +525,10 @@
   color: var(--cream);
   line-height: 1.0;
   margin-bottom: calc(var(--base) * 0.4);
+}
+.p-ptp-headline span {
+  display: block;
+  white-space: nowrap;
 }
 .p-ptp-body {
   font-family: 'Montserrat', sans-serif;
@@ -659,7 +658,6 @@
   .p-switch:nth-child(2) { border-bottom: 1.5px solid var(--near-black); }
   .p-switch:nth-child(2) { border-right: none; }
   .p-inside-pillars { grid-template-columns: 1fr; }
-  .p-inside-stats-badges { justify-content: flex-start; }
   .p-inside-headline { font-size: calc(var(--base) * 1.0); }
   .p-hero-headline { font-size: calc(var(--base) * 1.35); }
 }
@@ -670,5 +668,4 @@
   .p-ptp-ctas { flex-direction: column; width: 100%; }
   .p-ptp-ctas .btn { width: 100%; text-align: center; }
   .p-faq-q-text { font-size: calc(var(--base) * 0.38); }
-  .p-inside-stats { gap: calc(var(--base) * 0.7); }
 }
