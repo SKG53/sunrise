@@ -15,8 +15,15 @@ export type ShopifyProductMapping = {
 };
 
 export const SHOPIFY_PRODUCT_MAP: Record<string, ShopifyProductMapping> = {
-  // ── PILOT: 10mg Lemonade ──────────────────────────────────────────────
-  "10mg-lemonade": { handle: "lemonade", defaultPackOption: "Single Can" },
+  // ── 10mg tier (all 6 active in Shopify) ───────────────────────────────
+  // Note: cannabinoid variants (CBG/CBN/THCV) map to the base flavor in Shopify
+  // since Shopify doesn't yet carry the cannabinoid distinction.
+  "10mg-lemonade":                  { handle: "lemonade",            defaultPackOption: "Single Can" },
+  "10mg-strawberry":                { handle: "strawberry",          defaultPackOption: "Single Can" },
+  "10mg-watermelon":                { handle: "watermelon",          defaultPackOption: "Single Can" },
+  "10mg-tangerine-cbg":             { handle: "tangerine",           defaultPackOption: "Single Can" },
+  "10mg-blackberry-lemonade-cbn":   { handle: "blackberry-lemonade", defaultPackOption: "Single Can" },
+  "10mg-blueberry-acai-thcv":       { handle: "blueberry-acai",      defaultPackOption: "Single Can" },
 
   // ── 60mg tier (all 6 active in Shopify) ───────────────────────────────
   // Note: cannabinoid variants (CBG/CBN/THCV) map to the base flavor in Shopify
