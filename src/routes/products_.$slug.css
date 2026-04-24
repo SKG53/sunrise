@@ -608,3 +608,30 @@
   .pd-hero-ctas { flex-direction: column; width: 100%; }
   .pd-hero-ctas .btn { width: 100%; text-align: center; }
 }
+
+/* ── Shopify wiring: pack selector ──────────────────────────────────────── */
+.pd-hero-pack {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0.25rem;
+  flex-wrap: wrap;
+}
+.pd-pack-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(26, 26, 26, 0.25);
+  background: transparent;
+  color: #1a1a1a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.pd-pack-btn:hover {
+  border-color: rgba(26, 26, 26, 0.5);
+}
+.pd-pack-btn.is-selected {
+  background: var(--flavor-color, #1a1a1a);
+  border-color: var(--flavor-color, #1a1a1a);
+  color: #fefbe0;
+}
