@@ -499,6 +499,15 @@
   line-height: 1.0;
   margin-bottom: calc(var(--base) * 0.08);
 }
+/* Host for the brand-locked render30mg[CBG|CBN|THCV]Lockup output. Empty in
+   SSR markup; hydration-time useEffect writes the lockup HTML via innerHTML.
+   Height comes from the rendered lockup itself (base * 0.7 scale, same as
+   the sibling .pd-cannabinoid-stat-value for the THC stat). Margin-bottom
+   mirrors that sibling so the "per can" label below sits at the same rhythm. */
+.pd-cannabinoid-stat-lockup {
+  margin-bottom: calc(var(--base) * 0.08);
+  line-height: 1.0;
+}
 .pd-cannabinoid-stat-value span {
   font-size: calc(var(--base) * 0.24);
   font-weight: 800;
