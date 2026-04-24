@@ -246,8 +246,8 @@
 }
 .s04-trifecta {
   display: grid;
-  grid-template-columns: 1fr minmax(calc(var(--base) * 15), 3fr) 1fr;
-  gap: calc(var(--base) * 1.0);
+  grid-template-columns: 1fr minmax(calc(var(--base) * 15), 1.1fr) 1fr;
+  gap: calc(var(--base) * 0.5);
   align-items: center;
 }
 .s04-col {
