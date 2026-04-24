@@ -244,6 +244,7 @@
   text-align: center;
   margin: 0;
 }
+.s04-headline .accent { color: var(--green-accent); }
 .s04-trifecta {
   display: grid;
   grid-template-columns: 1fr minmax(calc(var(--base) * 7), 1.1fr) 1fr;
