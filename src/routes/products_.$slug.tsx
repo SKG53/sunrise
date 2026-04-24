@@ -16,6 +16,12 @@ import {
   render30mgLockup,
   render60mgLockup,
   render12ozStatBlock,
+  renderCBGLockup,
+  renderCBNLockup,
+  renderTHCVLockup,
+  render30mgCBGLockup,
+  render30mgCBNLockup,
+  render30mgTHCVLockup,
   getBasePx,
 } from "../lib/sunrise-components";
 import "./products_.$slug.css";
@@ -284,6 +290,14 @@ function ProductDetailPage() {
   const { product } = Route.useLoaderData();
   const lockupRef = useRef<HTMLDivElement>(null);
   const stat12Ref = useRef<HTMLDivElement>(null);
+  // Cannabinoid lockup refs — painted in useEffect below. Each is null on
+  // non-variant SKUs (Core flavors have no cannabinoid) and on placeholder
+  // paths that don't render that DOM node.
+  const bcCbRef = useRef<HTMLSpanElement>(null);       // breadcrumb
+  const placeholderCbRef = useRef<HTMLSpanElement>(null); // hero can placeholder
+  const variantPillCbRef = useRef<HTMLSpanElement>(null); // hero variant pill
+  const eyebrowCbRef = useRef<HTMLSpanElement>(null);  // cannabinoid section eyebrow
+  const stat30mgCbRef = useRef<HTMLDivElement>(null);  // 30mg minor-cannabinoid stat
   const [qty, setQty] = useState(1);
 
   useEffect(() => {
@@ -294,6 +308,39 @@ function ProductDetailPage() {
       }
       if (stat12Ref.current) {
         stat12Ref.current.innerHTML = render12ozStatBlock(base * 0.8);
+      }
+
+      // ── Cannabinoid lockups (variant SKUs only) ──────────────────────
+      if (!product.cannabinoid) return;
+      const cb = product.cannabinoid;
+      const plusLockup =
+        cb === "CBG"  ? renderCBGLockup  :
+        cb === "CBN"  ? renderCBNLockup  :
+                        renderTHCVLockup;
+      const mg30Lockup =
+        cb === "CBG"  ? render30mgCBGLockup  :
+        cb === "CBN"  ? render30mgCBNLockup  :
+                        render30mgTHCVLockup;
+
+      // Breadcrumb — near-black on cream. Matches .pd-breadcrumb li font-size.
+      if (bcCbRef.current) {
+        bcCbRef.current.innerHTML = plusLockup(base * 0.24, "#1A1A1A");
+      }
+      // Hero-can placeholder — cream on flavor-color bg. Matches .pd-hero-can-variant.
+      if (placeholderCbRef.current) {
+        placeholderCbRef.current.innerHTML = plusLockup(base * 0.28, "#FEFBE0");
+      }
+      // Variant pill — near-black on cream. Matches .pd-variant-pill font-size.
+      if (variantPillCbRef.current) {
+        variantPillCbRef.current.innerHTML = plusLockup(base * 0.22, "#1A1A1A");
+      }
+      // Cannabinoid section eyebrow — cream-on-color (75% alpha). Matches .pd-eyebrow.
+      if (eyebrowCbRef.current) {
+        eyebrowCbRef.current.innerHTML = plusLockup(base * 0.24, "rgba(254, 251, 224, 0.75)");
+      }
+      // 30mg cannabinoid stat — cream on flavor-color bg. Matches .pd-cannabinoid-stat-value.
+      if (stat30mgCbRef.current) {
+        stat30mgCbRef.current.innerHTML = mg30Lockup(base * 0.7, "#FEFBE0");
       }
     };
     paint();
@@ -324,7 +371,12 @@ function ProductDetailPage() {
               <li aria-hidden="true">·</li>
               <li className="pd-breadcrumb-current">
                 {product.flavor}
-                {product.cannabinoid && <span> +{product.cannabinoid}</span>}
+                {product.cannabinoid && (
+                  <>
+                    {" "}
+                    <span ref={bcCbRef} aria-label={`+${product.cannabinoid}`} />
+                  </>
+                )}
               </li>
             </ol>
           </div>
@@ -342,7 +394,9 @@ function ProductDetailPage() {
                     <div className="pd-hero-can-flavor">{product.flavor}</div>
                     <div className="pd-hero-can-sub">{product.tier}mg THC</div>
                     {product.cannabinoid && (
-                      <div className="pd-hero-can-variant">+{product.cannabinoid}</div>
+                      <div className="pd-hero-can-variant">
+                        <span ref={placeholderCbRef} aria-label={`+${product.cannabinoid}`} />
+                      </div>
                     )}
                   </div>
                 )}
@@ -353,7 +407,7 @@ function ProductDetailPage() {
                   <div className="pd-variant-pill">
                     <span>{product.tier}mg</span>
                     <span className="pd-variant-dot">·</span>
-                    <span>+{product.cannabinoid}</span>
+                    <span ref={variantPillCbRef} aria-label={`+${product.cannabinoid}`} />
                     <span className="pd-variant-dot">·</span>
                     <span>{cbCopy.effect}</span>
                   </div>
@@ -412,7 +466,8 @@ function ProductDetailPage() {
               <div className="pd-cannabinoid-grid">
                 <div className="pd-cannabinoid-copy">
                   <div className="pd-eyebrow pd-eyebrow-on-color">
-                    About the +{product.cannabinoid}
+                    About the{" "}
+                    <span ref={eyebrowCbRef} aria-label={`+${product.cannabinoid}`} />
                   </div>
                   <h2 className="pd-cannabinoid-headline">
                     {cbCopy.name}. For{" "}
@@ -426,8 +481,12 @@ function ProductDetailPage() {
                     <div className="pd-cannabinoid-stat-label">THC per can</div>
                   </div>
                   <div className="pd-cannabinoid-stat">
-                    <div className="pd-cannabinoid-stat-value">30<span>mg</span></div>
-                    <div className="pd-cannabinoid-stat-label">{product.cannabinoid} per can</div>
+                    <div
+                      className="pd-cannabinoid-stat-lockup"
+                      ref={stat30mgCbRef}
+                      aria-label={`+30mg ${product.cannabinoid} per can`}
+                    />
+                    <div className="pd-cannabinoid-stat-label">per can</div>
                   </div>
                 </div>
               </div>
