@@ -304,7 +304,7 @@ function ProductsPage() {
       TIERS[activeTier].flavors.forEach((f, i) => {
         const ref = cornerRefs.current[i];
         if (!ref || !f.cannabinoid) return;
-        const size = base * 0.5;
+        const size = base * 0.7;
         let html = "";
         if (f.cannabinoid === "CBG")  html = renderCBGLockup(size, "#FEFBE0");
         else if (f.cannabinoid === "CBN")  html = renderCBNLockup(size, "#FEFBE0");
@@ -460,8 +460,8 @@ function ProductsPage() {
           <div className="container">
             <div className="p-inside-head">
               <h2 className="p-inside-headline">
-                Natural ingredients<br />
-                Real <span className="accent">effects</span>
+                <span>Natural ingredients</span>
+                <span>Real <span className="accent">effects</span></span>
               </h2>
               <p className="p-inside-lead">
                 Every SUNRISE seltzer starts with real fruit, pure cane sugar, and hemp extract
