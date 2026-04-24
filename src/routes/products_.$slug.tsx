@@ -24,6 +24,9 @@ import {
   render30mgTHCVLockup,
   getBasePx,
 } from "../lib/sunrise-components";
+import { getShopifyMapping } from "@/lib/shopifyProductMap";
+import { useShopifyProduct } from "@/hooks/useShopifyProduct";
+import { useCartStore } from "@/stores/cartStore";
 import "./products_.$slug.css";
 
 // ── TYPES ────────────────────────────────────────────────────────────────
