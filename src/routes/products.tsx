@@ -401,7 +401,14 @@ function ProductsPage() {
                   aria-pressed={activeTier === k}
                 >
                   <div className="p-switch-lockup" ref={switchRefs[k]} />
-                  <div className="p-switch-name">{TIERS[k].short}</div>
+                  <div
+                    className="p-switch-name"
+                    style={activeTier !== k ? { color: TIERS[k].color } : undefined}
+                  >
+                    {TIERS[k].short.split(" ").map((word, wi) => (
+                      <span key={wi}>{word}</span>
+                    ))}
+                  </div>
                 </button>
               ))}
             </div>
@@ -430,13 +437,17 @@ function ProductsPage() {
                       <div className="p-flavor-descriptor">{f.descriptor}</div>
                       {f.cannabinoid && (
                         <div className="p-flavor-pill">
-                          <span
-                            ref={(el) => { pillRefs.current[i] = el; }}
-                            aria-label={`+${f.cannabinoid}`}
-                          /> · {f.effect}
+                          {CANNABINOID_EFFECT[f.cannabinoid]}
                         </div>
                       )}
                     </div>
+                    {f.cannabinoid && (
+                      <span
+                        className="p-flavor-corner"
+                        ref={(el) => { cornerRefs.current[i] = el; }}
+                        aria-label={`+${f.cannabinoid}`}
+                      />
+                    )}
                   </a>
                 ))}
               </div>
@@ -449,7 +460,7 @@ function ProductsPage() {
           <div className="container">
             <div className="p-inside-head">
               <h2 className="p-inside-headline">
-                Real ingredients<br />
+                Natural ingredients<br />
                 Real <span className="accent">effects</span>
               </h2>
               <p className="p-inside-lead">
