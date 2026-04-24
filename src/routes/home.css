@@ -471,11 +471,12 @@
   /* Subtle lift keeps the cans from looking pasted onto the red flood.    */
   filter: drop-shadow(0 calc(var(--base) * 0.15) calc(var(--base) * 0.3) rgba(0, 0, 0, 0.22));
 }
-/* Staircase offsets — identical delta between steps (≈0.4 × base each)    */
-/* gives a linear descent instead of an uneven cascade.                    */
-.s07-can-lg { transform: translateY(0); }
+/* Staircase offsets — leftmost pushed above the shared ceiling, middle    */
+/* holds the line, rightmost drops below it. Total vertical spread ≈       */
+/* 1.6 × base so the descent is pronounced but still structured.           */
+.s07-can-lg { transform: translateY(calc(var(--base) * -0.4)); }
 .s07-can-md { transform: translateY(calc(var(--base) * 0.4)); }
-.s07-can-sm { transform: translateY(calc(var(--base) * 0.8)); }
+.s07-can-sm { transform: translateY(calc(var(--base) * 1.2)); }
 .s07-copy {
   display: flex;
   flex-direction: column;
