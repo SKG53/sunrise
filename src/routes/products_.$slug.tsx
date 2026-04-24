@@ -385,7 +385,7 @@ function ProductDetailPage() {
     <>
       <SiteHeader activeNav="products" />
 
-      <main>
+      <main style={{ ["--flavor-color" as string]: product.color } as React.CSSProperties}>
         {/* ── 01 · BREADCRUMB ───────────────────────────────────────────── */}
         <nav className="pd-breadcrumb" aria-label="Breadcrumb">
           <div className="container">
