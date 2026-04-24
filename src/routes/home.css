@@ -161,22 +161,26 @@
   width: 100%;
   overflow: hidden;
   margin-top: calc(var(--base) * 1.0);
+  /* Decorative — not interactive. Blocks clicks, drags, right-click-save,  */
+  /* text-cursor on hover, and any future accidental link behavior. Also    */
+  /* makes hover-pause impossible (intentional — reel never stops).         */
+  pointer-events: none;
+  user-select: none;
 }
 .s03-reel-track {
   display: flex;
-  gap: calc(var(--base) * 0.6);
+  gap: calc(var(--base) * 0.15);
   width: max-content;
-  animation: s03-reel-scroll 80s linear infinite;
+  animation: s03-reel-scroll 60s linear infinite;
   will-change: transform;
 }
-.s03-reel:hover .s03-reel-track { animation-play-state: paused; }
 @keyframes s03-reel-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
 .s03-reel-tile {
   flex: 0 0 auto;
-  height: calc(var(--base) * 11);
+  height: calc(var(--base) * 4.7);
   display: flex;
   align-items: center;
   justify-content: center;
