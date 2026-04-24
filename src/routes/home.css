@@ -449,12 +449,29 @@
   gap: calc(var(--base) * 1.2);
   align-items: center;
 }
-.s07-portrait {
-  aspect-ratio: 4 / 5;
+/* Three-can composition, descending heights left-to-right: tallest far from  */
+/* copy, shortest nearest it. Heights cascade −15% per step so the staircase  */
+/* is present but subtle — not cartoonish. No overlap (flex row with gap).    */
+/* align-items: flex-end bottoms the row to a shared baseline so the height   */
+/* delta reads up from a common floor, which is what the staircase wants.     */
+.s07-cans {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  gap: calc(var(--base) * 0.3);
   min-height: calc(var(--base) * 8);
-  background: rgba(0, 0, 0, 0.18);
-  border-radius: 4px;
 }
+.s07-can {
+  width: auto;
+  object-fit: contain;
+  display: block;
+  /* Subtle lift keeps the cans from looking pasted onto the red flood.       */
+  filter: drop-shadow(0 calc(var(--base) * 0.15) calc(var(--base) * 0.3) rgba(0, 0, 0, 0.22));
+}
+.s07-can-lg { height: calc(var(--base) * 8.0);  }
+.s07-can-md { height: calc(var(--base) * 6.8);  }
+.s07-can-sm { height: calc(var(--base) * 5.8);  }
 .s07-copy {
   display: flex;
   flex-direction: column;
