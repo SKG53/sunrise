@@ -66,6 +66,9 @@
 .a-hero {
   padding: calc(var(--base) * 2.4) 0 calc(var(--base) * 2.0);
 }
+.a-hero-inner {
+  text-align: center;
+}
 .a-hero-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
@@ -74,10 +77,10 @@
   line-height: 0.98;
   text-transform: uppercase;
   color: var(--near-black);
-  margin-bottom: calc(var(--base) * 0.6);
+  margin: 0 auto calc(var(--base) * 0.6);
   max-width: 18ch;
 }
-.a-hero-headline .accent { color: var(--green-accent); }
+.a-hero-headline .accent { color: var(--tier-10); }
 .a-hero-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.42);
@@ -85,6 +88,8 @@
   line-height: 1.5;
   color: var(--text-body);
   max-width: 42ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ── 03 · ORIGIN ────────────────────────────────────────────────────────── */

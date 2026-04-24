@@ -63,6 +63,9 @@
 }
 .c-hero-inner {
   max-width: 22ch;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 .c-hero-headline {
   font-family: 'Montserrat', sans-serif;
@@ -74,11 +77,11 @@
   color: var(--near-black);
   margin-bottom: calc(var(--base) * 0.55);
 }
-/* Voice Guide v5: accent line "Give us a buzz" — italic, bold, green */
+/* Voice Guide v5: accent line "Give us a buzz" — italic, bold, matches S01 bg */
 .c-hero-headline .accent-italic {
   font-style: italic;
   font-weight: 900;
-  color: var(--green-accent);
+  color: var(--tier-60);
   font-size: 1em;
 }
 .c-hero-body {

@@ -66,6 +66,9 @@
 .f-hero {
   padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 1.4);
 }
+.f-hero-inner {
+  text-align: center;
+}
 .f-hero-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
@@ -74,10 +77,10 @@
   line-height: 0.98;
   text-transform: uppercase;
   color: var(--near-black);
-  margin-bottom: calc(var(--base) * 0.55);
+  margin: 0 auto calc(var(--base) * 0.55);
   max-width: 18ch;
 }
-.f-hero-headline .accent { color: var(--green-accent); }
+.f-hero-headline .accent { color: var(--tier-30); }
 .f-hero-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.42);
@@ -85,6 +88,8 @@
   line-height: 1.5;
   color: var(--text-body);
   max-width: 46ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ── 03 · SEARCH ────────────────────────────────────────────────────────── */

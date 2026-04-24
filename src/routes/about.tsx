@@ -43,12 +43,12 @@ function AboutPage() {
           <div className="container">
             <div className="a-hero-inner">
               <h1 className="a-hero-headline">
-                A better way to drink.<br />
-                Made in the <span className="accent">heartland.</span>
+                Born in the<br />
+                <span className="accent">heart</span> of America
               </h1>
               <p className="a-hero-body">
-                Hemp-derived Delta-9 THC seltzers, made in Oklahoma,
-                built by a family that has spent decades in beverage.
+                Founded along America's historic Route 66 and proudly family-owned,
+                SUNRISE is a beverage company reimagining drinks for today's consumers.
               </p>
             </div>
           </div>
