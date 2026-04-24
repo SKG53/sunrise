@@ -372,19 +372,40 @@ function ProductDetailPage() {
           <div className="container">
             <div className="pd-hero-grid">
               <div className="pd-hero-can" style={{ background: product.color }}>
-                {product.imagePath ? (
-                  <img src={product.imagePath} alt={`SUNRISE ${product.flavor} ${product.tier}mg THC hemp-infused seltzer can`} />
-                ) : (
-                  <div className="pd-hero-can-placeholder">
-                    <div className="pd-hero-can-flavor">{product.flavor}</div>
-                    <div className="pd-hero-can-sub">{product.tier}mg THC</div>
-                    {product.cannabinoid && (
-                      <div className="pd-hero-can-variant">
-                        <span ref={placeholderCbRef} aria-label={`+${product.cannabinoid}`} />
-                      </div>
-                    )}
-                  </div>
-                )}
+                {(() => {
+                  // Priority: Shopify image (mapped SKUs) → local imagePath → colored placeholder
+                  const shopifyImage = shopifyProduct?.node.images.edges[0]?.node;
+                  if (shopifyImage?.url) {
+                    return (
+                      <img
+                        src={shopifyImage.url}
+                        alt={
+                          shopifyImage.altText ??
+                          `SUNRISE ${product.flavor} ${product.tier}mg THC hemp-infused seltzer can`
+                        }
+                      />
+                    );
+                  }
+                  if (product.imagePath) {
+                    return (
+                      <img
+                        src={product.imagePath}
+                        alt={`SUNRISE ${product.flavor} ${product.tier}mg THC hemp-infused seltzer can`}
+                      />
+                    );
+                  }
+                  return (
+                    <div className="pd-hero-can-placeholder">
+                      <div className="pd-hero-can-flavor">{product.flavor}</div>
+                      <div className="pd-hero-can-sub">{product.tier}mg THC</div>
+                      {product.cannabinoid && (
+                        <div className="pd-hero-can-variant">
+                          <span ref={placeholderCbRef} aria-label={`+${product.cannabinoid}`} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
 
               <div className="pd-hero-meta">
