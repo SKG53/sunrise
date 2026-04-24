@@ -266,12 +266,12 @@ function FindPage() {
           <div className="container">
             <div className="f-hero-inner">
               <h1 className="f-hero-headline">
-                Stocked on real shelves<br />
-                <span className="accent">Near</span> you
+                Closer than you think.<br />
+                Find <span className="accent">nearby.</span>
               </h1>
               <p className="f-hero-body">
                 Retailers carrying SUNRISE right now. Search by zip, city, or
-                store name — or browse the list below.
+                store name and browse the list below.
               </p>
             </div>
           </div>
