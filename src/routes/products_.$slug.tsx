@@ -707,13 +707,12 @@ function ProductDetailPage() {
         </section>
 
         {/* ── 04 · WHAT'S INSIDE ────────────────────────────────────────── */}
-        {/* Verbatim replica of home S05 — same markup, same copy, same     */}
-        {/* static 10mg Lemonade can image. Class prefix stays pd-inside-*  */}
-        {/* for route-scoped styling; the rules in products_.$slug.css      */}
-        {/* mirror home's current .s04-* values one-for-one. Only 8 of 24   */}
-        {/* SKUs have mockup images; using the static home image here keeps */}
-        {/* every product page visually consistent with each other and with */}
-        {/* the home page.                                                  */}
+        {/* Verbatim replica of home S05 — same markup, same copy. Center    */}
+        {/* image is the current SKU's can mockup, sourced via product.slug  */}
+        {/* (slugs map 1:1 to filenames in /images/cans/). Class prefix      */}
+        {/* stays pd-inside-* for route-scoped styling; the rules in         */}
+        {/* products_.$slug.css mirror home's current .s04-* values          */}
+        {/* one-for-one.                                                     */}
         <section className="pd-ingredients">
           <div className="container">
             <h2 className="pd-inside-headline">
@@ -753,8 +752,8 @@ function ProductDetailPage() {
               <div className="pd-inside-center">
                 <img
                   className="pd-inside-can"
-                  src="/images/cans/10mg-lemonade.webp"
-                  alt="SUNRISE 10mg THC Lemonade hemp-infused seltzer can"
+                  src={`/images/cans/${product.slug}.webp`}
+                  alt={`SUNRISE ${product.tier}mg THC ${product.flavor} hemp-infused seltzer can`}
                   loading="lazy"
                   decoding="async"
                 />
