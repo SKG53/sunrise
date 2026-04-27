@@ -337,7 +337,6 @@
 .pd-ingredients {
   background: var(--cream);
   padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
-  border-top: 1px solid var(--warm-gray-faint);
 }
 .pd-ingredients .container {
   display: flex;
@@ -407,7 +406,6 @@
 
 /* ── 05 · OTHERS IN TIER ────────────────────────────────────────────────── */
 .pd-related {
-  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
 }
 .pd-related-grid {
@@ -578,7 +576,6 @@
 
 /* ── 07 · FAQ ───────────────────────────────────────────────────────────── */
 .pd-faq {
-  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
 }
 .pd-faq-list {

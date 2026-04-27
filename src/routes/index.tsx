@@ -485,20 +485,12 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── 08 · REVIEWS (REMOVED) ────────────────────────────────────── */}
-        {/* Reviews section deleted per founder direction. Quotes were        */}
-        {/* placeholder copy and not yet sourced from real customers. The     */}
-        {/* .s09-* CSS rules and the home-S09-heading wrap-pattern utility    */}
-        {/* in home.css are left in place — easy to restore the section if    */}
-        {/* reintroduced with real testimonials.                              */}
-
-        {/* ── 09 · FAQ ──────────────────────────────────────────────────── */}
+        {/* ── 08 · FAQ ──────────────────────────────────────────────────── */}
         {/* Home-level FAQ. Broader than Product Detail — first-time-visitor */}
         {/* questions (brand, legality, effect, category, risk, purchase).  */}
         {/* SKU-specific questions (dose, onset, variants, COAs) stay on    */}
         {/* Product Detail. Visual pattern mirrors .pd-faq so the two feel  */}
-        {/* like family. Class prefix s10-faq-* preserved from when the     */}
-        {/* now-removed s09-reviews block sat between this section and S07. */}
+        {/* like family.                                                     */}
         <section className="s10-faq">
           <div className="container">
             <div className="s10-faq-head">

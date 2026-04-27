@@ -97,7 +97,6 @@
 .p-effects {
   background: var(--cream);
   padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 2.2);
-  border-top: 1px solid var(--warm-gray-faint);
 }
 .p-effects .container {
   display: flex;
@@ -178,7 +177,6 @@
 .p-switcher {
   background: var(--cream);
   padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 2.2);
-  border-top: 1px solid var(--warm-gray-faint);
 }
 .p-switcher .container {
   display: flex;
@@ -404,7 +402,6 @@
 /* ── WHAT'S INSIDE (ported from about.css) ──────────────────────────────── */
 .p-inside {
   background: var(--cream);
-  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
 }
 .p-inside-head {
@@ -471,7 +468,6 @@
 .p-transparency {
   background: var(--cream);
   padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
-  border-top: 1px solid var(--warm-gray-faint);
 }
 .p-transparency-inner {
   display: grid;
@@ -566,7 +562,6 @@
 .p-faq {
   background: var(--cream);
   padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.2);
-  border-top: 1px solid var(--warm-gray-faint);
 }
 .p-faq .container {
   display: flex;

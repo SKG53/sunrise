@@ -97,7 +97,6 @@
 
 /* ── 03 · SEARCH ────────────────────────────────────────────────────────── */
 .f-search {
-  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.1) 0 calc(var(--base) * 1.1);
 }
 .f-search-form {
@@ -157,7 +156,6 @@
 
 /* ── 04 · RESULTS (Map + List) ──────────────────────────────────────────── */
 .f-results {
-  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.1) 0 calc(var(--base) * 1.8);
 }
 .f-results-grid {
@@ -409,7 +407,6 @@
      from the red band above. */
   background: var(--cream);
   color: var(--near-black);
-  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.6) 0;
 }
 .f-gateway-inner {
