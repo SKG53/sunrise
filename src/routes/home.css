@@ -248,7 +248,7 @@
   text-align: center;
   margin: 0;
 }
-.s04-headline .accent { color: var(--green-accent); }
+.s04-headline .accent { color: #E0AD2C; }
 .s04-trifecta {
   display: grid;
   grid-template-columns: 1fr minmax(calc(var(--base) * 8), 1.1fr) 1fr;
@@ -319,7 +319,7 @@
   text-align: center;
   align-self: center;
 }
-.s06-headline .accent { color: var(--green-accent); }
+.s06-headline .accent { color: var(--tier-10); }
 .s06-subhead {
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
@@ -473,11 +473,15 @@
   filter: drop-shadow(0 calc(var(--base) * 0.15) calc(var(--base) * 0.3) rgba(0, 0, 0, 0.22));
 }
 /* Staircase offsets — leftmost pushed above the shared ceiling, middle    */
-/* holds the line, rightmost drops below it. Total vertical spread ≈       */
-/* 1.6 × base so the descent is pronounced but still structured.           */
-.s07-can-lg { transform: translateY(calc(var(--base) * -0.4)); }
+/* holds the line, rightmost drops below it. Total vertical spread now     */
+/* ≈ 2.7 × base (lg −1.0, md +0.4, sm +1.7) so the descent reads more      */
+/* dramatically. Both extremes stay safely inside .s07-story's 1.8 × base  */
+/* padding — the lg can keeps ~0.8 base of buffer above and the sm can     */
+/* extends ~0.9 base below its layout position, well clear of the red      */
+/* section edge.                                                            */
+.s07-can-lg { transform: translateY(calc(var(--base) * -1.0)); }
 .s07-can-md { transform: translateY(calc(var(--base) * 0.4)); }
-.s07-can-sm { transform: translateY(calc(var(--base) * 1.2)); }
+.s07-can-sm { transform: translateY(calc(var(--base) * 1.7)); }
 .s07-copy {
   display: flex;
   flex-direction: column;
