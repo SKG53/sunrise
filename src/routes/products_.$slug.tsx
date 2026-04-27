@@ -259,8 +259,7 @@ function ProductDetailPage() {
   // non-variant SKUs (Core flavors have no cannabinoid) and on placeholder
   // paths that don't render that DOM node.
   const bcCbRef = useRef<HTMLSpanElement>(null);            // breadcrumb
-  const hero30mgCbRef = useRef<HTMLSpanElement>(null);      // hero row: +30mg cannabinoid inline with potency lockup
-  const cannabinoidLockupRef = useRef<HTMLDivElement>(null); // big +CBG/+CBN/+THCV lockup in cannabinoid section
+  const cannabinoidLockupRef = useRef<HTMLDivElement>(null); // big +30 MG / CBG potency lockup in S02 cannabinoid section
   // Related-card corner lockups — one slot per "Others in Tier" card. Null
   // entries correspond to base-flavor siblings (no cannabinoid). Repopulated
   // via React's ref callback whenever the SKU (and therefore the sibling
