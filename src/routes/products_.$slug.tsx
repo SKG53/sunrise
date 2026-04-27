@@ -578,7 +578,7 @@ function ProductDetailPage() {
                         ? "Adding…"
                         : !isInStock && !shopifyLoading
                         ? "Sold Out"
-                        : "Add to Cart →"}
+                        : "Add to Your Cart"}
                     </button>
                   ) : (
                     <a
@@ -586,7 +586,7 @@ function ProductDetailPage() {
                       className="btn btn-flavor"
                       style={{ ["--flavor-color" as string]: product.color } as React.CSSProperties}
                     >
-                      Add to Cart →
+                      Add to Your Cart
                     </a>
                   )}
                   <a href="/find" className="btn btn-secondary">Find Near You</a>
@@ -822,7 +822,7 @@ function ProductDetailPage() {
                 </p>
               </div>
               <div className="pd-ptp-ctas">
-                <a href="#" className="btn btn-on-color">Shop Now</a>
+                <a href="#" className="btn btn-on-color">Shop the Lineup</a>
                 <a href="/find" className="btn btn-on-color-ghost">Find Near You</a>
               </div>
             </div>
