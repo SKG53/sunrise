@@ -51,6 +51,8 @@ function ContactPage() {
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Pre-select reason from ?topic= URL param on mount. Browser-only.
   useEffect(() => {
@@ -62,7 +64,7 @@ function ContactPage() {
     }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Validate required fields in React state since the form uses noValidate to
     // suppress native browser bubbles in favor of brand-aligned inline errors.
@@ -74,12 +76,36 @@ function ContactPage() {
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
-    // TODO: Wire to backend. Options: EmailJS, Formspree, HubSpot Forms API,
-    // Netlify Forms, or direct Cloudflare Worker endpoint. Until then, form
-    // surfaces a success state so the UX is complete end-to-end.
-    // Payload shape ready for any of the above:
-    // { name, email, reason, message, topic: params.get('topic') }
-    setSubmitted(true);
+    // POST to public server route which enqueues two emails:
+    //   1. Confirmation to the submitter
+    //   2. Notification to hello@savorsunrise.com
+    setSubmitError(null);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/public/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          reason,
+          message: message.trim(),
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || `Request failed (${res.status})`);
+      }
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please email hello@savorsunrise.com."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -228,12 +254,21 @@ function ContactPage() {
                     </div>
 
                     <div className="c-form-submit">
-                      <button type="submit" className="btn btn-primary">
-                        Send Message
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={submitting}
+                      >
+                        {submitting ? "Sending…" : "Send Message"}
                       </button>
                       <span className="c-form-note">
                         We'll never share your information.
                       </span>
+                      {submitError && (
+                        <span className="c-field-error" role="alert" style={{ display: "block", marginTop: "0.5rem" }}>
+                          {submitError}
+                        </span>
+                      )}
                     </div>
                   </form>
                 )}

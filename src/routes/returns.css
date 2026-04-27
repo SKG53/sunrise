@@ -1,0 +1,170 @@
+/* ==========================================================================
+   SUNRISE — returns.css
+   Path: src/routes/returns.css
+   ==========================================================================
+   Scoped .r-* styles for the Returns route (/returns). No @font-face —
+   inherits Montserrat from sunrise-shell.css via __root.tsx. All design
+   tokens (--cream, --gold, --near-black, --base, --tier-10, --tier-30,
+   etc.) are defined globally in the shell.
+
+   Section map (2 sections before footer):
+     01 · Pagehero      (tier-30 green flood — Support category color)
+     02 · Policy        (cream — page title + structured policy body)
+
+   Notes:
+     · Tier-30 green is shared with /find. Support is treated as a separate
+       page category from the four primary consumer pages, so reusing the
+       green flood is acceptable per founder direction. If a future Support
+       index page is added, it should also use tier-30 to establish the
+       Support-category color identity.
+     · No closing color-flood section. About/Contact/Find/Products each
+       bookend with a tier-flood CTA section (PTP / Follow Along / etc.) —
+       policy pages are utility, not marketing. Footer provides closure.
+   ========================================================================== */
+
+/* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
+/* Giant color-flood page title. Tier-30 green — Support category color.   */
+/* Same structural pattern as the four primary pageheroes (37.5vh min-     */
+/* height, flex-centered, animated character entrance).                    */
+.r-pagehero {
+  background: var(--tier-30);
+  min-height: 37.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 1.5) calc(var(--base) * 1);
+}
+.r-pagehero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 2.0), 9vw, calc(var(--base) * 4.2));
+  letter-spacing: 0.015em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  margin: 0;
+}
+.r-pagehero-title span {
+  opacity: 0;
+  animation: pagehero-char-in 0.05s ease-out forwards;
+}
+.r-pagehero-title span:nth-child(1) { animation-delay: 0.20s; }
+.r-pagehero-title span:nth-child(2) { animation-delay: 0.25s; }
+.r-pagehero-title span:nth-child(3) { animation-delay: 0.30s; }
+.r-pagehero-title span:nth-child(4) { animation-delay: 0.35s; }
+.r-pagehero-title span:nth-child(5) { animation-delay: 0.40s; }
+.r-pagehero-title span:nth-child(6) { animation-delay: 0.45s; }
+.r-pagehero-title span:nth-child(7) { animation-delay: 0.50s; }
+@keyframes pagehero-char-in {
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .r-pagehero-title span { opacity: 1; animation: none; }
+}
+
+/* ── 02 · POLICY ────────────────────────────────────────────────────────── */
+/* Page-title H2 + structured long-form policy body. Centered column at    */
+/* ~68ch reading width — wider than .a-intro (64ch) since policy content   */
+/* is denser. Generous vertical rhythm between sections so the document    */
+/* scans like a legal page, not a marketing page.                          */
+.r-policy {
+  background: var(--cream);
+  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.6);
+}
+.r-policy-inner {
+  max-width: 68ch;
+  margin: 0 auto;
+}
+
+/* Page title — orients the user inside the Support category. Uppercase,  */
+/* 900 weight, near-black. Left-aligned to match the body copy below; the */
+/* pagehero above provides the centered visual anchor for the page.        */
+.r-policy-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.3);
+  letter-spacing: 0.005em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin: 0 0 calc(var(--base) * 1.0);
+}
+
+/* Body container — sets the base type scale and color for paragraphs and */
+/* lists. Sub-headings, paragraphs, links, and lists all inherit from     */
+/* this baseline.                                                          */
+.r-policy-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--text-body);
+}
+.r-policy-body p {
+  margin: 0 0 calc(var(--base) * 0.5);
+}
+.r-policy-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Section headings (H3) — Montserrat 800, slightly larger than body,     */
+/* near-black, generous top margin to separate sections, no bottom margin */
+/* (paragraph below provides space).                                       */
+.r-policy-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: calc(var(--base) * 0.55);
+  letter-spacing: 0.005em;
+  line-height: 1.2;
+  color: var(--near-black);
+  margin: calc(var(--base) * 1.1) 0 calc(var(--base) * 0.35);
+}
+/* First heading sits flush against the title — no extra top margin. */
+.r-policy-heading:first-child {
+  margin-top: 0;
+}
+
+/* Bullet list — disc bullets in near-black, comfortable indent. */
+.r-policy-list {
+  list-style: disc;
+  padding-left: calc(var(--base) * 0.7);
+  margin: 0 0 calc(var(--base) * 0.5);
+}
+.r-policy-list li {
+  margin: 0 0 calc(var(--base) * 0.18);
+}
+.r-policy-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Inline links (mailto + external) — near-black with subtle underline,   */
+/* hover to tier-10 red. Matches the universal hover convention used on   */
+/* Contact (.c-direct-value a:hover) — page-identity color is the flood,  */
+/* but interactive hover is always tier-10 for cross-page consistency.    */
+.r-policy-body a {
+  color: var(--near-black);
+  text-decoration: none;
+  border-bottom: 1px solid var(--near-black);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.r-policy-body a:hover {
+  color: var(--tier-10);
+  border-bottom-color: var(--tier-10);
+}
+
+/* Contact block — "Email: ..." and "Response window: ..." render as two */
+/* tight-stacked lines rather than a single paragraph. Slightly smaller   */
+/* margin between them so they read as a single information block.        */
+.r-policy-contact-line {
+  margin-bottom: calc(var(--base) * 0.18) !important;
+}
+.r-policy-contact-line:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .r-policy-title { font-size: calc(var(--base) * 1.1); }
+  .r-policy-heading { font-size: calc(var(--base) * 0.5); }
+}
