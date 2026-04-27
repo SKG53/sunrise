@@ -92,7 +92,11 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
           return Response.json({ error: 'Forbidden' }, { status: 403 })
         }
 
-        const supabase = createClient(supabaseUrl, supabaseServiceKey)
+        // Cast to `any` because the email infrastructure tables (email_send_log,
+        // email_send_state, etc.) and RPCs (delete_email, move_to_dlq, etc.)
+        // are not part of the auto-generated Supabase types — they live in a
+        // separate migration managed by setup_email_infra.
+        const supabase: any = createClient(supabaseUrl, supabaseServiceKey)
 
         // 1. Check rate-limit cooldown and read queue config
         const { data: state } = await supabase
