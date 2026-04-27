@@ -7,7 +7,7 @@ export const Route = createFileRoute("/refund-policy")({
   component: RefundPolicyPage,
   head: () => ({
     meta: [
-      { title: "Return and Refund Policy · SUNRISE" },
+      { title: "Refund Policy · SUNRISE" },
       {
         name: "description",
         content:
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/refund-policy")({
       },
     ],
     links: [
-      { rel: "canonical", href: "https://savorsunrise.com/returns" },
+      { rel: "canonical", href: "https://savorsunrise.com/refund-policy" },
     ],
   }),
 });
@@ -48,7 +48,7 @@ function RefundPolicyPage() {
         <section className="rp-policy">
           <div className="container">
             <div className="rp-policy-inner">
-              <h2 className="rp-policy-title">Return and Refund Policy</h2>
+              <h2 className="rp-policy-title">Refund Policy</h2>
 
               <div className="rp-policy-body">
                 <h3 className="rp-policy-heading">Our policy</h3>
