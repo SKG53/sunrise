@@ -24,7 +24,7 @@
   /* 75% of original vertical size — min-height 50vh→37.5vh + padding-block
      2×base→1.5×base. Flex centering preserves text position; banner copy
      remains visually centered inside the now-shorter element.          */
-  min-height: 37.5vh;
+  min-height: min(37.5vh, 520px);
   display: flex;
   align-items: center;
   justify-content: center;
