@@ -98,7 +98,6 @@
 
 /* ── 03 · FORM ──────────────────────────────────────────────────────────── */
 .c-form-section {
-  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
 }
 .c-form-grid {
@@ -274,7 +273,6 @@
 /* the headline) but loses its bottom margin since it no longer sits above  */
 /* the grid.                                                                */
 .c-direct {
-  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 1.4);
 }
 .c-direct-head {
