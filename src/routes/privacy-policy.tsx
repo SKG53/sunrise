@@ -331,18 +331,17 @@ function PrivacyPolicyPage() {
 
                 <h3 className="pp-policy-heading">Children's Data</h3>
                 <p>
-                  The Services are not intended to be used by children under
-                  the age of 18, and we do not knowingly collect any personal
-                  information from individuals under 18. Additionally, the
-                  purchase of SUNRISE Beverage products requires the purchaser
-                  to be at least 21 years of age. If you are the parent or
-                  guardian of a child under 18 who has provided us with their
-                  personal information, you may contact us using the contact
-                  details set out below to request that it be deleted. As of
-                  the Effective Date of this Privacy Policy, we do not have
-                  actual knowledge that we "share" or "sell" (as those terms
-                  are defined in applicable law) personal information of
-                  individuals under 18 years of age.
+                  The Services are not intended to be used by individuals
+                  under the age of 21, and we do not knowingly collect any
+                  personal information from individuals under 21. If you are
+                  the parent or guardian of a person under 21 who has
+                  provided us with their personal information, you may
+                  contact us using the contact details set out below to
+                  request that it be deleted. As of the Effective Date of
+                  this Privacy Policy, we do not have actual knowledge that
+                  we "share" or "sell" (as those terms are defined in
+                  applicable law) personal information of individuals under
+                  21 years of age.
                 </p>
 
                 <h3 className="pp-policy-heading">Security and Retention of Your Information</h3>
