@@ -2,7 +2,6 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import sunriseCss from "../styles/sunrise-shell.css?url";
-import devSectionsCss from "../styles/dev-section-markers.css?url";
 import { useCartSync } from "../hooks/useCartSync";
 import { AgeGate } from "../components/AgeGate";
 
@@ -54,10 +53,6 @@ export const Route = createRootRoute({
       {
         rel: "stylesheet",
         href: sunriseCss,
-      },
-      {
-        rel: "stylesheet",
-        href: devSectionsCss,
       },
     ],
   }),
