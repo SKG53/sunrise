@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ReturnsRouteImport } from './routes/returns'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as FindRouteImport } from './routes/find'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsSlugRouteImport } from './routes/products_.$slug'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
+const ReturnsRoute = ReturnsRouteImport.update({
+  id: '/returns',
+  path: '/returns',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
   '/products': typeof ProductsRoute
+  '/returns': typeof ReturnsRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
   '/products': typeof ProductsRoute
+  '/returns': typeof ReturnsRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
   '/products': typeof ProductsRoute
+  '/returns': typeof ReturnsRoute
   '/products_/$slug': typeof ProductsSlugRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/find'
     | '/products'
+    | '/returns'
     | '/products/$slug'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/find'
     | '/products'
+    | '/returns'
     | '/products/$slug'
     | '/lovable/email/queue/process'
   id:
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/find'
     | '/products'
+    | '/returns'
     | '/products_/$slug'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
@@ -118,12 +130,20 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   FindRoute: typeof FindRoute
   ProductsRoute: typeof ProductsRoute
+  ReturnsRoute: typeof ReturnsRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/returns': {
+      id: '/returns'
+      path: '/returns'
+      fullPath: '/returns'
+      preLoaderRoute: typeof ReturnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products': {
       id: '/products'
       path: '/products'
@@ -182,9 +202,19 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   FindRoute: FindRoute,
   ProductsRoute: ProductsRoute,
+  ReturnsRoute: ReturnsRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
