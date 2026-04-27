@@ -138,7 +138,7 @@ function ContactPage() {
                     </p>
                     <div className="c-success-ctas">
                       <a href="/products" className="btn btn-primary">
-                        See the Lineup →
+                        See the Lineup
                       </a>
                       <button
                         type="button"
@@ -229,7 +229,7 @@ function ContactPage() {
 
                     <div className="c-form-submit">
                       <button type="submit" className="btn btn-primary">
-                        Send Message →
+                        Send Message
                       </button>
                       <span className="c-form-note">
                         We'll never share your information.
