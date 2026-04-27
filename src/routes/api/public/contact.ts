@@ -8,7 +8,7 @@
 // the submitter is not logged in, and we replicate its enqueue logic here
 // using the service role key (admin client). Suppression check still runs.
 import * as React from 'react'
-import { renderAsync } from '@react-email/components'
+import { render } from '@react-email/components'
 import { createFileRoute } from '@tanstack/react-router'
 import { supabaseAdmin } from '@/integrations/supabase/client.server'
 import { TEMPLATES } from '@/lib/email-templates/registry'
@@ -103,8 +103,8 @@ async function enqueueOne(opts: {
 
   // Render
   const element = React.createElement(template.component, templateData)
-  const html = await renderAsync(element)
-  const text = await renderAsync(element, { plainText: true })
+  const html = await render(element)
+  const text = await render(element, { plainText: true })
   const subject =
     typeof template.subject === 'function'
       ? template.subject(templateData)
