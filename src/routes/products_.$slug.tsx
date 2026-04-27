@@ -27,6 +27,14 @@ import {
 import { getShopifyMapping } from "@/lib/shopifyProductMap";
 import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import { useCartStore } from "@/stores/cartStore";
+// PD claim-strip icons — imported as raw SVG strings so they can be inlined
+// via dangerouslySetInnerHTML. The src/ versions use `fill: currentColor` for
+// the icon shape (cls-2), letting the parent's CSS `color` drive per-flavor
+// recoloring at runtime. The wordmark text inside (cls-1) stays dark gray as
+// authored. Originals in public/icons/ are unchanged.
+import glutenFreeSvg from "@/assets/icons/gluten-free.svg?raw";
+import naturalVeganSvg from "@/assets/icons/natural-vegan.svg?raw";
+import zeroAlcoholSvg from "@/assets/icons/zero-alcohol.svg?raw";
 import "./products_.$slug.css";
 
 // ── TYPES ────────────────────────────────────────────────────────────────
@@ -266,7 +274,7 @@ function ProductDetailPage() {
         lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.8, product.color);
       }
       if (stat12Ref.current) {
-        stat12Ref.current.innerHTML = render12ozStatBlock(base * 1.32);
+        stat12Ref.current.innerHTML = render12ozStatBlock(base * 2.64, product.color);
       }
 
       // ── Cannabinoid lockups (variant SKUs only) ──────────────────────
@@ -314,7 +322,7 @@ function ProductDetailPage() {
       othersInTier.forEach((o, i) => {
         const ref = relatedCornerRefs.current[i];
         if (!ref || !o.cannabinoid) return;
-        const size = base * 0.7;
+        const size = base * 0.91;
         const html =
           o.cannabinoid === "CBG"  ? renderCBGLockup(size, "#FEFBE0")  :
           o.cannabinoid === "CBN"  ? renderCBNLockup(size, "#FEFBE0")  :
@@ -635,24 +643,27 @@ function ProductDetailPage() {
                 <div className="pd-stat-lockup" ref={stat12Ref} aria-hidden="true" />
               </div>
               <div className="pd-claim">
-                <img
+                <span
                   className="pd-claim-icon"
-                  src="/icons/gluten-free.svg"
-                  alt="Gluten Free"
+                  role="img"
+                  aria-label="Gluten Free"
+                  dangerouslySetInnerHTML={{ __html: glutenFreeSvg }}
                 />
               </div>
               <div className="pd-claim">
-                <img
+                <span
                   className="pd-claim-icon"
-                  src="/icons/natural-vegan.svg"
-                  alt="Natural Vegan"
+                  role="img"
+                  aria-label="Natural Vegan"
+                  dangerouslySetInnerHTML={{ __html: naturalVeganSvg }}
                 />
               </div>
               <div className="pd-claim">
-                <img
+                <span
                   className="pd-claim-icon"
-                  src="/icons/zero-alcohol.svg"
-                  alt="Zero Alcohol"
+                  role="img"
+                  aria-label="Zero Alcohol"
+                  dangerouslySetInnerHTML={{ __html: zeroAlcoholSvg }}
                 />
               </div>
             </div>
@@ -822,8 +833,8 @@ function ProductDetailPage() {
                 </p>
               </div>
               <div className="pd-ptp-ctas">
-                <a href="#" className="btn btn-on-color">Shop the Lineup</a>
-                <a href="/find" className="btn btn-on-color-ghost">Find Near You</a>
+                <a href="#" className="btn btn-on-color">Shop Now →</a>
+                <a href="/find" className="btn btn-on-color-ghost">Find Near You →</a>
               </div>
             </div>
           </div>

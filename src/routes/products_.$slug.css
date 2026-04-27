@@ -268,10 +268,11 @@
   white-space: nowrap;
 }
 
-/* Claim badges: brand-SVG icon at .pd-claim-icon. Icons render via
-   <img src="/icons/*.svg"> (uploaded brand art, not inline path data) and
-   already contain their own GLUTEN FREE / NATURAL VEGAN / ZERO ALCOHOL
-   wordmarks within the SVG, so no companion text label is rendered. */
+/* Claim badges: brand-SVG icon at .pd-claim-icon. Icons are inlined as raw
+   SVG via dangerouslySetInnerHTML so the per-flavor `color` cascades into
+   the SVG's cls-2 paths (which use `fill: currentColor`); the wordmark
+   text inside (cls-1) stays dark gray as authored. .pd-claim-icon's color
+   inherits from --flavor-color set on <main> at the route level. */
 .pd-claim {
   display: flex;
   flex-direction: column;
@@ -279,8 +280,14 @@
   justify-content: center;
 }
 .pd-claim-icon {
-  width: calc(var(--base) * 2.5);
-  height: calc(var(--base) * 2.5);
+  width: calc(var(--base) * 3.125);
+  height: calc(var(--base) * 3.125);
+  display: block;
+  color: var(--flavor-color, var(--gold));
+}
+.pd-claim-icon svg {
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
@@ -416,7 +423,7 @@
 }
 .pd-related-name {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.3);
+  font-size: calc(var(--base) * 0.33);
   font-weight: 900;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -443,7 +450,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: calc(var(--base) * 0.65);
+  width: calc(var(--base) * 1.0);
   display: flex;
   align-items: center;
   justify-content: center;
