@@ -101,7 +101,7 @@ function ContactPage() {
           <div className="container">
             <div className="c-hero-inner">
               <h1 className="c-hero-headline">
-                Say hello.<br />
+                Say hello &amp;<br />
                 Give us a <em className="accent-italic">buzz</em>
               </h1>
               <p className="c-hero-body">
@@ -243,14 +243,19 @@ function ContactPage() {
         </section>
 
         {/* ── 04 · DIRECT CHANNELS ──────────────────────────────────────── */}
+        {/* Restructured: headline shares the row with the two channel cards */}
+        {/* (3-col grid: headline | email | phone) so the section collapses */}
+        {/* vertically. Web card removed entirely. Mail (postal address)    */}
+        {/* card replaced with Phone — (877) 674-7459 — same card chrome.   */}
         <section className="c-direct">
           <div className="container">
-            <div className="c-direct-head">
-              <h2 className="c-direct-headline">
-                Three ways to find <span className="accent">us</span>
-              </h2>
-            </div>
             <div className="c-direct-grid">
+              <div className="c-direct-head">
+                <h2 className="c-direct-headline">
+                  Contact us <span className="accent">directly</span>
+                </h2>
+              </div>
+
               <div className="c-direct-card">
                 <div className="c-direct-label">Email</div>
                 <div className="c-direct-value">
@@ -264,26 +269,13 @@ function ContactPage() {
               </div>
 
               <div className="c-direct-card">
-                <div className="c-direct-label">Mail</div>
-                <div className="c-direct-value c-direct-value-block">
-                  SUNRISE Beverage<br />
-                  2032 Utica Square, #52521<br />
-                  Tulsa, OK 74114
-                </div>
-                <div className="c-direct-note">
-                  Tulsa, Oklahoma. Where everything gets formulated and tested.
-                </div>
-              </div>
-
-              <div className="c-direct-card">
-                <div className="c-direct-label">Web</div>
+                <div className="c-direct-label">Phone</div>
                 <div className="c-direct-value">
-                  <a href="https://savorsunrise.com" target="_blank" rel="noreferrer">
-                    savorsunrise.com
-                  </a>
+                  <a href="tel:+18776747459">(877) 674-7459</a>
                 </div>
                 <div className="c-direct-note">
-                  COAs, product lineup, and the full story — all here.
+                  Mon–Fri, 9am–5pm Central. Leave a message and we'll be in
+                  touch as soon as we can.
                 </div>
               </div>
             </div>
