@@ -4,6 +4,7 @@ import appCss from "../styles.css?url";
 import sunriseCss from "../styles/sunrise-shell.css?url";
 import devSectionsCss from "../styles/dev-section-markers.css?url";
 import { useCartSync } from "../hooks/useCartSync";
+import { AgeGate } from "../components/AgeGate";
 
 function NotFoundComponent() {
   return (
@@ -81,5 +82,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   useCartSync();
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <AgeGate />
+    </>
+  );
 }
