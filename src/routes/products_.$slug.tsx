@@ -270,6 +270,9 @@ function ProductDetailPage() {
   useEffect(() => {
     const paint = () => {
       const base = getBasePx();
+      // Defensive: lockupRef no longer points to a rendered node (the potency
+      // lockup was removed from S01). Branch is a no-op since current is null.
+      // Wiring kept for fast revival if the lockup needs to return.
       if (lockupRef.current) {
         lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.8, product.color);
       }
