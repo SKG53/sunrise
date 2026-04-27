@@ -287,25 +287,20 @@ function ProductDetailPage() {
         cb === "CBG"  ? renderCBGLockup  :
         cb === "CBN"  ? renderCBNLockup  :
                         renderTHCVLockup;
+      const mg30Lockup =
+        cb === "CBG"  ? render30mgCBGLockup  :
+        cb === "CBN"  ? render30mgCBNLockup  :
+                        render30mgTHCVLockup;
 
       // Breadcrumb — near-black on cream. Matches .pd-breadcrumb li font-size.
       if (bcCbRef.current) {
         bcCbRef.current.innerHTML = plusLockup(base * 0.30, "#1A1A1A");
       }
-      // Hero row: +cannabinoid plus-lockup (just "+CBG"/"+CBN"/"+THCV"),
-      // flavor color. The previous "+30 MG / CBG" stacked lockup was removed
-      // because (a) the +30mg potency is already redundant with the tier
-      // signaling baked into the can frame's flavor color and the stat strip
-      // below, and (b) the cleaner plus-word lockup matches the visual
-      // identity used on S04 product cards across the catalog.
-      if (hero30mgCbRef.current) {
-        hero30mgCbRef.current.innerHTML = plusLockup(base * 1.8, product.color);
-      }
-      // Cannabinoid section big lockup — cream on flavor-color flood.
-      // Sized at base * 1.8 (was 2.4) so the section reads sleeker; the icon
-      // added to its left now shares the visual anchor role.
+      // S02 cannabinoid section: full +30 MG / CBG potency lockup in cream
+      // against the flavor-color flood. The icon (rendered as a sibling
+      // React element, not painted here) sits to its left as a co-anchor.
       if (cannabinoidLockupRef.current) {
-        cannabinoidLockupRef.current.innerHTML = plusLockup(base * 1.8, "#FEFBE0");
+        cannabinoidLockupRef.current.innerHTML = mg30Lockup(base * 1.8, "#FEFBE0");
       }
     };
     paint();
