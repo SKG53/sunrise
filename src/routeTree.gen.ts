@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
@@ -29,6 +30,11 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
   path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShippingPolicyRoute = ShippingPolicyRouteImport.update({
+  id: '/shipping-policy',
+  path: '/shipping-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RefundPolicyRoute = RefundPolicyRouteImport.update({
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/shipping-policy': typeof ShippingPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/shipping-policy': typeof ShippingPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -155,6 +163,7 @@ export interface FileRoutesById {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/shipping-policy': typeof ShippingPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products_/$slug': typeof ProductsSlugRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
+    | '/shipping-policy'
     | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products/$slug'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
+    | '/shipping-policy'
     | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products/$slug'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
+    | '/shipping-policy'
     | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products_/$slug'
@@ -230,6 +242,7 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
+  ShippingPolicyRoute: typeof ShippingPolicyRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
@@ -248,6 +261,13 @@ declare module '@tanstack/react-router' {
       path: '/terms-of-service'
       fullPath: '/terms-of-service'
       preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shipping-policy': {
+      id: '/shipping-policy'
+      path: '/shipping-policy'
+      fullPath: '/shipping-policy'
+      preLoaderRoute: typeof ShippingPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/refund-policy': {
@@ -366,6 +386,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
   RefundPolicyRoute: RefundPolicyRoute,
+  ShippingPolicyRoute: ShippingPolicyRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ProductsSlugRoute: ProductsSlugRoute,

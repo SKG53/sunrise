@@ -1,0 +1,135 @@
+/* ==========================================================================
+   SUNRISE — shipping-policy.css
+   Path: src/routes/shipping-policy.css
+   ==========================================================================
+   Scoped .sp-* styles for the Shipping Policy route (/shipping-policy). No
+   @font-face — inherits Montserrat from sunrise-shell.css via __root.tsx.
+   All design tokens are defined globally in the shell.
+
+   Section map (2 sections before footer):
+     01 · Pagehero      (tier-30 green flood — Support/Policy category color)
+     02 · Policy        (cream — page title + structured policy body)
+
+   Notes:
+     · Tier-30 green is the Support/Policy category color, shared with
+       /privacy-policy, /refund-policy, and /terms-of-service. Four-page
+       policy cluster reads as a single visually consistent legal/policy
+       band across the footer Support column.
+     · Structurally parallel to the other three policy CSS files. .sp-*
+       classes mirror .pp-*, .rp-*, and .tos-* one-for-one.
+   ========================================================================== */
+
+/* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
+.sp-pagehero {
+  background: var(--tier-30);
+  min-height: 37.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 1.5) calc(var(--base) * 1);
+}
+.sp-pagehero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 2.0), 9vw, calc(var(--base) * 4.2));
+  letter-spacing: 0.015em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  margin: 0;
+}
+.sp-pagehero-title span {
+  opacity: 0;
+  animation: pagehero-char-in 0.05s ease-out forwards;
+}
+.sp-pagehero-title span:nth-child(1) { animation-delay: 0.20s; }
+.sp-pagehero-title span:nth-child(2) { animation-delay: 0.25s; }
+.sp-pagehero-title span:nth-child(3) { animation-delay: 0.30s; }
+.sp-pagehero-title span:nth-child(4) { animation-delay: 0.35s; }
+.sp-pagehero-title span:nth-child(5) { animation-delay: 0.40s; }
+.sp-pagehero-title span:nth-child(6) { animation-delay: 0.45s; }
+.sp-pagehero-title span:nth-child(7) { animation-delay: 0.50s; }
+.sp-pagehero-title span:nth-child(8) { animation-delay: 0.55s; }
+/* @keyframes pagehero-char-in is declared in the other policy/route CSS;
+   global scope makes it reusable here.                                     */
+
+/* ── 02 · POLICY ────────────────────────────────────────────────────────── */
+.sp-policy {
+  background: var(--cream);
+  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.6);
+}
+.sp-policy-inner {
+  max-width: 68ch;
+  margin: 0 auto;
+}
+
+.sp-policy-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.3);
+  letter-spacing: 0.005em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin: 0 0 calc(var(--base) * 0.4);
+}
+
+.sp-policy-effective {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.32);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-body);
+  margin: 0 0 calc(var(--base) * 1.0);
+}
+.sp-policy-effective strong {
+  font-weight: 700;
+  color: var(--near-black);
+}
+
+.sp-policy-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--text-body);
+}
+.sp-policy-body p {
+  margin: 0 0 calc(var(--base) * 0.5);
+}
+.sp-policy-body p:last-child {
+  margin-bottom: 0;
+}
+.sp-policy-body strong {
+  font-weight: 700;
+  color: var(--near-black);
+}
+
+.sp-policy-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: calc(var(--base) * 0.55);
+  letter-spacing: 0.005em;
+  line-height: 1.2;
+  color: var(--near-black);
+  margin: calc(var(--base) * 1.1) 0 calc(var(--base) * 0.35);
+}
+
+/* Inline links — near-black with underline, hover to tier-10. */
+.sp-policy-body a {
+  color: var(--near-black);
+  text-decoration: none;
+  border-bottom: 1px solid var(--near-black);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.sp-policy-body a:hover {
+  color: var(--tier-10);
+  border-bottom-color: var(--tier-10);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sp-policy-title { font-size: calc(var(--base) * 1.1); }
+  .sp-policy-heading { font-size: calc(var(--base) * 0.5); }
+}
