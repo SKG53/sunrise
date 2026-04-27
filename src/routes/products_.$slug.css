@@ -80,14 +80,19 @@
   position: relative;
   aspect-ratio: 4 / 5;
   /* Height cap: keeps the can from dominating the viewport on wide screens.
-     60vh leaves ~40vh for header + meta column + CTAs, which lands the
-     bottom button inside the fold on laptop+ viewports. The aspect-ratio
-     constraint then drives WIDTH down (instead of stretching height up), so
-     the can stays correctly proportioned in a narrower frame. margin: 0 auto
-     centers the now-narrower can horizontally inside its grid cell. */
-  max-height: 60vh;
+     65vh (was 60vh — modest size bump per founder note that the can read
+     small) still leaves ~35vh for header + meta column + CTAs, which lands
+     the bottom button inside the fold on standard laptop+ viewports. The
+     aspect-ratio constraint then drives WIDTH down (instead of stretching
+     height up), so the can stays correctly proportioned in a narrower frame.
+     margin: 0 — was 0 auto. The .pd-hero-gallery wrapper is now sized to
+     the can's intrinsic width via width: fit-content, so auto-centering the
+     can inside its (now exactly can-width) wrapper is a no-op. Removing it
+     is what makes the thumb strip's left edge land flush with the can's
+     left edge — the wonkiness fix.                                       */
+  max-height: 65vh;
   width: auto;
-  margin: 0 auto;
+  margin: 0;
   border-radius: 8px;
   overflow: hidden;
   display: flex;
@@ -96,19 +101,29 @@
   box-shadow: 0 8px 28px rgba(26, 26, 26, 0.12);
 }
 .pd-hero-can img {
-  width: 75%;
-  height: 75%;
+  /* 82% (was 75%) — image fills more of the colored frame so the can reads
+     larger without enlarging the frame itself. Combined with the 60vh→65vh
+     frame bump above, the can renders ~17% larger overall.               */
+  width: 82%;
+  height: 82%;
   object-fit: contain;
   object-position: center;
 }
 /* Gallery wrapper: stacks the main can frame above the optional thumbnail
    strip inside the left grid cell, so the hero grid stays a clean 2-column
-   layout (can-column / meta-column). Strip is hidden when only one image. */
+   layout (can-column / meta-column). Strip is hidden when only one image.
+   width: fit-content shrinks the wrapper to its widest child (the can frame,
+   sized by aspect-ratio + max-height); max-width: 100% caps it at the grid
+   cell's available width on viewports where the can's natural width would
+   exceed the cell. Result: the thumb strip below sits in a container exactly
+   as wide as the can, so its left edge aligns with the can's left edge. */
 .pd-hero-gallery {
   display: flex;
   flex-direction: column;
   gap: calc(var(--base) * 0.4);
   min-width: 0;
+  width: fit-content;
+  max-width: 100%;
 }
 .pd-hero-thumbs {
   display: flex;
@@ -635,6 +650,14 @@
 @media (max-width: 1024px) {
   .pd-hero-grid { grid-template-columns: 1fr; gap: calc(var(--base) * 0.8); }
   .pd-hero-can { max-width: calc(var(--base) * 10); margin: 0 auto; }
+  /* On mobile the grid collapses to one column. The gallery wrapper is
+     width: fit-content (base style), so it shrink-wraps to the can's mobile
+     max-width (10base). margin: 0 auto re-centers that shrink-wrapped unit
+     inside the full-bleed grid cell, keeping the can+thumbs visually
+     centered as a unit on phones. The desktop alignment fix (thumb-strip
+     flush-left with can) is preserved because both still share a left edge
+     within the now-centered gallery wrapper. */
+  .pd-hero-gallery { margin: 0 auto; }
   .pd-stats-grid { grid-template-columns: repeat(2, 1fr); }
   .pd-related-grid { grid-template-columns: repeat(3, 1fr); }
   .pd-cannabinoid-grid { grid-template-columns: 1fr; }
