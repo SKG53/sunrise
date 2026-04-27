@@ -1,8 +1,8 @@
 /* ==========================================================================
-   SUNRISE — returns.css
-   Path: src/routes/returns.css
+   SUNRISE — refund-policy.css
+   Path: src/routes/refund-policy.css
    ==========================================================================
-   Scoped .r-* styles for the Returns route (/returns). No @font-face —
+   Scoped .r-* styles for the Refund Policy route (/refund-policy). No @font-face —
    inherits Montserrat from sunrise-shell.css via __root.tsx. All design
    tokens (--cream, --gold, --near-black, --base, --tier-10, --tier-30,
    etc.) are defined globally in the shell.
