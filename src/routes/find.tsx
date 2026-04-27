@@ -311,7 +311,7 @@ function FindPage() {
               </label>
 
               <button type="submit" className="btn btn-primary f-search-submit">
-                Search →
+                Search
               </button>
             </form>
           </div>
@@ -414,10 +414,10 @@ function FindPage() {
               </div>
               <div className="f-fallback-ctas">
                 <a href="/products" className="btn btn-on-color">
-                  Shop Online →
+                  Shop Online
                 </a>
                 <a href="/about" className="btn btn-on-color-ghost">
-                  Our Story →
+                  Our Story
                 </a>
               </div>
             </div>
@@ -440,7 +440,7 @@ function FindPage() {
               </div>
               <div className="f-gateway-right">
                 <a href="/contact?topic=wholesale" className="btn btn-primary">
-                  Wholesale Inquiries →
+                  Wholesale Inquiries
                 </a>
               </div>
             </div>
