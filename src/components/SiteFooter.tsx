@@ -120,7 +120,7 @@ export function SiteFooter() {
               <li><a href="#">Shipping Policy</a></li>
               <li><a href="/refund-policy">Refund Policy</a></li>
               <li><a href="/privacy-policy">Privacy Policy</a></li>
-              <li><a href="#">Terms of Service</a></li>
+              <li><a href="/terms-of-service">Terms of Service</a></li>
             </ul>
           </div>
 
