@@ -618,7 +618,7 @@ function ProductDetailPage() {
           </div>
         </section>
 
-        {/* ── 06 · CANNABINOID STORY (variant only) ─────────────────────── */}
+        {/* ── 03 · CANNABINOID STORY (variant only) ─────────────────────── */}
         {/* Two-column band on flavor-color flood. Left: big +{cannabinoid}   */}
         {/* lockup in cream. Right: italic "Best for {X}" subhead + three     */}
         {/* body lines of functional copy. Stats boxes removed per brand      */}
@@ -662,7 +662,7 @@ function ProductDetailPage() {
           </section>
         )}
 
-        {/* ── 03 · STAT STRIP ───────────────────────────────────────────── */}
+        {/* ── 04 · STAT STRIP ───────────────────────────────────────────── */}
         <section className="pd-stats">
           <div className="container">
             <div className="pd-stats-grid">
@@ -731,7 +731,7 @@ function ProductDetailPage() {
           </div>
         </section>
 
-        {/* ── 04 · WHAT'S INSIDE ────────────────────────────────────────── */}
+        {/* ── 06 · WHAT'S INSIDE ────────────────────────────────────────── */}
         {/* Verbatim replica of home S05 — same markup, same copy. Center    */}
         {/* image is the current SKU's can mockup, sourced via product.slug  */}
         {/* (slugs map 1:1 to filenames in /images/cans/). Class prefix      */}
