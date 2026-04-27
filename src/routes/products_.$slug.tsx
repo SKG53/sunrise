@@ -616,24 +616,26 @@ function ProductDetailPage() {
           >
             <div className="container">
               <div className="pd-cannabinoid-grid">
-                {/* Left anchor — cannabinoid identity. Icon (cream glyph,
-                    circle stripped) sits inline with the +CBG/+CBN/+THCV
-                    lockup. The pair forms a single visual unit on the left
-                    side of the grid; both elements are cream so they read
-                    as one anchor against the flavor-color flood. */}
-                <div className="pd-cannabinoid-anchor">
-                  <img
-                    className="pd-cannabinoid-icon"
-                    src={`/icons/cannabinoid-${product.cannabinoid.toLowerCase()}.svg`}
-                    alt=""
-                    aria-hidden="true"
-                  />
-                  <div
-                    className="pd-cannabinoid-lockup"
-                    ref={cannabinoidLockupRef}
-                    aria-label={`+${product.cannabinoid}`}
-                  />
-                </div>
+                {/* Element 1 — icon. Inline-SVG component so the circle's
+                    fill can be set dynamically to product.color (matching
+                    the section's flood); the cream glyph is what reads
+                    visibly against the flood. Sized via .pd-cannabinoid-icon
+                    in CSS at base * 4.8 so it serves as the section's
+                    primary visual anchor. */}
+                <CannabinoidIcon
+                  cannabinoid={product.cannabinoid}
+                  bgColor={product.color}
+                  className="pd-cannabinoid-icon"
+                />
+                {/* Element 2 — full +30 MG / cannabinoid potency lockup in
+                    cream. Painted in useEffect via cannabinoidLockupRef. */}
+                <div
+                  className="pd-cannabinoid-lockup"
+                  ref={cannabinoidLockupRef}
+                  aria-label={`+30 mg ${product.cannabinoid}`}
+                />
+                {/* Element 3 — copy block. "Best for X" subhead + three
+                    body lines describing the cannabinoid's effect profile. */}
                 <div className="pd-cannabinoid-right">
                   <div className="pd-cannabinoid-bestfor">
                     Best for {cbCopy.bestFor}
