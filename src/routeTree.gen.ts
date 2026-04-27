@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as FindRouteImport } from './routes/find'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
@@ -32,6 +33,11 @@ const RefundPolicyRoute = RefundPolicyRouteImport.update({
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FindRoute = FindRouteImport.update({
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/find'
+    | '/privacy-policy'
     | '/products'
     | '/refund-policy'
     | '/email/unsubscribe'
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/find'
+    | '/privacy-policy'
     | '/products'
     | '/refund-policy'
     | '/email/unsubscribe'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/find'
+    | '/privacy-policy'
     | '/products'
     | '/refund-policy'
     | '/email/unsubscribe'
@@ -203,6 +215,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   FindRoute: typeof FindRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
@@ -229,6 +242,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/find': {
@@ -323,6 +343,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   FindRoute: FindRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
   RefundPolicyRoute: RefundPolicyRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
