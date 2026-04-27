@@ -151,7 +151,6 @@
 .s03-product-intro {
   background: var(--cream);
   padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
-  border-top: 1px solid var(--warm-gray-faint);
 }
 .s03-product-intro .container {
   display: flex;
@@ -230,7 +229,6 @@
 .s04-whats-inside {
   background: var(--cream);
   padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
-  border-top: 1px solid var(--warm-gray-faint);
 }
 .s04-whats-inside .container {
   display: flex;
@@ -300,7 +298,6 @@
 .s06-tiers {
   background: var(--cream);
   padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
-  border-top: 1px solid var(--warm-gray-faint);
 }
 .s06-tiers .container {
   display: flex;
@@ -523,7 +520,6 @@
   padding: 0;
   position: relative;
   overflow: hidden;
-  border-top: 1px solid var(--warm-gray-faint);
 }
 .s08-inner {
   position: relative;
@@ -602,7 +598,6 @@
 .s09-reviews {
   background: var(--cream);
   padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
-  border-top: 1px solid var(--warm-gray-faint);
   overflow: hidden;
 }
 .s09-heading {
@@ -679,7 +674,6 @@
 /* existing s09-reviews block above.                                        */
 .s10-faq {
   background: var(--cream);
-  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
 }
 .s10-faq-head {
