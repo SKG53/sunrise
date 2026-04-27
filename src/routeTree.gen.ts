@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
@@ -25,6 +26,11 @@ import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lova
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RefundPolicyRoute = RefundPolicyRouteImport.update({
   id: '/refund-policy',
   path: '/refund-policy',
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products_/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
+    | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products/$slug'
     | '/api/public/contact'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
+    | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products/$slug'
     | '/api/public/contact'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
+    | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products_/$slug'
     | '/api/public/contact'
@@ -218,6 +230,7 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
+  TermsOfServiceRoute: typeof TermsOfServiceRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
@@ -230,6 +243,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/refund-policy': {
       id: '/refund-policy'
       path: '/refund-policy'
@@ -346,6 +366,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
   RefundPolicyRoute: RefundPolicyRoute,
+  TermsOfServiceRoute: TermsOfServiceRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
@@ -358,3 +379,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
