@@ -167,27 +167,12 @@
 }
 
 .pd-hero-meta {
-  /* No top padding — the potency lockup that previously occupied this slot
-     was removed, so the flavor headline (or +cannabinoid lockup on enhanced
-     SKUs) is the first element and sits flush with the top of its column,
-     aligned with the top of the can frame in the adjacent column.            */
+  /* No top padding — the flavor headline is the first element on every SKU
+     and sits flush with the top of its column, aligned with the top of the
+     can frame in the adjacent column. The cannabinoid lockup that briefly
+     occupied this slot above the headline on +CBG/+CBN/+THCV SKUs was
+     removed; cannabinoid identity is now communicated only in S02.       */
   min-width: 0;
-}
-/* Hero lockup row — potency lockup on the left; on +CBG/+CBN/+THCV SKUs
-   the +30mg cannabinoid lockup sits inline-right at the same base size.
-   Margin + line-height live on the row so the two lockups share a rhythm. */
-.pd-hero-lockup-row {
-  display: flex;
-  align-items: flex-start;
-  gap: calc(var(--base) * 0.6);
-  margin-bottom: calc(var(--base) * 0.6);
-  line-height: 0;
-  flex-wrap: wrap;
-}
-.pd-hero-lockup,
-.pd-hero-lockup-30mg {
-  display: inline-block;
-  line-height: 0;
 }
 
 .pd-hero-flavor {
