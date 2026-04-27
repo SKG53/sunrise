@@ -38,7 +38,7 @@ function AboutPage() {
           </h1>
         </section>
 
-        {/* ── 02 + 03 · INTRO (centered) ────────────────────────────────── */}
+        {/* ── 02 · INTRO ─────────────────────────────────────────────────── */}
         {/* Old S02 heading + 3 paragraphs from old S03. Image removed.    */}
         {/* Occupies S02 and S03 slots in new numbering.                   */}
         <section className="a-intro">
@@ -77,7 +77,7 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 04 · CANS + BULLETS (merged) ──────────────────────────────── */}
+        {/* ── 03 · CANS + BULLETS ───────────────────────────────────────── */}
         {/* Two horizontal rows stacked vertically: 3 cans side-by-side on   */}
         {/* top (all same size), 3 icon-bullet items side-by-side beneath.   */}
         {/* Old standalone .a-icons section was removed in the prior turn    */}
@@ -158,7 +158,7 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 06 · BUILD (old Heartland + How We Build merged) ──────────── */}
+        {/* ── 04 · BUILD ────────────────────────────────────────────────── */}
         {/* Route 66 heartland intro + three in-house pillars. On cream —  */}
         {/* no green flood.                                                */}
         <section className="a-build">
@@ -201,7 +201,7 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 07 · PATH TO PURCHASE (tier-10 flood) ─────────────────────── */}
+        {/* ── 05 · PATH TO PURCHASE ─────────────────────────────────────── */}
         <section className="a-ptp">
           <div className="container">
             <div className="a-ptp-inner">
