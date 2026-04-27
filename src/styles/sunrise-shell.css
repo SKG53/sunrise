@@ -257,6 +257,185 @@ main { flex: 1; width: 100%; }
 .nav-cta.solid { background: var(--tier-10); color: var(--cream); border: 1.5px solid var(--tier-10); }
 .nav-cta.solid:hover { background: var(--tier-10-hover); border-color: var(--tier-10-hover); }
 
+/* ── HAMBURGER BUTTON ───────────────────────────────────────────────────────
+   Visible only below 768px (toggled in the responsive block at the bottom of
+   this file). 44×44 px touch target — meets Apple HIG / WCAG minimum.
+   Three-bar SVG-free icon built from <span> elements; bars use currentColor
+   so the hover-fill flip works. Sits adjacent to the cart trigger inside
+   .nav-right, separated by .nav-right's own gap rule.
+   ========================================================================== */
+.nav-hamburger {
+  display: none; /* mobile media query flips this to inline-flex */
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid var(--near-black);
+  border-radius: 999px;
+  color: var(--near-black);
+  cursor: pointer;
+  margin-left: 0.5rem;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-hamburger:hover {
+  background: var(--near-black);
+  color: var(--cream);
+}
+.nav-hamburger-bars {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  width: 18px;
+  gap: 4px;
+}
+.nav-hamburger-bars > span {
+  display: block;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+/* ── MOBILE MENU DRAWER ─────────────────────────────────────────────────────
+   Full-viewport overlay revealed by the hamburger. Z-stack: cart drawer
+   (9999) > mobile menu (9000) > site-header (50). Cart wins so users can
+   tap cart while menu is open and have it slide over. Backdrop fades while
+   panel slides down from above. Body scroll lock is applied via JS in
+   SiteHeader.tsx, not CSS.
+   ========================================================================== */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  visibility: hidden;
+}
+.mobile-menu.is-open {
+  visibility: visible;
+  pointer-events: auto;
+}
+.mobile-menu-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.45);
+  opacity: 0;
+  transition: opacity 240ms ease-out;
+}
+.mobile-menu.is-open .mobile-menu-backdrop {
+  opacity: 1;
+}
+.mobile-menu-panel {
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--base) * 0.5) var(--section-pad-x) calc(var(--base) * 1.0);
+  transform: translateY(-100%);
+  transition: transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  overflow-y: auto;
+}
+.mobile-menu.is-open .mobile-menu-panel {
+  transform: translateY(0);
+}
+.mobile-menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: calc(var(--base) * 0.6);
+  border-bottom: 1px solid var(--warm-gray-faint);
+}
+.mobile-menu-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid var(--near-black);
+  border-radius: 999px;
+  color: var(--near-black);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.mobile-menu-close:hover {
+  background: var(--near-black);
+  color: var(--cream);
+}
+.mobile-menu-nav {
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--base) * 0.8) 0 calc(var(--base) * 0.6);
+  flex: 1;
+}
+.mobile-menu-nav a {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.85);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  padding: calc(var(--base) * 0.5) 0;
+  border-bottom: 1px solid var(--warm-gray-faint);
+  text-decoration: none;
+  line-height: 1;
+  transition: color 200ms ease-out;
+}
+.mobile-menu-nav a:hover,
+.mobile-menu-nav a.active {
+  color: var(--gold);
+}
+.mobile-menu-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-top: calc(var(--base) * 0.6);
+  border-top: 1px solid var(--warm-gray-faint);
+}
+.mobile-menu-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.5);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: calc(var(--base) * 0.5) calc(var(--base) * 0.8);
+  border-radius: 9999px;
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 52px;
+  transition: all 200ms ease-out;
+}
+.mobile-menu-cta.outline {
+  background: transparent;
+  color: var(--near-black);
+  border: 1.5px solid var(--near-black);
+}
+.mobile-menu-cta.outline:hover {
+  background: var(--near-black);
+  color: var(--cream);
+}
+.mobile-menu-cta.solid {
+  background: var(--tier-10);
+  color: var(--cream);
+  border: 1.5px solid var(--tier-10);
+}
+.mobile-menu-cta.solid:hover {
+  background: var(--tier-10-hover);
+  border-color: var(--tier-10-hover);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu-backdrop,
+  .mobile-menu-panel { transition: none; }
+}
+
 /* ── SITE FOOTER ────────────────────────────────────────────────────────── */
 .site-footer {
   padding: calc(var(--base) * 1.3) var(--section-pad-x) calc(var(--base) * 0.6);
@@ -430,8 +609,18 @@ main { flex: 1; width: 100%; }
   .footer-follow-col .footer-social { flex-direction: row; gap: calc(var(--base) * 0.5); }
 }
 @media (max-width: 768px) {
-  .site-header { flex-direction: column; gap: calc(var(--base) * 0.3); padding: calc(var(--base) * 0.4) var(--section-pad-x); }
-  .site-header .site-nav { flex-wrap: wrap; justify-content: center; gap: calc(var(--base) * 0.4); margin-left: 0; }
+  /* Header collapses to: [wordmark] ... [Cart] [Hamburger]. Desktop nav  */
+  /* and the COAs/Shop CTAs hide; both reappear inside the mobile drawer. */
+  /* .nav-right gets margin-left:auto since .site-nav (which previously   */
+  /* held that auto margin) is now display:none and contributes no flex. */
+  .site-header {
+    padding: calc(var(--base) * 0.4) var(--section-pad-x);
+  }
+  .site-header .site-nav { display: none; }
+  .site-header .nav-cta { display: none; }
+  .site-header .nav-right { margin-left: auto; }
+  .nav-hamburger { display: inline-flex; }
+
   .footer-row-main { grid-template-columns: 1fr 1fr; }
   .footer-legal { flex-direction: column; align-items: flex-start; }
 }
