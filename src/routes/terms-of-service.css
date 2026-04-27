@@ -1,0 +1,152 @@
+/* ==========================================================================
+   SUNRISE — terms-of-service.css
+   Path: src/routes/terms-of-service.css
+   ==========================================================================
+   Scoped .tos-* styles for the Terms of Service route (/terms-of-service).
+   No @font-face — inherits Montserrat from sunrise-shell.css via __root.tsx.
+   All design tokens (--cream, --gold, --near-black, --base, --tier-30, etc.)
+   are defined globally in the shell.
+
+   Section map (2 sections before footer):
+     01 · Pagehero      (tier-30 green flood — Support/Policy category color)
+     02 · Policy        (cream — page title + structured policy body)
+
+   Notes:
+     · Tier-30 green is the Support/Policy category color, shared with
+       /privacy-policy and /refund-policy. Three-page policy cluster reads as
+       a single visually consistent legal/policy band.
+     · Structurally parallel to privacy-policy.css and refund-policy.css.
+       .tos-* classes mirror .pp-* and .rp-* definitions one-for-one.
+     · Adds one local utility: .tos-policy-allcaps — a stricter typographic
+       treatment for sections 16 (Warranty Disclaimer) and 17 (Limitation of
+       Liability), which are conventionally rendered in ALL CAPS to satisfy
+       state-law conspicuousness requirements. Slightly tighter line-height
+       and added letter-spacing aid readability of long all-caps passages.
+   ========================================================================== */
+
+/* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
+.tos-pagehero {
+  background: var(--tier-30);
+  min-height: 37.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 1.5) calc(var(--base) * 1);
+}
+.tos-pagehero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 2.0), 9vw, calc(var(--base) * 4.2));
+  letter-spacing: 0.015em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  margin: 0;
+}
+.tos-pagehero-title span {
+  opacity: 0;
+  animation: pagehero-char-in 0.05s ease-out forwards;
+}
+.tos-pagehero-title span:nth-child(1) { animation-delay: 0.20s; }
+.tos-pagehero-title span:nth-child(2) { animation-delay: 0.25s; }
+.tos-pagehero-title span:nth-child(3) { animation-delay: 0.30s; }
+.tos-pagehero-title span:nth-child(4) { animation-delay: 0.35s; }
+.tos-pagehero-title span:nth-child(5) { animation-delay: 0.40s; }
+/* @keyframes pagehero-char-in is declared in the other policy/route CSS;
+   global scope makes it reusable here.                                     */
+
+/* ── 02 · POLICY ────────────────────────────────────────────────────────── */
+.tos-policy {
+  background: var(--cream);
+  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.6);
+}
+.tos-policy-inner {
+  max-width: 68ch;
+  margin: 0 auto;
+}
+
+.tos-policy-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.3);
+  letter-spacing: 0.005em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin: 0 0 calc(var(--base) * 0.4);
+}
+
+.tos-policy-effective {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.32);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-body);
+  margin: 0 0 calc(var(--base) * 1.0);
+}
+.tos-policy-effective strong {
+  font-weight: 700;
+  color: var(--near-black);
+}
+
+.tos-policy-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--text-body);
+}
+.tos-policy-body p {
+  margin: 0 0 calc(var(--base) * 0.5);
+}
+.tos-policy-body p:last-child {
+  margin-bottom: 0;
+}
+.tos-policy-body strong {
+  font-weight: 700;
+  color: var(--near-black);
+}
+
+.tos-policy-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: calc(var(--base) * 0.55);
+  letter-spacing: 0.005em;
+  line-height: 1.2;
+  color: var(--near-black);
+  margin: calc(var(--base) * 1.1) 0 calc(var(--base) * 0.35);
+}
+
+/* All-caps legal blocks — Sections 16 (Warranty Disclaimer) and 17        */
+/* (Limitation of Liability). Slightly tighter letter-spacing helps long   */
+/* uppercase passages stay readable; size is the same as body so they      */
+/* don't visually overpower the document.                                  */
+.tos-policy-allcaps {
+  letter-spacing: 0.01em;
+  font-weight: 500;
+}
+
+/* Inline links — near-black with underline, hover to tier-10. */
+.tos-policy-body a {
+  color: var(--near-black);
+  text-decoration: none;
+  border-bottom: 1px solid var(--near-black);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.tos-policy-body a:hover {
+  color: var(--tier-10);
+  border-bottom-color: var(--tier-10);
+}
+
+/* Address block — multi-line, tight line-height for stacked address. */
+.tos-policy-address {
+  font-style: normal;
+  line-height: 1.5;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .tos-policy-title { font-size: calc(var(--base) * 1.1); }
+  .tos-policy-heading { font-size: calc(var(--base) * 0.5); }
+}
