@@ -280,14 +280,14 @@ main { flex: 1; width: 100%; }
   margin-bottom: calc(var(--base) * 0.4);
 }
 .footer-col ul { display: flex; flex-direction: column; gap: calc(var(--base) * 0.22); }
-.footer-col a, .footer-legal-links a {
+.footer-col a {
   font-size: calc(var(--base) * 0.22);
   font-weight: 500;
   letter-spacing: 0.04em;
   line-height: 1.4;
   transition: color 200ms ease;
 }
-.footer-col a:hover, .footer-legal-links a:hover { color: var(--gold); }
+.footer-col a:hover { color: var(--gold); }
 .footer-follow-col { display: flex; flex-direction: column; }
 .footer-follow-col .footer-social { display: flex; flex-direction: column; gap: calc(var(--base) * 0.3); }
 .footer-follow-col .footer-social a {
@@ -386,12 +386,28 @@ main { flex: 1; width: 100%; }
   border-top: 1px solid rgba(254, 251, 224, 0.14);
   margin-top: calc(var(--base) * 1.0);
 }
-.footer-disclaimer-inner { max-width: 92ch; }
+.footer-disclaimer-inner {
+  /* Full-width — no reading-width cap. Disclaimer is a regulatory block      */
+  /* meant to span the footer container so it reads as deliberate compliance  */
+  /* presence, not a stray paragraph.                                         */
+  max-width: none;
+}
+/* Mini "CONSUME RESPONSIBLY" header above the regulatory copy — small,      */
+/* uppercase, tracked, less faded than the body so it acts as a section     */
+/* label. Spacing below ties it to the disclaimer paragraph.                 */
+.footer-disclaimer-heading {
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 1;
+  color: var(--cream);
+  margin-bottom: calc(var(--base) * 0.18);
+}
 .footer-legal {
+  /* Copyright-only. No flex space-between needed — single item, left aligned. */
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: calc(var(--base) * 0.5);
   padding-top: calc(var(--base) * 0.4);
   border-top: 1px solid rgba(254, 251, 224, 0.14);
   flex-wrap: wrap;
@@ -402,14 +418,6 @@ main { flex: 1; width: 100%; }
   letter-spacing: 0.08em;
   opacity: 0.6;
 }
-.footer-legal-links { display: flex; gap: calc(var(--base) * 0.5); flex-wrap: wrap; }
-.footer-legal-links a {
-  font-size: calc(var(--base) * 0.19);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  opacity: 0.6;
-}
-.footer-legal-links a:hover { opacity: 1; color: var(--gold); }
 
 /* ── SHARED RESPONSIVE ──────────────────────────────────────────────────── */
 @media (max-width: 1100px) {
