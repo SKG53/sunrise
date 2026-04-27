@@ -67,7 +67,7 @@ export function SiteFooter() {
               <li><a href="#">Shipping</a></li>
               <li><a href="#">Returns</a></li>
               <li><a href="#">Track Order</a></li>
-              <li><a href="#">COAs</a></li>
+              <li><a href="https://marketing8710.wixstudio.com/beverage-manufacture/blank" target="_blank" rel="noopener noreferrer">COAs</a></li>
               <li><a href="#">Age Verification</a></li>
             </ul>
           </div>

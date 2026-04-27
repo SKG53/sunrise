@@ -516,7 +516,12 @@ function ProductsPage() {
                 <a href="/#whats-inside" className="btn btn-secondary">
                   Full Ingredient Breakdown
                 </a>
-                <a href="#" className="btn btn-secondary">
+                <a
+                  href="https://marketing8710.wixstudio.com/beverage-manufacture/blank"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-secondary"
+                >
                   Download COAs
                 </a>
               </div>
