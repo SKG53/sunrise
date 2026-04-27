@@ -493,57 +493,68 @@
   white-space: nowrap;
 }
 
-/* ── 06 · CANNABINOID STORY (variant only — two-column band on flavor flood) ─
-   LEFT  .pd-cannabinoid-anchor — flex container holding the cannabinoid icon
-                                  (cream glyph SVG, circle stripped) and the
-                                  +CBG/+CBN/+THCV plus-word lockup. The two
-                                  read as a single visual identity unit.
-                                  Both elements are cream against the flavor-
-                                  color flood, so the anchor reads as one
-                                  shape regardless of which cannabinoid.
-   RIGHT .pd-cannabinoid-right   — italic "Best for {X}" subhead + three
-                                  stacked body lines. Body rules mirror the
-                                  prior single-paragraph .pd-cannabinoid-body
-                                  sizing (base * 0.32, line-height 1.5).
+/* ── 06 · CANNABINOID STORY (variant only — three-element band on flavor flood) ─
+   Layout: three peer elements on a flex row distributed by space-evenly.
+   The container's width drives the spacing — each gap (including the two
+   outer edge gaps) gets equal share of free space. Children are sized
+   intrinsically so the rhythm adapts to whichever cannabinoid + flavor
+   the SKU has.
 
-   Padding tightened from 1.6base → 1.2base (top + bottom each) and lockup
-   reduced from 2.4base → 1.8base in JS; combined with the smaller bestfor
-   subhead (0.46 vs 0.52), the section is materially less vertically tall. */
+   E1  .pd-cannabinoid-icon    — inline-SVG icon component. Background
+                                 circle filled with the SKU's flavor color
+                                 to match the section flood (renders
+                                 invisible); cream glyph reads on the flood.
+                                 Sized via width/height in CSS (base * 4.8)
+                                 since the inline <svg> has no intrinsic
+                                 dimensions.
+   E2  .pd-cannabinoid-lockup  — host for the brand-locked +30 MG / CBG
+                                 (or CBN / THCV) potency lockup. Painted at
+                                 base * 1.8 in cream via innerHTML in
+                                 useEffect.
+   E3  .pd-cannabinoid-right   — italic "Best for {X}" subhead + three
+                                 stacked body paragraphs.
+
+   Vertical alignment via align-items: center centers each peer at its own
+   midline. The icon (square) and the copy block (tall) have very different
+   heights; centering keeps the lockup visually balanced between them.   */
 .pd-cannabinoid {
   color: var(--cream);
   padding: calc(var(--base) * 1.2) 0;
 }
 .pd-cannabinoid-grid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: calc(var(--base) * 1.4);
-  align-items: center;
-}
-/* Anchor — icon + plus-lockup horizontally; align-items center splits the
-   slight cap-height vs square-icon visual delta evenly above and below. */
-.pd-cannabinoid-anchor {
   display: flex;
   align-items: center;
-  gap: calc(var(--base) * 0.45);
+  justify-content: space-evenly;
+  gap: calc(var(--base) * 0.8);
+  flex-wrap: wrap;
 }
 .pd-cannabinoid-icon {
-  width: calc(var(--base) * 1.6);
-  height: calc(var(--base) * 1.6);
+  /* Inline-SVG; CSS owns size since the SVG itself declares no width/height.
+     base * 4.8 is the founder-specified 300% bump from the prior 1.6base
+     anchor sizing, making the icon the section's primary visual element. */
+  width: calc(var(--base) * 4.8);
+  height: calc(var(--base) * 4.8);
   display: block;
   flex-shrink: 0;
 }
 .pd-cannabinoid-lockup {
   display: inline-block;
   line-height: 0;
-  /* Host for the brand-locked +CBG/+CBN/+THCV lockup. Empty in SSR markup;
-     hydration-time useEffect writes the lockup HTML via innerHTML at base
-     * 1.8 in cream against the flavor-color flood background. */
+  flex-shrink: 0;
+  /* Host for the brand-locked +30 MG / cannabinoid potency lockup. Empty
+     in SSR markup; hydration-time useEffect writes the lockup HTML via
+     innerHTML at base * 1.8 in cream against the flavor-color flood.    */
 }
 .pd-cannabinoid-right {
   display: flex;
   flex-direction: column;
   gap: calc(var(--base) * 0.24);
   min-width: 0;
+  /* Capped width keeps the three-element rhythm balanced — without this,
+     the copy block would consume any extra horizontal space and crowd
+     the icon and lockup against the left edge. 46ch matches the hero
+     blurb's max-width for a consistent reading line across the page. */
+  max-width: 46ch;
 }
 .pd-cannabinoid-bestfor {
   font-family: 'Montserrat', sans-serif;
@@ -561,7 +572,6 @@
   font-weight: 400;
   line-height: 1.5;
   color: rgba(254, 251, 224, 0.9);
-  max-width: 54ch;
   margin: 0;
 }
 
