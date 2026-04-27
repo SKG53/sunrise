@@ -489,16 +489,24 @@ function ProductDetailPage() {
               </div>
 
               <div className="pd-hero-meta">
-                <div className="pd-hero-lockup-row">
-                  <span className="pd-hero-lockup" ref={lockupRef} aria-hidden="true" />
-                  {product.cannabinoid && (
+                {/* Lockup row — renders ONLY on cannabinoid-enhanced SKUs
+                    (+CBG/+CBN/+THCV, 12 of 24 total). The base potency lockup
+                    was removed from this slot site-wide because the tier is
+                    already communicated by (a) flavor-color flooding the can
+                    frame and (b) the .pd-stat-strip section directly below.
+                    On enhanced SKUs the +30mg cannabinoid badge stays here as
+                    the differentiator that signals the enhancement above the
+                    flavor name. Non-cannabinoid SKUs skip this row entirely
+                    and the flavor headline becomes the first element.        */}
+                {product.cannabinoid && (
+                  <div className="pd-hero-lockup-row">
                     <span
                       className="pd-hero-lockup-30mg"
                       ref={hero30mgCbRef}
                       aria-label={`+30mg ${product.cannabinoid}`}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
 
                 <h1 className="pd-hero-flavor">{product.flavor}</h1>
 
