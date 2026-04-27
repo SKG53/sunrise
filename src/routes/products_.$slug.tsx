@@ -643,24 +643,27 @@ function ProductDetailPage() {
                 <div className="pd-stat-lockup" ref={stat12Ref} aria-hidden="true" />
               </div>
               <div className="pd-claim">
-                <img
+                <span
                   className="pd-claim-icon"
-                  src="/icons/gluten-free.svg"
-                  alt="Gluten Free"
+                  role="img"
+                  aria-label="Gluten Free"
+                  dangerouslySetInnerHTML={{ __html: glutenFreeSvg }}
                 />
               </div>
               <div className="pd-claim">
-                <img
+                <span
                   className="pd-claim-icon"
-                  src="/icons/natural-vegan.svg"
-                  alt="Natural Vegan"
+                  role="img"
+                  aria-label="Natural Vegan"
+                  dangerouslySetInnerHTML={{ __html: naturalVeganSvg }}
                 />
               </div>
               <div className="pd-claim">
-                <img
+                <span
                   className="pd-claim-icon"
-                  src="/icons/zero-alcohol.svg"
-                  alt="Zero Alcohol"
+                  role="img"
+                  aria-label="Zero Alcohol"
+                  dangerouslySetInnerHTML={{ __html: zeroAlcoholSvg }}
                 />
               </div>
             </div>
