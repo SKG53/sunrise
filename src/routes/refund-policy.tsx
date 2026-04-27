@@ -3,7 +3,7 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import "./returns.css";
 
-export const Route = createFileRoute("/returns")({
+export const Route = createFileRoute("/refund-policy")({
   component: ReturnsPage,
   head: () => ({
     meta: [
