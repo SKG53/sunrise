@@ -19,9 +19,6 @@ import {
   renderCBGLockup,
   renderCBNLockup,
   renderTHCVLockup,
-  render30mgCBGLockup,
-  render30mgCBNLockup,
-  render30mgTHCVLockup,
   getBasePx,
 } from "../lib/sunrise-components";
 import { getShopifyMapping } from "@/lib/shopifyProductMap";
@@ -287,22 +284,25 @@ function ProductDetailPage() {
         cb === "CBG"  ? renderCBGLockup  :
         cb === "CBN"  ? renderCBNLockup  :
                         renderTHCVLockup;
-      const mg30Lockup =
-        cb === "CBG"  ? render30mgCBGLockup  :
-        cb === "CBN"  ? render30mgCBNLockup  :
-                        render30mgTHCVLockup;
 
       // Breadcrumb — near-black on cream. Matches .pd-breadcrumb li font-size.
       if (bcCbRef.current) {
         bcCbRef.current.innerHTML = plusLockup(base * 0.30, "#1A1A1A");
       }
-      // Hero row: +30mg cannabinoid lockup, flavor color, same base as potency lockup.
+      // Hero row: +cannabinoid plus-lockup (just "+CBG"/"+CBN"/"+THCV"),
+      // flavor color. The previous "+30 MG / CBG" stacked lockup was removed
+      // because (a) the +30mg potency is already redundant with the tier
+      // signaling baked into the can frame's flavor color and the stat strip
+      // below, and (b) the cleaner plus-word lockup matches the visual
+      // identity used on S04 product cards across the catalog.
       if (hero30mgCbRef.current) {
-        hero30mgCbRef.current.innerHTML = mg30Lockup(base * 1.8, product.color);
+        hero30mgCbRef.current.innerHTML = plusLockup(base * 1.8, product.color);
       }
       // Cannabinoid section big lockup — cream on flavor-color flood.
+      // Sized at base * 1.8 (was 2.4) so the section reads sleeker; the icon
+      // added to its left now shares the visual anchor role.
       if (cannabinoidLockupRef.current) {
-        cannabinoidLockupRef.current.innerHTML = plusLockup(base * 2.4, "#FEFBE0");
+        cannabinoidLockupRef.current.innerHTML = plusLockup(base * 1.8, "#FEFBE0");
       }
     };
     paint();
@@ -494,16 +494,19 @@ function ProductDetailPage() {
                     was removed from this slot site-wide because the tier is
                     already communicated by (a) flavor-color flooding the can
                     frame and (b) the .pd-stat-strip section directly below.
-                    On enhanced SKUs the +30mg cannabinoid badge stays here as
-                    the differentiator that signals the enhancement above the
+                    On enhanced SKUs the +cannabinoid plus-word lockup
+                    (just "+CBG"/"+CBN"/"+THCV") stays here as the
+                    differentiator that signals the enhancement above the
                     flavor name. Non-cannabinoid SKUs skip this row entirely
-                    and the flavor headline becomes the first element.        */}
+                    and the flavor headline becomes the first element. The
+                    ref name preserves "30mg" for git-history continuity but
+                    the rendered lockup no longer includes the +30 MG stack. */}
                 {product.cannabinoid && (
                   <div className="pd-hero-lockup-row">
                     <span
                       className="pd-hero-lockup-30mg"
                       ref={hero30mgCbRef}
-                      aria-label={`+30mg ${product.cannabinoid}`}
+                      aria-label={`+${product.cannabinoid}`}
                     />
                   </div>
                 )}
@@ -628,11 +631,24 @@ function ProductDetailPage() {
           >
             <div className="container">
               <div className="pd-cannabinoid-grid">
-                <div
-                  className="pd-cannabinoid-lockup"
-                  ref={cannabinoidLockupRef}
-                  aria-label={`+${product.cannabinoid}`}
-                />
+                {/* Left anchor — cannabinoid identity. Icon (cream glyph,
+                    circle stripped) sits inline with the +CBG/+CBN/+THCV
+                    lockup. The pair forms a single visual unit on the left
+                    side of the grid; both elements are cream so they read
+                    as one anchor against the flavor-color flood. */}
+                <div className="pd-cannabinoid-anchor">
+                  <img
+                    className="pd-cannabinoid-icon"
+                    src={`/icons/cannabinoid-${product.cannabinoid.toLowerCase()}.svg`}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                  <div
+                    className="pd-cannabinoid-lockup"
+                    ref={cannabinoidLockupRef}
+                    aria-label={`+${product.cannabinoid}`}
+                  />
+                </div>
                 <div className="pd-cannabinoid-right">
                   <div className="pd-cannabinoid-bestfor">
                     Best for {cbCopy.bestFor}
