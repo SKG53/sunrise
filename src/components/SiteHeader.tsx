@@ -35,7 +35,12 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
         <a href="/contact" className={linkClass("contact")}>Contact</a>
       </nav>
       <div className="nav-right">
-        <a href="#" className="nav-cta outline"><span className="no-transform">COAs</span></a>
+        <a
+          href="https://marketing8710.wixstudio.com/beverage-manufacture/blank"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nav-cta outline"
+        ><span className="no-transform">COAs</span></a>
         <a href="/products" className="nav-cta solid">Shop</a>
         <CartDrawer />
       </div>
