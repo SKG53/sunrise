@@ -188,7 +188,6 @@
 /* flood.                                                                 */
 .a-build {
   background: var(--cream);
-  border-top: 1px solid var(--warm-gray-faint);
   padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
 }
 .a-build-head {
