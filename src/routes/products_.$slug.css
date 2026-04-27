@@ -62,7 +62,12 @@
 
 /* ── 02 · PRODUCT HERO ──────────────────────────────────────────────────── */
 .pd-hero {
-  padding: calc(var(--base) * 0.9) 0 calc(var(--base) * 1.6);
+  /* Vertical padding tightened so the entire S01 (gallery + meta + CTAs) fits
+     above the fold on standard laptop/desktop viewports. The can's intrinsic
+     height — driven by aspect-ratio: 4/5 on a wide left column — was the
+     dominant height contributor; capping it via .pd-hero-can max-height below
+     does most of the work, this padding trim removes the residual margin. */
+  padding: calc(var(--base) * 0.5) 0 calc(var(--base) * 1.0);
 }
 .pd-hero-grid {
   display: grid;
@@ -74,6 +79,15 @@
 .pd-hero-can {
   position: relative;
   aspect-ratio: 4 / 5;
+  /* Height cap: keeps the can from dominating the viewport on wide screens.
+     60vh leaves ~40vh for header + meta column + CTAs, which lands the
+     bottom button inside the fold on laptop+ viewports. The aspect-ratio
+     constraint then drives WIDTH down (instead of stretching height up), so
+     the can stays correctly proportioned in a narrower frame. margin: 0 auto
+     centers the now-narrower can horizontally inside its grid cell. */
+  max-height: 60vh;
+  width: auto;
+  margin: 0 auto;
   border-radius: 8px;
   overflow: hidden;
   display: flex;
@@ -124,7 +138,10 @@
 }
 
 .pd-hero-meta {
-  padding-top: calc(var(--base) * 0.1);
+  /* No top padding — the potency lockup that previously occupied this slot
+     was removed, so the flavor headline (or +cannabinoid lockup on enhanced
+     SKUs) is the first element and sits flush with the top of its column,
+     aligned with the top of the can frame in the adjacent column.            */
   min-width: 0;
 }
 /* Hero lockup row — potency lockup on the left; on +CBG/+CBN/+THCV SKUs

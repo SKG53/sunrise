@@ -20,11 +20,14 @@
 /* used in S07 ptp section below and on home S06.                          */
 .a-pagehero {
   background: var(--tier-10);
-  min-height: 50vh;
+  /* 75% of original vertical size — min-height 50vh→37.5vh + padding-block
+     2×base→1.5×base. Flex centering preserves text position; banner copy
+     remains visually centered inside the now-shorter element.          */
+  min-height: 37.5vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--base) * 2) calc(var(--base) * 1);
+  padding: calc(var(--base) * 1.5) calc(var(--base) * 1);
 }
 .a-pagehero-title {
   font-family: 'Montserrat', sans-serif;
