@@ -93,12 +93,18 @@
      the bottom button inside the fold on standard laptop+ viewports. The
      aspect-ratio constraint then drives WIDTH down (instead of stretching
      height up), so the can stays correctly proportioned in a narrower frame.
+     min() cap: phones with locked viewport meta (width=1100) compute vh
+     against a huge logical viewport height (~2380px on iPhone 14 Pro),
+     making 65vh = ~1547px — which combined with aspect-ratio 4/5 forces
+     the can to want 1238px wide (wider than the entire viewport). The
+     520px cap matches the home hero height and keeps the can ≤416 wide
+     after aspect math, fitting comfortably in the 1fr meta column.
      margin: 0 — was 0 auto. The .pd-hero-gallery wrapper is now sized to
      the can's intrinsic width via width: fit-content, so auto-centering the
      can inside its (now exactly can-width) wrapper is a no-op. Removing it
      is what makes the thumb strip's left edge land flush with the can's
      left edge — the wonkiness fix.                                       */
-  max-height: 65vh;
+  max-height: min(65vh, 520px);
   width: auto;
   margin: 0;
   border-radius: 8px;
