@@ -1,11 +1,40 @@
 // Dark 5-column footer: Logo+Signup | Shop | Company | Support | Follow.
 // Disclaimer row + legal bar. Copy locked from brand docs.
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 
 export function SiteFooter() {
   const wmRef = useRef<HTMLDivElement>(null);
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [statusMsg, setStatusMsg] = useState("");
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (status === "submitting") return;
+    setStatus("submitting");
+    setStatusMsg("");
+    try {
+      const res = await fetch("/api/public/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source: "footer" }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setStatus("error");
+        setStatusMsg(data?.error || "Something went wrong. Please try again.");
+        return;
+      }
+      setStatus("success");
+      setStatusMsg("Cheers! You’re on the list. ☀️");
+      setEmail("");
+    } catch {
+      setStatus("error");
+      setStatusMsg("Network error. Please try again.");
+    }
+  };
 
   useEffect(() => {
     const paint = () => {
@@ -27,10 +56,30 @@ export function SiteFooter() {
             <div className="wordmark-slot" ref={wmRef} />
             <div className="footer-signup">
               <div className="signup-label">Stay in the Know</div>
-              <form className="signup-form" onSubmit={(e) => e.preventDefault()}>
-                <input type="email" className="signup-input" placeholder="Email address" aria-label="Email address" />
-                <button type="submit" className="signup-btn">Subscribe</button>
-              </form>
+              {status === "success" ? (
+                <div className="signup-success" role="status" aria-live="polite">
+                  {statusMsg}
+                </div>
+              ) : (
+                <form className="signup-form" onSubmit={handleSubscribe}>
+                  <input
+                    type="email"
+                    className="signup-input"
+                    placeholder="Email address"
+                    aria-label="Email address"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={status === "submitting"}
+                  />
+                  <button type="submit" className="signup-btn" disabled={status === "submitting"}>
+                    {status === "submitting" ? "..." : "Subscribe"}
+                  </button>
+                </form>
+              )}
+              {status === "error" && (
+                <div className="signup-error" role="alert">{statusMsg}</div>
+              )}
             </div>
           </div>
 
