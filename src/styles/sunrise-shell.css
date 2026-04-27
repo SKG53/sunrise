@@ -123,14 +123,21 @@ main { flex: 1; width: 100%; }
   transition: clip-path 400ms ease-out;
   z-index: -1;
 }
-/* Arrow appended to every button — dances on hover */
+/* Arrow appended to every button — dances on hover.
+   `top` nudge: optical-center correction. .btn text is uppercase-only, so its
+   visual glyph center sits ~10% of em-height ABOVE the em-box center (no
+   descenders). The → glyph sits at em-box center, so flex `align-items: center`
+   leaves the arrow looking low next to caps text. -0.055×base shifts the arrow
+   up to match the cap visual center. (Tier-card pill uses -0.025×base because
+   its larger font-size makes the same proportional nudge a smaller absolute
+   value — do not unify these.)                                               */
 .btn::after {
   content: "→";
   display: inline-block;
   font-size: 1.35em;
   line-height: 1;
   position: relative;
-  top: calc(var(--base) * -0.025);
+  top: calc(var(--base) * -0.055);
   transition: color 200ms ease-out;
 }
 .btn:hover { color: var(--btn-hover-text, currentColor); }
@@ -138,10 +145,15 @@ main { flex: 1; width: 100%; }
 .btn:hover::after { animation: btn-arrow-dance 400ms ease-out; }
 
 @keyframes btn-arrow-dance {
-  0%   { margin-right: 0;   opacity: 1; }
-  25%  { margin-right: 0;   opacity: 0; }  /* fade out at 100% position */
-  26%  { margin-right: 25%; opacity: 0; }  /* teleport to 75% while invisible */
-  100% { margin-right: 0;   opacity: 1; }  /* smooth slide + fade back to 100% */
+  /* Use transform: translateX (paint-only) instead of margin-right (in-flow).
+     margin-right would change the arrow's flex-item width during the animation,
+     which forces the flex container to re-center the (label + arrow) group on
+     each frame, dragging the label leftward by a few pixels. translateX never
+     touches layout so the label stays exactly put — only the arrow moves.    */
+  0%   { transform: translateX(0);                        opacity: 1; }
+  25%  { transform: translateX(0);                        opacity: 0; }  /* fade out at original position */
+  26%  { transform: translateX(calc(var(--base) * -0.5)); opacity: 0; }  /* teleport leftward while invisible */
+  100% { transform: translateX(0);                        opacity: 1; }  /* slide + fade back to original */
 }
 
 /* SOLID — primary hierarchy. Wider horizontal padding + higher min-width floor.
