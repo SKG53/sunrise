@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
-import "./returns.css";
+import "./refund-policy.css";
 
 export const Route = createFileRoute("/refund-policy")({
-  component: ReturnsPage,
+  component: RefundPolicyPage,
   head: () => ({
     meta: [
       { title: "Return and Refund Policy · SUNRISE" },
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/refund-policy")({
 });
 
 // ── COMPONENT ────────────────────────────────────────────────────────────
-function ReturnsPage() {
+function RefundPolicyPage() {
   return (
     <>
       <SiteHeader />
@@ -31,8 +31,8 @@ function ReturnsPage() {
         {/* Tier-30 green flood — page-identity color for Support category. */}
         {/* Same structural pattern as About / Contact / Find / Products    */}
         {/* pageheroes (giant color flood + animated character entrance).   */}
-        <section className="r-pagehero">
-          <h1 className="r-pagehero-title" aria-label="Support">
+        <section className="rp-pagehero">
+          <h1 className="rp-pagehero-title" aria-label="Support">
             {"Support".split("").map((ch, i) => (
               <span key={i} aria-hidden="true">{ch === " " ? "\u00A0" : ch}</span>
             ))}
@@ -45,13 +45,13 @@ function ReturnsPage() {
         {/* than About's intro (64ch) since policy content is denser.       */}
         {/* No closer color-flood / no PTP — policy pages are utility,     */}
         {/* not marketing. The footer provides natural page closure.       */}
-        <section className="r-policy">
+        <section className="rp-policy">
           <div className="container">
-            <div className="r-policy-inner">
-              <h2 className="r-policy-title">Return and Refund Policy</h2>
+            <div className="rp-policy-inner">
+              <h2 className="rp-policy-title">Return and Refund Policy</h2>
 
-              <div className="r-policy-body">
-                <h3 className="r-policy-heading">Our policy</h3>
+              <div className="rp-policy-body">
+                <h3 className="rp-policy-heading">Our policy</h3>
                 <p>
                   SUNRISE does not accept returns on beverage or other edible
                   products. Once a sealed item has left our facility, food
@@ -64,14 +64,14 @@ function ReturnsPage() {
                   handle every issue individually and work to make it right.
                 </p>
 
-                <h3 className="r-policy-heading">Damaged or defective product</h3>
+                <h3 className="rp-policy-heading">Damaged or defective product</h3>
                 <p>
                   If your order arrived damaged, leaking, or otherwise
                   defective, contact us at{" "}
                   <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>{" "}
                   within 48 hours of delivery. Please include:
                 </p>
-                <ul className="r-policy-list">
+                <ul className="rp-policy-list">
                   <li>Your order number</li>
                   <li>A clear photo of the damaged or defective product</li>
                   <li>A photo of the shipping box, especially if the damage happened in transit</li>
@@ -87,7 +87,7 @@ function ReturnsPage() {
                   guaranteed.
                 </p>
 
-                <h3 className="r-policy-heading">Wrong product received</h3>
+                <h3 className="rp-policy-heading">Wrong product received</h3>
                 <p>
                   If we shipped the wrong flavor, tier, or quantity, contact
                   us at{" "}
@@ -97,7 +97,7 @@ function ReturnsPage() {
                   the correct product as ordered.
                 </p>
 
-                <h3 className="r-policy-heading">Exchanges</h3>
+                <h3 className="rp-policy-heading">Exchanges</h3>
                 <p>
                   We don't process formal exchanges, but if something isn't
                   working for you, reach out to{" "}
@@ -106,7 +106,7 @@ function ReturnsPage() {
                   best alternative.
                 </p>
 
-                <h3 className="r-policy-heading">Purchased from a retailer</h3>
+                <h3 className="rp-policy-heading">Purchased from a retailer</h3>
                 <p>
                   If you bought SUNRISE at a store, gas station, dispensary,
                   or any other third-party retailer, return and refund
@@ -116,7 +116,7 @@ function ReturnsPage() {
                   <a href="https://www.savorsunrise.com">www.savorsunrise.com</a>.
                 </p>
 
-                <h3 className="r-policy-heading">Refunds</h3>
+                <h3 className="rp-policy-heading">Refunds</h3>
                 <p>
                   When a refund is approved, it will be processed to your
                   original payment method within 10 business days. Please
@@ -132,12 +132,12 @@ function ReturnsPage() {
                   specifically agreed upon in our conversations with you.
                 </p>
 
-                <h3 className="r-policy-heading">Contact</h3>
-                <p className="r-policy-contact-line">
+                <h3 className="rp-policy-heading">Contact</h3>
+                <p className="rp-policy-contact-line">
                   Email:{" "}
                   <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>
                 </p>
-                <p className="r-policy-contact-line">
+                <p className="rp-policy-contact-line">
                   Response window: one business week
                 </p>
               </div>
