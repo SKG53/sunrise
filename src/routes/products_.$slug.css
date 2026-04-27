@@ -516,10 +516,20 @@
 
    Vertical alignment via align-items: center centers each peer at its own
    midline. The icon (square) and the copy block (tall) have very different
-   heights; centering keeps the lockup visually balanced between them.   */
+   heights; centering keeps the lockup visually balanced between them.
+
+   Section height tuning (founder request: shave 30-40% off vertical):
+     · icon       4.8base  → 3.6base  (still ~225% of original 1.6 anchor)
+     · padding    1.2base  → 0.65base (was generous, now moderate)
+     · body LH    1.5      → 1.4      (tightens 3-paragraph stack)
+     · right gap  0.24base → 0.18base (between bestfor + 3 body lines)
+     · bestfor mb 0.15base → 0.10base (between subhead and first body)
+   Combined, these reduce section height roughly from ~360px to ~245px at
+   base 50px (~32% reduction), with copy block and icon now near-equal
+   height anchors and padding still readable as intentional margin.       */
 .pd-cannabinoid {
   color: var(--cream);
-  padding: calc(var(--base) * 1.2) 0;
+  padding: calc(var(--base) * 0.65) 0;
 }
 .pd-cannabinoid-grid {
   display: flex;
@@ -530,10 +540,11 @@
 }
 .pd-cannabinoid-icon {
   /* Inline-SVG; CSS owns size since the SVG itself declares no width/height.
-     base * 4.8 is the founder-specified 300% bump from the prior 1.6base
-     anchor sizing, making the icon the section's primary visual element. */
-  width: calc(var(--base) * 4.8);
-  height: calc(var(--base) * 4.8);
+     base * 3.6 (was 4.8 — 25% smaller). Still ~225% of the original 1.6
+     anchor size, so the icon remains the dominant visual element while
+     the section as a whole reads more compact.                          */
+  width: calc(var(--base) * 3.6);
+  height: calc(var(--base) * 3.6);
   display: block;
   flex-shrink: 0;
 }
@@ -548,7 +559,7 @@
 .pd-cannabinoid-right {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--base) * 0.24);
+  gap: calc(var(--base) * 0.18);
   min-width: 0;
   /* Capped width keeps the three-element rhythm balanced — without this,
      the copy block would consume any extra horizontal space and crowd
@@ -564,13 +575,13 @@
   letter-spacing: 0.005em;
   line-height: 1.15;
   color: var(--cream);
-  margin-bottom: calc(var(--base) * 0.15);
+  margin-bottom: calc(var(--base) * 0.10);
 }
 .pd-cannabinoid-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.32);
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.4;
   color: rgba(254, 251, 224, 0.9);
   margin: 0;
 }
