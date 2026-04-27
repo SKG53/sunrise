@@ -113,7 +113,7 @@
   line-height: 1.0;
   text-align: center;
 }
-.p-effects-headline .accent { color: var(--green-accent); }
+.p-effects-headline .accent { color: var(--tier-10); }
 .p-effects-subhead {
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
@@ -193,7 +193,7 @@
   line-height: 1.0;
   text-align: center;
 }
-.p-switcher-headline .accent { color: var(--green-accent); }
+.p-switcher-headline .accent { color: var(--tier-10); }
 .p-switcher-subhead {
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
@@ -422,7 +422,7 @@
   display: block;
   white-space: nowrap;
 }
-.p-inside-headline .accent { color: var(--green-accent); }
+.p-inside-headline .accent { color: var(--tier-10); }
 .p-inside-lead {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.38);
@@ -489,7 +489,7 @@
   color: var(--near-black);
   line-height: 1.0;
 }
-.p-transparency-headline .accent { color: var(--green-accent); }
+.p-transparency-headline .accent { color: var(--tier-10); }
 .p-transparency-body {
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
@@ -577,7 +577,7 @@
   color: var(--near-black);
   line-height: 1.0;
 }
-.p-faq-headline .accent { color: var(--green-accent); }
+.p-faq-headline .accent { color: var(--tier-10); }
 .p-faq-subhead {
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
