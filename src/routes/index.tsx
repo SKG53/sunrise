@@ -450,7 +450,7 @@ function HomePage() {
               </div>
               <div className="s07-copy">
                 <h2 className="s07-headline">
-                  A family business.<br />Designed to deliver.
+                  A family business<br />Designed to deliver.
                 </h2>
                 <p className="s07-body">
                   SUNRISE was born with a simple conviction: it's about quality
@@ -485,124 +485,25 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── 08 · REVIEWS ──────────────────────────────────────────────── */}
-        {/* Continuous right-to-left marquee. Track is duplicated (6 cards */}
-        {/* × 2) to produce a seamless loop via translateX(0 → -50%).     */}
-        {/* Hover pauses. All quote content is placeholder.                */}
-        <section className="s09-reviews">
-          <h2 className="s09-heading">
-            What are people <span className="accent">saying?</span>
-          </h2>
-          <div className="s09-marquee" aria-label="Customer reviews carousel">
-            <div className="s09-marquee-track">
-              {/* Set A */}
-              <div className="s09-card">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  Smoother than any edible I've had. Finally something that actually
-                  tastes like a drink.
-                </div>
-                <div className="s09-attribution">— James K., Austin, TX</div>
-              </div>
-              <div className="s09-card">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  The 10mg is my Friday night wind-down. Strawberry is unreal.
-                </div>
-                <div className="s09-attribution">— Priya S., Denver, CO</div>
-              </div>
-              <div className="s09-card">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  Most of these drinks taste like medicine. This one doesn't.
-                </div>
-                <div className="s09-attribution">— Marcus D., Nashville, TN</div>
-              </div>
-              <div className="s09-card">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  Beautifully carbonated, actually fruit-forward. A rare combination.
-                </div>
-                <div className="s09-attribution">— Lauren H., Portland, OR</div>
-              </div>
-              <div className="s09-card">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  Found these at my local shop and now they're at every gathering
-                  I host.
-                </div>
-                <div className="s09-attribution">— Dan R., Kansas City, MO</div>
-              </div>
-              <div className="s09-card">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  The Blood Orange 60mg is a perfect evening. Exactly the experience
-                  I chose.
-                </div>
-                <div className="s09-attribution">— Emma T., Phoenix, AZ</div>
-              </div>
-              {/* Set B — duplicate for seamless loop. aria-hidden to avoid SR double-read. */}
-              <div className="s09-card" aria-hidden="true">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  Smoother than any edible I've had. Finally something that actually
-                  tastes like a drink.
-                </div>
-                <div className="s09-attribution">— James K., Austin, TX</div>
-              </div>
-              <div className="s09-card" aria-hidden="true">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  The 10mg is my Friday night wind-down. Strawberry is unreal.
-                </div>
-                <div className="s09-attribution">— Priya S., Denver, CO</div>
-              </div>
-              <div className="s09-card" aria-hidden="true">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  Most of these drinks taste like medicine. This one doesn't.
-                </div>
-                <div className="s09-attribution">— Marcus D., Nashville, TN</div>
-              </div>
-              <div className="s09-card" aria-hidden="true">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  Beautifully carbonated, actually fruit-forward. A rare combination.
-                </div>
-                <div className="s09-attribution">— Lauren H., Portland, OR</div>
-              </div>
-              <div className="s09-card" aria-hidden="true">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  Found these at my local shop and now they're at every gathering
-                  I host.
-                </div>
-                <div className="s09-attribution">— Dan R., Kansas City, MO</div>
-              </div>
-              <div className="s09-card" aria-hidden="true">
-                <div className="s09-quote-mark">"</div>
-                <div className="s09-quote-text">
-                  The Blood Orange 60mg is a perfect evening. Exactly the experience
-                  I chose.
-                </div>
-                <div className="s09-attribution">— Emma T., Phoenix, AZ</div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* ── 08 · REVIEWS (REMOVED) ────────────────────────────────────── */}
+        {/* Reviews section deleted per founder direction. Quotes were        */}
+        {/* placeholder copy and not yet sourced from real customers. The     */}
+        {/* .s09-* CSS rules and the home-S09-heading wrap-pattern utility    */}
+        {/* in home.css are left in place — easy to restore the section if    */}
+        {/* reintroduced with real testimonials.                              */}
 
         {/* ── 09 · FAQ ──────────────────────────────────────────────────── */}
         {/* Home-level FAQ. Broader than Product Detail — first-time-visitor */}
         {/* questions (brand, legality, effect, category, risk, purchase).  */}
         {/* SKU-specific questions (dose, onset, variants, COAs) stay on    */}
         {/* Product Detail. Visual pattern mirrors .pd-faq so the two feel  */}
-        {/* like family. Class prefix s10-faq-* to avoid collision with the */}
-        {/* existing s09-reviews block above.                               */}
+        {/* like family. Class prefix s10-faq-* preserved from when the     */}
+        {/* now-removed s09-reviews block sat between this section and S07. */}
         <section className="s10-faq">
           <div className="container">
             <div className="s10-faq-head">
               <h2 className="s10-faq-headline">
-                Looking for some <span className="accent">quick info?</span>
+                What are people <span className="accent">asking?</span>
               </h2>
             </div>
             <div className="s10-faq-list">
