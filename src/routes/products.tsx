@@ -514,10 +514,10 @@ function ProductsPage() {
               </div>
               <div className="p-transparency-ctas">
                 <a href="/#whats-inside" className="btn btn-secondary">
-                  Full Ingredient Breakdown →
+                  Full Ingredient Breakdown
                 </a>
                 <a href="#" className="btn btn-secondary">
-                  Download COAs →
+                  Download COAs
                 </a>
               </div>
             </div>
@@ -538,9 +538,9 @@ function ProductsPage() {
                 </p>
               </div>
               <div className="p-ptp-ctas">
-                <a href="/about" className="btn btn-on-color">Learn About Us</a>
+                <a href="/about" className="btn btn-on-color">More About SUNRISE</a>
                 <a href="/find" className="btn btn-on-color-ghost">
-                  Find Near You →
+                  Find Near You
                 </a>
               </div>
             </div>
