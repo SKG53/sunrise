@@ -487,28 +487,15 @@ function ProductDetailPage() {
               </div>
 
               <div className="pd-hero-meta">
-                {/* Lockup row — renders ONLY on cannabinoid-enhanced SKUs
-                    (+CBG/+CBN/+THCV, 12 of 24 total). The base potency lockup
-                    was removed from this slot site-wide because the tier is
-                    already communicated by (a) flavor-color flooding the can
-                    frame and (b) the .pd-stat-strip section directly below.
-                    On enhanced SKUs the +cannabinoid plus-word lockup
-                    (just "+CBG"/"+CBN"/"+THCV") stays here as the
-                    differentiator that signals the enhancement above the
-                    flavor name. Non-cannabinoid SKUs skip this row entirely
-                    and the flavor headline becomes the first element. The
-                    ref name preserves "30mg" for git-history continuity but
-                    the rendered lockup no longer includes the +30 MG stack. */}
-                {product.cannabinoid && (
-                  <div className="pd-hero-lockup-row">
-                    <span
-                      className="pd-hero-lockup-30mg"
-                      ref={hero30mgCbRef}
-                      aria-label={`+${product.cannabinoid}`}
-                    />
-                  </div>
-                )}
-
+                {/* Hero meta column — flavor headline is the first element on
+                    every SKU. The cannabinoid lockup that previously sat
+                    above the headline on +CBG/+CBN/+THCV SKUs was removed:
+                    cannabinoid identity is communicated downstream via S02
+                    (which renders the +30 MG / cannabinoid potency lockup
+                    plus the icon and "Best for X" copy), so duplicating it
+                    above the flavor name added visual noise without new
+                    information. Non-cannabinoid and cannabinoid SKUs now
+                    render an identical hero meta column structure.         */}
                 <h1 className="pd-hero-flavor">{product.flavor}</h1>
 
                 <div className="pd-hero-descriptor">{product.descriptor}</div>
