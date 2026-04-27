@@ -32,7 +32,7 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=1100" },
       { title: "Lovable App" },
       { name: "description", content: "SUNRISE is a React application that faithfully transcribes an HTML design specification for a Contact page." },
       { name: "author", content: "Lovable" },
