@@ -19,8 +19,12 @@ import {
   renderCBGLockup,
   renderCBNLockup,
   renderTHCVLockup,
+  render30mgCBGLockup,
+  render30mgCBNLockup,
+  render30mgTHCVLockup,
   getBasePx,
 } from "../lib/sunrise-components";
+import { CannabinoidIcon } from "../components/CannabinoidIcon";
 import { getShopifyMapping } from "@/lib/shopifyProductMap";
 import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import { useCartStore } from "@/stores/cartStore";
