@@ -274,7 +274,7 @@ function ProductDetailPage() {
         lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.8, product.color);
       }
       if (stat12Ref.current) {
-        stat12Ref.current.innerHTML = render12ozStatBlock(base * 1.32);
+        stat12Ref.current.innerHTML = render12ozStatBlock(base * 2.64, product.color);
       }
 
       // ── Cannabinoid lockups (variant SKUs only) ──────────────────────
