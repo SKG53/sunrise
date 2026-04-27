@@ -322,7 +322,7 @@ function ProductDetailPage() {
       othersInTier.forEach((o, i) => {
         const ref = relatedCornerRefs.current[i];
         if (!ref || !o.cannabinoid) return;
-        const size = base * 0.7;
+        const size = base * 0.91;
         const html =
           o.cannabinoid === "CBG"  ? renderCBGLockup(size, "#FEFBE0")  :
           o.cannabinoid === "CBN"  ? renderCBNLockup(size, "#FEFBE0")  :
