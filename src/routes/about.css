@@ -204,7 +204,7 @@
   margin-bottom: calc(var(--base) * 0.5);
   max-width: 18ch;
 }
-.a-build-headline .accent { color: var(--green-accent); }
+.a-build-headline .accent { color: var(--tier-5); }
 .a-build-lead {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.4);

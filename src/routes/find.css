@@ -426,7 +426,7 @@
   color: var(--near-black);
   margin-bottom: calc(var(--base) * 0.4);
 }
-.f-gateway-headline .accent { color: var(--green-accent); }
+.f-gateway-headline .accent { color: var(--tier-30); }
 .f-gateway-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.4);
