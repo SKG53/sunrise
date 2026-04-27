@@ -11,7 +11,7 @@
 /* cream runs close to WCAG large-text contrast — monitor in production   */
 /* and add a subtle text-shadow if it reads too soft.                     */
 .p-pagehero {
-  background: var(--tier-5);
+  background: var(--tier-10);
   /* 75% of original vertical size — min-height 50vh→37.5vh + padding-block
      2×base→1.5×base. Flex centering preserves text position; banner copy
      remains visually centered inside the now-shorter element.          */
@@ -81,7 +81,7 @@
   margin: 0 auto calc(var(--base) * 0.6);
   max-width: 18ch;
 }
-.p-hero-headline .accent { color: var(--tier-5); }
+.p-hero-headline .accent { color: var(--tier-10); }
 .p-hero-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.42);
@@ -508,15 +508,16 @@
 }
 
 /* ── CTA BAND — Products S06 path-to-purchase ──────────────────────────────
-   Background flood matches this page's S01 (page-hero is also tier-5). Each
-   page's PTP is bookended to its own tier color; see about.css (tier-10) and
+   Background flood matches this page's S01 (page-hero is also tier-10). Each
+   page's PTP is bookended to its own tier color; see about.css (tier-5) and
    products_.$slug.css (per-SKU flavor color). --on-color-text is the token
    that .btn-on-color uses for its text color, keeping the solid CTA's type
-   in sync with the band flood.
+   in sync with the band flood. Was tier-5 prior to the products↔about page-
+   color swap.
    ========================================================================== */
 .p-ptp {
-  background: var(--tier-5);
-  --on-color-text: var(--tier-5);
+  background: var(--tier-10);
+  --on-color-text: var(--tier-10);
   color: var(--cream);
   padding: calc(var(--base) * 1.6) 0;
 }

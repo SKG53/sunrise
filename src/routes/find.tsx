@@ -266,8 +266,8 @@ function FindPage() {
           <div className="container">
             <div className="f-hero-inner">
               <h1 className="f-hero-headline">
-                Closer than you think.<br />
-                Find <span className="accent">nearby.</span>
+                Find SUNRISE<br />
+                <span className="accent">Near you</span>
               </h1>
               <p className="f-hero-body">
                 Retailers carrying SUNRISE right now. Search by zip, city, or

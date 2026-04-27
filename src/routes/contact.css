@@ -267,13 +267,19 @@
 }
 
 /* ── 04 · DIRECT CHANNELS ───────────────────────────────────────────────── */
+/* Restructured: section now collapses to a single horizontal band — the   */
+/* headline lives in the first grid column; the two channel cards (email +  */
+/* phone) occupy columns 2–3. Top vertical padding reduced to match. The   */
+/* old standalone .c-direct-head wrapper still exists (semantic anchor for  */
+/* the headline) but loses its bottom margin since it no longer sits above  */
+/* the grid.                                                                */
 .c-direct {
   border-top: 1px solid var(--warm-gray-faint);
-  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.2);
+  padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 1.4);
 }
 .c-direct-head {
-  max-width: 30ch;
-  margin-bottom: calc(var(--base) * 1.0);
+  max-width: 100%;
+  margin-bottom: 0;
 }
 .c-direct-headline {
   font-family: 'Montserrat', sans-serif;
@@ -287,8 +293,9 @@
 .c-direct-headline .accent { color: var(--tier-60); }
 .c-direct-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 1fr;
   gap: calc(var(--base) * 0.6);
+  align-items: start;
 }
 .c-direct-card {
   background: var(--cream);
@@ -331,14 +338,17 @@
 }
 .c-direct-note strong { font-weight: 700; color: var(--near-black); }
 
-/* ── 05 · FOLLOW ALONG (tier-10 flood) ──────────────────────────────────── */
-/* Matches the site-wide red-flood closer pattern — same structural family
-   as .a-ptp / .f-fallback / .s08-near-you. Three-tile horizontal layout
-   for parallel social channels; on a color flood the tiles drop any card
-   background and rely on a cream top-rule + cream text hierarchy for
-   readability. Icons render in cream via currentColor. */
+/* ── 05 · FOLLOW ALONG (tier-60 flood) ──────────────────────────────────── */
+/* Matches the site-wide closer-color-flood pattern but uses tier-60 to    */
+/* bookend the page to its S01 pagehero (also tier-60). Other pages use   */
+/* their own tier flood: products → tier-10, about → tier-5, find →      */
+/* tier-30 fallback. Same structural family as .a-ptp / .f-fallback /    */
+/* .s08-near-you. Three-tile horizontal layout for parallel social        */
+/* channels; on a color flood the tiles drop any card background and rely */
+/* on a cream top-rule + cream text hierarchy for readability. Icons      */
+/* render in cream via currentColor. */
 .c-social {
-  background: var(--tier-10);
+  background: var(--tier-60);
   color: var(--cream);
   padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
 }
@@ -396,8 +406,13 @@
 @media (max-width: 1024px) {
   .c-form-grid { grid-template-columns: 1fr; }
   .c-form-side { position: static; top: auto; }
-  .c-direct-grid { grid-template-columns: 1fr 1fr; }
-  .c-direct-grid .c-direct-card:last-child {
+  /* Direct grid collapses to: headline full-width row, then 2 cards split  */
+  /* the row below. Old :last-child rule no longer applies — there are now  */
+  /* only 2 cards plus the headline cell.                                   */
+  .c-direct-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .c-direct-grid .c-direct-head {
     grid-column: 1 / -1;
   }
   .c-social-grid { grid-template-columns: 1fr 1fr; }
@@ -412,7 +427,7 @@
   .c-social-headline { font-size: calc(var(--base) * 1.0); }
   .c-form-row-split { grid-template-columns: 1fr; }
   .c-direct-grid { grid-template-columns: 1fr; }
-  .c-direct-grid .c-direct-card:last-child {
+  .c-direct-grid .c-direct-head {
     grid-column: auto;
   }
   .c-social-grid { grid-template-columns: 1fr; }

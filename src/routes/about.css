@@ -6,20 +6,21 @@
    from sunrise-shell.css via __root.tsx. All design tokens (--cream, --gold,
    --near-black, --base, --tier-10, etc.) are defined globally in the shell.
 
-   Section map (7 sections before footer):
-     01 · Pagehero              (tier-10 flood, unchanged)
+   Section map (6 sections before footer):
+     01 · Pagehero              (tier-5 flood — page-identity color)
      02+03 · Intro              (centered, old S02 heading + old S03 paragraphs)
-     04 · Cans                  (3-can lifestyle trio)
-     05 · Icons                 (3 icons with explanations)
+     04 · Cans + Bullets        (2-col: cans on left, icon items on right)
      06 · Build                 (old Heartland + How We Build, on cream)
-     07 · PTP                   (tier-10 flood, unchanged)
+     07 · PTP                   (tier-5 flood — page-identity color)
    ========================================================================== */
 
 /* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
-/* Giant color-flood page title. Tier-10 red — brand heritage color also   */
-/* used in S07 ptp section below and on home S06.                          */
+/* Giant color-flood page title. Tier-5 orange — page-identity color also   */
+/* used in S07 PTP section below. Was tier-10 red prior to the products↔   */
+/* about color swap; the swap kept the structural pattern (S01 flood +     */
+/* PTP flood share the page's signature color) intact.                     */
 .a-pagehero {
-  background: var(--tier-10);
+  background: var(--tier-5);
   /* 75% of original vertical size — min-height 50vh→37.5vh + padding-block
      2×base→1.5×base. Flex centering preserves text position; banner copy
      remains visually centered inside the now-shorter element.          */
@@ -67,7 +68,7 @@
 }
 .a-intro-inner {
   text-align: center;
-  max-width: 52ch;
+  max-width: 64ch;
   margin: 0 auto;
 }
 .a-intro-headline {
@@ -81,7 +82,7 @@
   margin: 0 auto calc(var(--base) * 0.9);
   max-width: 18ch;
 }
-.a-intro-headline .accent { color: var(--tier-10); }
+.a-intro-headline .accent { color: var(--tier-5); }
 .a-intro-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.4);
@@ -103,37 +104,40 @@
   color: transparent;
 }
 
-/* ── 04 · CANS ROW ──────────────────────────────────────────────────────── */
-/* Three-can lifestyle trio. No copy. On cream. Cans baseline-aligned.     */
+/* ── 04 · CANS + BULLETS (merged) ───────────────────────────────────────── */
+/* Two-column layout: cans stacked vertically on the left (smaller than    */
+/* the prior horizontal trio), three icon items stacked vertically on the   */
+/* right. Old standalone .a-icons section was deleted; its content folded   */
+/* into this section. .a-icons-* class names preserved so the icon item    */
+/* shape stays consistent — only the wrapper context changed.              */
 .a-cans {
-  padding: calc(var(--base) * 1.4) 0 calc(var(--base) * 2.0);
+  padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 2.0);
+}
+.a-cans-grid {
+  display: grid;
+  grid-template-columns: minmax(0, calc(var(--base) * 5.4)) 1fr;
+  gap: calc(var(--base) * 1.4);
+  align-items: center;
 }
 .a-cans-row {
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: calc(var(--base) * 0.6);
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.4);
 }
 .a-cans-can {
   width: 100%;
-  max-width: calc(var(--base) * 5.4);
+  max-width: calc(var(--base) * 4.0);
   height: auto;
   object-fit: contain;
   display: block;
 }
 
-/* ── 05 · ICONS ─────────────────────────────────────────────────────────── */
-/* Three icons with titles and body copy. Stacked vertically. Icon at     */
-/* left (tier-colored circle), title + body at right.                     */
-.a-icons {
-  background: var(--cream);
-  border-top: 1px solid var(--warm-gray-faint);
-  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
-}
+/* Icon list — moved from removed .a-icons section. Class names retained.  */
+/* No top/bottom padding here (the wrapping .a-cans owns the section pad). */
+/* Removed the centered max-width: 640px constraint since the list now     */
+/* lives in the right column of a 2-col grid that already controls width.  */
 .a-icons-list {
-  max-width: 640px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: calc(var(--base) * 0.8);
@@ -232,13 +236,14 @@
 }
 
 /* ── 07 · PATH TO PURCHASE ──────────────────────────────────────────────────
-   Tier-10 red flood — bookends the page to its S01 pagehero. --on-color-text
+   Tier-5 orange flood — bookends the page to its S01 pagehero. --on-color-text
    is the token .btn-on-color uses for its text color, keeping the solid CTA
-   in brand-color harmony with the band flood.
+   in brand-color harmony with the band flood. Was tier-10 red prior to the
+   products↔about page-color swap.
    ========================================================================== */
 .a-ptp {
-  background: var(--tier-10);
-  --on-color-text: var(--tier-10);
+  background: var(--tier-5);
+  --on-color-text: var(--tier-5);
   color: var(--cream);
   padding: calc(var(--base) * 1.6) 0;
 }

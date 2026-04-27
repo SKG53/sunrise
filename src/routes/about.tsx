@@ -77,83 +77,83 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ── 04 · CANS ROW ─────────────────────────────────────────────── */}
-        {/* Three cans in lifestyle trio format. No copy, no labels.       */}
+        {/* ── 04 · CANS + BULLETS (merged) ──────────────────────────────── */}
+        {/* Three cans (smaller than before) on the left; three icon bullets */}
+        {/* on the right. Old standalone .a-icons section removed and its    */}
+        {/* content folded into this section. Layout is a 2-col grid; the    */}
+        {/* cans stack vertically on the left, icon items stack on the      */}
+        {/* right. Existing .a-icons-* classes preserved so the icon item    */}
+        {/* shape stays consistent — only the wrapper context changed.       */}
         <section className="a-cans">
           <div className="container">
-            <div className="a-cans-row">
-              <img
-                className="a-cans-can"
-                src="/images/cans/60mg-blueberry-lemonade.webp"
-                alt="SUNRISE 60mg THC Blueberry Lemonade"
-                loading="lazy"
-              />
-              <img
-                className="a-cans-can"
-                src="/images/cans/10mg-lemonade.webp"
-                alt="SUNRISE 10mg THC Lemonade"
-                loading="lazy"
-              />
-              <img
-                className="a-cans-can"
-                src="/images/cans/60mg-blood-orange-cbg.webp"
-                alt="SUNRISE 60mg THC + 30mg CBG Blood Orange"
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* ── 05 · ICONS ────────────────────────────────────────────────── */}
-        {/* Three icons with titles and body copy. Stacked vertically.     */}
-        <section className="a-icons">
-          <div className="container">
-            <div className="a-icons-list">
-              <div className="a-icons-item">
+            <div className="a-cans-grid">
+              <div className="a-cans-row">
                 <img
-                  className="a-icons-icon"
-                  src="/icons/real-fruit.svg"
-                  alt=""
-                  aria-hidden="true"
+                  className="a-cans-can"
+                  src="/images/cans/60mg-blueberry-lemonade.webp"
+                  alt="SUNRISE 60mg THC Blueberry Lemonade"
+                  loading="lazy"
                 />
-                <div className="a-icons-content">
-                  <div className="a-icons-title">Real Fruit, Real Flavor</div>
-                  <p className="a-icons-body">
-                    Real fruit flavors and natural ingredients ensure a delicious
-                    experience without any weedy aftertastes.
-                  </p>
-                </div>
+                <img
+                  className="a-cans-can"
+                  src="/images/cans/10mg-lemonade.webp"
+                  alt="SUNRISE 10mg THC Lemonade"
+                  loading="lazy"
+                />
+                <img
+                  className="a-cans-can"
+                  src="/images/cans/60mg-blood-orange-cbg.webp"
+                  alt="SUNRISE 60mg THC + 30mg CBG Blood Orange"
+                  loading="lazy"
+                />
               </div>
-              <div className="a-icons-item">
-                <img
-                  className="a-icons-icon"
-                  src="/icons/consistent-formulation.svg"
-                  alt=""
-                  aria-hidden="true"
-                />
-                <div className="a-icons-content">
-                  <div className="a-icons-title">Consistent &amp; Reliable Formulation</div>
-                  <p className="a-icons-body">
-                    Carefully blended in small batches, our proprietary
-                    nano-emulsification means you'll enjoy reliable experiences
-                    with each and every can.
-                  </p>
+              <div className="a-icons-list">
+                <div className="a-icons-item">
+                  <img
+                    className="a-icons-icon"
+                    src="/icons/real-fruit.svg"
+                    alt=""
+                    aria-hidden="true"
+                  />
+                  <div className="a-icons-content">
+                    <div className="a-icons-title">Real Fruit, Real Flavor</div>
+                    <p className="a-icons-body">
+                      Real fruit flavors and natural ingredients ensure a delicious
+                      experience without any weedy aftertastes.
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="a-icons-item">
-                <img
-                  className="a-icons-icon"
-                  src="/icons/elevated-experience.svg"
-                  alt=""
-                  aria-hidden="true"
-                />
-                <div className="a-icons-content">
-                  <div className="a-icons-title">Elevated Experience</div>
-                  <p className="a-icons-body">
-                    From first sip to full effect, our carefully chosen flavors
-                    offer a balanced, enjoyable experience that feels as good as
-                    it tastes.
-                  </p>
+                <div className="a-icons-item">
+                  <img
+                    className="a-icons-icon"
+                    src="/icons/consistent-formulation.svg"
+                    alt=""
+                    aria-hidden="true"
+                  />
+                  <div className="a-icons-content">
+                    <div className="a-icons-title">Consistent &amp; Reliable Formulation</div>
+                    <p className="a-icons-body">
+                      Carefully blended in small batches, our proprietary
+                      nano-emulsification means you'll enjoy reliable experiences
+                      with each and every can.
+                    </p>
+                  </div>
+                </div>
+                <div className="a-icons-item">
+                  <img
+                    className="a-icons-icon"
+                    src="/icons/elevated-experience.svg"
+                    alt=""
+                    aria-hidden="true"
+                  />
+                  <div className="a-icons-content">
+                    <div className="a-icons-title">Elevated Experience</div>
+                    <p className="a-icons-body">
+                      From first sip to full effect, our carefully chosen flavors
+                      offer a balanced, enjoyable experience that feels as good as
+                      it tastes.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
