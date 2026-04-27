@@ -103,21 +103,24 @@ export function SiteFooter() {
               <li><a href="/about">About</a></li>
               <li><a href="/contact">Contact</a></li>
               <li><a href="/contact?topic=wholesale">Wholesale</a></li>
-              <li><a href="/contact?topic=press">Press</a></li>
-              <li><a href="#">Careers</a></li>
+              <li><a href="https://marketing8710.wixstudio.com/beverage-manufacture/blank" target="_blank" rel="noopener noreferrer">COAs</a></li>
             </ul>
           </div>
 
           {/* ── Support column ── */}
+          {/* Five links covering customer-facing policies: FAQs (informational, */}
+          {/* placeholder URL pending FAQ page), Shipping Policy (placeholder),  */}
+          {/* Refund Policy (live route), Privacy Policy (live route), Terms of */}
+          {/* Service (placeholder pending Legal). Hierarchy is informational    */}
+          {/* first, then legal.                                                 */}
           <div className="footer-col">
             <div className="footer-col-label">Support</div>
             <ul>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">Shipping</a></li>
-              <li><a href="/returns">Returns</a></li>
-              <li><a href="#">Track Order</a></li>
-              <li><a href="https://marketing8710.wixstudio.com/beverage-manufacture/blank" target="_blank" rel="noopener noreferrer">COAs</a></li>
-              <li><a href="#">Age Verification</a></li>
+              <li><a href="#">FAQs</a></li>
+              <li><a href="#">Shipping Policy</a></li>
+              <li><a href="/refund-policy">Refund Policy</a></li>
+              <li><a href="/privacy-policy">Privacy Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
             </ul>
           </div>
 
@@ -142,21 +145,22 @@ export function SiteFooter() {
         </div>
 
         {/* ── Disclaimer ── */}
+        {/* Full-width compliance disclaimer. Mini "CONSUME RESPONSIBLY"      */}
+        {/* header acts as a section label so the regulatory copy below reads */}
+        {/* as a deliberate consumer-safety block, not anonymous fine print.  */}
         <div className="footer-disclaimer">
           <div className="footer-disclaimer-inner">
+            <div className="footer-disclaimer-heading">Consume Responsibly</div>
             Hemp-derived Delta-9 THC products. For adults 21 and over. Do not drive or operate machinery after consumption. Keep out of reach of children and pets. These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Contains hemp-derived cannabinoids. Compliant with the 2018 Farm Bill.
           </div>
         </div>
 
         {/* ── Legal bar ── */}
+        {/* Reduced to copyright only. Terms / Privacy / Refund Policy now    */}
+        {/* live in the Support column; Accessibility + "Do Not Sell My Info" */}
+        {/* are intentionally omitted until destination pages are stood up.   */}
         <div className="footer-legal">
           <div className="footer-copyright">© 2026 SUNRISE Beverage. All Rights Reserved.</div>
-          <div className="footer-legal-links">
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Accessibility</a>
-            <a href="#">Do Not Sell My Info</a>
-          </div>
         </div>
       </div>
     </footer>
