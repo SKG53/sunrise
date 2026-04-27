@@ -27,6 +27,14 @@ import {
 import { getShopifyMapping } from "@/lib/shopifyProductMap";
 import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import { useCartStore } from "@/stores/cartStore";
+// PD claim-strip icons — imported as raw SVG strings so they can be inlined
+// via dangerouslySetInnerHTML. The src/ versions use `fill: currentColor` for
+// the icon shape (cls-2), letting the parent's CSS `color` drive per-flavor
+// recoloring at runtime. The wordmark text inside (cls-1) stays dark gray as
+// authored. Originals in public/icons/ are unchanged.
+import glutenFreeSvg from "@/assets/icons/gluten-free.svg?raw";
+import naturalVeganSvg from "@/assets/icons/natural-vegan.svg?raw";
+import zeroAlcoholSvg from "@/assets/icons/zero-alcohol.svg?raw";
 import "./products_.$slug.css";
 
 // ── TYPES ────────────────────────────────────────────────────────────────
