@@ -556,11 +556,8 @@ function ProductsPage() {
         <section className="p-faq">
           <div className="container">
             <h2 className="p-faq-headline">
-              Frequently <span className="accent">asked</span>
+              What are people <span className="accent">asking?</span>
             </h2>
-            <p className="p-faq-subhead">
-              The questions shoppers actually ask. If yours isn't here, reach us at hello@savorsunrise.com.
-            </p>
             <div className="p-faq-list">
               {FAQS.map((item, i) => {
                 const isOpen = openFaq === i;
