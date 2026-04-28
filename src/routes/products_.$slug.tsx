@@ -707,7 +707,7 @@ function ProductDetailPage() {
                     <div className="pd-related-descriptor">{o.descriptor}</div>
                   </div>
                   <div className="pd-related-cta">
-                    <span className="pd-related-cta-label">Explore</span>
+                    <span className="pd-related-cta-label">Buy Now</span>
                     <span className="pd-related-cta-arrow">→</span>
                   </div>
                   {o.cannabinoid && (
