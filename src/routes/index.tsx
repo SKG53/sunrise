@@ -298,29 +298,40 @@ function HomePage() {
                   card.tier === 30 ? lockup30CardRef :
                                      lockup60CardRef;
                 return (
-                  <Link
-                    key={card.slug}
-                    to="/products/$slug"
-                    params={{ slug: card.slug }}
-                    className="s03-card"
-                  >
-                    <div className="s03-card-can" style={{ background: card.color }}>
-                      <img
-                        src={`/images/cans/${card.slug}.webp`}
-                        alt={`SUNRISE ${card.tier}mg THC ${card.flavor} hemp-infused seltzer can`}
-                        loading="lazy"
-                      />
-                      <span
-                        className="s03-card-tier"
-                        ref={ref}
-                        aria-label={`${card.tier} milligram THC`}
-                      />
+                  <div key={card.slug} className="s03-card">
+                    <Link
+                      to="/products/$slug"
+                      params={{ slug: card.slug }}
+                      className="s03-card-link"
+                    >
+                      <div className="s03-card-can" style={{ background: card.color }}>
+                        <img
+                          src={`/images/cans/${card.slug}.webp`}
+                          alt={`SUNRISE ${card.tier}mg THC ${card.flavor} hemp-infused seltzer can`}
+                          loading="lazy"
+                        />
+                        <span
+                          className="s03-card-tier"
+                          ref={ref}
+                          aria-label={`${card.tier} milligram THC`}
+                        />
+                      </div>
+                      <div className="s03-card-meta">
+                        <div className="s03-card-name">{card.flavor}</div>
+                        <div className="s03-card-descriptor">{card.descriptor}</div>
+                      </div>
+                    </Link>
+                    <div className="s03-card-cta">
+                      <Link
+                        to="/products/$slug"
+                        params={{ slug: card.slug }}
+                        className="btn btn-flavor"
+                        style={{ ["--flavor-color" as string]: card.color } as React.CSSProperties}
+                      >
+                        Buy Now
+                      </Link>
                     </div>
-                    <div className="s03-card-meta">
-                      <div className="s03-card-name">{card.flavor}</div>
-                      <div className="s03-card-descriptor">{card.descriptor}</div>
-                    </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
