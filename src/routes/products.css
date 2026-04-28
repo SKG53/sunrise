@@ -353,9 +353,11 @@
   object-position: center;
 }
 .p-flavor-meta {
-  padding: calc(var(--base) * 0.42) calc(var(--base) * 0.38) calc(var(--base) * 0.46);
+  padding: calc(var(--base) * 0.42) calc(var(--base) * 0.38) calc(var(--base) * 0.32);
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: calc(var(--base) * 0.1);
 }
 .p-flavor-name {
@@ -366,6 +368,7 @@
   text-transform: uppercase;
   color: var(--cream);
   line-height: 1.1;
+  text-align: center;
 }
 .p-flavor-descriptor {
   font-size: calc(var(--base) * 0.22);
@@ -373,10 +376,11 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(254, 251, 224, 0.7);
+  text-align: center;
 }
 .p-flavor-pill {
   display: inline-block;
-  align-self: flex-start;
+  align-self: center;
   padding: calc(var(--base) * 0.08) calc(var(--base) * 0.24);
   border: 1px solid rgba(254, 251, 224, 0.45);
   border-radius: 9999px;
@@ -387,16 +391,99 @@
   color: var(--cream);
   margin-top: calc(var(--base) * 0.18);
 }
-/* Cannabinoid lockup badge — absolute-positioned in card's bottom-right     */
-/* corner on +CBG / +CBN / +THCV flavors. Sibling of .p-flavor-meta (not    */
-/* nested inside it) so position is anchored to the full card, not the      */
-/* meta padding box. pointer-events: none lets clicks still hit the link.    */
+
+/* CTA footer — sibling of .p-flavor-meta, sits at the bottom of the card.
+   Mirrors the home s06-card-footer pattern (border-top rule + label/arrow
+   row with hover wipe), but centered horizontally per founder direction so
+   it pairs with the now-centered name/descriptor/pill above it. The pill
+   pseudo wipes left-to-right on hover; on completion the cream pill fills
+   the row, label and arrow flip to the active tier color, and the arrow
+   does the s06 dance. Cross-page CTA visual language stays consistent.   */
+.p-flavor-cta {
+  margin: calc(var(--base) * 0.1) calc(var(--base) * 0.38) calc(var(--base) * 0.42);
+  padding-top: calc(var(--base) * 0.2);
+  border-top: 1px solid rgba(254, 251, 224, 0.28);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--base) * 0.18);
+  font-size: calc(var(--base) * 0.235);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream);
+  position: relative;
+}
+.p-flavor-cta::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--base) * 0.123) calc(var(--base) * -0.15) calc(var(--base) * -0.077) calc(var(--base) * -0.15);
+  background: #FEFBE0;
+  border-radius: 4px;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 400ms ease-out;
+  z-index: 0;
+}
+.p-flavor-cta > * {
+  position: relative;
+  z-index: 1;
+}
+.p-flavor-cta-label {
+  line-height: 1;
+  transition: color 200ms ease-out;
+}
+.p-flavor-cta-arrow {
+  display: inline-block;
+  font-size: 1.35em;
+  line-height: 1;
+  transition: color 200ms ease-out;
+}
+/* Hover: pill wipes; label and arrow flip to the active tier color. The
+   --tier-color custom prop is set by .p-panel via inline style (each tier
+   panel paints its own background) — to surface it here we read it from
+   the panel ancestor via :where(.p-panel) on the cascade. Fallback to gold
+   so the hover state is never invisible.                                  */
+.p-flavor-card:hover .p-flavor-cta::before { clip-path: inset(0 0 0 0); }
+.p-flavor-card:hover .p-flavor-cta-label,
+.p-flavor-card:hover .p-flavor-cta-arrow {
+  color: var(--p-tier-color, var(--gold));
+}
+.p-flavor-card:hover .p-flavor-cta-arrow {
+  animation: p-flavor-arrow-dance 400ms ease-out;
+}
+@keyframes p-flavor-arrow-dance {
+  0%   { margin-left: 0;   opacity: 1; }
+  25%  { margin-left: 0;   opacity: 0; }
+  26%  { margin-left: -25%; opacity: 0; }
+  100% { margin-left: 0;   opacity: 1; }
+}
+
+/* Cannabinoid lockup — vertical strip on the card's right edge, visually
+   centered. Span fills card height as a flex container; child lockup is
+   rotated -90deg (CCW) so the cannabinoid word reads bottom-to-top. The
+   strip's content lands over the can area (the card's vertical center
+   falls within the can portion at 3:4), so the lockup is painted in cream
+   for on-color contrast against the tier-flooded panel showing through
+   the semi-transparent card background. pointer-events: none keeps the
+   click on the parent <a>. Mirrors the .pd-related-corner pattern so the
+   Products grid and the PD related grid feel like the same component.   */
 .p-flavor-corner {
   position: absolute;
-  right: calc(var(--base) * 0.38);
-  bottom: calc(var(--base) * 0.42);
-  line-height: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: calc(var(--base) * 1.0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
+  z-index: 2;
+}
+.p-flavor-corner > * {
+  display: inline-block;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  white-space: nowrap;
 }
 
 /* ── WHAT'S INSIDE (ported from about.css) ──────────────────────────────── */

@@ -399,6 +399,15 @@
 .pd-related {
   padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
 }
+/* Scoped centering for the related-products section heading only — keeps
+   the FAQ heading (which also uses .pd-section-head) left-aligned per its
+   existing visual rhythm. Founder request: center this heading so it pairs
+   with the now-centered name/descriptor/CTA stack on each card below.    */
+.pd-related .pd-section-head { text-align: center; }
+.pd-related .pd-section-headline {
+  margin-left: auto;
+  margin-right: auto;
+}
 .pd-related-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -444,10 +453,12 @@
   object-position: center;
 }
 .pd-related-meta {
-  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.32) calc(var(--base) * 0.4);
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.32) calc(var(--base) * 0.28);
   background: var(--cream);
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: calc(var(--base) * 0.1);
 }
 .pd-related-name {
@@ -458,6 +469,7 @@
   text-transform: uppercase;
   color: var(--near-black);
   line-height: 1.2;
+  text-align: center;
 }
 .pd-related-descriptor {
   font-family: 'Montserrat', sans-serif;
@@ -466,6 +478,69 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--green-accent);
+  text-align: center;
+}
+
+/* CTA footer — sibling of .pd-related-meta. Mirrors the .p-flavor-cta
+   pattern on the Products grid so the two grids feel like the same
+   component. Colors invert: PD related cards are cream-on-cream so the
+   default state is near-black label/arrow on cream, and the hover-wipe
+   pseudo paints the row in the SKU's flavor color (--pd-related-color
+   set via inline style on each .pd-related-card). Label and arrow flip
+   to cream once the wipe completes for max contrast against the flood. */
+.pd-related-cta {
+  margin: 0 calc(var(--base) * 0.32) calc(var(--base) * 0.32);
+  padding-top: calc(var(--base) * 0.2);
+  border-top: 1px solid var(--warm-gray-faint);
+  background: var(--cream);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--base) * 0.18);
+  font-size: calc(var(--base) * 0.235);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  position: relative;
+}
+.pd-related-cta::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--base) * 0.123) calc(var(--base) * -0.15) calc(var(--base) * -0.077) calc(var(--base) * -0.15);
+  background: var(--pd-related-color, var(--green-accent));
+  border-radius: 4px;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 400ms ease-out;
+  z-index: 0;
+}
+.pd-related-cta > * {
+  position: relative;
+  z-index: 1;
+}
+.pd-related-cta-label {
+  line-height: 1;
+  transition: color 200ms ease-out;
+}
+.pd-related-cta-arrow {
+  display: inline-block;
+  font-size: 1.35em;
+  line-height: 1;
+  transition: color 200ms ease-out;
+}
+.pd-related-card:hover .pd-related-cta::before { clip-path: inset(0 0 0 0); }
+.pd-related-card:hover .pd-related-cta-label,
+.pd-related-card:hover .pd-related-cta-arrow {
+  color: var(--cream);
+}
+.pd-related-card:hover .pd-related-cta-arrow {
+  animation: pd-related-arrow-dance 400ms ease-out;
+}
+@keyframes pd-related-arrow-dance {
+  0%   { margin-left: 0;    opacity: 1; }
+  25%  { margin-left: 0;    opacity: 0; }
+  26%  { margin-left: -25%; opacity: 0; }
+  100% { margin-left: 0;    opacity: 1; }
 }
 /* Cannabinoid lockup — vertical strip on the card's right edge,            */
 /* visually centered. Span fills card height as a flex container; child     */
