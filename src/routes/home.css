@@ -143,11 +143,11 @@
 
 /* ── SECTION 03 · ORIGIN ────────────────────────────────────────────────── */
 /* ── SECTION 03 · PRODUCT INTRO ─────────────────────────────────────────── */
-/* Centered typographic statement inside .container, followed by an edge-to- */
-/* edge continuously scrolling can strip (.s03-reel) pulled OUT of the      */
-/* container so cans run past the text column on both sides. Track holds    */
-/* two identical copies of S03_CANS; animation translates 0 → -50% for a    */
-/* seamless loop. Hover pauses. prefers-reduced-motion disables animation.  */
+/* Centered typographic statement inside .container, followed by a 4-up    */
+/* grid of PD-style tier cards (one per potency). Cards mirror the PD page */
+/* related-flavor pattern: flavor-color flooded can frame on top, meta     */
+/* block (name + descriptor) below, potency lockup painted in cream over  */
+/* the flood as a top-left corner badge.                                   */
 .s03-product-intro {
   background: var(--cream);
   padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
@@ -178,47 +178,87 @@
   max-width: 58ch;
   margin: 0;
 }
-/* ── CAN REEL (edge-to-edge marquee) ───────────────────────────────────── */
-.s03-reel {
+/* ── 4-CARD TIER GRID ─────────────────────────────────────────────────── */
+/* Mirrors PD .pd-related-grid / .pd-related-card geometry exactly so the  */
+/* visual language stays consistent between home and product detail. The   */
+/* potency-lockup overlay (.s03-card-tier) is the one home-only addition,  */
+/* positioned in the can-frame's top-left so it floats over the flavor     */
+/* flood without colliding with the centered can image.                    */
+.s03-card-grid {
   width: 100%;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: calc(var(--base) * 0.4);
   margin-top: calc(var(--base) * 1.0);
-  /* Decorative — not interactive. Blocks clicks, drags, right-click-save,  */
-  /* text-cursor on hover, and any future accidental link behavior. Also    */
-  /* makes hover-pause impossible (intentional — reel never stops).         */
-  pointer-events: none;
-  user-select: none;
 }
-.s03-reel-track {
+.s03-card {
+  position: relative;
   display: flex;
-  gap: calc(var(--base) * 2.7);
-  width: max-content;
-  animation: s03-reel-scroll 60s linear infinite;
-  will-change: transform;
+  flex-direction: column;
+  background: var(--cream);
+  border: 1px solid var(--warm-gray-faint);
+  border-radius: 6px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out;
 }
-@keyframes s03-reel-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+.s03-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
+  border-color: var(--near-black);
 }
-.s03-reel-tile {
-  flex: 0 0 auto;
-  /* Tile height calibrated against source-image crop tightness. Current       */
-  /* cans fill ~94.3% of their frame height vs. the prior generation's 79.2%.  */
-  /* Scaling factor 0.792 / 0.943 ≈ 0.840 applied to all breakpoints keeps the */
-  /* visible can the same on-screen size as before despite the tighter crop.   */
-  height: calc(var(--base) * 6.95);
+.s03-card-can {
+  position: relative;
+  aspect-ratio: 3 / 4;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: calc(var(--base) * 0.3);
+  overflow: hidden;
 }
-.s03-reel-tile img {
-  height: 100%;
-  width: auto;
+.s03-card-can img {
+  width: 75%;
+  height: 75%;
   object-fit: contain;
-  display: block;
+  object-position: center;
 }
-@media (prefers-reduced-motion: reduce) {
-  .s03-reel-track { animation: none; }
+/* Potency lockup overlay — top-left of the flavor-flood can frame.        */
+/* Cream-painted by the locked render*mgLockup helpers, sized smaller than */
+/* the s06 tier-card lockups (28 mobile / 44 desktop) so it reads as a     */
+/* badge rather than the dominant element. pointer-events disabled so      */
+/* clicks pass through to the parent <Link>.                               */
+.s03-card-tier {
+  position: absolute;
+  top: calc(var(--base) * 0.24);
+  left: calc(var(--base) * 0.32);
+  display: inline-block;
+  pointer-events: none;
+  z-index: 2;
+}
+.s03-card-meta {
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.32) calc(var(--base) * 0.4);
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.1);
+}
+.s03-card-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.33);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.2;
+}
+.s03-card-descriptor {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green-accent);
 }
 
 /* ── SECTION 04 · WHAT'S INSIDE ─────────────────────────────────────────── */
@@ -754,7 +794,7 @@
   }
   .s06-grid { grid-template-columns: repeat(2, 1fr); }
   .s02-manifesto-stack { --s02-stack-width: 78%; }
-  .s03-reel-tile { height: calc(var(--base) * 5.7); }
+  .s03-card-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {
   .home-hero { height: 440px; }
@@ -763,7 +803,6 @@
   .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }
   .s09-card { width: calc(var(--base) * 8); }
-  .s03-reel-tile { height: calc(var(--base) * 4.7); }
   /* Section headlines — match subpage S02 responsive scale (1.5 → 1.35). */
   .s03-pi-headline,
   .s04-headline,
@@ -775,5 +814,4 @@
 @media (max-width: 520px) {
   .s02-manifesto-stack { --s02-stack-width: 100%; }
   .s09-card { width: calc(var(--base) * 7); }
-  .s03-reel-tile { height: calc(var(--base) * 4.1); }
 }
