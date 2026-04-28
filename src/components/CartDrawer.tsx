@@ -77,11 +77,34 @@ export function CartDrawer() {
         <div className="cart-overlay" onClick={() => setIsOpen(false)} aria-hidden="true" />
       )}
 
+      {/* Drawer is always in the DOM so the slide-in/slide-out CSS transition
+          on .cart-drawer { transform } can fire in both directions. Inline
+          style is a defensive fallback — it guarantees position:fixed and
+          the off-screen translate even if the route-scoped stylesheet that
+          carries .cart-drawer hasn't loaded yet (or has been clobbered by a
+          page-transition stylesheet swap). Without it, an unstyled <aside>
+          would fall into the .nav-right flex flow and leak its content
+          inline next to the SHOP button. The class-based transform still
+          drives the animation; inline values just establish a safe baseline.
+          Inline `transform` does win specificity-wise over the class rule,
+          but since the inline value mirrors what the class would produce
+          (translateX(100%) ↔ translateX(0)) and the `transition` property
+          stays on the class, the animation behaves identically.            */}
       <aside
         className={`cart-drawer ${isOpen ? "is-open" : ""}`}
         role="dialog"
         aria-label="Shopping cart"
         aria-hidden={!isOpen}
+        style={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          width: "100%",
+          maxWidth: "420px",
+          height: "100vh",
+          transform: isOpen ? "translateX(0)" : "translateX(100%)",
+          zIndex: 9999,
+        }}
       >
         <header className="cart-header">
           <h2 className="cart-title">Your Cart</h2>

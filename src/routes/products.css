@@ -308,7 +308,14 @@
   max-width: 44ch;
 }
 
-/* ── FLAVOR GRID (unchanged) ────────────────────────────────────────────── */
+/* ── FLAVOR GRID ────────────────────────────────────────────────────────── */
+/* v3 (this revision): cream-themed cards mirroring the PD related-card
+   pattern. Replaces the prior dark cream-on-tier card styling per founder
+   feedback. Each card sets its own --flavor-color via inline style, which
+   floods the can container and paints the BUY NOW CTA. The CTA is pinned
+   to card bottom via margin-top: auto so all CTAs align horizontally
+   across the row regardless of whether the card has the cannabinoid pill
+   below the descriptor.                                                   */
 .p-flavor-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -318,29 +325,32 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background: rgba(254, 251, 224, 0.08);
-  border: 1px solid rgba(254, 251, 224, 0.18);
-  border-radius: 4px;
+  background: var(--cream);
+  border: 1px solid var(--warm-gray-faint);
+  border-radius: 6px;
   overflow: hidden;
-  transition: all 200ms ease-out;
+  text-decoration: none;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out;
   cursor: pointer;
 }
 .p-flavor-card:hover {
-  background: rgba(254, 251, 224, 0.14);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
+  border-color: var(--near-black);
 }
 .p-flavor-can {
   position: relative;
   aspect-ratio: 3 / 4;
-  background: rgba(254, 251, 224, 0.09);
+  background: var(--flavor-color, rgba(26, 26, 26, 0.04));
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: calc(var(--base) * 0.3);
   font-size: calc(var(--base) * 0.18);
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(254, 251, 224, 0.38);
+  color: rgba(254, 251, 224, 0.55);
   overflow: hidden;
 }
 .p-flavor-can:not(.has-image)::before {
