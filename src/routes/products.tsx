@@ -439,6 +439,7 @@ function ProductsPage() {
                     href={`/products/${toSlug(activeTier, f)}`}
                     className="p-flavor-card"
                     aria-label={`${f.name} — ${tier.name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ""}`}
+                    style={{ ["--flavor-color" as string]: f.flavorColor } as React.CSSProperties}
                   >
                     <FlavorCan slug={toSlug(activeTier, f)} flavorName={f.name} />
                     <div className="p-flavor-meta">
@@ -451,7 +452,7 @@ function ProductsPage() {
                       )}
                     </div>
                     <div className="p-flavor-cta">
-                      <span className="p-flavor-cta-label">Explore</span>
+                      <span className="p-flavor-cta-label">Buy Now</span>
                       <span className="p-flavor-cta-arrow">→</span>
                     </div>
                     {f.cannabinoid && (

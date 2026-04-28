@@ -308,7 +308,14 @@
   max-width: 44ch;
 }
 
-/* ── FLAVOR GRID (unchanged) ────────────────────────────────────────────── */
+/* ── FLAVOR GRID ────────────────────────────────────────────────────────── */
+/* v3 (this revision): cream-themed cards mirroring the PD related-card
+   pattern. Replaces the prior dark cream-on-tier card styling per founder
+   feedback. Each card sets its own --flavor-color via inline style, which
+   floods the can container and paints the BUY NOW CTA. The CTA is pinned
+   to card bottom via margin-top: auto so all CTAs align horizontally
+   across the row regardless of whether the card has the cannabinoid pill
+   below the descriptor.                                                   */
 .p-flavor-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -318,29 +325,32 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background: rgba(254, 251, 224, 0.08);
-  border: 1px solid rgba(254, 251, 224, 0.18);
-  border-radius: 4px;
+  background: var(--cream);
+  border: 1px solid var(--warm-gray-faint);
+  border-radius: 6px;
   overflow: hidden;
-  transition: all 200ms ease-out;
+  text-decoration: none;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out;
   cursor: pointer;
 }
 .p-flavor-card:hover {
-  background: rgba(254, 251, 224, 0.14);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
+  border-color: var(--near-black);
 }
 .p-flavor-can {
   position: relative;
   aspect-ratio: 3 / 4;
-  background: rgba(254, 251, 224, 0.09);
+  background: var(--flavor-color, rgba(26, 26, 26, 0.04));
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: calc(var(--base) * 0.3);
   font-size: calc(var(--base) * 0.18);
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(254, 251, 224, 0.38);
+  color: rgba(254, 251, 224, 0.55);
   overflow: hidden;
 }
 .p-flavor-can:not(.has-image)::before {
@@ -354,6 +364,7 @@
 }
 .p-flavor-meta {
   padding: calc(var(--base) * 0.42) calc(var(--base) * 0.38) calc(var(--base) * 0.32);
+  background: var(--cream);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -362,100 +373,74 @@
 }
 .p-flavor-name {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.32);
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-size: calc(var(--base) * 0.34);
+  font-weight: 900;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: var(--cream);
-  line-height: 1.1;
+  color: var(--near-black);
+  line-height: 1.15;
   text-align: center;
 }
 .p-flavor-descriptor {
+  font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.22);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(254, 251, 224, 0.7);
+  color: var(--green-accent);
   text-align: center;
 }
 .p-flavor-pill {
   display: inline-block;
   align-self: center;
   padding: calc(var(--base) * 0.08) calc(var(--base) * 0.24);
-  border: 1px solid rgba(254, 251, 224, 0.45);
+  border: 1px solid var(--flavor-color, var(--warm-gray-faint));
   border-radius: 9999px;
   font-size: calc(var(--base) * 0.18);
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--cream);
-  margin-top: calc(var(--base) * 0.18);
+  color: var(--flavor-color, var(--near-black));
+  margin-top: calc(var(--base) * 0.15);
 }
 
-/* CTA footer — sibling of .p-flavor-meta, sits at the bottom of the card.
-   Mirrors the home s06-card-footer pattern (border-top rule + label/arrow
-   row with hover wipe), but centered horizontally per founder direction so
-   it pairs with the now-centered name/descriptor/pill above it. The pill
-   pseudo wipes left-to-right on hover; on completion the cream pill fills
-   the row, label and arrow flip to the active tier color, and the arrow
-   does the s06 dance. Cross-page CTA visual language stays consistent.   */
+/* CTA — solid filled pill in the SKU's flavor color, cream label/arrow.
+   margin-top: auto pins it to the bottom of the card so all CTAs align
+   horizontally across a row regardless of meta-block height (cards with
+   the cannabinoid pill are otherwise taller than base-flavor cards).
+   Slight darken on hover via `filter` so the button reads as interactive
+   without depending on a separate hover background color.                */
 .p-flavor-cta {
-  margin: calc(var(--base) * 0.1) calc(var(--base) * 0.38) calc(var(--base) * 0.42);
-  padding-top: calc(var(--base) * 0.2);
-  border-top: 1px solid rgba(254, 251, 224, 0.28);
+  margin: auto calc(var(--base) * 0.38) calc(var(--base) * 0.42);
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.5);
+  background: var(--flavor-color, var(--near-black));
+  border-radius: 9999px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--base) * 0.18);
-  font-size: calc(var(--base) * 0.235);
+  gap: calc(var(--base) * 0.22);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.255);
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--cream);
-  position: relative;
+  transition: filter 180ms ease-out, transform 180ms ease-out;
 }
-.p-flavor-cta::before {
-  content: "";
-  position: absolute;
-  inset: calc(var(--base) * 0.123) calc(var(--base) * -0.15) calc(var(--base) * -0.077) calc(var(--base) * -0.15);
-  background: #FEFBE0;
-  border-radius: 4px;
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 400ms ease-out;
-  z-index: 0;
-}
-.p-flavor-cta > * {
-  position: relative;
-  z-index: 1;
+.p-flavor-card:hover .p-flavor-cta {
+  filter: brightness(0.92);
 }
 .p-flavor-cta-label {
   line-height: 1;
-  transition: color 200ms ease-out;
 }
 .p-flavor-cta-arrow {
   display: inline-block;
-  font-size: 1.35em;
+  font-size: 1.15em;
   line-height: 1;
-  transition: color 200ms ease-out;
-}
-/* Hover: pill wipes; label and arrow flip to the active tier color. The
-   --tier-color custom prop is set by .p-panel via inline style (each tier
-   panel paints its own background) — to surface it here we read it from
-   the panel ancestor via :where(.p-panel) on the cascade. Fallback to gold
-   so the hover state is never invisible.                                  */
-.p-flavor-card:hover .p-flavor-cta::before { clip-path: inset(0 0 0 0); }
-.p-flavor-card:hover .p-flavor-cta-label,
-.p-flavor-card:hover .p-flavor-cta-arrow {
-  color: var(--p-tier-color, var(--gold));
+  transition: transform 180ms ease-out;
 }
 .p-flavor-card:hover .p-flavor-cta-arrow {
-  animation: p-flavor-arrow-dance 400ms ease-out;
-}
-@keyframes p-flavor-arrow-dance {
-  0%   { margin-left: 0;   opacity: 1; }
-  25%  { margin-left: 0;   opacity: 0; }
-  26%  { margin-left: -25%; opacity: 0; }
-  100% { margin-left: 0;   opacity: 1; }
+  transform: translateX(calc(var(--base) * 0.08));
 }
 
 /* Cannabinoid lockup — vertical strip on the card's right edge, visually
