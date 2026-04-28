@@ -199,14 +199,22 @@
   border: 1px solid var(--warm-gray-faint);
   border-radius: 6px;
   overflow: hidden;
-  text-decoration: none;
-  color: inherit;
   transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out;
 }
 .s03-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
   border-color: var(--near-black);
+}
+/* Inner Link wrapping can-frame + meta-text. Card itself can't be a Link
+   anymore (would invalidate nesting the Buy Now Link inside it), so the
+   clickable upper-card affordance lives here. text-decoration + color
+   reset so the painted name/descriptor render exactly as before.        */
+.s03-card-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
 }
 .s03-card-can {
   position: relative;
@@ -237,7 +245,7 @@
   z-index: 2;
 }
 .s03-card-meta {
-  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.32) calc(var(--base) * 0.4);
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.32) calc(var(--base) * 0.2);
   background: var(--cream);
   display: flex;
   flex-direction: column;
@@ -259,6 +267,24 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--green-accent);
+}
+/* Buy Now CTA — full-width btn-flavor inside the card's cream lower       */
+/* portion. Reuses the global .btn system so wipe + arrow dance + color    */
+/* flip behave identically to every other site CTA. Each card sets         */
+/* --flavor-color inline (matching the can-frame flood), so each button    */
+/* solid-fills in its tier flavor and inverts to cream-on-flavor on hover. */
+/* min-width override is required because the global .btn-flavor min-width */
+/* (5.5×base ≈ 245px) would overflow a ~245px card interior at the locked  */
+/* 1100 viewport. Width 100% stretches the button to card width; standard  */
+/* internal padding is preserved so the button system stays uniform.       */
+.s03-card-cta {
+  padding: calc(var(--base) * 0.1) calc(var(--base) * 0.32) calc(var(--base) * 0.4);
+  background: var(--cream);
+}
+.s03-card-cta .btn {
+  display: flex;
+  width: 100%;
+  min-width: 0;
 }
 
 /* ── SECTION 04 · WHAT'S INSIDE ─────────────────────────────────────────── */
