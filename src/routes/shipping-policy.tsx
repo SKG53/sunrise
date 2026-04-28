@@ -11,7 +11,7 @@ export const Route = createFileRoute("/shipping-policy")({
       {
         name: "description",
         content:
-          "How SUNRISE Beverage processes, ships, and delivers your order. Includes processing times, shipping regions, restricted destinations, and what to do if something arrives damaged or never arrives.",
+          "How SUNRISE Beverage processes, ships, and delivers your order. Adult signature 21+ required at delivery. Continental US only; restricted-state list updated as regulations change.",
       },
     ],
     links: [
@@ -24,20 +24,8 @@ export const Route = createFileRoute("/shipping-policy")({
 // Structural mirror of /privacy-policy, /refund-policy, /terms-of-service:
 // SiteHeader → tier-30 pagehero with animated character entrance → cream
 // policy body in 68ch reading column → SiteFooter. Class prefix .sp-*
-// parallel to .pp-*, .rp-*, .tos-*. Tier-30 green is the Support/Policy
-// category color shared across all four policy pages.
-//
-// Content per founder direction (deliberate omissions noted):
-//   · Continental US only; no PO boxes, no APO/FPO
-//   · State restrictions described generically (regulatory updates), no list
-//   · No carrier names — carrier selected per order
-//   · No signature requirement called out
-//   · 72-hour processing window; checkout-quoted shipping speeds; 10-day
-//     no-confirmation/no-delivery trigger to reach out
-//   · No seasonal/heat handling section — generic "utmost care" language
-//   · Damage/issue window: 48 hours; cross-reference to Refund Policy
-//   · Lost / never-received / wrong-address all folded into the single
-//     10-day outreach trigger — no separate scenario carve-outs
+// parallel to .pp-*, .rp-*, .tos-*, .av-*, .sm-*, .acc-*. Tier-30 green
+// is the Support/Policy category color shared across all policy pages.
 function ShippingPolicyPage() {
   return (
     <>
@@ -45,8 +33,6 @@ function ShippingPolicyPage() {
 
       <main>
         {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
-        {/* Tier-30 green flood — Support/Policy category color, matching   */}
-        {/* the other three policy pages. 8-character "Shipping" entrance.   */}
         <section className="sp-pagehero">
           <h1 className="sp-pagehero-title" aria-label="Shipping">
             {"Shipping".split("").map((ch, i) => (
@@ -62,41 +48,105 @@ function ShippingPolicyPage() {
               <h2 className="sp-policy-title">Shipping Policy</h2>
 
               <p className="sp-policy-effective">
-                <strong>Last updated:</strong> April 27, 2026
+                <strong>Last updated:</strong> April 28, 2026
               </p>
 
               <div className="sp-policy-body">
                 <h3 className="sp-policy-heading">Where we ship</h3>
                 <p>
                   SUNRISE Beverage ships to addresses within the continental
-                  United States only, pursuant to any local regulations
-                  restricting the shipment of hemp-infused products. We do
-                  not ship to P.O. boxes or APO/FPO military addresses.
+                  United States only, pursuant to applicable federal, state,
+                  and local regulations restricting the shipment of
+                  hemp-derived cannabinoid products. We do not ship to P.O.
+                  boxes, APO/FPO military addresses, U.S. territories, Alaska,
+                  or Hawaii.
                 </p>
                 <p>
                   Hemp-derived Delta-9 THC products are subject to
                   state-by-state regulations that continue to evolve. We
                   follow local regulations, and shipment to all 50 states is
-                  not possible at this time. Our list of serviceable states
-                  will be updated as regulatory information is updated. If we
-                  are unable to ship to your address, you will be notified at
-                  checkout.
+                  not possible at this time.{" "}
+                  <strong>
+                    As of the effective date of this Shipping Policy, we are
+                    unable to ship to the following states:
+                  </strong>
+                </p>
+                <ul className="sp-policy-list">
+                  <li>Alaska</li>
+                  <li>California</li>
+                  <li>Colorado</li>
+                  <li>Delaware</li>
+                  <li>Hawaii</li>
+                  <li>Idaho</li>
+                  <li>New York</li>
+                  <li>North Dakota</li>
+                  <li>Oregon</li>
+                  <li>Rhode Island</li>
+                  <li>Utah</li>
+                  <li>Vermont</li>
+                  <li>Washington</li>
+                </ul>
+                <p>
+                  This list is updated as state laws change. If your shipping
+                  address is in a state where we cannot deliver, you will be
+                  notified at checkout and your order will not be processed.
                 </p>
 
-                <h3 className="sp-policy-heading">Processing time</h3>
+                <h3 className="sp-policy-heading">Adult signature required (21+)</h3>
                 <p>
-                  Please allow up to 72 hours for us to process your order
-                  after it is placed. Once your order is handed to the
-                  carrier, the standard shipping timeline applies — the
-                  specific timeline for your order will be shown at checkout
-                  based on the shipping option you select.
+                  All deliveries of SUNRISE products require an adult
+                  signature from a person 21 years of age or older. The signer
+                  must:
+                </p>
+                <ul className="sp-policy-list">
+                  <li>Be present at the time of delivery;</li>
+                  <li>Be 21 years of age or older;</li>
+                  <li>
+                    Present a valid government-issued photo ID confirming age,
+                    if requested by the carrier; and
+                  </li>
+                  <li>Sign for the package using their legal name.</li>
+                </ul>
+                <p>
+                  If no qualifying adult is available at the delivery address,
+                  the carrier will leave a notice and attempt redelivery
+                  (typically up to three times). After unsuccessful delivery
+                  attempts, the package will be returned to us.{" "}
+                  <strong>
+                    Packages returned to SUNRISE due to a failed
+                    adult-signature requirement will be refunded for the
+                    product cost only; original and return shipping fees are
+                    non-refundable.
+                  </strong>
                 </p>
                 <p>
-                  If you have not received an order confirmation email, or
-                  if your product has not arrived 10 days after placing your
-                  order, please reach out to us at{" "}
+                  The carrier — not SUNRISE — performs the age check at
+                  delivery. Please ensure that someone 21 or older is
+                  available at the shipping address you provide.
+                </p>
+
+                <h3 className="sp-policy-heading">Carriers and processing time</h3>
+                <p>
+                  We ship via FedEx and UPS. The specific carrier for each
+                  shipment is selected based on destination, order size,
+                  speed, and regulatory requirements.
+                </p>
+                <p>
+                  Please allow up to 72 hours (three business days) for us to
+                  process your order after it is placed. Orders are not
+                  processed or shipped on weekends or federal holidays. During
+                  periods of high order volume or promotional events,
+                  processing may be delayed by an additional one to two
+                  business days.
+                </p>
+                <p>
+                  If you have not received an order confirmation email within
+                  24 hours of placing your order, or if your product has not
+                  arrived ten (10) business days after placing your order,
+                  please reach out to us at{" "}
                   <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>{" "}
-                  and we will look into it.
+                  or <a href="tel:+18776747459">(877) 674-7459</a> and we will
+                  look into it.
                 </p>
 
                 <h3 className="sp-policy-heading">Shipping speeds and rates</h3>
@@ -104,15 +154,36 @@ function ShippingPolicyPage() {
                   Available shipping speeds and the associated rates are
                   shown at checkout before you complete your order. Rates are
                   calculated based on the destination address, the size of
-                  your order, and the speed you select. We choose the
-                  appropriate carrier for each shipment.
+                  your order, and the speed you select. Free or discounted
+                  shipping promotions, when available, will be reflected at
+                  checkout.
+                </p>
+
+                <h3 className="sp-policy-heading">Hot-weather and seasonal shipping</h3>
+                <p>
+                  During warm-weather months (typically May through
+                  September), we may use insulated packaging and ice packs at
+                  no additional cost to help maintain product quality. During
+                  periods of extreme heat, we may also delay shipments by one
+                  or two business days to avoid weekend transit. We are not
+                  responsible for product temperature changes that occur
+                  after delivery; we recommend bringing products indoors
+                  promptly upon arrival.
+                </p>
+
+                <h3 className="sp-policy-heading">Tracking your order</h3>
+                <p>
+                  Once your order ships, you will receive a confirmation
+                  email with carrier tracking information. You can track the
+                  status of your shipment directly through the carrier's
+                  tracking page using the tracking number provided.
                 </p>
 
                 <h3 className="sp-policy-heading">Damaged or defective product</h3>
                 <p>
-                  We take the utmost care in packaging and shipping your
-                  product. If your order arrives damaged, leaking, or
-                  defective in any way, please reach out to us at{" "}
+                  We take care in packaging and shipping your product. If
+                  your order arrives damaged, leaking, or defective in any
+                  way, please reach out to us at{" "}
                   <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>{" "}
                   within 48 hours of delivery. For full details on how we
                   handle damaged orders and refund eligibility, please refer
@@ -132,16 +203,44 @@ function ShippingPolicyPage() {
                   or you have any other concern with the status of your
                   order, please reach out to us at{" "}
                   <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>{" "}
-                  within 10 days of placing your order and we will work with
-                  you to resolve the situation.
+                  within ten (10) business days of placing your order and we
+                  will work with you to resolve the situation.
                 </p>
 
-                <h3 className="sp-policy-heading">Address accuracy</h3>
+                <h3 className="sp-policy-heading">Address accuracy and modifications</h3>
                 <p>
                   Please review your shipping address carefully before
                   submitting your order. We are not able to redirect or
                   refund orders shipped to an incorrect address provided at
                   checkout.
+                </p>
+                <p>
+                  If you need to modify the shipping address on an order that
+                  has not yet been processed, please contact us at{" "}
+                  <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>{" "}
+                  immediately. We will make best efforts to accommodate your
+                  request, but we cannot guarantee modifications once an
+                  order is in fulfillment.
+                </p>
+
+                <h3 className="sp-policy-heading">Refused deliveries</h3>
+                <p>
+                  If you refuse delivery of your order for any reason other
+                  than damage or defect, the package will be returned to us.{" "}
+                  <strong>
+                    Packages refused at delivery are eligible for a refund of
+                    the product cost only; original and return shipping fees
+                    are non-refundable.
+                  </strong>
+                </p>
+
+                <h3 className="sp-policy-heading">State-law changes during transit</h3>
+                <p>
+                  Hemp regulations change frequently. If a destination
+                  state's laws change such that we are unable to lawfully
+                  complete delivery while your order is in transit, we will
+                  work with the carrier to return the order to us and refund
+                  the purchase price (less any non-refundable shipping fees).
                 </p>
 
                 <h3 className="sp-policy-heading">Contact</h3>
@@ -151,6 +250,12 @@ function ShippingPolicyPage() {
                   <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>
                   . You may also call us at{" "}
                   <a href="tel:+18776747459">(877) 674-7459</a>.
+                </p>
+                <p className="sp-policy-address">
+                  SUNRISE Beverage<br />
+                  2032 Utica Square, Unit #52521<br />
+                  Tulsa, OK 74114<br />
+                  United States
                 </p>
               </div>
             </div>

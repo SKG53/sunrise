@@ -11,7 +11,7 @@ export const Route = createFileRoute("/privacy-policy")({
       {
         name: "description",
         content:
-          "How SUNRISE Beverage collects, uses, and discloses your personal information when you visit, use, or make a purchase through our store and website.",
+          "How SUNRISE Beverage collects, uses, and discloses your personal information. Includes Notice at Collection, sensitive PI handling, age verification, retention periods, and state-specific privacy rights.",
       },
     ],
     links: [
@@ -21,12 +21,12 @@ export const Route = createFileRoute("/privacy-policy")({
 });
 
 // ── COMPONENT ────────────────────────────────────────────────────────────
-// Structural mirror of /returns: SiteHeader → tier-30 pagehero with animated
-// character entrance → cream policy body in 68ch reading column → SiteFooter.
-// Reuses the same .pp-* classes structurally parallel to .r-*. Tier-30 green
-// is the Support/Policy category color per the convention established in
-// returns.css ("If a future Support index page is added, it should also use
-// tier-30").
+// Structural mirror of /shipping-policy, /refund-policy, /terms-of-service.
+// v2 (this revision): comprehensive rewrite. Adds CCPA-style Notice at
+// Collection, Sensitive Personal Information section, dedicated Sale/Sharing
+// section, Cookies and Tracking Technologies, SMS section (cross-references
+// /sms-marketing-policy), retention timelines, state-specific disclosures
+// (California, multi-state, Nevada). Class set unchanged from v1.
 function PrivacyPolicyPage() {
   return (
     <>
@@ -34,8 +34,6 @@ function PrivacyPolicyPage() {
 
       <main>
         {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
-        {/* Tier-30 green flood — Support/Policy category color, matching   */}
-        {/* /refund-policy. Same 7-character animated entrance pattern.     */}
         <section className="pp-pagehero">
           <h1 className="pp-pagehero-title" aria-label="Privacy">
             {"Privacy".split("").map((ch, i) => (
@@ -45,23 +43,20 @@ function PrivacyPolicyPage() {
         </section>
 
         {/* ── 02 · POLICY ──────────────────────────────────────────────── */}
-        {/* Page-title (H2) orients the user; structured policy body         */}
-        {/* follows. Same 68ch reading width as /refund-policy. No closer    */}
-        {/* flood / no PTP — policy pages are utility, not marketing.        */}
         <section className="pp-policy">
           <div className="container">
             <div className="pp-policy-inner">
               <h2 className="pp-policy-title">Privacy Policy</h2>
 
               <p className="pp-policy-effective">
-                <strong>Last updated:</strong> April 27, 2026
+                <strong>Last updated:</strong> April 28, 2026
               </p>
 
               <div className="pp-policy-body">
                 <p>
                   SUNRISE Beverage operates this store and website, including
                   all related information, content, features, tools, products,
-                  and services, in order to provide you, the customer, with a
+                  and services in order to provide you, the customer, with a
                   curated shopping experience (the "Services"). SUNRISE
                   Beverage is powered by Shopify, which enables us to provide
                   the Services to you. This Privacy Policy describes how we
@@ -79,6 +74,53 @@ function PrivacyPolicyPage() {
                   read this Privacy Policy and understand the collection, use,
                   and disclosure of your information as described in this
                   Privacy Policy.
+                </p>
+
+                <h3 className="pp-policy-heading">Notice at Collection</h3>
+                <p>
+                  At or before the point of collection, we may collect the
+                  following categories of personal information:
+                </p>
+                <ul className="pp-policy-list">
+                  <li>
+                    <strong>Identifiers</strong> (name, postal address, email
+                    address, account name, IP address, online identifiers)
+                  </li>
+                  <li>
+                    <strong>Customer records</strong> (billing/shipping
+                    address, payment information, telephone number)
+                  </li>
+                  <li>
+                    <strong>Commercial information</strong> (products
+                    purchased, cart contents, transaction history)
+                  </li>
+                  <li>
+                    <strong>Internet or electronic network activity</strong>{" "}
+                    (browsing history, search history, interaction data)
+                  </li>
+                  <li>
+                    <strong>Geolocation data</strong> (general location based
+                    on IP address)
+                  </li>
+                  <li>
+                    <strong>Audio, electronic, visual, or similar information</strong>{" "}
+                    (when you contact customer service or upload an ID for age
+                    verification)
+                  </li>
+                  <li>
+                    <strong>Inferences</strong> drawn from any of the above to
+                    create a consumer profile
+                  </li>
+                </ul>
+                <p>
+                  We use this information for the purposes described in the
+                  "How We Use Your Personal Information" section below. We
+                  retain personal information for the periods described in the
+                  "Retention" section below. We do not sell personal
+                  information for monetary consideration; however, our use of
+                  certain advertising technologies may be considered "sharing"
+                  under applicable state privacy laws, as described in the
+                  "Your Rights and Choices" section.
                 </p>
 
                 <h3 className="pp-policy-heading">Personal Information We Collect or Process</h3>
@@ -133,7 +175,44 @@ function PrivacyPolicyPage() {
                     regarding your interaction with the Services, including
                     how and when you interact with or navigate the Services.
                   </li>
+                  <li>
+                    <strong>Age-verification information</strong> including
+                    date of birth, and (in certain cases) a photograph of a
+                    government-issued identification document submitted to our
+                    third-party age-verification provider.
+                  </li>
                 </ul>
+
+                <h3 className="pp-policy-heading">Sensitive Personal Information</h3>
+                <p>
+                  In limited circumstances we may collect or process the
+                  following categories of "sensitive personal information" as
+                  defined under applicable state privacy law:
+                </p>
+                <ul className="pp-policy-list">
+                  <li>
+                    <strong>Government-issued identification numbers</strong>{" "}
+                    (such as a driver's license number) when submitted to our
+                    third-party age-verification provider.
+                  </li>
+                  <li>
+                    <strong>Financial account information</strong> (in
+                    connection with payment processing).
+                  </li>
+                  <li>
+                    <strong>Precise geolocation</strong> (only if you
+                    affirmatively grant permission).
+                  </li>
+                </ul>
+                <p>
+                  We use sensitive personal information only for the purposes
+                  for which it was collected (age verification, payment
+                  processing, fraud prevention, and to comply with law). We do
+                  not use sensitive personal information for the purpose of
+                  inferring characteristics about you. You have the right to
+                  limit our use of sensitive personal information as described
+                  in the "Your Rights and Choices" section.
+                </p>
 
                 <h3 className="pp-policy-heading">Personal Information Sources</h3>
                 <p>We may collect personal information from the following sources:</p>
@@ -141,8 +220,8 @@ function PrivacyPolicyPage() {
                   <li>
                     <strong>Directly from you</strong> including when you
                     create an account, visit or use the Services, communicate
-                    with us, or otherwise provide us with your personal
-                    information.
+                    with us, complete age verification, or otherwise provide
+                    us with your personal information.
                   </li>
                   <li>
                     <strong>Automatically through the Services</strong>{" "}
@@ -152,8 +231,9 @@ function PrivacyPolicyPage() {
                   </li>
                   <li>
                     <strong>From our service providers</strong> including when
-                    we engage them to enable certain technology and when they
-                    collect or process your personal information on our
+                    we engage them to enable certain technology (including age
+                    verification, payment processing, and shipping) and when
+                    they collect or process your personal information on our
                     behalf.
                   </li>
                   <li>
@@ -170,57 +250,54 @@ function PrivacyPolicyPage() {
                 <ul className="pp-policy-list">
                   <li>
                     <strong>Provide, Tailor, and Improve the Services.</strong>{" "}
-                    We use your personal information to provide you with the
-                    Services, including to perform our contract with you, to
-                    process your payments, to fulfill your orders, to remember
-                    your preferences and items you are interested in, to send
-                    notifications to you related to your account, to process
-                    purchases, returns, exchanges, or other transactions, to
-                    create, maintain, and otherwise manage your account, to
-                    arrange for shipping, to facilitate any returns and
-                    exchanges, to enable you to post reviews, and to create a
-                    customized shopping experience for you, such as
-                    recommending products related to your purchases. This may
-                    include using your personal information to better tailor
-                    and improve the Services.
+                    To provide you with the Services, perform our contract
+                    with you, process your payments, fulfill your orders,
+                    remember your preferences and items you are interested in,
+                    send notifications related to your account, process
+                    purchases, returns, exchanges, or other transactions,
+                    manage your account, arrange for shipping, facilitate any
+                    returns and exchanges, enable you to post reviews, and
+                    create a customized shopping experience.
                   </li>
                   <li>
-                    <strong>Marketing and Advertising.</strong> We use your
-                    personal information for marketing and promotional
-                    purposes, such as to send marketing, advertising, and
-                    promotional communications by email, text message, or
-                    postal mail, and to show you online advertisements for
-                    products or services on the Services or other websites,
-                    including based on items you previously have purchased or
-                    added to your cart and other activity on the Services.
+                    <strong>Age Verification and Compliance.</strong> To
+                    verify your age at the point of entry, at checkout, and at
+                    delivery, and to comply with applicable hemp, cannabis,
+                    and consumer-protection laws.
                   </li>
                   <li>
-                    <strong>Security and Fraud Prevention.</strong> We use
-                    your personal information to authenticate your account,
-                    to provide a secure payment and shopping experience, to
-                    detect, investigate, or take action regarding possible
-                    fraudulent, illegal, unsafe, or malicious activity, to
-                    protect public safety, and to secure our services. If you
-                    choose to use the Services and register an account, you
-                    are responsible for keeping your account credentials safe.
-                    We highly recommend that you do not share your username,
-                    password, or other access details with anyone else.
+                    <strong>Marketing and Advertising.</strong> To send
+                    marketing, advertising, and promotional communications by
+                    email, text message, or postal mail, and to show you
+                    online advertisements for products or services on the
+                    Services or other websites, including based on items you
+                    previously have purchased or added to your cart and other
+                    activity on the Services.
                   </li>
                   <li>
-                    <strong>Communicating with You.</strong> We use your
-                    personal information to provide you with customer support,
-                    to be responsive to you, to provide effective services to
-                    you, and to maintain our business relationship with you.
+                    <strong>Security and Fraud Prevention.</strong> To
+                    authenticate your account, provide a secure payment and
+                    shopping experience, detect, investigate, or take action
+                    regarding possible fraudulent, illegal, unsafe, or
+                    malicious activity, protect public safety, and secure our
+                    services. If you choose to use the Services and register
+                    an account, you are responsible for keeping your account
+                    credentials safe.
                   </li>
                   <li>
-                    <strong>Legal Reasons.</strong> We use your personal
-                    information to comply with applicable law or respond to
-                    valid legal process, including requests from law
-                    enforcement or government agencies, to investigate or
-                    participate in civil discovery, potential or actual
-                    litigation, or other adversarial legal proceedings, and to
-                    enforce or investigate potential violations of our terms
-                    or policies.
+                    <strong>Communicating with You.</strong> To provide you
+                    with customer support, be responsive to you, provide
+                    effective services to you, and maintain our business
+                    relationship with you.
+                  </li>
+                  <li>
+                    <strong>Legal Reasons.</strong> To comply with applicable
+                    law or respond to valid legal process, including requests
+                    from law enforcement or government agencies, to
+                    investigate or participate in civil discovery, potential
+                    or actual litigation, or other adversarial legal
+                    proceedings, and to enforce or investigate potential
+                    violations of our terms or policies.
                   </li>
                 </ul>
 
@@ -232,41 +309,112 @@ function PrivacyPolicyPage() {
                 </p>
                 <ul className="pp-policy-list">
                   <li>
-                    With Shopify, vendors, and other third parties who perform
-                    services on our behalf (e.g., IT management, payment
-                    processing, data analytics, customer support, cloud
-                    storage, fulfillment, and shipping).
+                    <strong>Service providers</strong>, including Shopify, our
+                    age-verification provider, payment processors, fulfillment
+                    and shipping vendors, IT and cloud hosting providers,
+                    customer-support platforms, marketing-services providers,
+                    and analytics providers, who perform services on our
+                    behalf.
                   </li>
                   <li>
-                    With business and marketing partners to provide marketing
-                    services and advertise to you. For example, we use Shopify
-                    to support personalized advertising with third-party
-                    services based on your online activity with different
-                    merchants and websites. Our business and marketing
-                    partners will use your information in accordance with
-                    their own privacy notices. Depending on where you reside,
-                    you may have a right to direct us not to share information
-                    about you to show you targeted advertisements and
-                    marketing based on your online activity with different
-                    merchants and websites.
+                    <strong>Business and marketing partners</strong> to
+                    provide marketing services and advertise to you. For
+                    example, we use Shopify to support personalized
+                    advertising with third-party services based on your online
+                    activity with different merchants and websites. Our
+                    business and marketing partners will use your information
+                    in accordance with their own privacy notices. Depending on
+                    where you reside, you may have a right to direct us not to
+                    share information about you to show you targeted
+                    advertisements and marketing based on your online activity
+                    with different merchants and websites.
                   </li>
                   <li>
-                    When you direct, request us, or otherwise consent to our
-                    disclosure of certain information to third parties, such
-                    as to ship you products or through your use of social
-                    media widgets or login integrations.
+                    <strong>At your direction</strong> when you direct,
+                    request us, or otherwise consent to our disclosure of
+                    certain information to third parties, such as to ship you
+                    products or through your use of social media widgets or
+                    login integrations.
                   </li>
-                  <li>With our affiliates or otherwise within our corporate group.</li>
                   <li>
-                    In connection with a business transaction such as a merger
-                    or bankruptcy, to comply with any applicable legal
-                    obligations (including to respond to subpoenas, search
-                    warrants, and similar requests), to enforce any applicable
-                    terms of service or policies, and to protect or defend the
-                    Services, our rights, and the rights of our users or
-                    others.
+                    <strong>With our affiliates</strong> or otherwise within
+                    our corporate group.
+                  </li>
+                  <li>
+                    <strong>In connection with a business transaction</strong>{" "}
+                    such as a merger, acquisition, restructuring, or
+                    bankruptcy.
+                  </li>
+                  <li>
+                    <strong>For legal and safety reasons</strong>, including
+                    to comply with any applicable legal obligations (including
+                    responding to subpoenas, search warrants, and similar
+                    requests), to enforce any applicable terms of service or
+                    policies, and to protect or defend the Services, our
+                    rights, and the rights of our users or others.
                   </li>
                 </ul>
+
+                <h3 className="pp-policy-heading">Sale or Sharing of Personal Information</h3>
+                <p>
+                  We do not sell personal information for monetary
+                  consideration. We may "share" personal information for
+                  "cross-context behavioral advertising" (as those terms are
+                  defined under the California Privacy Rights Act and similar
+                  state laws) when we use third-party advertising tools and
+                  analytics. You may opt out of this sharing at any time by
+                  following the instructions in the "Your Rights and Choices"
+                  section, including by clicking the{" "}
+                  <strong>"Do Not Sell or Share My Personal Information"</strong>{" "}
+                  link in our website footer.
+                </p>
+                <p>
+                  We do not knowingly sell or share the personal information
+                  of consumers under 16 years of age. As a 21+ product, we do
+                  not knowingly collect personal information from anyone under
+                  21 (see "Children's Data" below).
+                </p>
+
+                <h3 className="pp-policy-heading">Cookies and Tracking Technologies</h3>
+                <p>
+                  We and our service providers use cookies and similar
+                  technologies to operate the Services and to collect
+                  information about your activity on the Services. Cookies
+                  fall into the following categories:
+                </p>
+                <ul className="pp-policy-list">
+                  <li>
+                    <strong>Strictly necessary cookies</strong> are required
+                    for the Services to function (e.g., shopping cart,
+                    checkout, authentication). These cannot be disabled
+                    without breaking core functionality.
+                  </li>
+                  <li>
+                    <strong>Performance and analytics cookies</strong> help us
+                    understand how visitors interact with the Services and
+                    improve them.
+                  </li>
+                  <li>
+                    <strong>Functional cookies</strong> allow us to remember
+                    your preferences (e.g., region, language).
+                  </li>
+                  <li>
+                    <strong>Advertising cookies</strong> are used to deliver
+                    relevant advertisements and measure their effectiveness,
+                    including by sharing information with our advertising
+                    partners.
+                  </li>
+                </ul>
+                <p>
+                  You can manage your cookie preferences through your browser
+                  settings or, where available, through a cookie-preferences
+                  tool on our website. Disabling certain cookies may affect
+                  functionality. We do not currently respond to "Do Not Track"
+                  browser signals; however, we honor opt-out preference
+                  signals (such as Global Privacy Control / "GPC") for opting
+                  out of "sale" and "sharing" of personal information where
+                  required by law.
+                </p>
 
                 <h3 className="pp-policy-heading">Relationship with Shopify</h3>
                 <p>
@@ -329,36 +477,88 @@ function PrivacyPolicyPage() {
                   disclosed on the Services.
                 </p>
 
+                <h3 className="pp-policy-heading">SMS and Text-Message Communications</h3>
+                <p>
+                  By providing your mobile telephone number to us and opting
+                  in to receive text messages from SUNRISE Beverage, you
+                  consent to receive recurring marketing and promotional text
+                  messages from us at the number provided. Consent is not a
+                  condition of any purchase. Message frequency varies. Message
+                  and data rates may apply.
+                </p>
+                <p>
+                  You can opt out at any time by replying{" "}
+                  <strong>STOP</strong> to any of our messages. You can
+                  request additional information by replying{" "}
+                  <strong>HELP</strong> or by contacting us at{" "}
+                  <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>
+                  . For full SMS terms, see our{" "}
+                  <a href="/sms-marketing-policy">SMS Marketing Policy</a>.
+                </p>
+
                 <h3 className="pp-policy-heading">Children's Data</h3>
                 <p>
                   The Services are not intended to be used by individuals
                   under the age of 21, and we do not knowingly collect any
                   personal information from individuals under 21. If you are
-                  the parent or guardian of a person under 21 who has
-                  provided us with their personal information, you may
-                  contact us using the contact details set out below to
-                  request that it be deleted. As of the Effective Date of
-                  this Privacy Policy, we do not have actual knowledge that
-                  we "share" or "sell" (as those terms are defined in
-                  applicable law) personal information of individuals under
-                  21 years of age.
+                  the parent or guardian of a person under 21 who has provided
+                  us with their personal information, you may contact us using
+                  the contact details set out below to request that it be
+                  deleted.
                 </p>
 
                 <h3 className="pp-policy-heading">Security and Retention of Your Information</h3>
                 <p>
-                  Please be aware that no security measures are perfect or
-                  impenetrable, and we cannot guarantee "perfect security." In
-                  addition, any information you send to us may not be secure
-                  while in transit. We recommend that you do not use unsecure
-                  channels to communicate sensitive or confidential
-                  information to us.
+                  We maintain administrative, technical, and physical
+                  safeguards designed to protect personal information from
+                  accidental loss and from unauthorized access, use,
+                  alteration, and disclosure. Please be aware that no security
+                  measures are perfect or impenetrable, and we cannot
+                  guarantee "perfect security." In addition, any information
+                  you send to us may not be secure while in transit. We
+                  recommend that you do not use unsecure channels to
+                  communicate sensitive or confidential information to us.
                 </p>
                 <p>
-                  How long we retain your personal information depends on
-                  different factors, such as whether we need the information
-                  to maintain your account, to provide you with Services,
-                  comply with legal obligations, resolve disputes, or enforce
-                  other applicable contracts and policies.
+                  We retain personal information for as long as necessary to
+                  provide the Services, comply with our legal obligations,
+                  resolve disputes, and enforce our agreements. Specifically:
+                </p>
+                <ul className="pp-policy-list">
+                  <li>
+                    <strong>Account information</strong> is retained for the
+                    life of your account plus a reasonable period thereafter
+                    (typically 24 months) to allow account reactivation and
+                    resolve any post-termination matters.
+                  </li>
+                  <li>
+                    <strong>Transaction records</strong> are retained for at
+                    least seven (7) years to comply with tax, financial, and
+                    consumer-protection requirements.
+                  </li>
+                  <li>
+                    <strong>Age-verification records</strong> are retained by
+                    our third-party verification provider in accordance with
+                    their retention policies and applicable law.
+                  </li>
+                  <li>
+                    <strong>Marketing-list data</strong> is retained until you
+                    opt out, after which we maintain suppression-list
+                    information indefinitely to honor your opt-out request.
+                  </li>
+                  <li>
+                    <strong>Customer-support communications</strong> are
+                    retained for up to three (3) years.
+                  </li>
+                  <li>
+                    <strong>Website analytics data</strong> is retained in
+                    identifiable form for up to 26 months.
+                  </li>
+                </ul>
+                <p>
+                  After these periods, we delete or de-identify personal
+                  information unless retention is required or permitted by
+                  law.
                 </p>
 
                 <h3 className="pp-policy-heading">Your Rights and Choices</h3>
@@ -373,7 +573,8 @@ function PrivacyPolicyPage() {
                   <li>
                     <strong>Right to Access / Know.</strong> You may have a
                     right to request access to personal information that we
-                    hold about you.
+                    hold about you and to information about how we have
+                    collected, used, and disclosed it.
                   </li>
                   <li>
                     <strong>Right to Delete.</strong> You may have a right to
@@ -393,57 +594,119 @@ function PrivacyPolicyPage() {
                     exceptions.
                   </li>
                   <li>
+                    <strong>Right to Opt Out of Sale or Sharing.</strong> You
+                    may have a right to opt out of any sale or sharing of
+                    personal information for cross-context behavioral
+                    advertising. You can exercise this right by clicking{" "}
+                    <strong>"Do Not Sell or Share My Personal Information"</strong>{" "}
+                    in our website footer or by sending us your request using
+                    the contact details below.
+                  </li>
+                  <li>
+                    <strong>Right to Limit Use of Sensitive Personal Information.</strong>{" "}
+                    Where applicable, you have the right to limit our use and
+                    disclosure of sensitive personal information to the
+                    purposes specified by law.
+                  </li>
+                  <li>
                     <strong>Managing Communication Preferences.</strong> We
                     may send you promotional emails, and you may opt out of
                     receiving these at any time by using the unsubscribe
-                    option displayed in our emails to you. If you opt out, we
-                    may still send you non-promotional emails, such as those
-                    about your account or orders that you have made.
+                    option displayed in our emails to you. You may opt out of
+                    marketing text messages by replying STOP. If you opt out,
+                    we may still send you non-promotional emails, such as
+                    those about your account or orders that you have made.
                   </li>
                 </ul>
                 <p>
-                  You may exercise any of these rights where indicated on the
-                  Services or by contacting us using the contact details
-                  provided below. To learn more about how Shopify uses your
-                  personal information and any rights you may have, including
-                  rights related to data processed by Shopify, you can visit{" "}
-                  <a
-                    href="https://privacy.shopify.com/en"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    https://privacy.shopify.com/en
-                  </a>
-                  .
-                </p>
-                <p>
-                  We will not discriminate against you for exercising any of
-                  these rights. We may need to verify your identity before we
-                  can process your requests, as permitted or required under
-                  applicable law. In accordance with applicable laws, you may
-                  designate an authorized agent to make requests on your
-                  behalf to exercise your rights. Before accepting such a
-                  request from an agent, we will require that the agent
-                  provide proof you have authorized them to act on your
-                  behalf, and we may need you to verify your identity directly
-                  with us. We will respond to your request in a timely manner
-                  as required under applicable law.
+                  You may exercise any of these rights by contacting us using
+                  the contact details provided below. We will not discriminate
+                  against you for exercising any of these rights. We may need
+                  to verify your identity before we can process your requests,
+                  as permitted or required under applicable law. In accordance
+                  with applicable laws, you may designate an authorized agent
+                  to make requests on your behalf to exercise your rights.
+                  Before accepting such a request from an agent, we will
+                  require that the agent provide proof you have authorized
+                  them to act on your behalf, and we may need you to verify
+                  your identity directly with us. We will respond to your
+                  request in a timely manner as required under applicable law.
                 </p>
 
-                <h3 className="pp-policy-heading">Complaints</h3>
+                <h3 className="pp-policy-heading">State-Specific Privacy Disclosures</h3>
+                <h4 className="pp-policy-subheading">California</h4>
                 <p>
-                  If you have complaints about how we process your personal
-                  information, please contact us using the contact details
-                  provided below. Depending on where you live, you may have
-                  the right to appeal our decision by contacting us using the
-                  contact details set out below, or lodge your complaint with
-                  your local data protection authority.
+                  If you are a California resident, you have the rights set
+                  forth above under the California Consumer Privacy Act, as
+                  amended by the California Privacy Rights Act ("CCPA").
+                  Specifically, you have the right to know what personal
+                  information we collect, use, disclose, and "share"; the
+                  right to delete; the right to correct; the right to opt out
+                  of "sale" and "sharing"; and the right to limit our use of
+                  sensitive personal information.
+                </p>
+                <p>
+                  In the preceding 12 months, we have collected the categories
+                  of personal information identified in the "Personal
+                  Information We Collect or Process" section above, and
+                  disclosed those categories to the categories of recipients
+                  identified in the "How We Disclose Personal Information"
+                  section. We have not "sold" personal information for
+                  monetary consideration. We have "shared" the following
+                  categories for cross-context behavioral advertising:
+                  identifiers, internet/electronic network activity
+                  information, and inferences.
+                </p>
+                <p>
+                  You can exercise your rights by emailing us at{" "}
+                  <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>
+                  , calling{" "}
+                  <a href="tel:+18776747459">(877) 674-7459</a>, or clicking{" "}
+                  <strong>"Do Not Sell or Share My Personal Information"</strong>{" "}
+                  in the footer of our website. We will respond within the
+                  timeframes required by law.
+                </p>
+                <p>
+                  If we deny your request, you have the right to appeal our
+                  decision. To appeal, contact us at the email or phone number
+                  above with the subject line "Privacy Request Appeal."
+                </p>
+
+                <h4 className="pp-policy-subheading">
+                  Virginia, Colorado, Connecticut, Utah, Texas, Oregon, and Other States
+                </h4>
+                <p>
+                  If you are a resident of Virginia, Colorado, Connecticut,
+                  Utah, Texas, Oregon, Montana, Delaware, New Hampshire, New
+                  Jersey, Iowa, or any other state with a comprehensive
+                  consumer privacy law in effect, you may have additional
+                  rights including the rights to access, correct, delete,
+                  port, and opt out of targeted advertising and the sale of
+                  personal data. You can exercise these rights using the same
+                  methods listed above. We will respond within the timeframes
+                  required by your state's law. If we deny your request, you
+                  may have the right to appeal our decision by responding to
+                  our denial with the subject line "Privacy Request Appeal."
+                </p>
+
+                <h4 className="pp-policy-subheading">Nevada</h4>
+                <p>
+                  If you are a Nevada resident, you have the right to direct
+                  us not to make any sale of your covered personal
+                  information, as defined under Nevada law. We do not sell
+                  covered personal information as defined under Nevada law,
+                  but you may submit a request by contacting us at{" "}
+                  <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>.
                 </p>
 
                 <h3 className="pp-policy-heading">International Transfers</h3>
                 <p>
-                  Please note that we may transfer, store, and process your
-                  personal information outside the country you live in.
+                  We are based in the United States. If you are accessing the
+                  Services from outside the United States, your personal
+                  information may be transferred to, stored, and processed in
+                  the United States and other countries where our service
+                  providers operate. By using the Services, you consent to the
+                  transfer of your personal information to the United States.
                 </p>
                 <p>
                   If we transfer your personal information out of the European
@@ -453,6 +716,15 @@ function PrivacyPolicyPage() {
                   issued by the relevant competent authority of the UK, as
                   relevant, unless the data transfer is to a country that has
                   been determined to provide an adequate level of protection.
+                </p>
+
+                <h3 className="pp-policy-heading">Complaints</h3>
+                <p>
+                  If you have complaints about how we process your personal
+                  information, please contact us using the contact details
+                  provided below. Depending on where you live, you may have
+                  the right to appeal our decision by contacting us, or lodge
+                  your complaint with your local data protection authority.
                 </p>
 
                 <h3 className="pp-policy-heading">Changes to This Privacy Policy</h3>

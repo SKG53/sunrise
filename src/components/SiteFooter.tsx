@@ -155,11 +155,21 @@ export function SiteFooter() {
         </div>
 
         {/* ── Legal bar ── */}
-        {/* Reduced to copyright only. Terms / Privacy / Refund Policy now    */}
-        {/* live in the Support column; Accessibility + "Do Not Sell My Info" */}
-        {/* are intentionally omitted until destination pages are stood up.   */}
+        {/* Two-column row: copyright on the left, secondary legal links on  */}
+        {/* the right (Privacy / Accessibility / Terms of Service).          */}
+        {/* Mobile (<768px) collapses to single-column stack via the         */}
+        {/* .footer-legal flex-direction:column rule in sunrise-shell.css.   */}
+        {/* The primary policy links (Shipping / Refund / Privacy / Terms)  */}
+        {/* still live in the Support column above; this row is the smaller, */}
+        {/* fine-print legal strip that conventionally appears at the very   */}
+        {/* bottom of the page.                                              */}
         <div className="footer-legal">
           <div className="footer-copyright">© 2026 SUNRISE Beverage. All Rights Reserved.</div>
+          <ul className="footer-legal-links">
+            <li><a href="/privacy-policy">Privacy</a></li>
+            <li><a href="/accessibility-statement">Accessibility</a></li>
+            <li><a href="/terms-of-service">Terms of Service</a></li>
+          </ul>
         </div>
       </div>
     </footer>

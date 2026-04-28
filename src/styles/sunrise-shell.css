@@ -596,18 +596,48 @@ main { flex: 1; width: 100%; }
   margin-bottom: calc(var(--base) * 0.18);
 }
 .footer-legal {
-  /* Copyright-only. No flex space-between needed — single item, left aligned. */
+  /* Two-column row: copyright on the left, legal links on the right.
+     space-between distributes them; flex-wrap allows tablet widths to
+     gracefully wrap if the links would otherwise crowd the copyright.   */
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding-top: calc(var(--base) * 0.4);
   border-top: 1px solid rgba(254, 251, 224, 0.14);
   flex-wrap: wrap;
+  gap: calc(var(--base) * 0.4);
 }
 .footer-copyright {
   font-size: calc(var(--base) * 0.19);
   font-weight: 500;
   letter-spacing: 0.08em;
   opacity: 0.6;
+}
+/* Right-side legal links (Privacy / Accessibility / Terms of Service).
+   Match copyright type scale — small, uppercase, lower opacity by default,
+   full opacity on hover. List-style stripped; flex row with gap.          */
+.footer-legal-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--base) * 0.55);
+}
+.footer-legal-links li {
+  margin: 0;
+}
+.footer-legal-links a {
+  font-size: calc(var(--base) * 0.19);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--cream);
+  opacity: 0.6;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+.footer-legal-links a:hover {
+  opacity: 1;
 }
 
 /* ── SHARED RESPONSIVE ──────────────────────────────────────────────────── */

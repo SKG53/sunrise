@@ -12,11 +12,16 @@
 
    Notes:
      · Tier-30 green is the Support/Policy category color, shared with
-       /privacy-policy, /refund-policy, and /terms-of-service. Four-page
-       policy cluster reads as a single visually consistent legal/policy
-       band across the footer Support column.
-     · Structurally parallel to the other three policy CSS files. .sp-*
-       classes mirror .pp-*, .rp-*, and .tos-* one-for-one.
+       /privacy-policy, /refund-policy, /terms-of-service, plus the three
+       new policy routes /age-verification-policy, /sms-marketing-policy,
+       and /accessibility-statement. The full policy cluster reads as a
+       single visually consistent legal/policy band across the footer.
+     · Structurally parallel to the other policy CSS files. .sp-* classes
+       mirror .pp-*, .rp-*, .tos-*, .av-*, .sm-*, .acc-* one-for-one.
+     · v2 (this revision): adds .sp-policy-list (restricted-state list,
+       adult-signature requirements list), .sp-policy-address (multi-line
+       contact block), and .sp-policy-body strong (inline emphasis on
+       refund-fee terms in the new content).
    ========================================================================== */
 
 /* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
@@ -51,8 +56,8 @@
 .sp-pagehero-title span:nth-child(6) { animation-delay: 0.45s; }
 .sp-pagehero-title span:nth-child(7) { animation-delay: 0.50s; }
 .sp-pagehero-title span:nth-child(8) { animation-delay: 0.55s; }
-/* @keyframes pagehero-char-in is declared in the other policy/route CSS;
-   global scope makes it reusable here.                                     */
+/* @keyframes pagehero-char-in is declared in refund-policy.css; global
+   scope makes it reusable here.                                            */
 
 /* ── 02 · POLICY ────────────────────────────────────────────────────────── */
 .sp-policy {
@@ -116,6 +121,20 @@
   margin: calc(var(--base) * 1.1) 0 calc(var(--base) * 0.35);
 }
 
+/* Bullet list — used for the restricted-state list and the adult-signature
+   requirements list. Disc bullets, comfortable indent.                     */
+.sp-policy-list {
+  list-style: disc;
+  padding-left: calc(var(--base) * 0.7);
+  margin: 0 0 calc(var(--base) * 0.5);
+}
+.sp-policy-list li {
+  margin: 0 0 calc(var(--base) * 0.18);
+}
+.sp-policy-list li:last-child {
+  margin-bottom: 0;
+}
+
 /* Inline links — near-black with underline, hover to tier-10. */
 .sp-policy-body a {
   color: var(--near-black);
@@ -126,6 +145,12 @@
 .sp-policy-body a:hover {
   color: var(--tier-10);
   border-bottom-color: var(--tier-10);
+}
+
+/* Address block — multi-line, tight line-height for stacked address. */
+.sp-policy-address {
+  font-style: normal;
+  line-height: 1.5;
 }
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */

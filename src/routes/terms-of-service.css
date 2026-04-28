@@ -4,24 +4,18 @@
    ==========================================================================
    Scoped .tos-* styles for the Terms of Service route (/terms-of-service).
    No @font-face — inherits Montserrat from sunrise-shell.css via __root.tsx.
-   All design tokens (--cream, --gold, --near-black, --base, --tier-30, etc.)
-   are defined globally in the shell.
+   All design tokens are defined globally in the shell.
 
    Section map (2 sections before footer):
      01 · Pagehero      (tier-30 green flood — Support/Policy category color)
      02 · Policy        (cream — page title + structured policy body)
 
    Notes:
-     · Tier-30 green is the Support/Policy category color, shared with
-       /privacy-policy and /refund-policy. Three-page policy cluster reads as
-       a single visually consistent legal/policy band.
-     · Structurally parallel to privacy-policy.css and refund-policy.css.
-       .tos-* classes mirror .pp-* and .rp-* definitions one-for-one.
-     · Adds one local utility: .tos-policy-allcaps — a stricter typographic
-       treatment for sections 16 (Warranty Disclaimer) and 17 (Limitation of
-       Liability), which are conventionally rendered in ALL CAPS to satisfy
-       state-law conspicuousness requirements. Slightly tighter line-height
-       and added letter-spacing aid readability of long all-caps passages.
+     · Tier-30 green is shared across all policy pages.
+     · v2 (this revision): adds .tos-policy-callout (Important Notice block,
+       tier-30 left border, allcaps copy), .tos-policy-list (Section 1
+       hemp-acknowledgment bullets), and .tos-policy-list-ordered (Section
+       25 DMCA numbered steps). .tos-policy-allcaps retained from v1.
    ========================================================================== */
 
 /* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
@@ -53,8 +47,7 @@
 .tos-pagehero-title span:nth-child(3) { animation-delay: 0.30s; }
 .tos-pagehero-title span:nth-child(4) { animation-delay: 0.35s; }
 .tos-pagehero-title span:nth-child(5) { animation-delay: 0.40s; }
-/* @keyframes pagehero-char-in is declared in the other policy/route CSS;
-   global scope makes it reusable here.                                     */
+/* @keyframes pagehero-char-in is declared in refund-policy.css; global. */
 
 /* ── 02 · POLICY ────────────────────────────────────────────────────────── */
 .tos-policy {
@@ -118,13 +111,66 @@
   margin: calc(var(--base) * 1.1) 0 calc(var(--base) * 0.35);
 }
 
-/* All-caps legal blocks — Sections 16 (Warranty Disclaimer) and 17        */
-/* (Limitation of Liability). Slightly tighter letter-spacing helps long   */
-/* uppercase passages stay readable; size is the same as body so they      */
-/* don't visually overpower the document.                                  */
+/* Important Notice callout — sits between Overview and Section 1. Tier-30
+   left rule + slight tinted background so the conspicuous arbitration /
+   class-waiver / jury-waiver disclosure reads as a deliberate consumer
+   notice rather than ordinary body copy. The label sits as a small caps
+   strap above the allcaps body block.                                     */
+.tos-policy-callout {
+  border-left: 4px solid var(--tier-30);
+  background: rgba(82, 130, 86, 0.06); /* very light tier-30 wash */
+  padding: calc(var(--base) * 0.55) calc(var(--base) * 0.7);
+  margin: calc(var(--base) * 0.7) 0 calc(var(--base) * 0.9);
+  border-radius: 2px;
+}
+.tos-policy-callout-label {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: calc(var(--base) * 0.28);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin: 0 0 calc(var(--base) * 0.3);
+}
+.tos-policy-callout p {
+  margin: 0;
+}
+
+/* All-caps legal blocks — Sections 17 (Warranty Disclaimer), 18 (Limitation
+   of Liability), 22 (Class Action Waiver), 23 (Jury Trial Waiver), 24
+   (Statute of Limitations), and the Important Notice callout body. Slightly
+   tighter letter-spacing helps long uppercase passages stay readable; size
+   is the same as body so they don't visually overpower the document.    */
 .tos-policy-allcaps {
   letter-spacing: 0.01em;
   font-weight: 500;
+}
+
+/* Bullet list — Section 1 hemp-acknowledgment items. */
+.tos-policy-list {
+  list-style: disc;
+  padding-left: calc(var(--base) * 0.7);
+  margin: 0 0 calc(var(--base) * 0.5);
+}
+.tos-policy-list li {
+  margin: 0 0 calc(var(--base) * 0.18);
+}
+.tos-policy-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Ordered list — Section 25 DMCA numbered steps. */
+.tos-policy-list-ordered {
+  list-style: decimal;
+  padding-left: calc(var(--base) * 0.7);
+  margin: 0 0 calc(var(--base) * 0.5);
+}
+.tos-policy-list-ordered li {
+  margin: 0 0 calc(var(--base) * 0.18);
+  padding-left: calc(var(--base) * 0.1);
+}
+.tos-policy-list-ordered li:last-child {
+  margin-bottom: 0;
 }
 
 /* Inline links — near-black with underline, hover to tier-10. */
@@ -149,4 +195,5 @@
 @media (max-width: 768px) {
   .tos-policy-title { font-size: calc(var(--base) * 1.1); }
   .tos-policy-heading { font-size: calc(var(--base) * 0.5); }
+  .tos-policy-callout { padding: calc(var(--base) * 0.45) calc(var(--base) * 0.55); }
 }
