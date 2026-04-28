@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
@@ -61,37 +61,43 @@ const FAQS = [
   },
 ];
 
-// ── S03 CAN REEL ─────────────────────────────────────────────────────────
-// Continuously scrolling can strip. Rendered twice back-to-back for a
-// seamless marquee loop. Order is interleaved 10mg / 60mg to avoid adjacent
-// color repeats and to keep the wrap seam (last tile → first tile) visually
-// distinct. Swap filenames or order here — no JSX changes required.
-// Tile order scatters potency tiers — 5 → 10 → 30 → 60 round-robin — so the
-// reel never clusters the same strength in a row. With 2×5mg, 3×10mg, 2×30mg,
-// 3×60mg available, the pattern holds through two clean cycles and closes on
-// the two oversubscribed tiers' leftovers (10mg, 60mg). Base and
-// cannabinoid-enhanced variants are mixed across the run rather than grouped.
-const S03_CANS = [
-  { src: "/images/cans/5mg-blackberry.webp",
-    alt: "SUNRISE 5mg THC Blackberry hemp-infused seltzer can" },
-  { src: "/images/cans/10mg-strawberry.webp",
-    alt: "SUNRISE 10mg THC Strawberry hemp-infused seltzer can" },
-  { src: "/images/cans/30mg-kiwi-watermelon-cbg.webp",
-    alt: "SUNRISE 30mg THC +30mg CBG Kiwi Watermelon hemp-infused seltzer can" },
-  { src: "/images/cans/60mg-wild-cherry-peach.webp",
-    alt: "SUNRISE 60mg THC Wild Cherry Peach hemp-infused seltzer can" },
-  { src: "/images/cans/5mg-strawberry-peach-thcv.webp",
-    alt: "SUNRISE 5mg THC +30mg THCV Strawberry Peach hemp-infused seltzer can" },
-  { src: "/images/cans/10mg-watermelon.webp",
-    alt: "SUNRISE 10mg THC Watermelon hemp-infused seltzer can" },
-  { src: "/images/cans/30mg-strawberry-watermelon-thcv.webp",
-    alt: "SUNRISE 30mg THC +30mg THCV Strawberry Watermelon hemp-infused seltzer can" },
-  { src: "/images/cans/60mg-blood-orange-cbg.webp",
-    alt: "SUNRISE 60mg THC +30mg CBG Blood Orange hemp-infused seltzer can" },
-  { src: "/images/cans/10mg-blueberry-acai-thcv.webp",
-    alt: "SUNRISE 10mg THC +30mg THCV Blueberry Acai hemp-infused seltzer can" },
-  { src: "/images/cans/60mg-strawberry-kiwi-thcv.webp",
-    alt: "SUNRISE 60mg THC +30mg THCV Strawberry Kiwi hemp-infused seltzer can" },
+// ── S03 TIER CARDS ───────────────────────────────────────────────────────
+// Four PD-style cards, one per potency tier. Each represents a flagship
+// base flavor whose color drives the can-frame flood — chosen for spread
+// (orange / red / peach / navy) that mirrors the SUNRISE wordmark gradient
+// feel. All four are base flavors, no cannabinoid variants, so the visual
+// message stays clean around the "natural ingredients" headline. Each card
+// links to its PD page; the potency lockup is painted in cream over the
+// flavor flood as a top-left badge so tier identity reads at a glance.
+const S03_TIER_CARDS = [
+  {
+    slug: "5mg-blood-orange",
+    flavor: "Blood Orange",
+    descriptor: "Tart + Punchy",
+    color: "#DC7F27",
+    tier: 5 as const,
+  },
+  {
+    slug: "10mg-strawberry",
+    flavor: "Strawberry",
+    descriptor: "Fresh + Fruity",
+    color: "#CC1F39",
+    tier: 10 as const,
+  },
+  {
+    slug: "30mg-peach-mango",
+    flavor: "Peach Mango",
+    descriptor: "Lush + Tropical",
+    color: "#E89B5B",
+    tier: 30 as const,
+  },
+  {
+    slug: "60mg-blueberry-lemonade",
+    flavor: "Blueberry Lemonade",
+    descriptor: "Rich + Tangy",
+    color: "#21285A",
+    tier: 60 as const,
+  },
 ];
 
 // ── S02 BRAND STATEMENT LINES ────────────────────────────────────────────
@@ -177,6 +183,10 @@ function HomePage() {
   const lockup10Ref = useRef<HTMLDivElement>(null);
   const lockup30Ref = useRef<HTMLDivElement>(null);
   const lockup60Ref = useRef<HTMLDivElement>(null);
+  const lockup5CardRef = useRef<HTMLSpanElement>(null);
+  const lockup10CardRef = useRef<HTMLSpanElement>(null);
+  const lockup30CardRef = useRef<HTMLSpanElement>(null);
+  const lockup60CardRef = useRef<HTMLSpanElement>(null);
   const manifestoRef = useRef<HTMLDivElement>(null);
   const [manifestoInView, setManifestoInView] = useState(false);
 
@@ -184,11 +194,16 @@ function HomePage() {
     const paint = () => {
       const base = getBasePx();
       const lockupBase = window.innerWidth <= 520 ? 48 : 80;
+      const cardLockupBase = window.innerWidth <= 520 ? 28 : 44;
       if (heroWmRef.current) heroWmRef.current.innerHTML = renderWordmark(base * 2.8, "cream");
       if (lockup5Ref.current)  lockup5Ref.current.innerHTML  = render5mgLockup(lockupBase,  "#FEFBE0");
       if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(lockupBase, "#FEFBE0");
       if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(lockupBase, "#FEFBE0");
       if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(lockupBase, "#FEFBE0");
+      if (lockup5CardRef.current)  lockup5CardRef.current.innerHTML  = render5mgLockup(cardLockupBase,  "#FEFBE0");
+      if (lockup10CardRef.current) lockup10CardRef.current.innerHTML = render10mgLockup(cardLockupBase, "#FEFBE0");
+      if (lockup30CardRef.current) lockup30CardRef.current.innerHTML = render30mgLockup(cardLockupBase, "#FEFBE0");
+      if (lockup60CardRef.current) lockup60CardRef.current.innerHTML = render60mgLockup(cardLockupBase, "#FEFBE0");
     };
     paint();
     if (document.fonts) document.fonts.ready.then(paint);
@@ -255,35 +270,59 @@ function HomePage() {
         </section>
 
         {/* ── 03 · PRODUCT INTRO ────────────────────────────────────────── */}
-        {/* Centered copy inside the container, followed by an edge-to-edge   */}
-        {/* continuously scrolling can strip pulled outside the container so  */}
-        {/* cans run past the text column on both sides. Marquee renders      */}
-        {/* S03_CANS twice back-to-back and animates translateX(0) →          */}
-        {/* translateX(-50%) for a seamless loop. Hover pauses;               */}
-        {/* prefers-reduced-motion disables animation.                        */}
+        {/* Centered copy inside the container, followed by a 4-up grid of   */}
+        {/* PD-style tier cards. One card per potency tier (5/10/30/60), each */}
+        {/* card a flagship base flavor whose color floods the can frame.     */}
+        {/* Card pattern mirrors PD page related-flavor cards: flooded can    */}
+        {/* frame on top, name + descriptor below. A potency lockup painted   */}
+        {/* in cream sits in the can frame's top-left corner so tier identity */}
+        {/* reads at a glance even before the eye reaches the meta block.     */}
+        {/* Whole card is a Link to the SKU's PD page.                        */}
         <section className="s03-product-intro">
           <div className="container">
             <h2 className="s03-pi-headline">
               Infused Seltzers<br />
-              Made with <span className="accent">real fruit</span>
+              Made with <span className="accent">natural ingredients.</span>
             </h2>
             <p className="s03-pi-subhead">
-              Clean, carbonated, and crafted to showcase real fruit character.
-              Federally-legal Delta-9 THC, emulsified for precise dosing — so every
-              can delivers exactly the experience you chose.
+              Clean, lightly carbonated, and crafted to showcase natural
+              ingredients, our drinks are ready to be your new favorite!
+              Available in multiple flavors and doses, every can delivers
+              exactly the experience you choose.
             </p>
-          </div>
-          <div className="s03-reel" aria-label="SUNRISE can lineup">
-            <div className="s03-reel-track">
-              {[...S03_CANS, ...S03_CANS].map((can, idx) => (
-                <div
-                  key={idx}
-                  className="s03-reel-tile"
-                  aria-hidden={idx >= S03_CANS.length ? "true" : undefined}
-                >
-                  <img src={can.src} alt={can.alt} loading="lazy" />
-                </div>
-              ))}
+            <div className="s03-card-grid">
+              {S03_TIER_CARDS.map((card) => {
+                const ref =
+                  card.tier === 5  ? lockup5CardRef  :
+                  card.tier === 10 ? lockup10CardRef :
+                  card.tier === 30 ? lockup30CardRef :
+                                     lockup60CardRef;
+                return (
+                  <Link
+                    key={card.slug}
+                    to="/products/$slug"
+                    params={{ slug: card.slug }}
+                    className="s03-card"
+                  >
+                    <div className="s03-card-can" style={{ background: card.color }}>
+                      <img
+                        src={`/images/cans/${card.slug}.webp`}
+                        alt={`SUNRISE ${card.tier}mg THC ${card.flavor} hemp-infused seltzer can`}
+                        loading="lazy"
+                      />
+                      <span
+                        className="s03-card-tier"
+                        ref={ref}
+                        aria-label={`${card.tier} milligram THC`}
+                      />
+                    </div>
+                    <div className="s03-card-meta">
+                      <div className="s03-card-name">{card.flavor}</div>
+                      <div className="s03-card-descriptor">{card.descriptor}</div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -450,7 +489,7 @@ function HomePage() {
               </div>
               <div className="s07-copy">
                 <h2 className="s07-headline">
-                  A family business<br />Designed to deliver.
+                  Delicious drinks<br />Designed to deliver.
                 </h2>
                 <p className="s07-body">
                   SUNRISE was born with a simple conviction: it's about quality
