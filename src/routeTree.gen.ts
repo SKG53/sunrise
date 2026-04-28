@@ -10,12 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as SmsMarketingPolicyRouteImport } from './routes/sms-marketing-policy'
 import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as FindRouteImport } from './routes/find'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AgeVerificationPolicyRouteImport } from './routes/age-verification-policy'
+import { Route as AccessibilityStatementRouteImport } from './routes/accessibility-statement'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsSlugRouteImport } from './routes/products_.$slug'
@@ -30,6 +33,11 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
   path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SmsMarketingPolicyRoute = SmsMarketingPolicyRouteImport.update({
+  id: '/sms-marketing-policy',
+  path: '/sms-marketing-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShippingPolicyRoute = ShippingPolicyRouteImport.update({
@@ -60,6 +68,16 @@ const FindRoute = FindRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgeVerificationPolicyRoute = AgeVerificationPolicyRouteImport.update({
+  id: '/age-verification-policy',
+  path: '/age-verification-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccessibilityStatementRoute = AccessibilityStatementRouteImport.update({
+  id: '/accessibility-statement',
+  path: '/accessibility-statement',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -119,12 +137,15 @@ const LovableEmailQueueProcessRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/accessibility-statement': typeof AccessibilityStatementRoute
+  '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
+  '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -138,12 +159,15 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/accessibility-statement': typeof AccessibilityStatementRoute
+  '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
+  '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -158,12 +182,15 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/accessibility-statement': typeof AccessibilityStatementRoute
+  '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
+  '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products_/$slug': typeof ProductsSlugRoute
@@ -179,12 +206,15 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/accessibility-statement'
+    | '/age-verification-policy'
     | '/contact'
     | '/find'
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
     | '/shipping-policy'
+    | '/sms-marketing-policy'
     | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products/$slug'
@@ -198,12 +228,15 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/accessibility-statement'
+    | '/age-verification-policy'
     | '/contact'
     | '/find'
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
     | '/shipping-policy'
+    | '/sms-marketing-policy'
     | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products/$slug'
@@ -217,12 +250,15 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/accessibility-statement'
+    | '/age-verification-policy'
     | '/contact'
     | '/find'
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
     | '/shipping-policy'
+    | '/sms-marketing-policy'
     | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products_/$slug'
@@ -237,12 +273,15 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AccessibilityStatementRoute: typeof AccessibilityStatementRoute
+  AgeVerificationPolicyRoute: typeof AgeVerificationPolicyRoute
   ContactRoute: typeof ContactRoute
   FindRoute: typeof FindRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
   ShippingPolicyRoute: typeof ShippingPolicyRoute
+  SmsMarketingPolicyRoute: typeof SmsMarketingPolicyRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
@@ -261,6 +300,13 @@ declare module '@tanstack/react-router' {
       path: '/terms-of-service'
       fullPath: '/terms-of-service'
       preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sms-marketing-policy': {
+      id: '/sms-marketing-policy'
+      path: '/sms-marketing-policy'
+      fullPath: '/sms-marketing-policy'
+      preLoaderRoute: typeof SmsMarketingPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shipping-policy': {
@@ -303,6 +349,20 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/age-verification-policy': {
+      id: '/age-verification-policy'
+      path: '/age-verification-policy'
+      fullPath: '/age-verification-policy'
+      preLoaderRoute: typeof AgeVerificationPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accessibility-statement': {
+      id: '/accessibility-statement'
+      path: '/accessibility-statement'
+      fullPath: '/accessibility-statement'
+      preLoaderRoute: typeof AccessibilityStatementRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -381,12 +441,15 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AccessibilityStatementRoute: AccessibilityStatementRoute,
+  AgeVerificationPolicyRoute: AgeVerificationPolicyRoute,
   ContactRoute: ContactRoute,
   FindRoute: FindRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
   RefundPolicyRoute: RefundPolicyRoute,
   ShippingPolicyRoute: ShippingPolicyRoute,
+  SmsMarketingPolicyRoute: SmsMarketingPolicyRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ProductsSlugRoute: ProductsSlugRoute,
