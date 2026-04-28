@@ -808,7 +808,6 @@ function ProductDetailPage() {
         <section className="pd-faq">
           <div className="container">
             <div className="pd-section-head">
-              <div className="pd-eyebrow">Questions</div>
               <h2 className="pd-section-headline">
                 What are people <span className="accent">asking?</span>
               </h2>
