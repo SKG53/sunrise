@@ -699,11 +699,16 @@ function ProductDetailPage() {
                   to="/products/$slug"
                   params={{ slug: o.slug }}
                   className="pd-related-card"
+                  style={{ ["--pd-related-color" as string]: o.color } as React.CSSProperties}
                 >
                   <RelatedCan slug={o.slug} flavorName={o.flavor} color={o.color} />
                   <div className="pd-related-meta">
                     <div className="pd-related-name">{o.flavor}</div>
                     <div className="pd-related-descriptor">{o.descriptor}</div>
+                  </div>
+                  <div className="pd-related-cta">
+                    <span className="pd-related-cta-label">Explore</span>
+                    <span className="pd-related-cta-arrow">→</span>
                   </div>
                   {o.cannabinoid && (
                     <span

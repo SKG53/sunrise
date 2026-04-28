@@ -301,12 +301,13 @@ function ProductsPage() {
       });
 
       // ── Flavor-corner +CBG / +CBN / +THCV lockups — cream on tier bg ──
-      // Placed at bottom-right of enhanced flavor cards. Matches
-      // .p-flavor-corner CSS positioning.
+      // Vertical strip on the right edge of the card, rotated -90deg via
+      // CSS. Sized at base * 0.91 to match the PD page's related-card
+      // lockup so the two grids feel consistent.
       TIERS[activeTier].flavors.forEach((f, i) => {
         const ref = cornerRefs.current[i];
         if (!ref || !f.cannabinoid) return;
-        const size = base * 0.7;
+        const size = base * 0.91;
         let html = "";
         if (f.cannabinoid === "CBG")  html = renderCBGLockup(size, "#FEFBE0");
         else if (f.cannabinoid === "CBN")  html = renderCBNLockup(size, "#FEFBE0");
@@ -415,7 +416,13 @@ function ProductsPage() {
               ))}
             </div>
 
-            <div className="p-panel" style={{ background: tier.color }}>
+            <div
+              className="p-panel"
+              style={{
+                background: tier.color,
+                ["--p-tier-color" as string]: tier.color,
+              } as React.CSSProperties}
+            >
               <div className="p-panel-head">
                 <div className="p-panel-lockup" ref={panelLockupRef} />
                 <div className="p-panel-head-text">
@@ -442,6 +449,10 @@ function ProductsPage() {
                           {CANNABINOID_EFFECT[f.cannabinoid]}
                         </div>
                       )}
+                    </div>
+                    <div className="p-flavor-cta">
+                      <span className="p-flavor-cta-label">Explore</span>
+                      <span className="p-flavor-cta-arrow">→</span>
                     </div>
                     {f.cannabinoid && (
                       <span
