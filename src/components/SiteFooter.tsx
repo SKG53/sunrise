@@ -140,6 +140,9 @@ export function SiteFooter() {
                 <span>LinkedIn</span>
               </a>
             </div>
+            {/* Easter-egg link to the hidden /social page. Sized at 25% of  */}
+            {/* the .footer-col-label scale, dimmed cream — barely visible.  */}
+            <a href="/social" className="footer-social-easter-egg">Social</a>
           </div>
         </div>
 
