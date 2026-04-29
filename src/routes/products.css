@@ -326,17 +326,16 @@
   display: flex;
   flex-direction: column;
   background: var(--cream);
-  border: 1px solid var(--warm-gray-faint);
+  border: 1px solid var(--cream);
   border-radius: 6px;
   overflow: hidden;
   text-decoration: none;
-  transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out;
   cursor: pointer;
 }
 .p-flavor-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
-  border-color: var(--near-black);
+  box-shadow: 0 8px 20px rgba(26, 26, 26, 0.15);
 }
 .p-flavor-can {
   position: relative;
@@ -405,11 +404,16 @@
 }
 
 /* CTA — solid filled pill in the SKU's flavor color, cream label/arrow.
-   margin-top: auto pins it to the bottom of the card so all CTAs align
-   horizontally across a row regardless of meta-block height (cards with
-   the cannabinoid pill are otherwise taller than base-flavor cards).
-   Slight darken on hover via `filter` so the button reads as interactive
-   without depending on a separate hover background color.                */
+   margin-top: auto (via `auto` in shorthand) pins it to the bottom of the
+   card so all CTAs align horizontally across a row regardless of meta-
+   block height (cards with the cannabinoid pill are otherwise taller).
+   Hover state: a cream ::before pseudo wipes left-to-right inside the
+   pill, and the label + arrow flip from cream to the flavor color so
+   they remain readable against the cream wipe. Mirrors the home s06
+   wipe rhythm (clip-path inset transition, arrow-dance keyframes), but
+   adapted for a solid-filled default state instead of a text-on-color
+   default — the wipe paints cream over the flavor flood rather than
+   creating a pill from nothing.                                          */
 .p-flavor-cta {
   margin: auto calc(var(--base) * 0.38) calc(var(--base) * 0.42);
   padding: calc(var(--base) * 0.32) calc(var(--base) * 0.5);
@@ -425,10 +429,23 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--cream);
-  transition: filter 180ms ease-out, transform 180ms ease-out;
+  position: relative;
+  overflow: hidden;
 }
-.p-flavor-card:hover .p-flavor-cta {
-  filter: brightness(0.92);
+.p-flavor-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 400ms ease-out;
+  z-index: 0;
+}
+.p-flavor-cta-label,
+.p-flavor-cta-arrow {
+  position: relative;
+  z-index: 1;
+  transition: color 200ms ease-out;
 }
 .p-flavor-cta-label {
   line-height: 1;
@@ -437,10 +454,22 @@
   display: inline-block;
   font-size: 1.15em;
   line-height: 1;
-  transition: transform 180ms ease-out;
+}
+.p-flavor-card:hover .p-flavor-cta::before {
+  clip-path: inset(0 0 0 0);
+}
+.p-flavor-card:hover .p-flavor-cta-label,
+.p-flavor-card:hover .p-flavor-cta-arrow {
+  color: var(--flavor-color, var(--near-black));
 }
 .p-flavor-card:hover .p-flavor-cta-arrow {
-  transform: translateX(calc(var(--base) * 0.08));
+  animation: p-flavor-arrow-dance 400ms ease-out;
+}
+@keyframes p-flavor-arrow-dance {
+  0%   { transform: translateX(0);                       opacity: 1; }
+  25%  { transform: translateX(0);                       opacity: 0; }
+  26%  { transform: translateX(calc(var(--base) * -0.4)); opacity: 0; }
+  100% { transform: translateX(0);                       opacity: 1; }
 }
 
 /* Cannabinoid lockup — vertical strip on the card's right edge, visually
