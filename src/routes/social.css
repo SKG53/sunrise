@@ -22,9 +22,13 @@
        but with a non-policy hue so the page reads as brand, not legal.
      · Rotator: dimensions match .s04-can exactly so the layout slot is
        indistinguishable from the home /index static-can render.
-       Sprite: /images/cans/lemonade-360.webp — 6000×1200 px, 10 frames of
-       600×1200 px stitched horizontally (full 360° vertical-axis rotation,
-       lemonade 10mg can). 782 KB lossy q90.
+       Frames: /images/cans/lemonade-360-{1..10}.webp — ten individual
+       960×1920 px WebP files at q85 lossy, one per 36° step of the can's
+       full vertical-axis rotation, ~100–190 KB each (~1.26 MB total).
+       Stacked in the DOM and cycled via opacity keyframe + per-element
+       animation-delay. No sprite sheet — each frame is a discrete asset
+       under Lovable's image-optimization width cap so source resolution
+       survives deploy without downsampling.
    ========================================================================== */
 
 /* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
@@ -62,50 +66,50 @@
 }
 
 /* ── 02 · ROTATING CAN ──────────────────────────────────────────────────── */
-/* Sprite-sheet animation. Outer .social-rotator establishes the visible    */
-/* frame at the same dimensions as .s04-can (max-width: var(--base) * 6.8;  */
-/* aspect-ratio: 1/2 to match the 600×1200 single-frame ratio).             */
-/* Inner .social-rotator-strip is 1000% wide (= 10x parent) and contains    */
-/* the full sprite as a single <img> at 100% strip width — so each frame    */
-/* in the sprite occupies exactly 1× parent width within the strip.         */
-/* Animation translates the strip in 10 discrete steps from 0% to -100%,    */
-/* landing the leftmost edge of the strip at parent positions 0, -1×, -2×,  */
-/* …, -9× of the parent width — exposing each of the 10 frames in turn.    */
+/* Stacked-frame animation. 10 <img> elements absolutely positioned inside  */
+/* .social-rotator, one per 36° step of vertical-axis rotation. Each frame  */
+/* runs the same 6s opacity keyframe but with a staggered animation-delay   */
+/* (set inline in social.tsx as i × 0.6s for i = 0…9). The keyframe holds   */
+/* opacity 1 for the first 10% of its cycle (= 0.6s = 1 slot) then drops    */
+/* to 0 for the remaining 90%. Result: at any moment exactly one frame is   */
+/* visible, swapping cleanly every 0.6s. Pure stop-motion, no cross-fade,   */
+/* no sprite sheet, no translation math.                                    */
 .social-rotator {
   width: 100%;
   max-width: calc(var(--base) * 6.8);
   aspect-ratio: 1 / 2;
-  overflow: hidden;
   position: relative;
   display: block;
   margin: 0 auto;
 }
-.social-rotator-strip {
+.social-rotator-frame {
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 1000%;
-  height: 100%;
-  animation: social-can-rotate 6s steps(10) infinite;
-  will-change: transform;
-}
-.social-rotator-strip img {
-  display: block;
+  inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
   object-fit: cover;
+  opacity: 0;
   user-select: none;
   -webkit-user-drag: none;
+  animation: social-can-rotate 6s linear infinite;
+  /* animation-delay set inline per-frame in JSX (0s, 0.6s, …, 5.4s) */
 }
 @keyframes social-can-rotate {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-100%); }
+  0%      { opacity: 1; }
+  10%     { opacity: 1; }
+  10.001% { opacity: 0; }
+  100%    { opacity: 0; }
 }
 
 /* Respect users who have set "Reduce Motion" in their OS settings —        */
 /* freeze on frame 1 (front-facing can) instead of looping infinitely.      */
 @media (prefers-reduced-motion: reduce) {
-  .social-rotator-strip {
+  .social-rotator-frame {
     animation: none;
-    transform: translateX(0);
+    opacity: 0;
+  }
+  .social-rotator-frame:first-child {
+    opacity: 1;
   }
 }

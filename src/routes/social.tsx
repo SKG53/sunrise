@@ -94,24 +94,30 @@ function SocialPage() {
                 </div>
               </div>
               <div className="s04-center">
-                {/* Sprite-sheet rotation: 10-frame horizontal strip stitched */}
-                {/* into /images/cans/lemonade-360.webp (6000×1200, 600×1200  */}
-                {/* per frame). Animation: continuous 3.3s/rev, steps(10).   */}
-                {/* Uses translateX on inner strip to keep the math reliable */}
-                {/* across responsive container widths.                      */}
+                {/* Stacked-frame rotation: 10 individual <img> elements,    */}
+                {/* one per 36° step of vertical rotation. Each image is     */}
+                {/* 960×1920 (matches home /index static-can resolution      */}
+                {/* exactly). Animation: each frame fades to opacity 1 for   */}
+                {/* its 1/10 slot of a 6s cycle, opacity 0 otherwise. No     */}
+                {/* sprite — every frame is a discrete asset under Lovable's */}
+                {/* image-optimization width cap so source resolution        */}
+                {/* survives deploy intact.                                   */}
                 <div
                   className="social-rotator"
                   role="img"
                   aria-label="SUNRISE 10mg THC Lemonade hemp-infused seltzer can rotating"
                 >
-                  <div className="social-rotator-strip">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
                     <img
-                      src="/images/cans/lemonade-360.webp"
+                      key={n}
+                      className="social-rotator-frame"
+                      src={`/images/cans/lemonade-360-${n}.webp`}
                       alt=""
                       loading="lazy"
                       decoding="async"
+                      style={{ animationDelay: `${(n - 1) * 0.6}s` }}
                     />
-                  </div>
+                  ))}
                 </div>
               </div>
               <div className="s04-col s04-col-right">
