@@ -1,59 +1,60 @@
+## Goal
 
+Switch the `/social` rotating-can animation from a single sprite-sheet WebP to 10 discrete WebP frames cycled by stacked `<img>` elements with staggered opacity keyframes.
 
-# SUNRISE Site — Find + Contact + Product Detail (Combined Build)
+## Heads-up: missing image attachments
 
-Combined execution plan for Part 1 (Find) + Part 2 (Contact + Product Detail). 14 file operations total across three independent prompts. All files pre-verified locally; full Vite production build passes clean with zero TypeScript errors.
+You said you're attaching the 10 can images, but only the patch file came through in this message. I only see:
 
-## Operations — 14 total
+- `user-uploads://SBev.BC.WebsiteDesign.AllPages.26.v3.text-only.patch`
 
-### Part 1 · Find (8 operations)
+I need all 10 of these before the page will render correctly:
 
-1. **CREATE** `src/routes/find.tsx` — verbatim from attached `find.tsx`.
-2. **CREATE** `src/routes/find.css` — verbatim from attached `find.css`.
-3. **DELETE** `src/routes/near-you.tsx` — entirely removed; replaced by `/find`.
-4. **OVERWRITE** `src/components/SiteHeader.tsx` — verbatim from attached `SiteHeader-2.tsx` (nav swap: Near You → Find).
-5. **OVERWRITE** `src/components/SiteFooter.tsx` — verbatim from attached `SiteFooter-2.tsx` (footer link swap).
-6. **OVERWRITE** `src/routes/index.tsx` — verbatim from attached `index.tsx` (any `/near-you` references → `/find`).
-7. **OVERWRITE** `src/routes/products.tsx` — verbatim from attached `products-4.tsx` (link updates).
-8. **OVERWRITE** `src/routes/about.tsx` — verbatim from attached `about-3.tsx` (link updates).
+```
+lemonade-360-1.webp
+lemonade-360-2.webp
+lemonade-360-3.webp
+lemonade-360-4.webp
+lemonade-360-5.webp
+lemonade-360-6.webp
+lemonade-360-7.webp
+lemonade-360-8.webp
+lemonade-360-9.webp
+lemonade-360-10.webp
+```
 
-### Part 2a · Contact v1 (2 operations)
+Please re-attach the 10 WebPs in your next message ("hold to push" may have only sent the patch). Once they're attached I'll execute the plan below in one pass.
 
-9. **OVERWRITE** `src/routes/contact.tsx` — verbatim from attached `contact-2.tsx`. Replaces placeholder with full v1: Hero · Form · Direct Channels. Form is controlled React state with success state; submit is a no-op stub with TODO marker for backend wiring (do NOT wire backend). Reason dropdown pre-fills from `?topic=` URL param (`wholesale`, `retailer-request`, `press`, `general`, `support`).
-10. **CREATE** `src/routes/contact.css` — verbatim from attached `contact.css`. Scoped `.c-*` styles, no `@font-face`.
+## What the patch does
 
-### Part 2b · Product Detail Template (2 operations)
+**`src/routes/social.css`**
+- Updates the section header comment to describe 10 individual frames (960×1920, q85) instead of the 6000×1200 sprite.
+- Removes `overflow: hidden` from `.social-rotator` (no longer needed — frames are absolute and clipped by aspect-ratio).
+- Replaces `.social-rotator-strip` (translateX sprite track) with `.social-rotator-frame` — absolute-positioned, `inset: 0`, `object-fit: cover`, starts at `opacity: 0`, runs `social-can-rotate 6s linear infinite`.
+- Rewrites `@keyframes social-can-rotate` from a translateX sweep to a hard opacity step: `0%`/`10%` opacity 1, `10.001%`→`100%` opacity 0. Combined with a per-frame `animation-delay` of `(i × 0.6s)`, exactly one frame is visible per 0.6s slot — pure stop-motion, no cross-fade.
+- Updates `prefers-reduced-motion` block: targets `.social-rotator-frame`, hides all of them, then re-shows `:first-child` (frame 1, front-facing).
 
-11. **CREATE** `src/routes/products.$slug.tsx` — verbatim from attached `products.$slug.tsx`. Single TanStack dynamic route (~573 lines) renders all 24 SKUs from one `PRODUCTS` array at the top of the file. URL pattern: `/products/{tier}mg-{flavor-slug}[-{cannabinoid}]`. Throws `notFound()` on unmatched slug. Sections: Breadcrumb · Hero · Stat Strip · Ingredients · Others in Tier · Cannabinoid Story (variants only) · FAQ · PtP. Uses `activeNav="products"`.
-12. **CREATE** `src/routes/products.$slug.css` — verbatim from attached `products.$slug.css`. Scoped `.pd-*` styles, no `@font-face`. Per-SKU color injected inline.
+**`src/routes/social.tsx`**
+- Replaces the inline comment block with one describing the stacked-frame approach.
+- Replaces the single `<div className="social-rotator-strip"><img src="lemonade-360.webp" /></div>` with `[1..10].map(n => <img className="social-rotator-frame" src={`/images/cans/lemonade-360-${n}.webp`} style={{ animationDelay: `${(n-1) * 0.6}s` }} />)`.
 
-### Auto-regenerated (not hand-edited)
+## Files to write
 
-- `src/routeTree.gen.ts` — TanStack Router Vite plugin regenerates on save; new routes (`/find`, `/products/$slug`) added, `/near-you` removed automatically.
+1. `src/routes/social.css` — apply hunks (touch only the lines in the patch; preserve everything else, formatting and all).
+2. `src/routes/social.tsx` — apply JSX hunk (the single `s04-center` block).
+3. `public/images/cans/lemonade-360-1.webp` … `lemonade-360-10.webp` — copy verbatim from your uploads. No resize, no recompress, no rename. The existing `lemonade-360.webp` (the old sprite) stays in place untouched — patch doesn't reference it and removing it isn't in scope.
 
-## Locked / Untouched
+## Scope fence (per your standing rules)
 
-- `src/styles/sunrise-shell.css`
-- `src/styles.css`
-- `src/lib/sunrise-components.ts`
-- `src/lib/utils.ts`
-- `src/router.tsx`
-- `src/routes/__root.tsx`
-- `src/components/ui/**`
-- `src/routes/products.css` (Products index list — NOT linked to detail pages in this drop; follow-up)
+- No edits outside the two files in the patch + the 10 new image assets.
+- No reformatting of untouched lines in `social.css`, no import reordering in `social.tsx`.
+- No touching `vite.config.ts`, `wrangler.jsonc`, `package.json`, `tsconfig.json`, `routeTree.gen.ts`, `src/router.tsx`.
+- WebPs copied byte-for-byte — no transcoding.
 
-## Execution order
+## Verification after apply
 
-Operations are file-independent and can execute in any order, but logical sequencing:
-1. Part 1 ops 1–8 first (route swap touches header/footer used by Contact + Product Detail).
-2. Part 2a ops 9–10 (Contact).
-3. Part 2b ops 11–12 (Product Detail).
-4. `routeTree.gen.ts` regenerates automatically.
+- Visit `/social`, confirm the can rotates smoothly through 10 stop-motion steps over 6s.
+- Toggle OS "Reduce Motion" → can freezes on frame 1 (front-facing).
+- DevTools Network tab: 10 separate `lemonade-360-N.webp` requests, each ~100–190 KB, no `lemonade-360.webp` (sprite) request.
 
-## Post-build verification (per prompt checklists)
-
-- `/find` renders; `/near-you` 404s (or routes to root not-found).
-- Header + footer nav links point to `/find`.
-- `/contact` renders Hero + Form + Direct Channels. `/contact?topic=wholesale` pre-selects "Wholesale / Retail Partnership" reason. Form submit shows success state without network call.
-- `/products/5mg-blackberry`, `/products/10mg-blackberry-lemonade-cbn`, `/products/30mg-cherry-limeade`, `/products/60mg-strawberry-kiwi-thcv` all render. Invalid slug (e.g. `/products/bogus`) triggers `notFound()`. Products nav stays highlighted.
-
+Re-attach the 10 WebPs and I'll execute.
