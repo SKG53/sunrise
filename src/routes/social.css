@@ -26,11 +26,10 @@
        960×1920 px WebP files at q85 lossy, one per 36° step of the can's
        full vertical-axis rotation, ~100–190 KB each (~1.26 MB total).
        Stacked in the DOM and cycled via opacity keyframe + per-element
-       animation-delay. Cross-fade window at handoffs creates simulated
-       motion blur through each 36° arc, smoothing the perceived rotation
-       without adding frames. No sprite sheet — each frame is a discrete
-       asset under Lovable's image-optimization width cap so source
-       resolution survives deploy without downsampling.
+       animation-delay. Brief 0.1s cross-fade at handoffs softens the snap
+       between frames without adding visible ghost. No sprite sheet —
+       each frame is a discrete asset under Lovable's image-optimization
+       width cap so source resolution survives deploy without downsampling.
    ========================================================================== */
 
 /* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
@@ -72,14 +71,13 @@
 /* .social-rotator, one per 36° step of vertical-axis rotation. Each frame  */
 /* runs the same 10s opacity keyframe but with a staggered animation-delay  */
 /* (set inline in social.tsx as i × 1.0s for i = 0…9). The keyframe holds   */
-/* opacity 1 from 3% to 10% of the cycle (the frame's "primary slot" — 0.7s */
-/* of clean visibility per frame), with a 0.3s fade-in (0%→3%) and a 0.3s  */
-/* fade-out (10%→13%) wrapping it. Adjacent frames' fade-in and fade-out   */
-/* windows align in absolute time, producing a 0.3s cross-fade at every    */
-/* handoff. The two-angle blend during the fade reads as motion blur       */
-/* through the 36° arc, smoothing perceived rotation without adding        */
-/* frames. Full cycle = 10s (slower than the prior 6s), giving the eye     */
-/* more time to interpolate between angles.                                 */
+/* opacity 1 from 1% to 10% of the cycle (the frame's "primary slot" — 0.9s */
+/* of clean visibility per frame), with a 0.1s fade-in (0%→1%) and a 0.1s  */
+/* fade-out (10%→11%) wrapping it. Adjacent frames' fade-in and fade-out   */
+/* windows align in absolute time, producing a 0.1s cross-fade at every    */
+/* handoff — fast enough that the partial-opacity middle isn't perceptible */
+/* as a flash, but soft enough to round off the snap of a true hard cut.   */
+/* Full cycle = 10s, giving the eye time to interpolate between angles.     */
 .social-rotator {
   width: 100%;
   max-width: calc(var(--base) * 6.8);
@@ -103,9 +101,9 @@
 }
 @keyframes social-can-rotate {
   0%   { opacity: 0; }   /* fade-in begins (cross-fade with previous frame) */
-  3%   { opacity: 1; }   /* fade-in complete (0.3s wing) */
+  1%   { opacity: 1; }   /* fade-in complete (0.1s wing) */
   10%  { opacity: 1; }   /* end of primary slot — held at full opacity */
-  13%  { opacity: 0; }   /* fade-out complete (0.3s wing) */
+  11%  { opacity: 0; }   /* fade-out complete (0.1s wing) */
   100% { opacity: 0; }   /* dark for the rest of the cycle */
 }
 
