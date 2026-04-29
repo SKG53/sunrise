@@ -418,6 +418,7 @@
   margin: auto calc(var(--base) * 0.38) calc(var(--base) * 0.42);
   padding: calc(var(--base) * 0.32) calc(var(--base) * 0.5);
   background: var(--flavor-color, var(--near-black));
+  border: 2px solid var(--flavor-color, var(--near-black));
   border-radius: 9999px;
   display: flex;
   justify-content: center;

@@ -418,15 +418,14 @@
   display: flex;
   flex-direction: column;
   background: var(--cream);
-  border: 1px solid var(--warm-gray-faint);
+  border: 1px solid var(--cream);
   border-radius: 6px;
   overflow: hidden;
-  transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out;
 }
 .pd-related-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
-  border-color: var(--near-black);
+  box-shadow: 0 8px 20px rgba(26, 26, 26, 0.15);
 }
 .pd-related-can {
   position: relative;
@@ -481,66 +480,74 @@
   text-align: center;
 }
 
-/* CTA footer — sibling of .pd-related-meta. Mirrors the .p-flavor-cta
-   pattern on the Products grid so the two grids feel like the same
-   component. Colors invert: PD related cards are cream-on-cream so the
-   default state is near-black label/arrow on cream, and the hover-wipe
-   pseudo paints the row in the SKU's flavor color (--pd-related-color
-   set via inline style on each .pd-related-card). Label and arrow flip
-   to cream once the wipe completes for max contrast against the flood. */
+/* CTA — solid filled pill in the SKU's flavor color, cream label/arrow.
+   Border in the same flavor color is what keeps the button visible when
+   the cream wipe completes on hover (cream pill on cream meta would
+   otherwise blend into the card background and "disappear"). margin-top:
+   auto (via `auto` in shorthand) pins the CTA to the bottom of the card
+   so all CTAs align horizontally across the row regardless of meta-block
+   height. Hover state: a cream ::before pseudo wipes left-to-right inside
+   the pill, and the label + arrow flip from cream to the flavor color so
+   they remain readable against the cream wipe. Mirrors .p-flavor-cta on
+   the Products grid one-for-one so the two grids feel like the same
+   component.                                                             */
 .pd-related-cta {
-  margin: 0 calc(var(--base) * 0.32) calc(var(--base) * 0.32);
-  padding-top: calc(var(--base) * 0.2);
-  border-top: 1px solid var(--warm-gray-faint);
-  background: var(--cream);
+  margin: auto calc(var(--base) * 0.32) calc(var(--base) * 0.32);
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.5);
+  background: var(--pd-related-color, var(--near-black));
+  border: 2px solid var(--pd-related-color, var(--near-black));
+  border-radius: 9999px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--base) * 0.18);
-  font-size: calc(var(--base) * 0.235);
+  gap: calc(var(--base) * 0.22);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.255);
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--near-black);
+  color: var(--cream);
   position: relative;
+  overflow: hidden;
 }
 .pd-related-cta::before {
   content: "";
   position: absolute;
-  inset: calc(var(--base) * 0.123) calc(var(--base) * -0.15) calc(var(--base) * -0.077) calc(var(--base) * -0.15);
-  background: var(--pd-related-color, var(--green-accent));
-  border-radius: 4px;
+  inset: 0;
+  background: var(--cream);
   clip-path: inset(0 100% 0 0);
   transition: clip-path 400ms ease-out;
   z-index: 0;
 }
-.pd-related-cta > * {
+.pd-related-cta-label,
+.pd-related-cta-arrow {
   position: relative;
   z-index: 1;
+  transition: color 200ms ease-out;
 }
 .pd-related-cta-label {
   line-height: 1;
-  transition: color 200ms ease-out;
 }
 .pd-related-cta-arrow {
   display: inline-block;
-  font-size: 1.35em;
+  font-size: 1.15em;
   line-height: 1;
-  transition: color 200ms ease-out;
 }
-.pd-related-card:hover .pd-related-cta::before { clip-path: inset(0 0 0 0); }
+.pd-related-card:hover .pd-related-cta::before {
+  clip-path: inset(0 0 0 0);
+}
 .pd-related-card:hover .pd-related-cta-label,
 .pd-related-card:hover .pd-related-cta-arrow {
-  color: var(--cream);
+  color: var(--pd-related-color, var(--near-black));
 }
 .pd-related-card:hover .pd-related-cta-arrow {
   animation: pd-related-arrow-dance 400ms ease-out;
 }
 @keyframes pd-related-arrow-dance {
-  0%   { margin-left: 0;    opacity: 1; }
-  25%  { margin-left: 0;    opacity: 0; }
-  26%  { margin-left: -25%; opacity: 0; }
-  100% { margin-left: 0;    opacity: 1; }
+  0%   { transform: translateX(0);                       opacity: 1; }
+  25%  { transform: translateX(0);                       opacity: 0; }
+  26%  { transform: translateX(calc(var(--base) * -0.4)); opacity: 0; }
+  100% { transform: translateX(0);                       opacity: 1; }
 }
 /* Cannabinoid lockup — vertical strip on the card's right edge,            */
 /* visually centered. Span fills card height as a flex container; child     */
