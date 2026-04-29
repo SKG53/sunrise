@@ -28,8 +28,8 @@ export const Route = createFileRoute("/social")({
 //   02 · Ingredients section — clones the home /index "What's Inside Each
 //        Can?" S04 layout exactly (4-ingredient left column, central can,
 //        4-ingredient right column, headline above) but swaps the static
-//        .s04-can <img> for a 360° rotating-can sprite-sheet animation
-//        sourced from /images/cans/lemonade-360.webp.
+//        .s04-can <img> for a 360° rotating-can stacked-frame animation
+//        sourced from /images/cans/lemonade-360-{1..10}.webp.
 //
 // Class set is scoped under .social-* for the page-specific elements
 // (.social-pagehero*, .social-rotator*) and reuses the .s04-* class set
@@ -97,11 +97,13 @@ function SocialPage() {
                 {/* Stacked-frame rotation: 10 individual <img> elements,    */}
                 {/* one per 36° step of vertical rotation. Each image is     */}
                 {/* 960×1920 (matches home /index static-can resolution      */}
-                {/* exactly). Animation: each frame fades to opacity 1 for   */}
-                {/* its 1/10 slot of a 6s cycle, opacity 0 otherwise. No     */}
-                {/* sprite — every frame is a discrete asset under Lovable's */}
-                {/* image-optimization width cap so source resolution        */}
-                {/* survives deploy intact.                                   */}
+                {/* exactly). Animation: 10s cycle, each frame staggered by  */}
+                {/* 1.0s. Keyframe is a cross-fade (3% fade-in, 7% full      */}
+                {/* hold, 3% fade-out) so adjacent frames overlap for ~0.3s, */}
+                {/* simulating motion blur through each 36° arc. No sprite — */}
+                {/* every frame is a discrete asset under Lovable's image-  */}
+                {/* optimization width cap so source resolution survives     */}
+                {/* deploy intact.                                            */}
                 <div
                   className="social-rotator"
                   role="img"
@@ -115,7 +117,7 @@ function SocialPage() {
                       alt=""
                       loading="lazy"
                       decoding="async"
-                      style={{ animationDelay: `${(n - 1) * 0.6}s` }}
+                      style={{ animationDelay: `${(n - 1) * 1.0}s` }}
                     />
                   ))}
                 </div>
