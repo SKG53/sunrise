@@ -98,12 +98,12 @@ function SocialPage() {
                 {/* one per 36° step of vertical rotation. Each image is     */}
                 {/* 960×1920 (matches home /index static-can resolution      */}
                 {/* exactly). Animation: 10s cycle, each frame staggered by  */}
-                {/* 1.0s. Keyframe is a cross-fade (3% fade-in, 7% full      */}
-                {/* hold, 3% fade-out) so adjacent frames overlap for ~0.3s, */}
-                {/* simulating motion blur through each 36° arc. No sprite — */}
-                {/* every frame is a discrete asset under Lovable's image-  */}
-                {/* optimization width cap so source resolution survives     */}
-                {/* deploy intact.                                            */}
+                {/* 1.0s. Keyframe is a soft handoff (1% fade-in, 9% full    */}
+                {/* hold, 1% fade-out) so adjacent frames overlap for ~0.1s, */}
+                {/* fast enough that the partial-opacity middle isn't        */}
+                {/* perceptible as a flash. No sprite — every frame is a     */}
+                {/* discrete asset under Lovable's image-optimization width  */}
+                {/* cap so source resolution survives deploy intact.         */}
                 <div
                   className="social-rotator"
                   role="img"
