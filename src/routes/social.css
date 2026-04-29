@@ -10,7 +10,7 @@
      01 · Pagehero           (deep-purple flood — wordmark gradient stop)
      02 · What's Inside       (cream — clones home .s04-whats-inside)
                               center swaps static <img.s04-can> for
-                              .social-rotator sprite-sheet animation
+                              .social-rotator stacked-frame animation
 
    Notes:
      · Page is hidden — no nav links to it. Only entry: tiny "Social" link
@@ -26,9 +26,11 @@
        960×1920 px WebP files at q85 lossy, one per 36° step of the can's
        full vertical-axis rotation, ~100–190 KB each (~1.26 MB total).
        Stacked in the DOM and cycled via opacity keyframe + per-element
-       animation-delay. No sprite sheet — each frame is a discrete asset
-       under Lovable's image-optimization width cap so source resolution
-       survives deploy without downsampling.
+       animation-delay. Cross-fade window at handoffs creates simulated
+       motion blur through each 36° arc, smoothing the perceived rotation
+       without adding frames. No sprite sheet — each frame is a discrete
+       asset under Lovable's image-optimization width cap so source
+       resolution survives deploy without downsampling.
    ========================================================================== */
 
 /* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
@@ -68,12 +70,16 @@
 /* ── 02 · ROTATING CAN ──────────────────────────────────────────────────── */
 /* Stacked-frame animation. 10 <img> elements absolutely positioned inside  */
 /* .social-rotator, one per 36° step of vertical-axis rotation. Each frame  */
-/* runs the same 6s opacity keyframe but with a staggered animation-delay   */
-/* (set inline in social.tsx as i × 0.6s for i = 0…9). The keyframe holds   */
-/* opacity 1 for the first 10% of its cycle (= 0.6s = 1 slot) then drops    */
-/* to 0 for the remaining 90%. Result: at any moment exactly one frame is   */
-/* visible, swapping cleanly every 0.6s. Pure stop-motion, no cross-fade,   */
-/* no sprite sheet, no translation math.                                    */
+/* runs the same 10s opacity keyframe but with a staggered animation-delay  */
+/* (set inline in social.tsx as i × 1.0s for i = 0…9). The keyframe holds   */
+/* opacity 1 from 3% to 10% of the cycle (the frame's "primary slot" — 0.7s */
+/* of clean visibility per frame), with a 0.3s fade-in (0%→3%) and a 0.3s  */
+/* fade-out (10%→13%) wrapping it. Adjacent frames' fade-in and fade-out   */
+/* windows align in absolute time, producing a 0.3s cross-fade at every    */
+/* handoff. The two-angle blend during the fade reads as motion blur       */
+/* through the 36° arc, smoothing perceived rotation without adding        */
+/* frames. Full cycle = 10s (slower than the prior 6s), giving the eye     */
+/* more time to interpolate between angles.                                 */
 .social-rotator {
   width: 100%;
   max-width: calc(var(--base) * 6.8);
@@ -92,14 +98,15 @@
   opacity: 0;
   user-select: none;
   -webkit-user-drag: none;
-  animation: social-can-rotate 6s linear infinite;
-  /* animation-delay set inline per-frame in JSX (0s, 0.6s, …, 5.4s) */
+  animation: social-can-rotate 10s linear infinite;
+  /* animation-delay set inline per-frame in JSX (0s, 1.0s, …, 9.0s) */
 }
 @keyframes social-can-rotate {
-  0%      { opacity: 1; }
-  10%     { opacity: 1; }
-  10.001% { opacity: 0; }
-  100%    { opacity: 0; }
+  0%   { opacity: 0; }   /* fade-in begins (cross-fade with previous frame) */
+  3%   { opacity: 1; }   /* fade-in complete (0.3s wing) */
+  10%  { opacity: 1; }   /* end of primary slot — held at full opacity */
+  13%  { opacity: 0; }   /* fade-out complete (0.3s wing) */
+  100% { opacity: 0; }   /* dark for the rest of the cycle */
 }
 
 /* Respect users who have set "Reduce Motion" in their OS settings —        */
