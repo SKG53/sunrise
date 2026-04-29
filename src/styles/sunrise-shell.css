@@ -502,6 +502,26 @@ main { flex: 1; width: 100%; }
   fill: currentColor;
   flex-shrink: 0;
 }
+/* Easter-egg "Social" link sitting under the Instagram/TikTok/LinkedIn   */
+/* stack. Sized at 25% of .footer-col-label (calc(var(--base) * 0.06))    */
+/* per founder direction — deliberately tiny, dimmed cream, no underline. */
+/* Hover lifts it to full opacity so it's findable for those who notice.  */
+.footer-follow-col .footer-social-easter-egg {
+  display: inline-block;
+  margin-top: calc(var(--base) * 0.45);
+  font-size: calc(var(--base) * 0.06);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.35;
+  text-decoration: none;
+  transition: opacity 200ms ease, color 200ms ease;
+}
+.footer-follow-col .footer-social-easter-egg:hover {
+  opacity: 1;
+  color: var(--gold);
+}
 .footer-signup .signup-label {
   font-size: calc(var(--base) * 0.28);
   font-weight: 700;

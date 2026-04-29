@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as SocialRouteImport } from './routes/social'
 import { Route as SmsMarketingPolicyRouteImport } from './routes/sms-marketing-policy'
 import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
@@ -33,6 +34,11 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
   path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SocialRoute = SocialRouteImport.update({
+  id: '/social',
+  path: '/social',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SmsMarketingPolicyRoute = SmsMarketingPolicyRouteImport.update({
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/refund-policy': typeof RefundPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
+  '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/refund-policy': typeof RefundPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
+  '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/refund-policy': typeof RefundPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
+  '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products_/$slug': typeof ProductsSlugRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/shipping-policy'
     | '/sms-marketing-policy'
+    | '/social'
     | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products/$slug'
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/shipping-policy'
     | '/sms-marketing-policy'
+    | '/social'
     | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products/$slug'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/shipping-policy'
     | '/sms-marketing-policy'
+    | '/social'
     | '/terms-of-service'
     | '/email/unsubscribe'
     | '/products_/$slug'
@@ -282,6 +294,7 @@ export interface RootRouteChildren {
   RefundPolicyRoute: typeof RefundPolicyRoute
   ShippingPolicyRoute: typeof ShippingPolicyRoute
   SmsMarketingPolicyRoute: typeof SmsMarketingPolicyRoute
+  SocialRoute: typeof SocialRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
@@ -300,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/terms-of-service'
       fullPath: '/terms-of-service'
       preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/social': {
+      id: '/social'
+      path: '/social'
+      fullPath: '/social'
+      preLoaderRoute: typeof SocialRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sms-marketing-policy': {
@@ -450,6 +470,7 @@ const rootRouteChildren: RootRouteChildren = {
   RefundPolicyRoute: RefundPolicyRoute,
   ShippingPolicyRoute: ShippingPolicyRoute,
   SmsMarketingPolicyRoute: SmsMarketingPolicyRoute,
+  SocialRoute: SocialRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ProductsSlugRoute: ProductsSlugRoute,

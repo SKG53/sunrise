@@ -1,0 +1,111 @@
+/* ==========================================================================
+   SUNRISE — social.css
+   Path: src/routes/social.css
+   ==========================================================================
+   Scoped styles for the hidden /social route. No @font-face — inherits
+   Montserrat from sunrise-shell.css via __root.tsx. All design tokens are
+   defined globally in the shell.
+
+   Section map (2 sections before footer):
+     01 · Pagehero           (deep-purple flood — wordmark gradient stop)
+     02 · What's Inside       (cream — clones home .s04-whats-inside)
+                              center swaps static <img.s04-can> for
+                              .social-rotator sprite-sheet animation
+
+   Notes:
+     · Page is hidden — no nav links to it. Only entry: tiny "Social" link
+       in the SiteFooter Follow column. robots noindex set in route head.
+     · Pagehero uses #4F308D (deep purple, first stop of the SUNRISE
+       wordmark gradient — never used as a tier color, never used as a
+       flavor color, so the visual filing is "brand/editorial" not "policy"
+       and not "potency"). Mirrors the .pp-pagehero (policy hero) structure
+       but with a non-policy hue so the page reads as brand, not legal.
+     · Rotator: dimensions match .s04-can exactly so the layout slot is
+       indistinguishable from the home /index static-can render.
+       Sprite: /images/cans/lemonade-360.webp — 6000×1200 px, 10 frames of
+       600×1200 px stitched horizontally (full 360° vertical-axis rotation,
+       lemonade 10mg can). 782 KB lossy q90.
+   ========================================================================== */
+
+/* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
+.social-pagehero {
+  background: #4F308D;
+  min-height: 37.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 1.5) calc(var(--base) * 1);
+}
+.social-pagehero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 2.0), 9vw, calc(var(--base) * 4.2));
+  letter-spacing: 0.015em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  margin: 0;
+}
+.social-pagehero-title span {
+  opacity: 0;
+  animation: social-pagehero-char-in 0.05s ease-out forwards;
+}
+.social-pagehero-title span:nth-child(1) { animation-delay: 0.20s; }
+.social-pagehero-title span:nth-child(2) { animation-delay: 0.25s; }
+.social-pagehero-title span:nth-child(3) { animation-delay: 0.30s; }
+.social-pagehero-title span:nth-child(4) { animation-delay: 0.35s; }
+.social-pagehero-title span:nth-child(5) { animation-delay: 0.40s; }
+.social-pagehero-title span:nth-child(6) { animation-delay: 0.45s; }
+@keyframes social-pagehero-char-in {
+  to { opacity: 1; }
+}
+
+/* ── 02 · ROTATING CAN ──────────────────────────────────────────────────── */
+/* Sprite-sheet animation. Outer .social-rotator establishes the visible    */
+/* frame at the same dimensions as .s04-can (max-width: var(--base) * 6.8;  */
+/* aspect-ratio: 1/2 to match the 600×1200 single-frame ratio).             */
+/* Inner .social-rotator-strip is 1000% wide (= 10x parent) and contains    */
+/* the full sprite as a single <img> at 100% strip width — so each frame    */
+/* in the sprite occupies exactly 1× parent width within the strip.         */
+/* Animation translates the strip in 10 discrete steps from 0% to -100%,    */
+/* landing the leftmost edge of the strip at parent positions 0, -1×, -2×,  */
+/* …, -9× of the parent width — exposing each of the 10 frames in turn.    */
+.social-rotator {
+  width: 100%;
+  max-width: calc(var(--base) * 6.8);
+  aspect-ratio: 1 / 2;
+  overflow: hidden;
+  position: relative;
+  display: block;
+  margin: 0 auto;
+}
+.social-rotator-strip {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1000%;
+  height: 100%;
+  animation: social-can-rotate 3.3s steps(10) infinite;
+  will-change: transform;
+}
+.social-rotator-strip img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+@keyframes social-can-rotate {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+/* Respect users who have set "Reduce Motion" in their OS settings —        */
+/* freeze on frame 1 (front-facing can) instead of looping infinitely.      */
+@media (prefers-reduced-motion: reduce) {
+  .social-rotator-strip {
+    animation: none;
+    transform: translateX(0);
+  }
+}
