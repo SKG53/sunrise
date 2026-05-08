@@ -5,10 +5,10 @@ import { SiteFooter } from "../components/SiteFooter";
 import { S07Map } from "../components/S07Map";
 import {
   renderWordmark,
-  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render5mgLockup,
   render10mgLockup,
-  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render30mgLockup,
   render60mgLockup,
   getBasePx,
@@ -32,13 +32,13 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-// ── PAYMENT PROCESSOR CLEANUP FLAG ───────────────────────────────────────
+// ── ACTIVE POTENCY CLEANUP FLAG ───────────────────────────────────────
 // 2026-05-08: When false, hides non-live SKUs (5mg tier, 30mg tier,
 // 60mg Wild Cherry Peach, and 10mg cannabinoid variants) from the user-
-// facing site for payment processor compliance review. Reverse: change
+// facing site for active potency cleanup. Reverse: change
 // false → true and uncomment the related code blocks marked with the
-// matching "HIDDEN FOR PAYMENT PROCESSOR REVIEW" tag throughout this file.
-// See docs/payment-processor-cleanup-2026-05-08.md for full revival path.
+// matching "HIDDEN FOR ACTIVE POTENCY CLEANUP" tag throughout this file.
+// See docs/active-potency-cleanup-2026-05-08.md for full revival path.
 const SHOW_NON_LIVE_PRODUCTS = false;
 
 // ── FAQ DATA ─────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ const SHOW_NON_LIVE_PRODUCTS = false;
 const FAQS = [
   {
     q: "What is SUNRISE?",
-    // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original copy preserved for revival
+    // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
     // a: "A hemp-infused Delta-9 seltzer. Real fruit, pure cane sugar, and a precisely dosed THC lift in every can. Four potency tiers — 5mg, 10mg, 30mg, and 60mg — so you can pick the experience that fits the moment. Each can is two servings.",
     a: "A hemp-infused Delta-9 seltzer. Real fruit, pure cane sugar, and a precisely dosed THC lift in every can. Two potency tiers — 10mg and 60mg — so you can pick the experience that fits the moment. Each can is two servings.",
   },
@@ -58,7 +58,7 @@ const FAQS = [
   },
   {
     q: "What does it feel like?",
-    // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original copy preserved for revival
+    // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
     // a: "That's the point of having four tiers. 5mg is a light, easy lift — aperitif territory. 60mg is a full evening. Each step up is a deliberate choice, not a surprise. Effects are personal; start at 5mg or 10mg if it's your first time, and move up only when you know how your body responds.",
     a: "Each tier is built around a distinct experience. 10mg is a light, social lift — afternoon territory. 60mg is a full evening. Start at 10mg if it's your first time, and move up only when you know how your body responds.",
   },
@@ -211,16 +211,16 @@ function HomePage() {
       const lockupBase = window.innerWidth <= 520 ? 48 : 80;
       const cardLockupBase = window.innerWidth <= 520 ? 28 : 44;
       if (heroWmRef.current) heroWmRef.current.innerHTML = renderWordmark(base * 2.8, "cream");
-      // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
       // if (lockup5Ref.current)  lockup5Ref.current.innerHTML  = render5mgLockup(lockupBase,  "#FEFBE0");
       if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(lockupBase, "#FEFBE0");
-      // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
       // if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(lockupBase, "#FEFBE0");
       if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(lockupBase, "#FEFBE0");
-      // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
       // if (lockup5CardRef.current)  lockup5CardRef.current.innerHTML  = render5mgLockup(cardLockupBase,  "#FEFBE0");
       if (lockup10CardRef.current) lockup10CardRef.current.innerHTML = render10mgLockup(cardLockupBase, "#FEFBE0");
-      // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
       // if (lockup30CardRef.current) lockup30CardRef.current.innerHTML = render30mgLockup(cardLockupBase, "#FEFBE0");
       if (lockup60CardRef.current) lockup60CardRef.current.innerHTML = render60mgLockup(cardLockupBase, "#FEFBE0");
     };
@@ -311,7 +311,7 @@ function HomePage() {
             </p>
             <div className="s03-card-grid">
               {S03_TIER_CARDS
-                // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — filter hides 5mg / 30mg cards when flag is false
+                // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg / 30mg cards when flag is false
                 .filter((card) => SHOW_NON_LIVE_PRODUCTS || (card.tier !== 5 && card.tier !== 30))
                 .map((card) => {
                 const ref =
@@ -371,7 +371,7 @@ function HomePage() {
               Mellow moments to enhanced relaxation, find your favorite SUNRISE experience below.
             </p>
             <div className="s06-grid">
-              {/* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flag-gated */}
+              {/* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flag-gated */}
               {SHOW_NON_LIVE_PRODUCTS && (
               <a href="/products?tier=5" className="s06-card t5">
                 <div className="s06-lockup-slot" ref={lockup5Ref} />
@@ -396,7 +396,7 @@ function HomePage() {
                 </div>
                 <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
-              {/* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flag-gated */}
+              {/* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flag-gated */}
               {SHOW_NON_LIVE_PRODUCTS && (
               <a href="/products?tier=30" className="s06-card t30">
                 <div className="s06-lockup-slot" ref={lockup30Ref} />
@@ -512,21 +512,21 @@ function HomePage() {
               <div className="s07-cans" aria-hidden="true">
                 <img
                   className="s07-can s07-can-lg"
-                  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original src preserved for revival
+                  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original src preserved for revival
                   // src="/images/cans/10mg-blueberry-acai-thcv.webp"
                   src="/images/cans/10mg-strawberry.webp"
                   alt=""
                 />
                 <img
                   className="s07-can s07-can-md"
-                  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original src preserved for revival
+                  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original src preserved for revival
                   // src="/images/cans/30mg-cherry-limeade.webp"
                   src="/images/cans/60mg-blood-orange-cbg.webp"
                   alt=""
                 />
                 <img
                   className="s07-can s07-can-sm"
-                  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original src preserved for revival
+                  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original src preserved for revival
                   // src="/images/cans/5mg-blood-orange.webp"
                   src="/images/cans/10mg-watermelon.webp"
                   alt=""

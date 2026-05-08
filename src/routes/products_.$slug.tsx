@@ -11,10 +11,10 @@ import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import {
-  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render5mgLockup,
   render10mgLockup,
-  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render30mgLockup,
   render60mgLockup,
   render12ozStatBlock,
@@ -156,15 +156,15 @@ const PRODUCTS: Product[] = [
     cannabinoid: "THCV", effect: "ELEVATE" },
 ];
 
-// ── PAYMENT PROCESSOR CLEANUP FLAG ───────────────────────────────────────
+// ── ACTIVE POTENCY CLEANUP FLAG ───────────────────────────────────────
 // 2026-05-08: When false, hides non-live SKUs (5mg tier, 30mg tier,
 // 60mg Wild Cherry Peach, and 10mg cannabinoid variants) from the user-
-// facing site for payment processor compliance review. The route loader
+// facing site for active potency cleanup. The route loader
 // throws notFound() for any non-live slug when the flag is off, so direct
 // URL access (e.g. /products/5mg-blackberry) returns 404 rather than
 // rendering a real PD page. Reverse: change false → true and uncomment
 // the related code blocks marked with the matching tag throughout this
-// file. See docs/payment-processor-cleanup-2026-05-08.md.
+// file. See docs/active-potency-cleanup-2026-05-08.md.
 const SHOW_NON_LIVE_PRODUCTS = false;
 
 const LIVE_SLUGS = new Set<string>([
@@ -212,10 +212,10 @@ const CANNABINOID_COPY: Record<Cannabinoid, { bestFor: string; body1: string; bo
 // future PD reuse if a copy block reintroduces effect language.
 
 function renderLockup(tier: Tier, base: number, color: string): string {
-  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // if (tier === 5) return render5mgLockup(base, color);
   if (tier === 10) return render10mgLockup(base, color);
-  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // if (tier === 30) return render30mgLockup(base, color);
   return render60mgLockup(base, color);
 }
@@ -228,7 +228,7 @@ function renderLockup(tier: Tier, base: number, color: string): string {
 const FAQS = [
   {
     q: "How much THC is in each can?",
-    // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original copy preserved for revival
+    // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
     // a: "Each can holds two servings. Total THC per can matches the tier on the front — 5mg, 10mg, 30mg, or 60mg — so per serving is half that number. Start low, go slow.",
     a: "Each can holds two servings. Total THC per can matches the tier on the front — 10mg or 60mg — so per serving is half that number. Start low, go slow.",
   },
@@ -250,7 +250,7 @@ const FAQS = [
 export const Route = createFileRoute("/products_/$slug")({
   component: ProductDetailPage,
   loader: ({ params }) => {
-    // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — non-live slugs return 404
+    // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — non-live slugs return 404
     // Reverse: flip SHOW_NON_LIVE_PRODUCTS to true to lift the guard.
     if (!SHOW_NON_LIVE_PRODUCTS && !LIVE_SLUGS.has(params.slug)) {
       throw notFound();
@@ -342,7 +342,7 @@ function ProductDetailPage() {
     return () => window.removeEventListener("resize", paint);
   }, [product]);
 
-  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — only live siblings render in "Others in Tier"
+  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — only live siblings render in "Others in Tier"
   const othersInTier = PRODUCTS.filter((p) =>
     p.tier === product.tier &&
     p.slug !== product.slug &&

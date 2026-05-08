@@ -409,7 +409,7 @@
   margin-right: auto;
 }
 .pd-related-grid {
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original was
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original was
      display: grid; grid-template-columns: repeat(5, 1fr).
      Switched to flex with capped basis + justify-content: center so live
      PD pages (10mg = 2 siblings, 60mg = 4 siblings) show their incomplete
@@ -421,7 +421,7 @@
   gap: calc(var(--base) * 0.4);
 }
 .pd-related-card {
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flex-basis matches the
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis matches the
      original 5-col grid track width (1/5 minus 4 gap allocations). */
   flex: 0 0 calc((100% - 4 * (var(--base) * 0.4)) / 5);
   position: relative;
@@ -788,7 +788,7 @@
      within the now-centered gallery wrapper. */
   .pd-hero-gallery { margin: 0 auto; }
   .pd-stats-grid { grid-template-columns: repeat(2, 1fr); }
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flex-basis replaces
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis replaces
      grid-template-columns. Original: .pd-related-grid { grid-template-columns: repeat(3, 1fr); } */
   .pd-related-card { flex-basis: calc((100% - 2 * (var(--base) * 0.4)) / 3); }
   /* Cannabinoid section is a flex row on desktop (space-evenly). On tablet
@@ -821,7 +821,7 @@
   .pd-section-headline { font-size: calc(var(--base) * 1.0); }
   .pd-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .pd-inside-headline { font-size: calc(var(--base) * 1.35); }
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flex-basis replaces
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis replaces
      grid-template-columns. Original: .pd-related-grid { grid-template-columns: repeat(2, 1fr); } */
   .pd-related-card { flex-basis: calc((100% - (var(--base) * 0.4)) / 2); }
   .pd-cannabinoid-grid { gap: calc(var(--base) * 0.55); }

@@ -207,7 +207,7 @@
 
 .p-switcher-bar {
   display: grid;
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original: repeat(4, 1fr).
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original: repeat(4, 1fr).
      auto-fit creates one track per child, so 2 buttons fill the pill 50/50
      and 4 buttons (revival) fill it 25% each — visually identical to the
      original 4-button layout. */
@@ -321,7 +321,7 @@
    across the row regardless of whether the card has the cannabinoid pill
    below the descriptor.                                                   */
 .p-flavor-grid {
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original was
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original was
      display: grid; grid-template-columns: repeat(3, 1fr).
      Switched to flex with capped basis + justify-content: center so an
      incomplete last row (e.g. 60mg with 5 SKUs → row of 3 + row of 2)
@@ -333,7 +333,7 @@
   gap: calc(var(--base) * 0.4);
 }
 .p-flavor-card {
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flex-basis matches the
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis matches the
      original 3-col grid track width (1/3 minus 2 gap allocations). Combined
      with the parent's flex-wrap, cards naturally drop to row 2 after 3. */
   flex: 0 0 calc((100% - 2 * (var(--base) * 0.4)) / 3);
@@ -780,12 +780,12 @@
   .p-transparency-inner { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flex-basis replaces
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis replaces
      grid-template-columns since .p-flavor-grid is now display: flex.
      Original: .p-flavor-grid { grid-template-columns: 1fr 1fr; } */
   .p-flavor-card { flex-basis: calc((100% - (var(--base) * 0.4)) / 2); }
 
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — the 2x2 switcher
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — the 2x2 switcher
      layout (and its border-bottom + border-right rules) only applies when
      ≥3 buttons exist. With 2 buttons hidden, the desktop auto-fit rule
      remains in effect at this breakpoint and gives 1 row of 2 filling the
@@ -808,7 +808,7 @@
   .p-hero-headline { font-size: calc(var(--base) * 1.35); }
 }
 @media (max-width: 520px) {
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flex-basis replaces
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis replaces
      grid-template-columns. Original: .p-flavor-grid { grid-template-columns: 1fr; } */
   .p-flavor-card { flex-basis: 100%; }
   .p-effects-grid { grid-template-columns: 1fr; }

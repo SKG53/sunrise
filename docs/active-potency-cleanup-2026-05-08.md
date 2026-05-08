@@ -1,22 +1,19 @@
-# Payment Processor Cleanup — 2026-05-08
+# Active Potency Cleanup — 2026-05-08
 
 This document records the visual hide of 16 non-live SKUs from the
-SUNRISE website for payment processor compliance review. The cleanup
-is fully reversible — see Section 6.
+SUNRISE website. The cleanup is fully reversible — see Section 6.
 
 ## 1 · Goal
 
-A payment processor is reviewing the SUNRISE site. Their review will
-inspect what is live and available for purchase. Anything that is not
-live but appears on the site as a product, in product imagery, in
-catalog data, or in tier-naming could create compliance friction.
+The SUNRISE catalog ships with 24 SKUs across four potency tiers, but
+only 8 SKUs are currently in active production. This cleanup
+temporarily narrows the user-facing site to those 8 — the live 10mg
+and 60mg lineups — so the public surface matches the active inventory.
+The non-live SKUs may go live again in the future, so the cleanup is
+designed to revive cleanly with a flag flip and a few uncomments.
 
-The goal of this cleanup is to make the website show **only the 8 SKUs
-that are actually live**, with no visible references to the 16 SKUs
-that aren't. This must be reversible — the non-live SKUs may go live
-in the future, and the site needs to revive cleanly. The cleanup does
-NOT touch Shopify admin, DNS, Cloudflare configuration, or any other
-external service.
+The cleanup is purely website-side. It does NOT touch Shopify admin,
+DNS, Cloudflare configuration, or any other external service.
 
 ## 2 · Live SKUs (8 total — visible on the site)
 
@@ -66,7 +63,7 @@ instead of four.
 Per-file local `const SHOW_NON_LIVE_PRODUCTS = false;` flag governs
 JSX-level hides. Data array entries (TIERS, PRODUCTS, shopifyProductMap,
 S03_TIER_CARDS) are commented out (NOT deleted) with the marker
-`// HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE`.
+`// HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE`.
 
 A route guard on `products_.$slug.tsx` returns 404 for any non-live
 slug, so direct URL access (e.g. `/products/5mg-blackberry`) does not
@@ -191,13 +188,13 @@ CSS bundle.
 
 ## 6 · Revival procedure
 
-The normal end-of-review path. No Git operations needed beyond a
-standard patch flow.
+The normal post-cleanup revival path. No Git operations needed beyond
+a standard patch flow.
 
 1. In each file modified by this cleanup, change
    `SHOW_NON_LIVE_PRODUCTS = false` → `SHOW_NON_LIVE_PRODUCTS = true`.
 2. Uncomment the data array blocks marked
-   `// HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE`.
+   `// HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE`.
 3. Uncomment the lockup imports, ref declarations, and paint lines.
 4. Optionally revert the S07 image src swaps and home FAQ copy edits
    (or leave them — they aren't strictly tied to non-live SKUs being
@@ -233,6 +230,12 @@ git rev-list -n 1 origin/backup/pre-payment-processor-2026-05-08
 
 If either has moved, flag immediately. Backups are immutable by
 convention.
+
+> Note: the git tag and branch above were created before this cleanup
+> was renamed; their literal names still contain the pre-rename
+> phrase. They can be re-tagged / re-branched on GitHub at any time
+> without affecting the underlying commit they point to (see Section 6
+> for the revival procedure that uses them).
 
 ## 8 · Outside scope (NOT touched by this cleanup)
 

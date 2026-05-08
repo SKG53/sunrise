@@ -187,7 +187,7 @@
 .s03-card-grid {
   width: 100%;
   display: grid;
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original: repeat(4, 1fr).
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original: repeat(4, 1fr).
      Switched to auto-fit with capped column width so 2-card variant centers
      instead of left-aligning. Formula yields exactly 1/4 width per track,
      so the 4-card revival layout is visually identical to the original. */
@@ -399,7 +399,7 @@
 }
 .s06-grid {
   display: grid;
-  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — same centering pattern as
+  /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — same centering pattern as
      .s03-card-grid; original was repeat(4, 1fr). */
   grid-template-columns: repeat(auto-fit, minmax(0, calc((100% - 3 * (var(--base) * 0.25)) / 4)));
   gap: calc(var(--base) * 0.25);
