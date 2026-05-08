@@ -4,6 +4,12 @@
 import { useEffect, useRef, useState } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 
+// ── PAYMENT PROCESSOR CLEANUP FLAG ───────────────────────────────────────
+// 2026-05-08: When false, hides Shop column links to non-live tiers (5mg
+// and 30mg). Reverse: change false → true. See
+// docs/payment-processor-cleanup-2026-05-08.md.
+const SHOW_NON_LIVE_PRODUCTS = false;
+
 export function SiteFooter() {
   const wmRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
@@ -88,9 +94,15 @@ export function SiteFooter() {
             <div className="footer-col-label">Shop</div>
             <ul>
               <li><a href="/products">All Products</a></li>
-              <li><a href="/products?tier=5">5mg THC</a></li>
+              {/* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flag-gated */}
+              {SHOW_NON_LIVE_PRODUCTS && (
+                <li><a href="/products?tier=5">5mg THC</a></li>
+              )}
               <li><a href="/products?tier=10">10mg THC</a></li>
-              <li><a href="/products?tier=30">30mg THC</a></li>
+              {/* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flag-gated */}
+              {SHOW_NON_LIVE_PRODUCTS && (
+                <li><a href="/products?tier=30">30mg THC</a></li>
+              )}
               <li><a href="/products?tier=60">60mg THC</a></li>
               <li><a href="/find">Find Near You</a></li>
             </ul>
