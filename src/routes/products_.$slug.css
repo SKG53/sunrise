@@ -409,11 +409,21 @@
   margin-right: auto;
 }
 .pd-related-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original was
+     display: grid; grid-template-columns: repeat(5, 1fr).
+     Switched to flex with capped basis + justify-content: center so live
+     PD pages (10mg = 2 siblings, 60mg = 4 siblings) show their incomplete
+     row centered instead of left-aligned. With 5 siblings (revival), the
+     row fills exactly — visually identical to the original 5-col grid. */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: calc(var(--base) * 0.4);
 }
 .pd-related-card {
+  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flex-basis matches the
+     original 5-col grid track width (1/5 minus 4 gap allocations). */
+  flex: 0 0 calc((100% - 4 * (var(--base) * 0.4)) / 5);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -778,7 +788,9 @@
      within the now-centered gallery wrapper. */
   .pd-hero-gallery { margin: 0 auto; }
   .pd-stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .pd-related-grid { grid-template-columns: repeat(3, 1fr); }
+  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flex-basis replaces
+     grid-template-columns. Original: .pd-related-grid { grid-template-columns: repeat(3, 1fr); } */
+  .pd-related-card { flex-basis: calc((100% - 2 * (var(--base) * 0.4)) / 3); }
   /* Cannabinoid section is a flex row on desktop (space-evenly). On tablet
      and below it stacks: column direction, items centered, comfortable
      vertical gap. The icon, lockup, and copy still appear in the same
@@ -809,7 +821,9 @@
   .pd-section-headline { font-size: calc(var(--base) * 1.0); }
   .pd-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .pd-inside-headline { font-size: calc(var(--base) * 1.35); }
-  .pd-related-grid { grid-template-columns: repeat(2, 1fr); }
+  /* HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — flex-basis replaces
+     grid-template-columns. Original: .pd-related-grid { grid-template-columns: repeat(2, 1fr); } */
+  .pd-related-card { flex-basis: calc((100% - (var(--base) * 0.4)) / 2); }
   .pd-cannabinoid-grid { gap: calc(var(--base) * 0.55); }
   .pd-cannabinoid-bestfor { font-size: calc(var(--base) * 0.42); }
 }
