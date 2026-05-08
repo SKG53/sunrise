@@ -88,19 +88,20 @@ and uncomment the data array blocks. See Section 6.
 
 ## 5 · Per-file change inventory
 
-This document is updated as patches land. Initial state (Patch 0): no
-code files modified yet.
+This document is updated as patches land. State below reflects the
+patches landed on `main` as of 2026-05-08, including the layout-fix
+CSS bundle.
 
 ### Home page — `src/routes/index.tsx`
 
 - `SHOW_NON_LIVE_PRODUCTS` flag declared
 - Imports `render5mgLockup` and `render30mgLockup` commented out
-- Refs `lockup5Ref`, `lockup30Ref`, `lockup5CardRef`, `lockup30CardRef`
-  declarations commented out
 - Paint useEffect lines that call `render5mgLockup` / `render30mgLockup`
-  commented out (4 lines)
-- `S03_TIER_CARDS` array — `5mg-blood-orange` and `30mg-peach-mango`
-  entries commented out
+  commented out (4 lines). Ref declarations (`lockup5Ref`,
+  `lockup30Ref`, `lockup5CardRef`, `lockup30CardRef`) preserved active
+  so flag-wrapped JSX inside S06 still compiles.
+- `S03_TIER_CARDS` array filtered at render — Blood Orange (5mg) and
+  Peach Mango (30mg) cards hidden
 - S06 (`s06-tiers`) — `t5` and `t30` cards wrapped in
   `{SHOW_NON_LIVE_PRODUCTS && (...)}`
 - S07 image src swaps:
@@ -110,13 +111,83 @@ code files modified yet.
 - Home FAQ copy at lines 40 and 48 rewritten around 10mg / 60mg as
   the two-tier ladder
 
-### Other pages — pending
+### Home page CSS — `src/routes/home.css`
 
-- `src/routes/products.tsx` — pending
-- `src/routes/products_.$slug.tsx` — pending (route guard pending)
-- `src/components/SiteFooter.tsx` — pending
-- `src/lib/shopifyProductMap.ts` — pending
-- `src/styles/sunrise-shell.css` — pending (token preservation comments)
+- `.s03-card-grid` and `.s06-grid` switched from `repeat(4, 1fr)` to
+  `repeat(auto-fit, minmax(0, calc((100% - 3 * gap) / 4)))` plus
+  `justify-content: center` so the 2-card variant centers instead of
+  left-aligning. Formula yields exactly 1/4 width per track, so the
+  4-card revival layout is visually identical to the original.
+
+### Products PLP — `src/routes/products.tsx`
+
+- `SHOW_NON_LIVE_PRODUCTS` flag declared, `LIVE_SLUGS` set declared
+- Imports `render5mgLockup` and `render30mgLockup` commented out
+- Paint useEffect: 5mg / 30mg branches in panel and switcher loops
+  commented out
+- Tier switcher `<button>` iteration filtered — only 10mg and 60mg
+  buttons render
+- Flavor grid filtered — only `LIVE_SLUGS` render (hides 10mg
+  cannabinoid variants and 60mg Wild Cherry Peach)
+- Deep-link guard — `/products?tier=5` and `/products?tier=30` URLs
+  are silently ignored when flag is off; default 10mg panel renders
+- Meta description rewritten around two tiers
+- 4 FAQ rewrites: q1 (potency picking), q2 (cannabinoid variants —
+  dropped "every tier has six" framing), q4 (mixing tiers — example
+  changed from 10+30 to 10+60). q3 preserved verbatim (per-serving
+  values "5mg" and "30mg" THC are not tier names — see Section 8).
+
+### Products PLP CSS — `src/routes/products.css`
+
+- `.p-switcher-bar` switched from `repeat(4, 1fr)` to
+  `repeat(auto-fit, minmax(0, 1fr))` so 2 buttons fill the pill 50/50.
+  4-button revival fills 25% each (visually identical to original).
+- Tablet (max 768px) override of `.p-switcher-bar` to `repeat(2, 1fr)`
+  + border rules now gated on `:has(> .p-switch:nth-child(3))` so the
+  2x2 layout only triggers when ≥3 buttons exist. With 2 buttons, the
+  desktop auto-fit rule remains in effect at this breakpoint.
+- `.p-flavor-grid` converted from CSS Grid (`repeat(3, 1fr)`) to
+  flexbox (`flex-wrap: wrap; justify-content: center`) with capped
+  `flex-basis` on `.p-flavor-card`. Centers any incomplete last row
+  at any count from 1–6, at every breakpoint. Tablet (max 768px) and
+  mobile (max 520px) overrides updated to set `flex-basis` instead of
+  `grid-template-columns`.
+
+### Products PD — `src/routes/products_.$slug.tsx`
+
+- `SHOW_NON_LIVE_PRODUCTS` flag declared, `LIVE_SLUGS` set declared
+- Imports `render5mgLockup` and `render30mgLockup` commented out
+- `renderLockup` helper: 5mg and 30mg branches commented out
+- Route guard added in loader — non-live slugs throw `notFound()`
+  (404 response). The 16 non-live PD pages are unreachable.
+- `othersInTier` filtered to live siblings only — related-card grid
+  on the 8 live PD pages only links to other live SKUs
+- FAQ q1 ("How much THC is in each can") rewritten around 10mg / 60mg.
+  q3 preserved verbatim ("30mg per can" cannabinoid load is not a
+  tier reference — see Section 8).
+
+### Products PD CSS — `src/routes/products_.$slug.css`
+
+- `.pd-related-grid` converted from CSS Grid (`repeat(5, 1fr)`) to
+  flexbox with capped `flex-basis` on `.pd-related-card`. Live PDs
+  show 2 (10mg) or 4 (60mg) siblings centered instead of left-aligned.
+  5-sibling revival fills row exactly. Tablet (max 1024px) and mobile
+  (max 768px) overrides updated to `flex-basis`.
+
+### Footer — `src/components/SiteFooter.tsx`
+
+- `SHOW_NON_LIVE_PRODUCTS` flag declared
+- Shop column 5mg and 30mg `<li>` links wrapped in flag
+
+### Pending — not modified by these patches
+
+- `src/lib/shopifyProductMap.ts` — source-of-truth map still contains
+  all 24 entries. Functionally hidden because the PD route guard 404s
+  before the map is consulted. Can be cleaned up in a follow-up if
+  belt-and-suspenders is desired.
+- `src/styles/sunrise-shell.css` — CSS tokens `--tier-5` and
+  `--tier-30` are preserved as-is. They're referenced by dormant CSS
+  rules; safer to leave intact than to delete.
 
 ## 6 · Revival procedure
 
