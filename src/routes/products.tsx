@@ -4,9 +4,11 @@ import type { RefObject } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import {
-  render5mgLockup,
+  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+  // render5mgLockup,
   render10mgLockup,
-  render30mgLockup,
+  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+  // render30mgLockup,
   render60mgLockup,
   renderCBGLockup,
   renderCBNLockup,
@@ -24,8 +26,11 @@ export const Route = createFileRoute("/products")({
       { title: "Products · SUNRISE" },
       {
         name: "description",
+        // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original copy preserved for revival
+        // content:
+        //   "Twenty-four hemp-infused seltzer flavors across four potency tiers: 5mg, 10mg, 30mg, and 60mg THC. Real fruit, pure cane sugar, federally-legal Delta-9.",
         content:
-          "Twenty-four hemp-infused seltzer flavors across four potency tiers: 5mg, 10mg, 30mg, and 60mg THC. Real fruit, pure cane sugar, federally-legal Delta-9.",
+          "Hemp-infused seltzer in two potency tiers: 10mg and 60mg THC. Real fruit, pure cane sugar, federally-legal Delta-9.",
       },
     ],
     links: [
@@ -33,6 +38,28 @@ export const Route = createFileRoute("/products")({
     ],
   }),
 });
+
+// ── PAYMENT PROCESSOR CLEANUP FLAG ───────────────────────────────────────
+// 2026-05-08: When false, hides non-live SKUs (5mg tier, 30mg tier,
+// 60mg Wild Cherry Peach, and 10mg cannabinoid variants) from the user-
+// facing site for payment processor compliance review. Reverse: change
+// false → true and uncomment the related code blocks marked with the
+// matching "HIDDEN FOR PAYMENT PROCESSOR REVIEW" tag throughout this file.
+// See docs/payment-processor-cleanup-2026-05-08.md for full revival path.
+const SHOW_NON_LIVE_PRODUCTS = false;
+
+// Live SKU slugs — used to filter flavor grid so hidden cannabinoid
+// variants and Wild Cherry Peach do not render when the flag is off.
+const LIVE_SLUGS = new Set<string>([
+  "10mg-strawberry",
+  "10mg-watermelon",
+  "10mg-lemonade",
+  "60mg-blueberry-lemonade",
+  "60mg-passionfruit-mango",
+  "60mg-blood-orange-cbg",
+  "60mg-blackberry-cbn",
+  "60mg-strawberry-kiwi-thcv",
+]);
 
 // ── TYPES ────────────────────────────────────────────────────────────────
 type TierKey = "5" | "10" | "30" | "60";
@@ -184,11 +211,15 @@ const EFFECTS: EffectCardData[] = [
 const FAQS: Array<{ q: string; a: string }> = [
   {
     q: "How do I pick the right potency?",
-    a: "If you've never had a hemp-infused seltzer — or never above 5mg — start with 5MG. One serving is a light, social lift. If you're already comfortable with THC beverages, 10MG is the everyday middle. 30MG and 60MG are for longer sessions and deeper unwinds. Start low, go slow.",
+    // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original copy preserved for revival
+    // a: "If you've never had a hemp-infused seltzer — or never above 5mg — start with 5MG. One serving is a light, social lift. If you're already comfortable with THC beverages, 10MG is the everyday middle. 30MG and 60MG are for longer sessions and deeper unwinds. Start low, go slow.",
+    a: "If you've never had a hemp-infused seltzer, start with 10MG. One serving is a light, social lift — easy to pace, easy to come back to. 60MG is the bigger swing — for longer sessions and deeper unwinds. Start low, go slow.",
   },
   {
     q: "What's the difference between the base flavors and the ones with +CBG, +CBN, or +THCV?",
-    a: "Every tier has six flavors — three base and three enhanced with a minor cannabinoid. CBG leans toward focus and uplift. CBN leans toward relax and unwind. THCV leans toward elevate and engage. The THC dose is identical between the two; the minor cannabinoid shifts the character of the experience.",
+    // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original copy preserved for revival
+    // a: "Every tier has six flavors — three base and three enhanced with a minor cannabinoid. CBG leans toward focus and uplift. CBN leans toward relax and unwind. THCV leans toward elevate and engage. The THC dose is identical between the two; the minor cannabinoid shifts the character of the experience.",
+    a: "Some flavors include a minor cannabinoid blend on top of the THC dose. CBG leans toward focus and uplift. CBN leans toward relax and unwind. THCV leans toward elevate and engage. The THC dose is identical between the base and enhanced versions; the minor cannabinoid shifts the character of the experience.",
   },
   {
     q: "How many servings are in a can?",
@@ -196,7 +227,9 @@ const FAQS: Array<{ q: string; a: string }> = [
   },
   {
     q: "Can I mix tiers in one session?",
-    a: "We wouldn't recommend it. Stacking a 10MG and a 30MG is around 40mg of THC — a big swing if you paced for 10. Pick a tier and stay with it.",
+    // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — original copy preserved for revival
+    // a: "We wouldn't recommend it. Stacking a 10MG and a 30MG is around 40mg of THC — a big swing if you paced for 10. Pick a tier and stay with it.",
+    a: "We wouldn't recommend it. Stacking a 10MG and a 60MG is 70mg of THC — a big swing if you paced for 10. Pick a tier and stay with it.",
   },
   {
     q: "What's actually inside a SUNRISE?",
@@ -250,6 +283,8 @@ function ProductsPage() {
     const params = new URLSearchParams(window.location.search);
     const t = params.get("tier");
     if (t === "5" || t === "10" || t === "30" || t === "60") {
+      // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — ignore deep-links to non-live tiers
+      if (!SHOW_NON_LIVE_PRODUCTS && (t === "5" || t === "30")) return;
       setActiveTier(t);
     }
   }, []);
@@ -265,24 +300,31 @@ function ProductsPage() {
       if (panelLockupRef.current) {
         const size = base * LOCKUP_SIZE;
         let html = "";
-        if (activeTier === "5")  html = render5mgLockup(size, "#FEFBE0");
+        // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+        // if (activeTier === "5")  html = render5mgLockup(size, "#FEFBE0");
         if (activeTier === "10") html = render10mgLockup(size, "#FEFBE0");
-        if (activeTier === "30") html = render30mgLockup(size, "#FEFBE0");
+        // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+        // if (activeTier === "30") html = render30mgLockup(size, "#FEFBE0");
         if (activeTier === "60") html = render60mgLockup(size, "#FEFBE0");
         panelLockupRef.current.innerHTML = html;
       }
 
       // ── Switcher button lockups — cream on active tier bg, tier-color on inactive cream bg ──
-      (["5", "10", "30", "60"] as TierKey[]).forEach((tier) => {
+      // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — filter skips 5mg / 30mg switcher iterations
+      (["5", "10", "30", "60"] as TierKey[])
+        .filter((tier) => SHOW_NON_LIVE_PRODUCTS || (tier !== "5" && tier !== "30"))
+        .forEach((tier) => {
         const ref = switchRefs[tier].current;
         if (!ref) return;
         const isActive = tier === activeTier;
         const color = isActive ? "#FEFBE0" : TIERS[tier].color;
         const size = base * 1.2;
         let html = "";
-        if (tier === "5")  html = render5mgLockup(size, color);
+        // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+        // if (tier === "5")  html = render5mgLockup(size, color);
         if (tier === "10") html = render10mgLockup(size, color);
-        if (tier === "30") html = render30mgLockup(size, color);
+        // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — DO NOT DELETE
+        // if (tier === "30") html = render30mgLockup(size, color);
         if (tier === "60") html = render60mgLockup(size, color);
         ref.innerHTML = html;
       });
@@ -394,7 +436,10 @@ function ProductsPage() {
             </p>
 
             <div className="p-switcher-bar">
-              {(["5", "10", "30", "60"] as TierKey[]).map((k) => (
+              {(["5", "10", "30", "60"] as TierKey[])
+                // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — filter hides 5mg / 30mg switcher buttons
+                .filter((k) => SHOW_NON_LIVE_PRODUCTS || (k !== "5" && k !== "30"))
+                .map((k) => (
                 <button
                   key={k}
                   type="button"
@@ -433,7 +478,10 @@ function ProductsPage() {
               </div>
 
               <div className="p-flavor-grid">
-                {tier.flavors.map((f, i) => (
+                {tier.flavors
+                  // HIDDEN FOR PAYMENT PROCESSOR REVIEW 2026-05-08 — filter hides non-live flavor cards (10mg cannabinoid variants, 60mg Wild Cherry Peach)
+                  .filter((f) => SHOW_NON_LIVE_PRODUCTS || LIVE_SLUGS.has(toSlug(activeTier, f)))
+                  .map((f, i) => (
                   <a
                     key={i}
                     href={`/products/${toSlug(activeTier, f)}`}
