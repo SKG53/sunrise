@@ -201,15 +201,20 @@
   display: flex;
   flex-direction: column;
   background: var(--cream);
-  border: 1px solid var(--warm-gray-faint);
+  /* Border in the SKU's flavor color so the lower (cream) half of the card
+     reads against the cream page background. 2px gives the bottom edge
+     enough weight to register without becoming a heavy frame at the top
+     where the border sits flush against the flavor-flood can frame.
+     --card-flavor-color is set inline per card; falls back to the prior
+     warm-gray-faint stroke if absent so the cascade remains safe.        */
+  border: 2px solid var(--card-flavor-color, var(--warm-gray-faint));
   border-radius: 6px;
   overflow: hidden;
-  transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out;
 }
 .s03-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
-  border-color: var(--near-black);
 }
 /* Inner Link wrapping can-frame + meta-text. Card itself can't be a Link
    anymore (would invalidate nesting the Buy Now Link inside it), so the
@@ -271,7 +276,38 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--green-accent);
+  /* Paired-descriptor in the SKU's flavor color so the two-word descriptor
+     reads as part of the same identity as the can-frame flood and the card
+     border. --card-flavor-color is set inline on .s03-card; falls back to
+     the prior --green-accent if absent so any non-S03 reuse of this class
+     keeps its old behavior.                                              */
+  color: var(--card-flavor-color, var(--green-accent));
+}
+/* Cannabinoid lockup overlay — vertical strip pinned to the can-frame's    */
+/* right edge for SKUs that carry a minor cannabinoid (CBG / CBN / THCV).   */
+/* Painted cream by the locked render[CBG|CBN|THCV]Lockup helpers and       */
+/* rotated -90deg so the cannabinoid word reads bottom-to-top. Positioned   */
+/* inside .s03-card-can (which is the only flavor-flooded portion of the    */
+/* card) so the cream painting always lands on a flavor-color field, never  */
+/* on cream meta below. Mirrors PD .pd-related-corner one-for-one so the    */
+/* visual language stays consistent between home and product detail.        */
+.s03-card-cannabinoid {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: calc(var(--base) * 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.s03-card-cannabinoid > * {
+  display: inline-block;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  white-space: nowrap;
 }
 /* Buy Now CTA — full-width btn-flavor inside the card's cream lower       */
 /* portion. Reuses the global .btn system so wipe + arrow dance + color    */
