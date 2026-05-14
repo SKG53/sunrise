@@ -712,43 +712,53 @@ function ProductDetailPage() {
 
         {/* ── 04 · STAT STRIP ───────────────────────────────────────────── */}
         {/* Flavor-color band carrying the 12oz lockup plus three claim     */}
-        {/* badges. Each claim renders as icon-left / label-right (the      */}
-        {/* original baked-in SVG wordmark is cropped out via viewBox swap  */}
-        {/* at import; label is HTML for cream-color control and horizontal */}
-        {/* layout flexibility). Background flood, no top/bottom borders —  */}
-        {/* the color block defines the section break.                      */}
+        {/* badges. Each claim renders icon-left / wordmark-right, both     */}
+        {/* sourced from the same canonical claim SVG via viewBox crops —   */}
+        {/* the icon-half from the cls-2 graphic and the wordmark-half      */}
+        {/* from the cls-1 text, recolored to cream against the flavor      */}
+        {/* flood. Background flood, no top/bottom borders — the color     */}
+        {/* block defines the section break.                                 */}
         <section className="pd-stats">
           <div className="container">
             <div className="pd-stats-grid">
               <div className="pd-stat">
                 <div className="pd-stat-lockup" ref={stat12Ref} aria-hidden="true" />
               </div>
-              <div className="pd-claim">
+              <div className="pd-claim" role="img" aria-label="Gluten Free">
                 <span
                   className="pd-claim-icon"
-                  role="img"
-                  aria-label="Gluten Free"
-                  dangerouslySetInnerHTML={{ __html: glutenFreeSvg }}
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: glutenFreeIcon }}
                 />
-                <span className="pd-claim-label">Gluten<br />Free</span>
+                <span
+                  className="pd-claim-text"
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: glutenFreeText }}
+                />
               </div>
-              <div className="pd-claim">
+              <div className="pd-claim" role="img" aria-label="Natural Vegan">
                 <span
                   className="pd-claim-icon"
-                  role="img"
-                  aria-label="Natural Vegan"
-                  dangerouslySetInnerHTML={{ __html: naturalVeganSvg }}
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: naturalVeganIcon }}
                 />
-                <span className="pd-claim-label">Natural<br />Vegan</span>
+                <span
+                  className="pd-claim-text"
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: naturalVeganText }}
+                />
               </div>
-              <div className="pd-claim">
+              <div className="pd-claim" role="img" aria-label="Zero Alcohol">
                 <span
                   className="pd-claim-icon"
-                  role="img"
-                  aria-label="Zero Alcohol"
-                  dangerouslySetInnerHTML={{ __html: zeroAlcoholSvg }}
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: zeroAlcoholIcon }}
                 />
-                <span className="pd-claim-label">Zero<br />Alcohol</span>
+                <span
+                  className="pd-claim-text"
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: zeroAlcoholText }}
+                />
               </div>
             </div>
           </div>
