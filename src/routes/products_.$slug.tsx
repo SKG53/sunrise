@@ -35,9 +35,25 @@ import { useCartStore } from "@/stores/cartStore";
 // the icon shape (cls-2), letting the parent's CSS `color` drive per-flavor
 // recoloring at runtime. The wordmark text inside (cls-1) stays dark gray as
 // authored. Originals in public/icons/ are unchanged.
-import glutenFreeSvg from "@/assets/icons/gluten-free.svg?raw";
-import naturalVeganSvg from "@/assets/icons/natural-vegan.svg?raw";
-import zeroAlcoholSvg from "@/assets/icons/zero-alcohol.svg?raw";
+import glutenFreeSvgFull from "@/assets/icons/gluten-free.svg?raw";
+import naturalVeganSvgFull from "@/assets/icons/natural-vegan.svg?raw";
+import zeroAlcoholSvgFull from "@/assets/icons/zero-alcohol.svg?raw";
+
+// Each claim badge SVG bakes both the icon (cls-2 paths, ~y=370–1830) and a
+// "GLUTEN FREE" / "NATURAL VEGAN" / "ZERO ALCOHOL" wordmark (cls-1 paths,
+// ~y=1900–2700) inside a single 3000×3000 viewBox. For the flavor-color
+// stat strip we want icon-only — labels render as separate HTML text in
+// cream so the layout can be horizontal (icon left / label right). Cropping
+// the viewBox to the icon row hides the wordmark portion without touching
+// the source SVGs (no DOM rewrite, no per-element CSS hide). The cls-1
+// paths still exist in the markup; they just fall outside the visible
+// viewBox and therefore never paint. Three SVGs share identical structure
+// so a single viewBox swap works for all of them.
+const iconOnly = (raw: string) =>
+  raw.replace(/viewBox="0 0 3000 3000"/, 'viewBox="0 360 3000 1500"');
+const glutenFreeSvg = iconOnly(glutenFreeSvgFull);
+const naturalVeganSvg = iconOnly(naturalVeganSvgFull);
+const zeroAlcoholSvg = iconOnly(zeroAlcoholSvgFull);
 import "./products_.$slug.css";
 
 // ── TYPES ────────────────────────────────────────────────────────────────
