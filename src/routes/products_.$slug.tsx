@@ -35,9 +35,25 @@ import { useCartStore } from "@/stores/cartStore";
 // the icon shape (cls-2), letting the parent's CSS `color` drive per-flavor
 // recoloring at runtime. The wordmark text inside (cls-1) stays dark gray as
 // authored. Originals in public/icons/ are unchanged.
-import glutenFreeSvg from "@/assets/icons/gluten-free.svg?raw";
-import naturalVeganSvg from "@/assets/icons/natural-vegan.svg?raw";
-import zeroAlcoholSvg from "@/assets/icons/zero-alcohol.svg?raw";
+import glutenFreeSvgFull from "@/assets/icons/gluten-free.svg?raw";
+import naturalVeganSvgFull from "@/assets/icons/natural-vegan.svg?raw";
+import zeroAlcoholSvgFull from "@/assets/icons/zero-alcohol.svg?raw";
+
+// Each claim badge SVG bakes both the icon (cls-2 paths, ~y=370–1830) and a
+// "GLUTEN FREE" / "NATURAL VEGAN" / "ZERO ALCOHOL" wordmark (cls-1 paths,
+// ~y=1900–2700) inside a single 3000×3000 viewBox. For the flavor-color
+// stat strip we want icon-only — labels render as separate HTML text in
+// cream so the layout can be horizontal (icon left / label right). Cropping
+// the viewBox to the icon row hides the wordmark portion without touching
+// the source SVGs (no DOM rewrite, no per-element CSS hide). The cls-1
+// paths still exist in the markup; they just fall outside the visible
+// viewBox and therefore never paint. Three SVGs share identical structure
+// so a single viewBox swap works for all of them.
+const iconOnly = (raw: string) =>
+  raw.replace(/viewBox="0 0 3000 3000"/, 'viewBox="0 360 3000 1500"');
+const glutenFreeSvg = iconOnly(glutenFreeSvgFull);
+const naturalVeganSvg = iconOnly(naturalVeganSvgFull);
+const zeroAlcoholSvg = iconOnly(zeroAlcoholSvgFull);
 import "./products_.$slug.css";
 
 // ── TYPES ────────────────────────────────────────────────────────────────
@@ -310,7 +326,14 @@ function ProductDetailPage() {
         lockupRef.current.innerHTML = renderLockup(product.tier, base * 1.8, product.color);
       }
       if (stat12Ref.current) {
-        stat12Ref.current.innerHTML = render12ozStatBlock(base * 2.64, product.color);
+        // Cream "12" against the flavor-color stat-strip background. The
+        // brand-locked render12ozStatBlock hardcodes "OUNCE" and "CAN" to
+        // #1A1A1A internally; route CSS overrides those inline colors to
+        // cream via `.pd-stats .pd-stat-lockup *` so the whole composed
+        // lockup reads as a single cream unit on the flavor flood. The
+        // function output is unchanged — only its display-layer color is
+        // adapted to this surface's contrast needs.
+        stat12Ref.current.innerHTML = render12ozStatBlock(base * 2.64, "#FEFBE0");
       }
 
       // ── Cannabinoid lockups (variant SKUs only) ──────────────────────
@@ -404,11 +427,6 @@ function ProductDetailPage() {
     shopifyProduct?.node.options.find((o) => o.name === "Pack")?.values ?? [];
 
   const displayPrice = selectedVariant?.price.amount;
-  const priceUnit =
-    selectedVariant?.selectedOptions.find((o) => o.name === "Pack")?.value ===
-    "4-Pack Carton"
-      ? "/ 4-pack"
-      : "/ can";
   const isInStock = selectedVariant?.availableForSale ?? false;
 
   const handleAddToCart = async () => {
@@ -545,20 +563,14 @@ function ProductDetailPage() {
                     shopifyLoading ? (
                       <span className="pd-price-amount">…</span>
                     ) : displayPrice ? (
-                      <>
-                        <span className="pd-price-amount">
-                          ${parseFloat(displayPrice).toFixed(2)}
-                        </span>
-                        <span className="pd-price-unit">{priceUnit}</span>
-                      </>
+                      <span className="pd-price-amount">
+                        ${parseFloat(displayPrice).toFixed(2)}
+                      </span>
                     ) : (
                       <span className="pd-price-amount">Coming soon</span>
                     )
                   ) : (
-                    <>
-                      <span className="pd-price-amount">$X.XX</span>
-                      <span className="pd-price-unit">/ can</span>
-                    </>
+                    <span className="pd-price-amount">$X.XX</span>
                   )}
                 </div>
 
@@ -688,6 +700,12 @@ function ProductDetailPage() {
         )}
 
         {/* ── 04 · STAT STRIP ───────────────────────────────────────────── */}
+        {/* Flavor-color band carrying the 12oz lockup plus three claim     */}
+        {/* badges. Each claim renders as icon-left / label-right (the      */}
+        {/* original baked-in SVG wordmark is cropped out via viewBox swap  */}
+        {/* at import; label is HTML for cream-color control and horizontal */}
+        {/* layout flexibility). Background flood, no top/bottom borders —  */}
+        {/* the color block defines the section break.                      */}
         <section className="pd-stats">
           <div className="container">
             <div className="pd-stats-grid">
@@ -701,6 +719,7 @@ function ProductDetailPage() {
                   aria-label="Gluten Free"
                   dangerouslySetInnerHTML={{ __html: glutenFreeSvg }}
                 />
+                <span className="pd-claim-label">Gluten<br />Free</span>
               </div>
               <div className="pd-claim">
                 <span
@@ -709,6 +728,7 @@ function ProductDetailPage() {
                   aria-label="Natural Vegan"
                   dangerouslySetInnerHTML={{ __html: naturalVeganSvg }}
                 />
+                <span className="pd-claim-label">Natural<br />Vegan</span>
               </div>
               <div className="pd-claim">
                 <span
@@ -717,6 +737,7 @@ function ProductDetailPage() {
                   aria-label="Zero Alcohol"
                   dangerouslySetInnerHTML={{ __html: zeroAlcoholSvg }}
                 />
+                <span className="pd-claim-label">Zero<br />Alcohol</span>
               </div>
             </div>
           </div>
