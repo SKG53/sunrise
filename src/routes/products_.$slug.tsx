@@ -39,21 +39,32 @@ import glutenFreeSvgFull from "@/assets/icons/gluten-free.svg?raw";
 import naturalVeganSvgFull from "@/assets/icons/natural-vegan.svg?raw";
 import zeroAlcoholSvgFull from "@/assets/icons/zero-alcohol.svg?raw";
 
-// Each claim badge SVG bakes both the icon (cls-2 paths, ~y=370–1830) and a
-// "GLUTEN FREE" / "NATURAL VEGAN" / "ZERO ALCOHOL" wordmark (cls-1 paths,
-// ~y=1900–2700) inside a single 3000×3000 viewBox. For the flavor-color
-// stat strip we want icon-only — labels render as separate HTML text in
-// cream so the layout can be horizontal (icon left / label right). Cropping
-// the viewBox to the icon row hides the wordmark portion without touching
-// the source SVGs (no DOM rewrite, no per-element CSS hide). The cls-1
-// paths still exist in the markup; they just fall outside the visible
-// viewBox and therefore never paint. Three SVGs share identical structure
-// so a single viewBox swap works for all of them.
-const iconOnly = (raw: string) =>
-  raw.replace(/viewBox="0 0 3000 3000"/, 'viewBox="0 360 3000 1500"');
-const glutenFreeSvg = iconOnly(glutenFreeSvgFull);
-const naturalVeganSvg = iconOnly(naturalVeganSvgFull);
-const zeroAlcoholSvg = iconOnly(zeroAlcoholSvgFull);
+// Each claim-badge SVG is authored as one 3000×3000 composition with the
+// icon graphic (cls-2 paths, top) stacked above the wordmark text (cls-1
+// paths, bottom). For the flavor-color stat strip we want them side-by-
+// side, not stacked — and the wordmark text needs to read cream against
+// the flavor flood. We achieve both without touching the source SVGs by
+// rendering each file twice with different viewBox crops: once tight to
+// the icon's bounding box, once tight to the wordmark's bounding box.
+// Bounds were measured via svgelements; per-file text bounds are required
+// because wordmark widths vary (gluten-free 1305, zero-alcohol 1515,
+// natural-vegan 1734) but icon bounds are nearly identical across files.
+// The cls-1 wordmark paths carry a hardcoded `fill: #424241` inside the
+// SVG's <style> block, so the same crop helper rewrites that to
+// `currentColor` — cream then cascades from the container's color rule
+// without needing an !important CSS override.
+function cropClaimSvg(raw: string, viewBox: string): string {
+  return raw
+    .replace(/viewBox="0 0 3000 3000"/, `viewBox="${viewBox}"`)
+    .replace(/fill:\s*#424241/g, "fill: currentColor");
+}
+const ICON_VIEWBOX = "780 370 1440 1440";
+const glutenFreeIcon    = cropClaimSvg(glutenFreeSvgFull,    ICON_VIEWBOX);
+const naturalVeganIcon  = cropClaimSvg(naturalVeganSvgFull,  ICON_VIEWBOX);
+const zeroAlcoholIcon   = cropClaimSvg(zeroAlcoholSvgFull,   "780 375 1440 1420");
+const glutenFreeText    = cropClaimSvg(glutenFreeSvgFull,    "840 1955 1320 680");
+const naturalVeganText  = cropClaimSvg(naturalVeganSvgFull,  "625 1955 1750 680");
+const zeroAlcoholText   = cropClaimSvg(zeroAlcoholSvgFull,   "735 1950 1530 680");
 import "./products_.$slug.css";
 
 // ── TYPES ────────────────────────────────────────────────────────────────
@@ -701,43 +712,53 @@ function ProductDetailPage() {
 
         {/* ── 04 · STAT STRIP ───────────────────────────────────────────── */}
         {/* Flavor-color band carrying the 12oz lockup plus three claim     */}
-        {/* badges. Each claim renders as icon-left / label-right (the      */}
-        {/* original baked-in SVG wordmark is cropped out via viewBox swap  */}
-        {/* at import; label is HTML for cream-color control and horizontal */}
-        {/* layout flexibility). Background flood, no top/bottom borders —  */}
-        {/* the color block defines the section break.                      */}
+        {/* badges. Each claim renders icon-left / wordmark-right, both     */}
+        {/* sourced from the same canonical claim SVG via viewBox crops —   */}
+        {/* the icon-half from the cls-2 graphic and the wordmark-half      */}
+        {/* from the cls-1 text, recolored to cream against the flavor      */}
+        {/* flood. Background flood, no top/bottom borders — the color     */}
+        {/* block defines the section break.                                 */}
         <section className="pd-stats">
           <div className="container">
             <div className="pd-stats-grid">
               <div className="pd-stat">
                 <div className="pd-stat-lockup" ref={stat12Ref} aria-hidden="true" />
               </div>
-              <div className="pd-claim">
+              <div className="pd-claim" role="img" aria-label="Gluten Free">
                 <span
                   className="pd-claim-icon"
-                  role="img"
-                  aria-label="Gluten Free"
-                  dangerouslySetInnerHTML={{ __html: glutenFreeSvg }}
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: glutenFreeIcon }}
                 />
-                <span className="pd-claim-label">Gluten<br />Free</span>
+                <span
+                  className="pd-claim-text"
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: glutenFreeText }}
+                />
               </div>
-              <div className="pd-claim">
+              <div className="pd-claim" role="img" aria-label="Natural Vegan">
                 <span
                   className="pd-claim-icon"
-                  role="img"
-                  aria-label="Natural Vegan"
-                  dangerouslySetInnerHTML={{ __html: naturalVeganSvg }}
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: naturalVeganIcon }}
                 />
-                <span className="pd-claim-label">Natural<br />Vegan</span>
+                <span
+                  className="pd-claim-text"
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: naturalVeganText }}
+                />
               </div>
-              <div className="pd-claim">
+              <div className="pd-claim" role="img" aria-label="Zero Alcohol">
                 <span
                   className="pd-claim-icon"
-                  role="img"
-                  aria-label="Zero Alcohol"
-                  dangerouslySetInnerHTML={{ __html: zeroAlcoholSvg }}
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: zeroAlcoholIcon }}
                 />
-                <span className="pd-claim-label">Zero<br />Alcohol</span>
+                <span
+                  className="pd-claim-text"
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: zeroAlcoholText }}
+                />
               </div>
             </div>
           </div>
