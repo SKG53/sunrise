@@ -192,9 +192,14 @@
   font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--near-black);
+  /* Paired-descriptor pill — text and outline in the SKU's flavor color so
+     it reads as part of the SKU identity rather than as neutral chrome.
+     --flavor-color is set on <main> at the route level so the var resolves
+     to the active SKU; falls back to near-black for any rare non-PD reuse
+     of this class.                                                        */
+  color: var(--flavor-color, var(--near-black));
   padding: calc(var(--base) * 0.2) calc(var(--base) * 0.5);
-  border: 1.5px solid var(--near-black);
+  border: 1.5px solid var(--flavor-color, var(--near-black));
   border-radius: 9999px;
   line-height: 1;
   margin-bottom: calc(var(--base) * 0.6);
@@ -275,21 +280,32 @@
 }
 
 /* ── 03 · STAT STRIP (12oz + 3 claim badges) ───────────────────────────── */
+/* Flavor-color flooded band — 12oz lockup in the first column, three claim
+   badges in the rest. Each claim renders horizontally (icon LEFT / label
+   RIGHT) rather than the prior stacked icon-with-baked-text layout, which
+   collapses the section's vertical height and lets the band feel composed
+   rather than empty. The baked-in wordmark inside each SVG is cropped out
+   at import (viewBox swap in products_.$slug.tsx) so the SVG paints icon-
+   only; the label sits beside it as HTML in cream. The 12oz lockup is a
+   brand-locked spec that internally hardcodes "OUNCE"/"CAN" to #1A1A1A; we
+   override every descendant color to cream via the rule below so the whole
+   composed lockup reads as a single cream unit against the flavor field.
+   No top/bottom borders — the color block IS the section break.           */
 .pd-stats {
-  border-top: 1px solid var(--warm-gray-faint);
-  border-bottom: 1px solid var(--warm-gray-faint);
-  padding: calc(var(--base) * 1.0) 0;
+  background: var(--flavor-color, var(--near-black));
+  color: var(--cream);
+  padding: calc(var(--base) * 0.7) 0;
 }
 .pd-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: calc(var(--base) * 0.9);
+  gap: calc(var(--base) * 0.5);
   align-items: center;
   justify-items: center;
 }
 .pd-stat {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: calc(var(--base) * 0.22);
   align-items: center;
   justify-content: center;
@@ -298,28 +314,44 @@
   line-height: 0;
   white-space: nowrap;
 }
+/* Force every span inside the 12oz lockup to cream — overrides the inline
+   color="#1A1A1A" emitted by the brand-locked render12ozStatBlock for the
+   "OUNCE" and "CAN" portions so the lockup reads against the flavor band.
+   The function output is unchanged; only its display-layer color adapts.  */
+.pd-stats .pd-stat-lockup,
+.pd-stats .pd-stat-lockup * {
+  color: var(--cream) !important;
+}
 
-/* Claim badges: brand-SVG icon at .pd-claim-icon. Icons are inlined as raw
-   SVG via dangerouslySetInnerHTML so the per-flavor `color` cascades into
-   the SVG's cls-2 paths (which use `fill: currentColor`); the wordmark
-   text inside (cls-1) stays dark gray as authored. .pd-claim-icon's color
-   inherits from --flavor-color set on <main> at the route level. */
+/* Claim badges — horizontal: icon left, two-line label right.              */
 .pd-claim {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  gap: calc(var(--base) * 0.25);
 }
 .pd-claim-icon {
-  width: calc(var(--base) * 3.125);
-  height: calc(var(--base) * 3.125);
+  width: calc(var(--base) * 1.7);
+  height: calc(var(--base) * 1.7);
   display: block;
-  color: var(--flavor-color, var(--gold));
+  color: var(--cream);
+  flex-shrink: 0;
 }
 .pd-claim-icon svg {
   width: 100%;
   height: 100%;
   display: block;
+}
+.pd-claim-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.32);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cream);
+  line-height: 1.1;
+  white-space: normal;
 }
 
 /* ── 04 · WHAT'S INSIDE (verbatim mirror of home .s04-whats-inside) ─────── */
@@ -428,7 +460,12 @@
   display: flex;
   flex-direction: column;
   background: var(--cream);
-  border: 1px solid var(--cream);
+  /* 2px flavor-color outline so the lower (cream meta + CTA) portion of
+     the card reads against the cream page background. Matches the home
+     S03 cards (.s03-card border) for visual consistency between home and
+     product detail. --pd-related-color is set inline per card; falls back
+     to cream for any rare non-PD reuse.                                  */
+  border: 2px solid var(--pd-related-color, var(--cream));
   border-radius: 6px;
   overflow: hidden;
   transition: transform 180ms ease-out, box-shadow 180ms ease-out;
@@ -440,7 +477,12 @@
 .pd-related-can {
   position: relative;
   aspect-ratio: 3 / 4;
-  background: rgba(26, 26, 26, 0.04);
+  /* Flavor-color flood matches home S03 .s03-card-can. Replaces the prior
+     rgba(26,26,26,0.04) faint gray field, which read as a placeholder
+     swatch rather than a SKU-colored card. --pd-related-color is set
+     inline on the parent card; fallback ensures the prior look is reused
+     if the var is somehow missing.                                        */
+  background: var(--pd-related-color, rgba(26, 26, 26, 0.04));
   display: flex;
   align-items: center;
   justify-content: center;
