@@ -11,6 +11,9 @@ import {
   // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render30mgLockup,
   render60mgLockup,
+  renderCBGLockup,
+  renderCBNLockup,
+  renderTHCVLockup,
   getBasePx,
 } from "../lib/sunrise-components";
 import "./home.css";
@@ -77,41 +80,70 @@ const FAQS = [
 ];
 
 // ── S03 TIER CARDS ───────────────────────────────────────────────────────
-// Four PD-style cards, one per potency tier. Each represents a flagship
-// base flavor whose color drives the can-frame flood — chosen for spread
-// (orange / red / peach / navy) that mirrors the SUNRISE wordmark gradient
-// feel. All four are base flavors, no cannabinoid variants, so the visual
-// message stays clean around the "natural ingredients" headline. Each card
-// links to its PD page; the potency lockup is painted in cream over the
-// flavor flood as a top-left badge so tier identity reads at a glance.
-const S03_TIER_CARDS = [
+// PD-style cards staggered 10mg / 60mg across the visible row. The 5mg and
+// 30mg entries are preserved for fast revival when the active potency
+// cleanup flag is reversed but are filtered out of the visible grid today
+// (see SHOW_NON_LIVE_PRODUCTS gate downstream). Each card represents a
+// flagship flavor whose color drives the can-frame flood; the potency
+// lockup is painted in cream over the flavor flood as a top-left badge.
+// Cannabinoid SKUs (e.g. 60mg Blood Orange +CBG) carry a second cream
+// lockup as a vertical rotated strip on the can-frame's right edge — same
+// pattern as the PD related-cards (.pd-related-corner), kept inside the
+// can frame so the cream-on-color contrast holds.
+type CardCannabinoid = "CBG" | "CBN" | "THCV";
+type S03Card = {
+  slug: string;
+  flavor: string;
+  descriptor: string;
+  color: string;
+  tier: 5 | 10 | 30 | 60;
+  cannabinoid?: CardCannabinoid;
+};
+const S03_TIER_CARDS: S03Card[] = [
+  // Hidden by SHOW_NON_LIVE_PRODUCTS gate today; live when flag is reversed.
   {
     slug: "5mg-blood-orange",
     flavor: "Blood Orange",
     descriptor: "Tart + Punchy",
     color: "#DC7F27",
-    tier: 5 as const,
+    tier: 5,
   },
   {
     slug: "10mg-strawberry",
     flavor: "Strawberry",
     descriptor: "Fresh + Fruity",
     color: "#CC1F39",
-    tier: 10 as const,
+    tier: 10,
   },
+  // Hidden by SHOW_NON_LIVE_PRODUCTS gate today; live when flag is reversed.
   {
     slug: "30mg-peach-mango",
     flavor: "Peach Mango",
     descriptor: "Lush + Tropical",
     color: "#E89B5B",
-    tier: 30 as const,
+    tier: 30,
   },
   {
     slug: "60mg-blueberry-lemonade",
     flavor: "Blueberry Lemonade",
     descriptor: "Rich + Tangy",
     color: "#21285A",
-    tier: 60 as const,
+    tier: 60,
+  },
+  {
+    slug: "10mg-watermelon",
+    flavor: "Watermelon",
+    descriptor: "Sweet + Juicy",
+    color: "#0A6034",
+    tier: 10,
+  },
+  {
+    slug: "60mg-blood-orange-cbg",
+    flavor: "Blood Orange",
+    descriptor: "Tart + Punchy",
+    color: "#DC7F27",
+    tier: 60,
+    cannabinoid: "CBG",
   },
 ];
 
@@ -198,10 +230,14 @@ function HomePage() {
   const lockup10Ref = useRef<HTMLDivElement>(null);
   const lockup30Ref = useRef<HTMLDivElement>(null);
   const lockup60Ref = useRef<HTMLDivElement>(null);
-  const lockup5CardRef = useRef<HTMLSpanElement>(null);
-  const lockup10CardRef = useRef<HTMLSpanElement>(null);
-  const lockup30CardRef = useRef<HTMLSpanElement>(null);
-  const lockup60CardRef = useRef<HTMLSpanElement>(null);
+  // Array-indexed refs for the S03 tier-card lockups. Indexed by the card's
+  // position in the FILTERED (visible) S03_TIER_CARDS array so each visible
+  // card gets a dedicated ref. The single-ref-per-tier pattern broke once
+  // the row gained two 10mg + two 60mg cards (two DOM nodes can't share one
+  // ref). Cannabinoid refs follow the same array pattern and are only
+  // populated for cards whose data carries a `cannabinoid` field.
+  const cardLockupRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const cardCannabinoidRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const manifestoRef = useRef<HTMLDivElement>(null);
   const [manifestoInView, setManifestoInView] = useState(false);
 
@@ -217,12 +253,38 @@ function HomePage() {
       // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
       // if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(lockupBase, "#FEFBE0");
       if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(lockupBase, "#FEFBE0");
-      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-      // if (lockup5CardRef.current)  lockup5CardRef.current.innerHTML  = render5mgLockup(cardLockupBase,  "#FEFBE0");
-      if (lockup10CardRef.current) lockup10CardRef.current.innerHTML = render10mgLockup(cardLockupBase, "#FEFBE0");
-      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-      // if (lockup30CardRef.current) lockup30CardRef.current.innerHTML = render30mgLockup(cardLockupBase, "#FEFBE0");
-      if (lockup60CardRef.current) lockup60CardRef.current.innerHTML = render60mgLockup(cardLockupBase, "#FEFBE0");
+      // S03 card lockups — paint the tier badge + (when present) the
+      // cannabinoid right-strip for every visible card. The order here must
+      // match the JSX render order downstream so refs[i] aligns to card[i].
+      const visibleCards = S03_TIER_CARDS.filter((card) =>
+        SHOW_NON_LIVE_PRODUCTS || (card.tier !== 5 && card.tier !== 30)
+      );
+      visibleCards.forEach((card, i) => {
+        const lockupEl = cardLockupRefs.current[i];
+        if (lockupEl) {
+          // 5mg and 30mg branches are intentionally inert with the cleanup
+          // flag off; the filter above prevents those tiers from reaching
+          // this loop. Branches are wired for fast revival.
+          const html =
+            card.tier === 10 ? render10mgLockup(cardLockupBase, "#FEFBE0") :
+            card.tier === 60 ? render60mgLockup(cardLockupBase, "#FEFBE0") :
+                               "";
+          if (html) lockupEl.innerHTML = html;
+        }
+        const cbEl = cardCannabinoidRefs.current[i];
+        if (cbEl && card.cannabinoid) {
+          // Sized to mirror PD related-card cannabinoid lockups so the
+          // visual language stays consistent between home and product
+          // detail. Painted cream against the flavor-color flood inside
+          // the can frame.
+          const cbSize = base * 0.91;
+          const html =
+            card.cannabinoid === "CBG" ? renderCBGLockup(cbSize, "#FEFBE0") :
+            card.cannabinoid === "CBN" ? renderCBNLockup(cbSize, "#FEFBE0") :
+                                         renderTHCVLockup(cbSize, "#FEFBE0");
+          cbEl.innerHTML = html;
+        }
+      });
     };
     paint();
     if (document.fonts) document.fonts.ready.then(paint);
@@ -313,14 +375,13 @@ function HomePage() {
               {S03_TIER_CARDS
                 // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg / 30mg cards when flag is false
                 .filter((card) => SHOW_NON_LIVE_PRODUCTS || (card.tier !== 5 && card.tier !== 30))
-                .map((card) => {
-                const ref =
-                  card.tier === 5  ? lockup5CardRef  :
-                  card.tier === 10 ? lockup10CardRef :
-                  card.tier === 30 ? lockup30CardRef :
-                                     lockup60CardRef;
+                .map((card, i) => {
                 return (
-                  <div key={card.slug} className="s03-card">
+                  <div
+                    key={card.slug}
+                    className="s03-card"
+                    style={{ ["--card-flavor-color" as string]: card.color } as React.CSSProperties}
+                  >
                     <Link
                       to="/products/$slug"
                       params={{ slug: card.slug }}
@@ -334,9 +395,16 @@ function HomePage() {
                         />
                         <span
                           className="s03-card-tier"
-                          ref={ref}
+                          ref={(el) => { cardLockupRefs.current[i] = el; }}
                           aria-label={`${card.tier} milligram THC`}
                         />
+                        {card.cannabinoid && (
+                          <span
+                            className="s03-card-cannabinoid"
+                            ref={(el) => { cardCannabinoidRefs.current[i] = el; }}
+                            aria-label={`+${card.cannabinoid}`}
+                          />
+                        )}
                       </div>
                       <div className="s03-card-meta">
                         <div className="s03-card-name">{card.flavor}</div>
