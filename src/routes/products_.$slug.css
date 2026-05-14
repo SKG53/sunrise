@@ -332,34 +332,37 @@
 
 /* Claim badges — icon (cls-2 graphic) on the left, wordmark (cls-1 text)
    on the right, both sourced from the same canonical claim SVG via
-   per-half viewBox crops at import. The icon container is a square
-   sized via --claim-size; the wordmark container matches its height and
-   lets the SVG width auto-derive from the natural viewBox aspect
-   (1.96:1 gluten-free, 2.27:1 zero-alcohol, 2.57:1 natural-vegan). Both
-   inherit color: cream from .pd-claim — cls-2 already uses
-   fill: currentColor in the source, and cls-1's hardcoded #424241 fill
-   is rewritten to currentColor at crop time so cream cascades without
-   needing an !important override.
+   per-half viewBox crops at import. The icon container is a square; the
+   wordmark container matches its own height and lets the SVG width
+   auto-derive from the natural viewBox aspect (1.96:1 gluten-free,
+   2.27:1 zero-alcohol, 2.57:1 natural-vegan). Both inherit color: cream
+   from .pd-claim — cls-2 already uses fill: currentColor in the source,
+   and cls-1's hardcoded #424241 fill is rewritten to currentColor at
+   crop time so cream cascades without needing an !important override.
 
-   --claim-size is the single dial that resizes the icon and wordmark
-   together — both reference it, so they always stay matched in height.
-   The 12oz lockup is sized independently via its own render call
-   (base * 2.64) and is intentionally larger than the claim glyphs as
-   the band's focal stat.                                                */
+   Sizing dials: --claim-icon-size and --claim-text-size are split so
+   the icon glyph can read with more visual weight than the wordmark
+   without changing the wordmark size. At equal sizes the icon's small
+   graphic shape was visually lost against the wordmark's heavier
+   letterform mass; sizing the icon up (1.4×) versus the wordmark (1.2×)
+   re-establishes the icon as the visual anchor with the wordmark as
+   its label. The 12oz lockup is sized independently via its own render
+   call (base * 2.64) as the band's focal stat.                          */
 .pd-claim {
-  --claim-size: calc(var(--base) * 1.2);
+  --claim-icon-size: calc(var(--base) * 1.4);
+  --claim-text-size: calc(var(--base) * 1.2);
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: calc(var(--base) * 0.16);
+  gap: calc(var(--base) * 0.22);
   color: var(--cream);
   flex-shrink: 1;
   min-width: 0;
 }
 .pd-claim-icon {
-  width: var(--claim-size);
-  height: var(--claim-size);
+  width: var(--claim-icon-size);
+  height: var(--claim-icon-size);
   display: block;
   flex-shrink: 0;
   line-height: 0;
@@ -370,7 +373,7 @@
   display: block;
 }
 .pd-claim-text {
-  height: var(--claim-size);
+  height: var(--claim-text-size);
   display: block;
   flex-shrink: 0;
   line-height: 0;
