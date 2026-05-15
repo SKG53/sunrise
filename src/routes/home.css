@@ -897,8 +897,6 @@
 @media (max-width: 768px) {
   .home-hero { height: 440px; }
   .hero-strip { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
-  .s08-inner { height: calc(var(--base) * 11); }
-  .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }
   .s09-card { width: calc(var(--base) * 8); }
   /* Section headlines — match subpage S02 responsive scale (1.5 → 1.35). */
