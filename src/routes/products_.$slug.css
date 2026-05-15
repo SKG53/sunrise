@@ -631,29 +631,46 @@
   26%  { transform: translateX(calc(var(--base) * -0.4)); opacity: 0; }
   100% { transform: translateX(0);                       opacity: 1; }
 }
-/* Cannabinoid lockup — vertical strip on the card's right edge,            */
-/* visually centered. Span fills card height as a flex container; child     */
-/* lockup is rotated -90deg (CCW) so the cannabinoid word reads bottom-to-  */
-/* top. The strip lives over the flavor-color flooded can portion (the     */
-/* card's vertical center always falls within the can area at 3:4), so the */
-/* lockup is painted in cream for on-color contrast. pointer-events: none  */
-/* keeps clicks on the parent <Link>.                                       */
+/* Cannabinoid lockup — vertical strip anchored to the can-frame's bottom */
+/* right corner. Lives inside .pd-related-can (via RelatedCan's children   */
+/* prop) so absolute positioning is scoped to the flavor-flooded portion  */
+/* of the card.                                                            */
+/*                                                                         */
+/* Rotation pivot is the lockup's own bottom-left corner (transform-origin */
+/* 0 100%) — NOT center. With center-pivot the visible vertical extent     */
+/* scales with text width (W), so +THCV's longer wordmark pushed below the */
+/* cream line while shorter +CBG/+CBN sat noticeably higher above it. With */
+/* bottom-left pivot, the visible bottom-right of the rotated text always  */
+/* lands at the pivot point regardless of W — all three cannabinoids end   */
+/* at the same Y, with bottoms ~0.15×base above the can/meta boundary.     */
+/* The variants differ only in how far up the can-frame they extend (W is  */
+/* the post-rotation visible height): +THCV reaches further up because     */
+/* its wordmark is wider, +CBG/+CBN are more compact.                      */
+/*                                                                         */
+/* Corner is a 0×0 positioning anchor at the can-frame's bottom-right,     */
+/* lifted by a small buffer above cream. The lockup is absolute-positioned */
+/* with bottom: 0; left: 0 of that anchor; rotation places visible content */
+/* up-and-left from the anchor into the flooded area. Pre-rotation layout  */
+/* extends right past can-frame-right but is invisible — only the rotated  */
+/* paint region renders, and that's inside .pd-related-can's bounds.       */
+/* Painted cream for on-color contrast. pointer-events: none keeps clicks  */
+/* on the parent <Link>.                                                   */
 .pd-related-corner {
   position: absolute;
-  top: 0;
   right: 0;
-  bottom: 0;
-  width: calc(var(--base) * 1.0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  bottom: calc(var(--base) * 0.15);
+  width: 0;
+  height: 0;
   pointer-events: none;
   z-index: 2;
 }
 .pd-related-corner > * {
+  position: absolute;
+  left: 0;
+  bottom: 0;
   display: inline-block;
   transform: rotate(-90deg);
-  transform-origin: center;
+  transform-origin: 0 100%;
   white-space: nowrap;
 }
 
