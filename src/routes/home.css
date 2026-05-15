@@ -328,6 +328,20 @@
   min-width: 0;
 }
 
+/* Section-closing bridge CTA row — centers the .btn .btn-secondary       */
+/* "See the Full Lineup →" link below the four-card grid. Visual styling  */
+/* (size, padding, border, dancing-arrow hover) is inherited from the     */
+/* global .btn rules in sunrise-shell.css — this rule only handles the    */
+/* layout context (centered, with breathing room above the grid). Margin  */
+/* matches the existing rhythm between S03 grid bottom and S06 tier       */
+/* section top: 1.5×base provides a clear pause between the bridge CTA    */
+/* and the next section's headline.                                       */
+.s03-cta-row {
+  display: flex;
+  justify-content: center;
+  margin-top: calc(var(--base) * 1.5);
+}
+
 /* ── SECTION 04 · WHAT'S INSIDE ─────────────────────────────────────────── */
 /* Three-column trifecta layout mirroring the live savorsunrise.com site:  */
 /* four ingredients (left-aligned) on the left, large can in the middle,   */

@@ -425,6 +425,25 @@ function HomePage() {
                 );
               })}
             </div>
+
+            {/* Section-closing bridge CTA — leads from the curated four-
+                card sampling to the full /products grid. Uses the site-
+                standard .btn .btn-secondary pattern (transparent fill,
+                near-black 2px border, near-black text → wipes to near-
+                black on hover with text flipping to cream). Mirrors the
+                same treatment used as a section-closer on the PDP
+                ("Find Near You"), the Contact page secondary action,
+                and the Products page secondary CTAs — consistent
+                section-closer vocabulary site-wide. Arrow glyph is
+                appended automatically by the global .btn::after rule
+                and inherits the btn-arrow-dance hover animation, so
+                the hover behavior matches every other button on the
+                site without per-element wiring.                          */}
+            <div className="s03-cta-row">
+              <Link to="/products" className="btn btn-secondary">
+                See the Full Lineup
+              </Link>
+            </div>
           </div>
         </section>
 
