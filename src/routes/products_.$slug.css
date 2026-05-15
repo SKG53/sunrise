@@ -924,22 +924,54 @@
 }
 
 /* ── Shopify wiring: pack selector ──────────────────────────────────────── */
+/* Each pack button shows the pack name (e.g. "12 PACK") on top and an     */
+/* optional "Save X%" sub-line below, computed live from the variant       */
+/* price ladder (see savingsByPack memo in the route). The smallest pack   */
+/* is the baseline and never displays a savings badge — there's nothing   */
+/* to compare it against. align-items: stretch on the row means the       */
+/* baseline button auto-matches the height of the taller siblings so the  */
+/* row stays visually even.                                                */
+/*                                                                         */
+/* Color treatment uses the product's flavor color throughout: the         */
+/* savings line is painted in --flavor-color when the button is idle (a   */
+/* small punch of brand color on the cream background), and shifts to     */
+/* cream when the button is selected (selected = flavor-color flooded     */
+/* background, so cream-on-color preserves contrast). The pack-name line  */
+/* keeps its existing near-black / cream treatment so the savings line    */
+/* reads as supporting metadata rather than a primary content tier.       */
 .pd-hero-pack {
   display: flex;
   gap: 0.5rem;
   margin: 0.75rem 0 calc(var(--base) * 0.55);
   flex-wrap: wrap;
+  align-items: stretch;
 }
 .pd-pack-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
   padding: 0.5rem 1rem;
   border-radius: 999px;
   border: 1.5px solid rgba(26, 26, 26, 0.25);
   background: transparent;
   color: #1a1a1a;
-  font-size: 0.875rem;
-  font-weight: 600;
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.pd-pack-btn-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.pd-pack-btn-savings {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--flavor-color, #1a1a1a);
+  line-height: 1;
 }
 .pd-pack-btn:hover {
   border-color: rgba(26, 26, 26, 0.5);
@@ -947,5 +979,8 @@
 .pd-pack-btn.is-selected {
   background: var(--flavor-color, #1a1a1a);
   border-color: var(--flavor-color, #1a1a1a);
+  color: #fefbe0;
+}
+.pd-pack-btn.is-selected .pd-pack-btn-savings {
   color: #fefbe0;
 }
