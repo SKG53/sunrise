@@ -428,12 +428,6 @@ function ProductDetailPage() {
   const addItem = useCartStore((s) => s.addItem);
   const cartLoading = useCartStore((s) => s.isLoading);
 
-  const selectedVariant = shopifyProduct?.node.variants.edges.find((edge) =>
-    edge.node.selectedOptions.some(
-      (opt) => opt.name === "Pack" && opt.value === selectedPack
-    )
-  )?.node ?? shopifyProduct?.node.variants.edges[0]?.node;
-
   const packOptions =
     shopifyProduct?.node.options.find((o) => o.name === "Pack")?.values ?? [];
 
@@ -485,6 +479,36 @@ function ProductDetailPage() {
     }
     return map;
   }, [shopifyProduct]);
+
+  // Effective selection — derived (not stored) so the initial render
+  // already resolves to a real variant. The useState seed is
+  // `defaultPackOption` from the slug map ("Single Can" for every SKU),
+  // which is a historical placeholder that doesn't correspond to any
+  // actual Shopify variant — so on first load `selectedPack` matches
+  // nothing in `packOptions` and the row would render with no button
+  // visually selected. Resolving through a memo instead of a useEffect
+  // avoids the one-frame flash a post-commit effect would produce: the
+  // very first render where Shopify data is in already picks the right
+  // button.
+  //
+  // Priority: (1) if the user's stored selection matches a real variant,
+  // honor it — this is the steady state after a click. (2) else fall
+  // back to the smallest pack (the savings baseline). (3) else fall
+  // back to whatever's first in packOptions, then the raw stored value
+  // — these last two are safety nets for malformed variant data.
+  const effectiveSelectedPack = useMemo(() => {
+    if (packOptions.includes(selectedPack)) return selectedPack;
+    for (const [name, info] of savingsByPack.entries()) {
+      if (info.isBaseline) return name;
+    }
+    return packOptions[0] ?? selectedPack;
+  }, [selectedPack, packOptions, savingsByPack]);
+
+  const selectedVariant = shopifyProduct?.node.variants.edges.find((edge) =>
+    edge.node.selectedOptions.some(
+      (opt) => opt.name === "Pack" && opt.value === effectiveSelectedPack
+    )
+  )?.node ?? shopifyProduct?.node.variants.edges[0]?.node;
 
   const displayPrice = selectedVariant?.price.amount;
   const isInStock = selectedVariant?.availableForSale ?? false;
@@ -640,18 +664,15 @@ function ProductDetailPage() {
                       const info = savingsByPack.get(opt);
                       const showSavings =
                         info != null && !info.isBaseline && info.savingsPct > 0;
+                      const isSelected = effectiveSelectedPack === opt;
                       return (
                         <button
                           key={opt}
                           type="button"
                           role="radio"
-                          aria-checked={selectedPack === opt}
-                          className={`pd-pack-btn${selectedPack === opt ? " is-selected" : ""}`}
-                          style={
-                            selectedPack === opt
-                              ? ({ ["--flavor-color" as string]: product.color } as React.CSSProperties)
-                              : ({ ["--flavor-color" as string]: product.color } as React.CSSProperties)
-                          }
+                          aria-checked={isSelected}
+                          className={`pd-pack-btn${isSelected ? " is-selected" : ""}`}
+                          style={{ ["--flavor-color" as string]: product.color } as React.CSSProperties}
                           onClick={() => setSelectedPack(opt)}
                         >
                           <span className="pd-pack-btn-name">{opt}</span>
