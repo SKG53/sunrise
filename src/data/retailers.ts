@@ -22,12 +22,17 @@ export type Retailer = {
   lng: number;
 };
 
-// Coverage states — the source of truth for "where SUNRISE is sold" at the
-// state level. Used by the home-page coverage map (S07Map.tsx). Hand-
-// maintained while the RETAILERS array below carries fabricated placeholder
-// data; once real retailer-level data lands, this list can be derived from
-// RETAILERS (similar to RETAILER_STATES below) and the manual constant
-// removed. Two-letter USPS codes, alphabetical.
+// Coverage states — the canonical "where SUNRISE is sold" list at the state
+// level. Two parallel sources of truth must stay in sync:
+//   1. This array (consumed wherever a programmatic list is needed).
+//   2. /public/data/coverage-states.geojson (loaded by S07Map.tsx into the
+//      home-page map's Data Layer to render the green state overlays).
+// If you add or remove a state here, regenerate the GeoJSON to match.
+//
+// Hand-maintained while the RETAILERS array below carries fabricated
+// placeholder data; once real retailer-level data lands, this list can be
+// derived from RETAILERS (similar to RETAILER_STATES below) and the manual
+// constant removed. Two-letter USPS codes, alphabetical.
 export const COVERAGE_STATES: readonly string[] = [
   "IL", "KS", "ME", "MN", "MO", "NJ", "OK", "TX", "WI",
 ];
