@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { S07Map } from "../components/S07Map";
+import { COVERAGE_STATES } from "../data/retailers";
 import {
   renderWordmark,
   // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
@@ -43,6 +44,21 @@ export const Route = createFileRoute("/")({
 // matching "HIDDEN FOR ACTIVE POTENCY CLEANUP" tag throughout this file.
 // See docs/active-potency-cleanup-2026-05-08.md for full revival path.
 const SHOW_NON_LIVE_PRODUCTS = false;
+
+// ── COVERAGE COUNT WORD ──────────────────────────────────────────────────
+// Renders the COVERAGE_STATES count as an English word for the S08 headline
+// ("Now in nine states"). Falls back to digits past 20 so the system still
+// works without copy updates if coverage ever grows that far. Centralized
+// here so the S08 headline stays in sync with the state list automatically.
+const COVERAGE_NUMBER_WORDS = [
+  "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
+  "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+  "sixteen", "seventeen", "eighteen", "nineteen", "twenty",
+] as const;
+function coverageCountWord(): string {
+  const n = COVERAGE_STATES.length;
+  return COVERAGE_NUMBER_WORDS[n] ?? String(n);
+}
 
 // ── FAQ DATA ─────────────────────────────────────────────────────────────
 // Cold-traffic first-time-visitor questions (brand, category, legality,
@@ -638,20 +654,29 @@ function HomePage() {
         </section>
 
         {/* ── 07 · NEAR YOU TEASER ──────────────────────────────────────── */}
+        {/* Coverage map showing the states where SUNRISE is currently sold. */}
+        {/* The state count in the headline is derived from COVERAGE_STATES  */}
+        {/* (src/data/retailers.ts) so the copy stays in sync when coverage  */}
+        {/* changes. State-list maintenance happens in that file, not here.  */}
         <section className="s08-near-you">
-          <div className="s08-inner">
-            <S07Map />
-            <div className="s08-card">
-              <h2 className="s08-card-headline">
-                Find SUNRISE<br />near you
+          <div className="container">
+            <div className="s08-head">
+              <div className="s08-eyebrow">Where to Find Us</div>
+              <h2 className="s08-headline">
+                Now in <span className="accent">{coverageCountWord()} states</span>
               </h2>
-              <p className="s08-card-body">
-                Available at select retailers across the country. Check the locator
-                to find your nearest store.
+              <p className="s08-subhead">
+                From Texas to Maine, SUNRISE is stocked at independent retailers
+                across the country — with more landing every month.
               </p>
-              <div>
-                <a href="/find" className="btn btn-primary">Find Near You</a>
-              </div>
+            </div>
+            <div className="s08-map-frame">
+              <S07Map />
+            </div>
+            <div className="s08-cta-row">
+              <a href="/find" className="btn btn-on-color-ghost">
+                See Where SUNRISE Is Sold
+              </a>
             </div>
           </div>
         </section>
