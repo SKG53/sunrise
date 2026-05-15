@@ -952,7 +952,10 @@ function ProductDetailPage() {
 // every SKU ships with. The colored placeholder branch is effectively
 // unreachable in practice. The `color` prop floods the frame in the
 // sibling SKU's flavor color so each card carries its own identity.
-function RelatedCan({ slug, flavorName, color }: { slug: string; flavorName: string; color: string }) {
+// `children` lets the caller slot overlays (e.g. the cannabinoid corner
+// lockup) into the can-frame box so absolute-positioned siblings are
+// scoped to the flavor-flooded area rather than the whole card height.
+function RelatedCan({ slug, flavorName, color, children }: { slug: string; flavorName: string; color: string; children?: React.ReactNode }) {
   const mapping = getShopifyMapping(slug);
   const { product } = useShopifyProduct(mapping?.handle);
   const image = product?.node.images.edges[0]?.node;
@@ -965,6 +968,7 @@ function RelatedCan({ slug, flavorName, color }: { slug: string; flavorName: str
           alt={image.altText ?? `SUNRISE ${flavorName} can`}
           loading="lazy"
         />
+        {children}
       </div>
     );
   }
@@ -975,6 +979,7 @@ function RelatedCan({ slug, flavorName, color }: { slug: string; flavorName: str
         alt={`SUNRISE ${flavorName} can`}
         loading="lazy"
       />
+      {children}
     </div>
   );
 }
