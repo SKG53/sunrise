@@ -657,74 +657,94 @@
 .s07-cta-row { margin-top: calc(var(--base) * 0.2); }
 
 /* ── SECTION 07 · NEAR YOU TEASER ───────────────────────────────────────── */
-/* State-level coverage map. Centered composition: eyebrow → headline →     */
-/* subhead → SVG map → outline CTA routing to /find. The SVG comes from     */
-/* <S07Map />; this stylesheet sets its container sizing and the coverage  */
-/* fill/basemap colors. No interactivity at this scale — hover is reserved  */
-/* for the dedicated locator page.                                          */
+/* Inline SVG coverage map fills .s08-map-bg via the <S07Map /> component.  */
+/* States where SUNRISE is sold render in tier-30 green; the rest of the    */
+/* basemap renders in a warm light gray. The cream .s08-card floats over    */
+/* the map via position: absolute + z-index. Background stays cream so      */
+/* the section reads consistently even before the SVG paints.               */
 .s08-near-you {
   background: var(--cream);
-  padding: calc(var(--base) * 1.5) 0 calc(var(--base) * 1.8);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
 }
-.s08-head {
-  text-align: center;
-  margin-bottom: calc(var(--base) * 0.6);
+.s08-inner {
+  position: relative;
+  height: calc(var(--base) * 11);
 }
-.s08-eyebrow {
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 800;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: calc(var(--base) * 0.25);
+.s08-map-bg {
+  position: absolute;
+  inset: 0;
+  background: #F5F3ED;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.s08-headline {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.9);
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--near-black);
-  line-height: 1.1;
-  margin-bottom: calc(var(--base) * 0.3);
-}
-.s08-headline .accent {
-  color: var(--tier-30);
-}
-.s08-subhead {
-  font-size: calc(var(--base) * 0.34);
-  font-weight: 400;
-  line-height: 1.55;
-  color: var(--text-secondary);
-  max-width: 52ch;
-  margin: 0 auto;
-}
-.s08-map-frame {
-  max-width: calc(var(--base) * 18);
-  margin: 0 auto calc(var(--base) * 0.7);
-  padding: calc(var(--base) * 0.2) calc(var(--base) * 0.4);
-}
+/* Inline US-coverage SVG. The viewBox is fixed at 975×610 (Albers USA      */
+/* projection); the SVG scales responsively to fill .s08-map-bg while      */
+/* preserving aspect ratio. width/height: 100% with object-fit-like        */
+/* behavior via preserveAspectRatio (xMidYMid meet, the SVG default).      */
 .s08-coverage-svg {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
-/* Basemap states — warm gray sitting one step warmer than the cream       */
-/* background, hairline cream borders so the basemap reads as a map        */
-/* without competing with highlighted states.                              */
+/* Basemap states — warm gray with hairline cream borders so the basemap   */
+/* reads as a map without competing visually with highlighted states.      */
 .s08-coverage-svg path {
   fill: #E8E4D8;
   stroke: var(--cream);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
 }
-/* Coverage states — tier-30 green at full saturation. Binary: we're       */
-/* there or we're not. No partial opacity, no half-states.                 */
+/* Coverage states — tier-30 green at full saturation. Binary: we're there */
+/* or we're not. No partial opacity, no half-states.                        */
 .s08-coverage-svg path.is-coverage {
   fill: var(--tier-30);
 }
-.s08-cta-row {
-  text-align: center;
+
+/* Card floats over the map at the bottom-left. z-index keeps it above the */
+/* SVG; the original Leaflet-era z-index: 1000 is retained as a safe       */
+/* default even though the SVG no longer claims its own stacking context.  */
+.s08-card {
+  position: absolute;
+  bottom: calc(var(--base) * 1.0);
+  left: calc(var(--base) * 1.2);
+  background: var(--cream);
+  padding: calc(var(--base) * 0.8) calc(var(--base) * 0.9);
+  border-radius: 6px;
+  max-width: calc(var(--base) * 9);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.s08-card-eyebrow {
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.s08-card-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.72);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.0;
+}
+.s08-card-body {
+  font-size: calc(var(--base) * 0.3);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-bottom: calc(var(--base) * 0.2);
 }
 
 /* ── SECTION 08 · REVIEWS ───────────────────────────────────────────────── */
@@ -897,6 +917,8 @@
 @media (max-width: 768px) {
   .home-hero { height: 440px; }
   .hero-strip { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
+  .s08-inner { height: calc(var(--base) * 11); }
+  .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }
   .s09-card { width: calc(var(--base) * 8); }
   /* Section headlines — match subpage S02 responsive scale (1.5 → 1.35). */
