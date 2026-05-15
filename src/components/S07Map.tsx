@@ -34,8 +34,9 @@ export function S07Map() {
 
         const map = new maps.Map(containerNode, {
           // Center shifted east from the prior -96.5°W so the coverage
-          // states sit clear of the floating .s08-card on the left.
-          center: { lat: 38.5, lng: -86 },
+          // states sit clear of the floating .s08-card on the left. -82°W
+          // pushes Texas's western edge out from behind the card.
+          center: { lat: 38.5, lng: -82 },
           zoom: 4,
           minZoom: 4,
           maxZoom: 4,
