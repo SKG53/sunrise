@@ -22,6 +22,16 @@ export type Retailer = {
   lng: number;
 };
 
+// Coverage states — the source of truth for "where SUNRISE is sold" at the
+// state level. Used by the home-page coverage map (S07Map.tsx). Hand-
+// maintained while the RETAILERS array below carries fabricated placeholder
+// data; once real retailer-level data lands, this list can be derived from
+// RETAILERS (similar to RETAILER_STATES below) and the manual constant
+// removed. Two-letter USPS codes, alphabetical.
+export const COVERAGE_STATES: readonly string[] = [
+  "IL", "KS", "ME", "MN", "MO", "NJ", "OK", "TX", "WI",
+];
+
 export const RETAILERS: Retailer[] = [
   // ── IL ──────────────────────────────────────────────────────────────
   { name: "Amber Lantern Liquor", address: "9174 S Oak Ln", city: "Aurora", state: "IL", zip: "60502", lat: 41.746078, lng: -88.333913 },

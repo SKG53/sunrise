@@ -1,85 +1,40 @@
-// Homepage "Find Near You" map teaser. Renders Google Maps with one brand-
-// styled marker per city where SUNRISE is stocked. No store-level data is
-// exposed — users click through to /find for that. Interaction is fully
-// locked (no drag, no zoom, no UI controls); this is a visual hook only.
+// Home-page "Where to Find Us" coverage map. Renders all 50 US states as
+// static SVG paths, with the states where SUNRISE is currently sold filled
+// in tier-30 green. No interactivity, no markers, no map tiles — this is a
+// brand-styled coverage indicator, not a locator. The locator UI lives at
+// /find.
 //
-// Data source: src/data/retailers.ts → CITY_PINS.
+// The component is SSR-rendered: the SVG ships in the server HTML, no
+// post-hydration paint, no async loading. State path geometry comes from
+// US_STATES_PATHS (Albers USA projection, viewBox 0 0 975 610). Coverage
+// state list comes from COVERAGE_STATES in src/data/retailers.ts.
+//
+// Component name kept as S07Map for compatibility with the existing
+// import in src/routes/index.tsx; the internal implementation has been
+// replaced wholesale.
 
-import { useEffect, useRef } from "react";
-import { loadGoogleMaps, MAP_STYLE } from "../lib/googleMaps";
-import { CITY_PINS } from "../data/retailers";
+import { US_STATES_PATHS } from "../data/us-states-paths";
+import { COVERAGE_STATES } from "../data/retailers";
+
+const COVERAGE = new Set(COVERAGE_STATES);
 
 export function S07Map() {
-  const mapRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    // Google Maps doesn't offer a .remove() on the map instance; cleanup
-    // clears the container DOM on unmount.
-    const containerNode = mapRef.current;
-
-    loadGoogleMaps()
-      .then((maps) => {
-        if (cancelled || !maps || !containerNode) return;
-
-        const map = new maps.Map(containerNode, {
-          center: { lat: 38.5, lng: -96.5 },
-          zoom: 4,
-          minZoom: 4,
-          maxZoom: 4,
-          // All interaction disabled — teaser map, not a tool.
-          draggable: false,
-          scrollwheel: false,
-          disableDoubleClickZoom: true,
-          zoomControl: false,
-          mapTypeControl: false,
-          streetViewControl: false,
-          fullscreenControl: false,
-          rotateControl: false,
-          scaleControl: false,
-          keyboardShortcuts: false,
-          clickableIcons: false,
-          gestureHandling: "none",
-          disableDefaultUI: true,
-          styles: MAP_STYLE,
-          backgroundColor: "#f5f3ed",
-        });
-
-        // Brand-styled pin: tier-30 green (#0A6034) circle with cream
-        // border. Using the symbol-path API so the marker is vector, not
-        // a raster sprite — renders crisp at any pixel density.
-        const pinIcon: any = {
-          path: maps.SymbolPath.CIRCLE,
-          fillColor: "#0A6034",
-          fillOpacity: 1,
-          strokeColor: "#FEFBE0",
-          strokeWeight: 2,
-          scale: 7,
-        };
-
-        CITY_PINS.forEach((p) => {
-          new maps.Marker({
-            position: { lat: p.lat, lng: p.lng },
-            map,
-            icon: pinIcon,
-            clickable: false,
-            title: `${p.city}, ${p.state}`,
-          });
-        });
-      })
-      .catch((err) => {
-        // eslint-disable-next-line no-console
-        console.warn("[S07Map]", err);
-      });
-
-    return () => {
-      cancelled = true;
-      // Best-effort cleanup — clear container to release map DOM.
-      if (containerNode) containerNode.innerHTML = "";
-    };
-  }, []);
-
-  // Class `s08-map-bg` retained so existing layout rules (position: absolute;
-  // inset: 0) apply without duplicate styles.
-  return <div ref={mapRef} className="s08-map-bg" aria-hidden="true" />;
+  return (
+    <svg
+      viewBox="0 0 975 610"
+      className="s08-coverage-svg"
+      role="img"
+      aria-label={`US coverage map — SUNRISE is sold in ${COVERAGE_STATES.length} states`}
+    >
+      {US_STATES_PATHS.map((s) => (
+        <path
+          key={s.abbrev}
+          d={s.d}
+          data-abbrev={s.abbrev}
+          data-name={s.name}
+          className={COVERAGE.has(s.abbrev) ? "is-coverage" : ""}
+        />
+      ))}
+    </svg>
+  );
 }
