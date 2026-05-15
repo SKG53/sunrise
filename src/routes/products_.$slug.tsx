@@ -781,7 +781,15 @@ function ProductDetailPage() {
                   className="pd-related-card"
                   style={{ ["--pd-related-color" as string]: o.color } as React.CSSProperties}
                 >
-                  <RelatedCan slug={o.slug} flavorName={o.flavor} color={o.color} />
+                  <RelatedCan slug={o.slug} flavorName={o.flavor} color={o.color}>
+                    {o.cannabinoid && (
+                      <span
+                        className="pd-related-corner"
+                        ref={(el) => { relatedCornerRefs.current[i] = el; }}
+                        aria-label={`+${o.cannabinoid}`}
+                      />
+                    )}
+                  </RelatedCan>
                   <div className="pd-related-meta">
                     <div className="pd-related-name">{o.flavor}</div>
                     <div className="pd-related-descriptor">{o.descriptor}</div>
@@ -790,13 +798,6 @@ function ProductDetailPage() {
                     <span className="pd-related-cta-label">Buy Now</span>
                     <span className="pd-related-cta-arrow">→</span>
                   </div>
-                  {o.cannabinoid && (
-                    <span
-                      className="pd-related-corner"
-                      ref={(el) => { relatedCornerRefs.current[i] = el; }}
-                      aria-label={`+${o.cannabinoid}`}
-                    />
-                  )}
                 </Link>
               ))}
             </div>
