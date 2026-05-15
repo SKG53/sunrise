@@ -2,7 +2,7 @@
    SUNRISE — find.css
    Path: src/routes/find.css
    ==========================================================================
-   Scoped .f-* styles for the Find (retailer locator) route.
+   Scoped .f-* styles for the Find (coverage) route.
    No @font-face — inherits Montserrat from sunrise-shell.css via __root.tsx.
    All design tokens (--cream, --gold, --near-black, --base, --tier-10, etc.)
    are defined globally in the shell.
@@ -95,265 +95,27 @@
   margin-right: auto;
 }
 
-/* ── 03 · SEARCH ────────────────────────────────────────────────────────── */
-.f-search {
-  padding: calc(var(--base) * 1.1) 0 calc(var(--base) * 1.1);
+/* ── 03 · COVERAGE MAP ──────────────────────────────────────────────────── */
+/* Full-width state-coverage map — same Google Maps + Data Layer setup as  */
+/* the home-page S07Map. No card overlay on this page, so the map fills    */
+/* the container at a wide 16:9 aspect ratio for clear visibility of all   */
+/* nine coverage states. .f-coverage-map is the Google Maps mount node;   */
+/* Google injects tile divs inside it which inherit the border-radius via  */
+/* the > div selector.                                                     */
+.f-coverage {
+  padding: 0 0 calc(var(--base) * 1.8);
 }
-.f-search-form {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
-  gap: calc(var(--base) * 0.35);
-  align-items: end;
-}
-.f-search-field {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--base) * 0.18);
-  min-width: 0;
-}
-.f-field-label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-.f-input,
-.f-select {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.36);
-  font-weight: 500;
-  color: var(--near-black);
-  background: var(--cream);
-  border: 1.5px solid var(--near-black);
-  border-radius: 6px;
-  padding: calc(var(--base) * 0.28) calc(var(--base) * 0.36);
-  line-height: 1.2;
-  outline: none;
-  transition: border-color 180ms ease-out, box-shadow 180ms ease-out;
-  width: 100%;
-  min-width: 0;
-}
-.f-input:focus,
-.f-select:focus {
-  border-color: var(--tier-10);
-  box-shadow: 0 0 0 3px rgba(204, 31, 57, 0.15);
-}
-.f-input::placeholder { color: var(--text-faint); font-weight: 400; }
-.f-select {
-  appearance: none;
-  -webkit-appearance: none;
-  padding-right: calc(var(--base) * 0.9);
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%231A1A1A' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right calc(var(--base) * 0.36) center;
-}
-.f-search-submit {
-  align-self: end;
-  /* Matches field height by rolling with btn baseline padding */
-}
-
-/* ── 04 · RESULTS (Map + List) ──────────────────────────────────────────── */
-.f-results {
-  padding: calc(var(--base) * 1.1) 0 calc(var(--base) * 1.8);
-}
-.f-results-grid {
-  display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  /* Definite row height is required so the list's max-height: 100% has
-     something to resolve against. Without this, the row sizes to the list's
-     521-item max-content (~40,000px) and the map stretches to match — the
-     "grey box scrolls for miles" bug. clamp() keeps the map a comfortable
-     size across viewports: ~520px nominal, tightened on shorter laptops,
-     capped so it never dominates on tall displays. Reset to auto in the
-     stacked-layout media query below. */
-  grid-template-rows: clamp(460px, 58vh, 580px);
-  gap: calc(var(--base) * 0.9);
-  align-items: stretch;
-}
-.f-map {
+.f-coverage-map {
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
   border-radius: 6px;
   background: #f5f3ed;
   overflow: hidden;
-  cursor: grab;
   min-width: 0;
 }
-.f-map:active { cursor: grabbing; }
-.f-map > div { border-radius: 6px; }
+.f-coverage-map > div { border-radius: 6px; }
 
-/* ── Google Maps InfoWindow — brand-tuned contents ─────────────────────── */
-.sr-iw {
-  font-family: 'Montserrat', sans-serif;
-  color: #1A1A1A;
-  padding: 4px 2px 2px;
-  min-width: 180px;
-}
-.sr-iw-name {
-  font-size: 14px;
-  font-weight: 900;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  line-height: 1.2;
-  margin-bottom: 6px;
-}
-.sr-iw-addr {
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.35;
-  color: #3a3a3a;
-}
-.sr-iw-link {
-  display: inline-block;
-  margin-top: 8px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--tier-10);
-  text-decoration: none;
-}
-.sr-iw-link:hover { text-decoration: underline; }
-.f-results-list {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  /* Match the map's height (grid row sized by map's aspect-ratio because
-     min-height: 0 removes the list's content from track sizing). Overflow
-     content scrolls internally instead of running past the map's bottom. */
-  min-height: 0;
-  max-height: 100%;
-  overflow-y: auto;
-  padding-right: calc(var(--base) * 0.15);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(26, 26, 26, 0.25) transparent;
-}
-.f-results-list::-webkit-scrollbar { width: 8px; }
-.f-results-list::-webkit-scrollbar-track { background: transparent; }
-.f-results-list::-webkit-scrollbar-thumb {
-  background: rgba(26, 26, 26, 0.22);
-  border-radius: 4px;
-}
-.f-results-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(26, 26, 26, 0.38);
-}
-.f-results-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 0 calc(var(--base) * 0.35);
-  border-bottom: 1px solid var(--warm-gray-faint);
-  margin-bottom: calc(var(--base) * 0.3);
-  /* Sticky inside the scrolling list so the count/clear row stays visible
-     as the retailer list scrolls underneath. */
-  position: sticky;
-  top: 0;
-  background: var(--cream);
-  z-index: 1;
-}
-.f-results-count {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.24);
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.f-results-clear {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--tier-10);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-.f-results-clear:hover { color: var(--tier-10-hover); text-decoration: underline; }
-.f-retailer-list { display: flex; flex-direction: column; }
-.f-retailer {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: calc(var(--base) * 0.4);
-  padding: calc(var(--base) * 0.4) calc(var(--base) * 0.3);
-  border-bottom: 1px solid var(--warm-gray-faint);
-  align-items: start;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 140ms ease;
-}
-.f-retailer:hover {
-  background-color: rgba(196, 146, 42, 0.06);
-}
-.f-retailer.is-selected {
-  background-color: rgba(10, 96, 52, 0.08);
-  border-left: 3px solid var(--tier-30, #0A6034);
-  padding-left: calc(var(--base) * 0.3 - 3px);
-}
-.f-retailer:last-child { border-bottom: none; }
-.f-retailer-main {
-  min-width: 0;
-  /* <address> default is italic — brand voice uses it structurally, not stylistically */
-  font-style: normal;
-}
-.f-retailer-name {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.38);
-  font-weight: 900;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  color: var(--near-black);
-  line-height: 1.2;
-  margin-bottom: calc(var(--base) * 0.1);
-}
-.f-retailer-address {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.3);
-  font-weight: 400;
-  color: var(--text-body);
-  line-height: 1.4;
-}
-.f-retailer-right {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--base) * 0.12);
-  align-items: flex-end;
-  text-align: right;
-  flex-shrink: 0;
-}
-.f-retailer-directions {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.24);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--tier-10);
-  white-space: nowrap;
-}
-.f-retailer-directions:hover { color: var(--tier-10-hover); text-decoration: underline; }
-.f-empty {
-  padding: calc(var(--base) * 0.6) 0;
-}
-.f-empty-headline {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.42);
-  font-weight: 800;
-  color: var(--near-black);
-  margin-bottom: calc(var(--base) * 0.2);
-}
-.f-empty-body {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.34);
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--text-body);
-}
-
-/* ── 05 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────────────── */
+/* ── 04 · DON'T SEE SUNRISE (tier-10 flood, PTP-style) ──────────────────── */
 .f-fallback {
   /* Mirrors .a-ptp on the About page: full tier-10 red flood, cream text,
      horizontal copy | ctas split. This is the primary consumer conversion
@@ -399,7 +161,7 @@
   justify-self: end;
 }
 
-/* ── 06 · RETAILER GATEWAY (cream band) ─────────────────────────────────── */
+/* ── 05 · RETAILER GATEWAY (cream band) ─────────────────────────────────── */
 .f-gateway {
   /* Cream background, quiet B2B wholesale call-out. Previously this was
      a forest-green flood to separate it from the footer — superseded now
@@ -441,44 +203,18 @@
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 1101px) {
-  .f-results-grid {
-    grid-template-columns: 1fr;
-    /* Reset the desktop row cap so stacked layout flows naturally — map row
-       sizes via aspect-ratio (see .f-map below), list row sizes to content. */
-    grid-template-rows: auto;
-  }
-  /* Grid stacks vertically — list no longer shares a row with the map,
-     so the height cap and internal scroll don't apply. */
-  .f-results-list { max-height: none; overflow-y: visible; padding-right: 0; }
-  .f-results-meta { position: static; }
   .f-fallback-inner { grid-template-columns: 1fr; }
   .f-fallback-ctas { justify-self: start; flex-direction: row; }
   .f-gateway-inner { grid-template-columns: 1fr; }
   .f-gateway-right { justify-self: start; }
 }
 @media (max-width: 768px) {
-  .f-search-form {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-  }
-  .f-search-field-grow { grid-column: 1 / -1; }
-  .f-search-submit { grid-column: 1 / -1; justify-self: start; }
   .f-hero-headline { font-size: calc(var(--base) * 1.35); }
   .f-fallback-headline { font-size: calc(var(--base) * 1.0); }
   .f-gateway-headline { font-size: calc(var(--base) * 1.0); }
-  .f-retailer {
-    grid-template-columns: 1fr;
-  }
-  .f-retailer-right {
-    align-items: flex-start;
-    text-align: left;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-  }
+  .f-coverage-map { aspect-ratio: 4 / 3; }
 }
 @media (max-width: 520px) {
   .f-fallback-ctas { flex-direction: column; }
   .f-fallback-ctas .btn { width: 100%; text-align: center; }
-  .f-map { aspect-ratio: 5 / 4; }
 }
