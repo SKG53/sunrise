@@ -240,6 +240,14 @@
   height: 75%;
   object-fit: contain;
   object-position: center;
+  /* Subtle vertical nudge down to add breathing room between the can     */
+  /* and the potency lockup at the top of the can-frame. The lockup is    */
+  /* absolutely positioned (top: 0.24×base from the frame top) and won't  */
+  /* shift; this translation moves only the can image, opening a few px   */
+  /* of clear space between the lockup baseline and the can's top edge.   */
+  /* Paint-only — no layout reflow, no impact on the cannabinoid lockup   */
+  /* (which is also absolutely positioned within the same can-frame).    */
+  transform: translateY(calc(var(--base) * 0.18));
 }
 /* Potency lockup overlay — top-left of the flavor-flood can frame.        */
 /* Cream-painted by the locked render*mgLockup helpers, sized smaller than */
@@ -283,30 +291,45 @@
      keeps its old behavior.                                              */
   color: var(--card-flavor-color, var(--green-accent));
 }
-/* Cannabinoid lockup overlay — vertical strip pinned to the can-frame's    */
-/* right edge for SKUs that carry a minor cannabinoid (CBG / CBN / THCV).   */
-/* Painted cream by the locked render[CBG|CBN|THCV]Lockup helpers and       */
-/* rotated -90deg so the cannabinoid word reads bottom-to-top. Positioned   */
-/* inside .s03-card-can (which is the only flavor-flooded portion of the    */
-/* card) so the cream painting always lands on a flavor-color field, never  */
-/* on cream meta below. Mirrors PD .pd-related-corner one-for-one so the    */
-/* visual language stays consistent between home and product detail.        */
+/* Cannabinoid lockup overlay — vertical strip anchored to the can-frame's */
+/* lower-right corner for SKUs that carry a minor cannabinoid (CBG / CBN / */
+/* THCV). Painted cream by the locked render[CBG|CBN|THCV]Lockup helpers   */
+/* and rotated -90deg so the cannabinoid word reads bottom-to-top. Lives   */
+/* inside .s03-card-can (the only flavor-flooded portion of the card) so   */
+/* the cream painting always lands on a flavor-color field, never on the   */
+/* cream meta below.                                                       */
+/*                                                                         */
+/* Mirrors the PD .pd-related-corner fix exactly: a 0×0 positioning anchor */
+/* sits at the can-frame's bottom-right with a small buffer above the      */
+/* cream meta, and the lockup child rotates around its own bottom-left     */
+/* corner (transform-origin: 0 100%). With this pivot the visible bottom-  */
+/* right of any rotated cannabinoid wordmark always lands at the anchor    */
+/* point — independent of wordmark width — so +CBG, +CBN, and +THCV all    */
+/* end at the same Y above the can/meta boundary. The only thing that      */
+/* varies is upward extent: +THCV reaches further up the can-frame than    */
+/* +CBG/+CBN because its wordmark is wider.                                */
+/*                                                                         */
+/* Previous treatment used a full-height flex container with center-pivot  */
+/* rotation, which placed the lockup visually too high on the card —       */
+/* shorter cannabinoid wordmarks centered with substantial empty space     */
+/* above the cream line. This bottom-anchored approach pins all variants   */
+/* to a fixed buffer above the meta area, matching the PDP convention.    */
 .s03-card-cannabinoid {
   position: absolute;
-  top: 0;
   right: 0;
-  bottom: 0;
-  width: calc(var(--base) * 0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  bottom: calc(var(--base) * 0.15);
+  width: 0;
+  height: 0;
   pointer-events: none;
   z-index: 2;
 }
 .s03-card-cannabinoid > * {
+  position: absolute;
+  left: 0;
+  bottom: 0;
   display: inline-block;
   transform: rotate(-90deg);
-  transform-origin: center;
+  transform-origin: 0 100%;
   white-space: nowrap;
 }
 /* Buy Now CTA — full-width btn-flavor inside the card's cream lower       */
