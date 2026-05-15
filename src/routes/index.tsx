@@ -439,8 +439,8 @@ function HomePage() {
                 and inherits the btn-arrow-dance hover animation, so
                 the hover behavior matches every other button on the
                 site without per-element wiring.                          */}
-            <div className="s03-cta-row">
-              <Link to="/products" className="btn btn-secondary">
+            <div className="home-section-cta-row">
+              <Link to="/products" className="btn btn-primary btn-xl">
                 See the Full Lineup
               </Link>
             </div>
@@ -508,6 +508,19 @@ function HomePage() {
                 </div>
                 <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
+            </div>
+
+            {/* Section-closing bridge CTA — same vocabulary as the S03      */}
+            {/* close, repeated here so customers reaching the bottom of    */}
+            {/* either the flavor-led S03 entry pathway or the experience-  */}
+            {/* led S06 entry pathway encounter the same "see everything"  */}
+            {/* invitation. The two pathways feed the same destination     */}
+            {/* (/products), but offer different organizing axes — flavor   */}
+            {/* (S03) or potency (S06).                                     */}
+            <div className="home-section-cta-row">
+              <Link to="/products" className="btn btn-primary btn-xl">
+                See the Full Lineup
+              </Link>
             </div>
           </div>
         </section>

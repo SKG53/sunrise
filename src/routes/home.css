@@ -351,18 +351,36 @@
   min-width: 0;
 }
 
-/* Section-closing bridge CTA row — centers the .btn .btn-secondary       */
-/* "See the Full Lineup →" link below the four-card grid. Visual styling  */
-/* (size, padding, border, dancing-arrow hover) is inherited from the     */
-/* global .btn rules in sunrise-shell.css — this rule only handles the    */
-/* layout context (centered, with breathing room above the grid). Margin  */
-/* matches the existing rhythm between S03 grid bottom and S06 tier       */
-/* section top: 1.5×base provides a clear pause between the bridge CTA    */
-/* and the next section's headline.                                       */
-.s03-cta-row {
+/* Section-closing bridge CTA row — centers a .btn .btn-primary .btn-xl    */
+/* "See the Full Lineup →" link below the section's card grid. Used at     */
+/* the end of both S03 (product cards) and S06 (potency tiers) to invite   */
+/* customers into the full /products catalog from either entry pathway.    */
+/* The same button vocabulary in both locations creates a consistent       */
+/* section-closing rhythm down the home page; the .btn family's wipe and   */
+/* dancing-arrow hover behavior are inherited automatically.               */
+/*                                                                         */
+/* Margin matches the existing rhythm between section bottom and the next  */
+/* section's top padding: 1.5×base provides a clear pause that doesn't     */
+/* collide with the next section's headline. Class name is intentionally   */
+/* section-agnostic (home-section-cta-row, not s03-cta-row) so both S03    */
+/* and S06 can reuse it without duplication or scope confusion.            */
+.home-section-cta-row {
   display: flex;
   justify-content: center;
   margin-top: calc(var(--base) * 1.5);
+}
+
+/* XL size modifier for buttons in section-closing positions. The .btn     */
+/* family scales every dimension (padding, font-size, gap, arrow size,    */
+/* min-width) off the --base custom property, so redefining --base at the  */
+/* button scope with a 1.5× scaled clamp(...) preserves responsive sizing  */
+/* across viewports while making the button proportionally larger. The    */
+/* clamp matches the root --base definition (clamp(32px, 4vw, 50px))      */
+/* multiplied by 1.5 in all three terms — at desktop the button base      */
+/* lands at 75px, at mobile at 48px. Wipe and arrow-dance animations      */
+/* continue to work unmodified because they're also expressed in --base.  */
+.btn-xl {
+  --base: clamp(48px, 6vw, 75px);
 }
 
 /* ── SECTION 04 · WHAT'S INSIDE ─────────────────────────────────────────── */
