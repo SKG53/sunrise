@@ -781,7 +781,15 @@ function ProductDetailPage() {
                   className="pd-related-card"
                   style={{ ["--pd-related-color" as string]: o.color } as React.CSSProperties}
                 >
-                  <RelatedCan slug={o.slug} flavorName={o.flavor} color={o.color} />
+                  <RelatedCan slug={o.slug} flavorName={o.flavor} color={o.color}>
+                    {o.cannabinoid && (
+                      <span
+                        className="pd-related-corner"
+                        ref={(el) => { relatedCornerRefs.current[i] = el; }}
+                        aria-label={`+${o.cannabinoid}`}
+                      />
+                    )}
+                  </RelatedCan>
                   <div className="pd-related-meta">
                     <div className="pd-related-name">{o.flavor}</div>
                     <div className="pd-related-descriptor">{o.descriptor}</div>
@@ -790,13 +798,6 @@ function ProductDetailPage() {
                     <span className="pd-related-cta-label">Buy Now</span>
                     <span className="pd-related-cta-arrow">→</span>
                   </div>
-                  {o.cannabinoid && (
-                    <span
-                      className="pd-related-corner"
-                      ref={(el) => { relatedCornerRefs.current[i] = el; }}
-                      aria-label={`+${o.cannabinoid}`}
-                    />
-                  )}
                 </Link>
               ))}
             </div>
@@ -951,7 +952,10 @@ function ProductDetailPage() {
 // every SKU ships with. The colored placeholder branch is effectively
 // unreachable in practice. The `color` prop floods the frame in the
 // sibling SKU's flavor color so each card carries its own identity.
-function RelatedCan({ slug, flavorName, color }: { slug: string; flavorName: string; color: string }) {
+// `children` lets the caller slot overlays (e.g. the cannabinoid corner
+// lockup) into the can-frame box so absolute-positioned siblings are
+// scoped to the flavor-flooded area rather than the whole card height.
+function RelatedCan({ slug, flavorName, color, children }: { slug: string; flavorName: string; color: string; children?: React.ReactNode }) {
   const mapping = getShopifyMapping(slug);
   const { product } = useShopifyProduct(mapping?.handle);
   const image = product?.node.images.edges[0]?.node;
@@ -964,6 +968,7 @@ function RelatedCan({ slug, flavorName, color }: { slug: string; flavorName: str
           alt={image.altText ?? `SUNRISE ${flavorName} can`}
           loading="lazy"
         />
+        {children}
       </div>
     );
   }
@@ -974,6 +979,7 @@ function RelatedCan({ slug, flavorName, color }: { slug: string; flavorName: str
         alt={`SUNRISE ${flavorName} can`}
         loading="lazy"
       />
+      {children}
     </div>
   );
 }
