@@ -7,7 +7,7 @@
 // → 05 Others in Tier → 04 Ingredients → 07 FAQ → 08 PtP band → Footer
 
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import {
@@ -437,6 +437,55 @@ function ProductDetailPage() {
   const packOptions =
     shopifyProduct?.node.options.find((o) => o.name === "Pack")?.values ?? [];
 
+  // Per-pack savings map keyed by pack option name (e.g. "12 PACK"). For
+  // each variant we extract a pack count from the variant's "Pack" option
+  // value via /(\d+)/ — so any value that includes a parseable integer
+  // works ("4 PACK", "12 PACK", "Case of 24", etc.). The variant with the
+  // smallest pack count is the baseline; its per-unit price is the
+  // comparison anchor. For every other variant, savings is the percentage
+  // reduction in per-unit price vs the baseline, rounded to a whole
+  // number for display ("Save 9%", not "Save 8.83%"). Per-unit price is
+  // never shown to customers — it exists only as the comparison engine.
+  //
+  // Variants whose pack value lacks a parseable integer are skipped from
+  // the calc (their pack button renders without a savings badge); the
+  // map gracefully degrades to empty when there's only one variant or
+  // no Shopify data. Negative or zero savings (a larger pack that costs
+  // more per unit, or is priced identically) is also suppressed at
+  // render time so we never display "Save 0%" or "Save -3%".
+  const savingsByPack = useMemo(() => {
+    const variants = shopifyProduct?.node.variants.edges ?? [];
+    const rows = variants
+      .map((e) => {
+        const packOpt = e.node.selectedOptions.find((o) => o.name === "Pack");
+        if (!packOpt) return null;
+        const match = packOpt.value.match(/\d+/);
+        if (!match) return null;
+        const count = parseInt(match[0], 10);
+        const price = parseFloat(e.node.price.amount);
+        if (!Number.isFinite(count) || count <= 0 || !Number.isFinite(price)) {
+          return null;
+        }
+        return { packName: packOpt.value, count, price };
+      })
+      .filter((r): r is { packName: string; count: number; price: number } => r !== null);
+
+    const map = new Map<string, { savingsPct: number; isBaseline: boolean }>();
+    if (rows.length < 2) return map;
+
+    const baseline = rows.reduce((min, r) => (r.count < min.count ? r : min), rows[0]);
+    const baselineUnitPrice = baseline.price / baseline.count;
+    for (const r of rows) {
+      const isBaseline = r.count === baseline.count;
+      const unitPrice = r.price / r.count;
+      const savingsPct = isBaseline
+        ? 0
+        : Math.round((1 - unitPrice / baselineUnitPrice) * 100);
+      map.set(r.packName, { savingsPct, isBaseline });
+    }
+    return map;
+  }, [shopifyProduct]);
+
   const displayPrice = selectedVariant?.price.amount;
   const isInStock = selectedVariant?.availableForSale ?? false;
 
@@ -587,23 +636,33 @@ function ProductDetailPage() {
 
                 {shopifyMapping && packOptions.length > 1 && (
                   <div className="pd-hero-pack" role="radiogroup" aria-label="Pack size">
-                    {packOptions.map((opt) => (
-                      <button
-                        key={opt}
-                        type="button"
-                        role="radio"
-                        aria-checked={selectedPack === opt}
-                        className={`pd-pack-btn${selectedPack === opt ? " is-selected" : ""}`}
-                        style={
-                          selectedPack === opt
-                            ? ({ ["--flavor-color" as string]: product.color } as React.CSSProperties)
-                            : undefined
-                        }
-                        onClick={() => setSelectedPack(opt)}
-                      >
-                        {opt}
-                      </button>
-                    ))}
+                    {packOptions.map((opt) => {
+                      const info = savingsByPack.get(opt);
+                      const showSavings =
+                        info != null && !info.isBaseline && info.savingsPct > 0;
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          role="radio"
+                          aria-checked={selectedPack === opt}
+                          className={`pd-pack-btn${selectedPack === opt ? " is-selected" : ""}`}
+                          style={
+                            selectedPack === opt
+                              ? ({ ["--flavor-color" as string]: product.color } as React.CSSProperties)
+                              : ({ ["--flavor-color" as string]: product.color } as React.CSSProperties)
+                          }
+                          onClick={() => setSelectedPack(opt)}
+                        >
+                          <span className="pd-pack-btn-name">{opt}</span>
+                          {showSavings && (
+                            <span className="pd-pack-btn-savings">
+                              Save {info.savingsPct}%
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
 
