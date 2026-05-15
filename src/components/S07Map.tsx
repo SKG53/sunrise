@@ -1,42 +1,88 @@
-// Homepage "Find Near You" map teaser. Renders an inline SVG of the US
-// with the states where SUNRISE is currently sold filled in tier-30 green;
-// every other state renders in a warm gray basemap. No store-level data is
-// exposed — users click through to /find for the locator.
+// Homepage "Find Near You" map teaser. Renders Google Maps with the states
+// where SUNRISE is sold filled in tier-30 green via the Maps Data Layer.
+// No store-level data is exposed — users click through to /find for that.
+// Interaction is fully locked (no drag, no zoom, no UI controls); this is
+// a visual hook only.
 //
-// The wrapping <div className="s08-map-bg"> preserves the original layout
-// contract from the prior Google Maps implementation: existing CSS in
-// home.css positions the wrapper absolutely (inset: 0) inside .s08-inner,
-// and the floating .s08-card overlays the map via z-index. The SVG fills
-// the wrapper responsively while preserving its 975×610 aspect ratio.
+// Visual logic
+//   - Basemap: same MAP_STYLE as before (muted warm palette).
+//   - State coverage: loaded from /data/coverage-states.geojson via the
+//     Data Layer. Each feature is filled tier-30 green at ~70% opacity
+//     with a hairline cream stroke. No markers.
+//   - Viewport: shifted ~10° east of the prior center so the highlighted
+//     coverage states (TX → ME, clustered in the central-east US) sit
+//     clear of the floating .s08-card overlay on the left.
 //
-// Data source: src/data/us-states-paths.ts (50-state geometry, Albers USA
-// projection) + src/data/retailers.ts → COVERAGE_STATES (the list of
-// states where SUNRISE is currently sold).
+// Data source: /public/data/coverage-states.geojson (built from the same
+// US Census GeoJSON used elsewhere; trimmed to the 9 coverage states).
 
-import { US_STATES_PATHS } from "../data/us-states-paths";
-import { COVERAGE_STATES } from "../data/retailers";
-
-const COVERAGE = new Set(COVERAGE_STATES);
+import { useEffect, useRef } from "react";
+import { loadGoogleMaps, MAP_STYLE } from "../lib/googleMaps";
 
 export function S07Map() {
-  return (
-    <div className="s08-map-bg" aria-hidden="true">
-      <svg
-        viewBox="0 0 975 610"
-        className="s08-coverage-svg"
-        role="img"
-        aria-label={`US coverage map — SUNRISE is sold in ${COVERAGE_STATES.length} states`}
-      >
-        {US_STATES_PATHS.map((s) => (
-          <path
-            key={s.abbrev}
-            d={s.d}
-            data-abbrev={s.abbrev}
-            data-name={s.name}
-            className={COVERAGE.has(s.abbrev) ? "is-coverage" : ""}
-          />
-        ))}
-      </svg>
-    </div>
-  );
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    // Google Maps doesn't offer a .remove() on the map instance; cleanup
+    // clears the container DOM on unmount.
+    const containerNode = mapRef.current;
+
+    loadGoogleMaps()
+      .then((maps) => {
+        if (cancelled || !maps || !containerNode) return;
+
+        const map = new maps.Map(containerNode, {
+          // Center shifted east from the prior -96.5°W so the coverage
+          // states sit clear of the floating .s08-card on the left.
+          center: { lat: 38.5, lng: -86 },
+          zoom: 4,
+          minZoom: 4,
+          maxZoom: 4,
+          // All interaction disabled — teaser map, not a tool.
+          draggable: false,
+          scrollwheel: false,
+          disableDoubleClickZoom: true,
+          zoomControl: false,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false,
+          rotateControl: false,
+          scaleControl: false,
+          keyboardShortcuts: false,
+          clickableIcons: false,
+          gestureHandling: "none",
+          disableDefaultUI: true,
+          styles: MAP_STYLE,
+          backgroundColor: "#f5f3ed",
+        });
+
+        // Load the 9-state coverage GeoJSON into the map's Data Layer.
+        // The Data Layer is part of the standard Maps JavaScript API; no
+        // additional API enablement required. loadGeoJson resolves async,
+        // but if it fails the map still renders cleanly (no overlay).
+        map.data.setStyle({
+          fillColor: "#0A6034",
+          fillOpacity: 0.7,
+          strokeColor: "#FEFBE0",
+          strokeWeight: 1,
+          clickable: false,
+        });
+        map.data.loadGeoJson("/data/coverage-states.geojson");
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.warn("[S07Map]", err);
+      });
+
+    return () => {
+      cancelled = true;
+      // Best-effort cleanup — clear container to release map DOM.
+      if (containerNode) containerNode.innerHTML = "";
+    };
+  }, []);
+
+  // Class `s08-map-bg` retained so existing layout rules (position: absolute;
+  // inset: 0) apply without duplicate styles.
+  return <div ref={mapRef} className="s08-map-bg" aria-hidden="true" />;
 }
