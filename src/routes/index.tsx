@@ -45,37 +45,31 @@ export const Route = createFileRoute("/")({
 const SHOW_NON_LIVE_PRODUCTS = false;
 
 // ── FAQ DATA ─────────────────────────────────────────────────────────────
-// Cold-traffic first-time-visitor questions (brand, category, legality,
-// effect, risk, purchase). Intentionally disjoint from the SKU-specific
-// FAQs on product detail pages — the two sets read as complementary.
+// Cold-traffic first-time-visitor questions. Curated subset of the canonical
+// /faq master — five questions chosen to walk a cold visitor through the
+// objections that block first purchase (legitimacy → legality → experience →
+// dealbreaker → access). Copy locked to v6 of canonical FAQ. Footer link
+// directs to /faq for the full set.
 const FAQS = [
   {
-    q: "What is SUNRISE?",
-    // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
-    // a: "A hemp-infused Delta-9 seltzer. Real fruit, pure cane sugar, and a precisely dosed THC lift in every can. Four potency tiers — 5mg, 10mg, 30mg, and 60mg — so you can pick the experience that fits the moment. Each can is two servings.",
-    a: "A hemp-infused Delta-9 seltzer. Real fruit, pure cane sugar, and a precisely dosed THC lift in every can. Two potency tiers — 10mg and 60mg — so you can pick the experience that fits the moment. Each can is two servings.",
+    q: "What is hemp?",
+    a: "Hemp is a variant of the cannabis plant with 0.3% Delta-9 THC or less by dry weight — federally legal under the 2018 Farm Bill. It still carries the same psychoactive properties at higher doses, so we encourage customers to choose their experience based on comfort and habit.",
   },
   {
-    q: "Is hemp-derived Delta-9 THC legal?",
-    a: "Yes. The 2018 Farm Bill made hemp-derived products federally legal at or below 0.3% Delta-9 THC by dry weight. SUNRISE is formulated to that spec and sold only in states whose laws permit it.",
+    q: "Is SUNRISE legal?",
+    a: "Yes — our beverages are 100% federally legal because every can uses hemp-derived Delta-9 THC at or below 0.3% by dry weight, which makes them legal under the 2018 Farm Bill. State laws vary, however. Please check your local rules for specific guidelines on hemp-infused beverage consumption.",
   },
   {
-    q: "What does it feel like?",
-    // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
-    // a: "That's the point of having four tiers. 5mg is a light, easy lift — aperitif territory. 60mg is a full evening. Each step up is a deliberate choice, not a surprise. Effects are personal; start at 5mg or 10mg if it's your first time, and move up only when you know how your body responds.",
-    a: "Each tier is built around a distinct experience. 10mg is a light, social lift — afternoon territory. 60mg is a full evening. Start at 10mg if it's your first time, and move up only when you know how your body responds.",
-  },
-  {
-    q: "How is SUNRISE different from a CBD seltzer or a dispensary drink?",
-    a: "CBD seltzers don't produce a noticeable lift — CBD is non-intoxicating. Dispensary drinks live inside state marijuana programs and can't travel outside the state that made them. SUNRISE is a federally compliant hemp beverage, which means it can sit on a standard retail shelf — grocery, liquor, bar, restaurant — the same way any other seltzer does.",
+    q: "How will it feel?",
+    a: "Depends on the potency and how your body responds. 5MG is light and social, 10MG more present, 30MG fuller and longer, 60MG a real evening. When in doubt, start lower within your comfort level, wait 40 minutes to an hour for the lift to settle, and consume more from there.",
   },
   {
     q: "Will it show up on a drug test?",
-    a: "Possibly. Standard drug panels test for THC metabolites and don't distinguish hemp-derived Delta-9 from any other source. If your job or situation requires a clean test, SUNRISE isn't for you.",
+    a: "Possibly. Standard drug panels test for THC metabolites and don't distinguish hemp-derived THC from any other source. If your job or situation requires a clean test, we'd caution against our products.",
   },
   {
     q: "Where can I buy SUNRISE?",
-    a: "Check the store locator on our Find page, or order directly through Shop. If your local spot doesn't carry it yet, tell them — retailer requests move faster than you'd think.",
+    a: "Through retail partners in select states across the country, and direct from us at savorsunrise.com. We ship across the US in compliance with local state regulations for hemp beverages.",
   },
 ];
 
@@ -692,6 +686,11 @@ function HomePage() {
                   <div className="s10-faq-a">{item.a}</div>
                 </details>
               ))}
+            </div>
+            <div className="s10-faq-more">
+              <a href="/faq" className="s10-faq-more-link">
+                See the full FAQ <span aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
         </section>

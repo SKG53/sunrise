@@ -768,6 +768,38 @@
   max-width: 68ch;
 }
 
+/* "See the full FAQ →" wayfinding link beneath the list. Same treatment
+   as the home-page FAQ link — right-aligned, near-black with hover-to-
+   tier-10 + arrow nudge. Wayfinding link, not CTA. */
+.p-faq-more {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: calc(var(--base) * 0.7);
+}
+.p-faq-more-link {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.36);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--near-black);
+  text-decoration: none;
+  border-bottom: 1px solid var(--near-black);
+  padding-bottom: 2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.p-faq-more-link:hover {
+  color: var(--tier-10);
+  border-bottom-color: var(--tier-10);
+}
+.p-faq-more-link span {
+  display: inline-block;
+  margin-left: calc(var(--base) * 0.18);
+  transition: transform 0.2s ease;
+}
+.p-faq-more-link:hover span {
+  transform: translateX(3px);
+}
+
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .p-effects-grid { grid-template-columns: repeat(2, 1fr); }
