@@ -1,0 +1,256 @@
+/* ==========================================================================
+   SUNRISE — faq.css
+   Path: src/routes/faq.css
+   ==========================================================================
+   Scoped .faq-* styles for the FAQ route (/faq). No @font-face — inherits
+   Montserrat from sunrise-shell.css via __root.tsx. All design tokens
+   (--cream, --gold, --near-black, --base, --tier-30, etc.) defined globally
+   in the shell.
+
+   Section map (2 sections before footer):
+     01 · Pagehero      (tier-30 green flood — Support/Policy category color,
+                         matching refund/shipping/privacy/terms/sms-marketing/
+                         age-verification/accessibility-statement pages)
+     02 · Body          (cream — two-column on desktop: sticky section menu
+                         on the left + open Q&A content on the right; stacked
+                         on mobile with the menu becoming a non-sticky strip
+                         above the content)
+
+   Design notes:
+     · FAQ page chooses an open/non-collapsible layout per founder direction.
+       All Q&A content is visible at once; the section menu provides quick
+       wayfinding via anchor links.
+     · Sticky aside uses scroll-behavior: smooth at the html level (set in
+       sunrise-shell.css) so anchor jumps animate gracefully.
+     · Mobile breakpoint at 900px (not 768) because the two-column layout
+       needs more horizontal room than a typical policy text column.
+   ========================================================================== */
+
+/* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
+/* Tier-30 green flood. Title is short (3 chars) so we cap nth-child rules
+   at :nth-child(3). Animation timing mirrors policy page convention. */
+.faq-pagehero {
+  background: var(--tier-30);
+  min-height: 37.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 1.5) calc(var(--base) * 1);
+}
+.faq-pagehero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 2.0), 9vw, calc(var(--base) * 4.2));
+  letter-spacing: 0.015em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  margin: 0;
+}
+.faq-pagehero-title span {
+  opacity: 0;
+  animation: pagehero-char-in 0.05s ease-out forwards;
+}
+.faq-pagehero-title span:nth-child(1) { animation-delay: 0.20s; }
+.faq-pagehero-title span:nth-child(2) { animation-delay: 0.28s; }
+.faq-pagehero-title span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes pagehero-char-in {
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-pagehero-title span { opacity: 1; animation: none; }
+}
+
+/* ── 02 · BODY ──────────────────────────────────────────────────────────── */
+.faq-body {
+  background: var(--cream);
+  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.6);
+}
+.faq-body-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 14rem) 1fr;
+  gap: calc(var(--base) * 1.6);
+  align-items: start;
+}
+
+/* ── Section menu (left column) ─────────────────────────────────────────── */
+/* Sticks to top of viewport as user scrolls through Q&A. Offset accounts
+   for the sticky site-header (variable height, ~3.5rem at typical base). */
+.faq-menu {
+  position: sticky;
+  top: calc(var(--base) * 1.6);
+  align-self: start;
+  padding-right: calc(var(--base) * 0.4);
+  border-right: 1px solid var(--warm-gray-faint);
+}
+.faq-menu-label {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--base) * 0.28);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-body);
+  margin: 0 0 calc(var(--base) * 0.5);
+}
+.faq-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.18);
+}
+.faq-menu-list a {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--base) * 0.25);
+  padding: calc(var(--base) * 0.12) 0;
+  text-decoration: none;
+  color: var(--near-black);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: calc(var(--base) * 0.36);
+  line-height: 1.35;
+  transition: color 0.15s ease;
+}
+.faq-menu-list a:hover {
+  color: var(--gold);
+}
+.faq-menu-num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: calc(var(--base) * 0.30);
+  color: var(--text-body);
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+.faq-menu-list a:hover .faq-menu-num {
+  color: var(--gold);
+}
+
+/* ── Q&A content (right column) ─────────────────────────────────────────── */
+.faq-content {
+  max-width: 68ch;
+}
+.faq-content .faq-section {
+  margin: 0 0 calc(var(--base) * 1.6);
+  padding-top: calc(var(--base) * 0.8);
+  /* Scroll-margin keeps the section header visible below the sticky site
+     header when an anchor link jumps the user to a section. */
+  scroll-margin-top: calc(var(--base) * 1.6);
+}
+.faq-content .faq-section:first-child {
+  padding-top: 0;
+}
+.faq-content .faq-section + .faq-section {
+  border-top: 1px solid var(--warm-gray-faint);
+}
+
+.faq-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--base) * 0.4);
+  margin: 0 0 calc(var(--base) * 0.6);
+}
+.faq-section-num {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--base) * 0.32);
+  letter-spacing: 0.18em;
+  color: var(--tier-30);
+  flex-shrink: 0;
+}
+.faq-section-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.85);
+  letter-spacing: 0.005em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin: 0;
+}
+
+.faq-section-items {
+  display: flex;
+  flex-direction: column;
+}
+.faq-item {
+  padding: calc(var(--base) * 0.5) 0;
+  border-bottom: 1px solid var(--warm-gray-faintest, rgba(26, 26, 26, 0.06));
+}
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-q {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--base) * 0.48);
+  line-height: 1.35;
+  color: var(--near-black);
+  margin: 0 0 calc(var(--base) * 0.28);
+}
+
+.faq-a {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--text-body);
+}
+.faq-a p {
+  margin: 0 0 calc(var(--base) * 0.35);
+}
+.faq-a p:last-child {
+  margin-bottom: 0;
+}
+
+/* Inline links — match the policy-page convention (near-black with
+   underline, hover to tier-10). Keeps the policy/info pages visually
+   consistent across the support cluster. */
+.faq-a a {
+  color: var(--near-black);
+  text-decoration: none;
+  border-bottom: 1px solid var(--near-black);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.faq-a a:hover {
+  color: var(--tier-10);
+  border-bottom-color: var(--tier-10);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+/* At narrow widths the two-column grid collapses to a single column. The
+   section menu becomes a horizontally-scrollable strip that sits above the
+   content (non-sticky on mobile — sticky behavior fights with the sticky
+   site-header on small screens and saves no real estate anyway). */
+@media (max-width: 900px) {
+  .faq-body-inner {
+    grid-template-columns: 1fr;
+    gap: calc(var(--base) * 1.0);
+  }
+  .faq-menu {
+    position: static;
+    padding-right: 0;
+    padding-bottom: calc(var(--base) * 0.6);
+    border-right: none;
+    border-bottom: 1px solid var(--warm-gray-faint);
+  }
+  .faq-menu-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: calc(var(--base) * 0.2) calc(var(--base) * 0.6);
+  }
+  .faq-menu-list a {
+    padding: calc(var(--base) * 0.1) 0;
+  }
+  .faq-content {
+    max-width: none;
+  }
+}
+@media (max-width: 540px) {
+  .faq-section-title { font-size: calc(var(--base) * 0.7); }
+  .faq-q { font-size: calc(var(--base) * 0.44); }
+}

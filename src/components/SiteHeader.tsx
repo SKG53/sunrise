@@ -8,13 +8,14 @@ import { useEffect, useRef, useState } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 import { CartDrawer } from "./CartDrawer";
 
-type NavKey = "home" | "products" | "about" | "find" | "contact";
+type NavKey = "home" | "products" | "about" | "find" | "faq" | "contact";
 
 const NAV_LINKS: { key: NavKey; href: string; label: string }[] = [
   { key: "home",     href: "/",         label: "Home" },
   { key: "products", href: "/products", label: "Products" },
   { key: "about",    href: "/about",    label: "About" },
   { key: "find",     href: "/find",     label: "Find" },
+  { key: "faq",      href: "/faq",      label: "FAQ" },
   { key: "contact",  href: "/contact",  label: "Contact" },
 ];
 

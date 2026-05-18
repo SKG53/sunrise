@@ -120,14 +120,14 @@ export function SiteFooter() {
           </div>
 
           {/* ── Support column ── */}
-          {/* Five links covering customer-facing policies: FAQs (placeholder */}
-          {/* URL pending FAQ page), Shipping Policy (live), Refund Policy    */}
-          {/* (live), Privacy Policy (live), Terms of Service (live).         */}
-          {/* Hierarchy is informational first, then legal.                   */}
+          {/* Five links covering customer-facing policies: FAQs (live at  */}
+          {/* /faq), Shipping Policy (live), Refund Policy (live), Privacy */}
+          {/* Policy (live), Terms of Service (live). Hierarchy is         */}
+          {/* informational first, then legal.                             */}
           <div className="footer-col">
             <div className="footer-col-label">Support</div>
             <ul>
-              <li><a href="#">FAQs</a></li>
+              <li><a href="/faq">FAQs</a></li>
               <li><a href="/shipping-policy">Shipping Policy</a></li>
               <li><a href="/refund-policy">Refund Policy</a></li>
               <li><a href="/privacy-policy">Privacy Policy</a></li>
