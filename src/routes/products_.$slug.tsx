@@ -662,7 +662,9 @@ function ProductDetailPage() {
 
                 <div className="pd-hero-descriptor">{product.descriptor}</div>
 
-                <p className="pd-hero-blurb">{product.blurb}</p>
+                <p className="pd-hero-blurb">
+                  {shopifyProduct?.node.description?.trim() || product.blurb}
+                </p>
 
                 <div className="pd-hero-price">
                   {shopifyMapping ? (
