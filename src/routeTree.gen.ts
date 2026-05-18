@@ -17,6 +17,7 @@ import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as FindRouteImport } from './routes/find'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AgeVerificationPolicyRouteImport } from './routes/age-verification-policy'
 import { Route as AccessibilityStatementRouteImport } from './routes/accessibility-statement'
@@ -69,6 +70,11 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
 const FindRoute = FindRouteImport.update({
   id: '/find',
   path: '/find',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/accessibility-statement': typeof AccessibilityStatementRoute
   '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/accessibility-statement': typeof AccessibilityStatementRoute
   '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
@@ -193,6 +201,7 @@ export interface FileRoutesById {
   '/accessibility-statement': typeof AccessibilityStatementRoute
   '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | '/accessibility-statement'
     | '/age-verification-policy'
     | '/contact'
+    | '/faq'
     | '/find'
     | '/privacy-policy'
     | '/products'
@@ -241,6 +251,7 @@ export interface FileRouteTypes {
     | '/accessibility-statement'
     | '/age-verification-policy'
     | '/contact'
+    | '/faq'
     | '/find'
     | '/privacy-policy'
     | '/products'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/accessibility-statement'
     | '/age-verification-policy'
     | '/contact'
+    | '/faq'
     | '/find'
     | '/privacy-policy'
     | '/products'
@@ -288,6 +300,7 @@ export interface RootRouteChildren {
   AccessibilityStatementRoute: typeof AccessibilityStatementRoute
   AgeVerificationPolicyRoute: typeof AgeVerificationPolicyRoute
   ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
   FindRoute: typeof FindRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
@@ -362,6 +375,13 @@ declare module '@tanstack/react-router' {
       path: '/find'
       fullPath: '/find'
       preLoaderRoute: typeof FindRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -464,6 +484,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccessibilityStatementRoute: AccessibilityStatementRoute,
   AgeVerificationPolicyRoute: AgeVerificationPolicyRoute,
   ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
   FindRoute: FindRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
