@@ -213,6 +213,12 @@
   max-width: 46ch;
   margin-bottom: calc(var(--base) * 0.75);
 }
+.pd-hero-blurb p {
+  margin: 0;
+}
+.pd-hero-blurb p + p {
+  margin-top: calc(var(--base) * 0.4);
+}
 .pd-hero-price {
   display: flex;
   align-items: baseline;
