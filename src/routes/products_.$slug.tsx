@@ -679,7 +679,10 @@ function ProductDetailPage() {
                       {rest && (
                         <>
                           {blurbExpanded && (
-                            <div dangerouslySetInnerHTML={{ __html: rest }} />
+                            <div
+                              className="pd-hero-blurb-rest"
+                              dangerouslySetInnerHTML={{ __html: rest }}
+                            />
                           )}
                           <button
                             type="button"

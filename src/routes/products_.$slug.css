@@ -219,6 +219,12 @@
 .pd-hero-blurb p + p {
   margin-top: calc(var(--base) * 0.4);
 }
+.pd-hero-blurb-rest {
+  margin-top: calc(var(--base) * 0.4);
+}
+.pd-hero-blurb-rest p + p {
+  margin-top: calc(var(--base) * 0.4);
+}
 .pd-hero-blurb-toggle {
   display: inline-block;
   margin-top: calc(var(--base) * 0.3);
