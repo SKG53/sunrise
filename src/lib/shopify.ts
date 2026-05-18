@@ -25,6 +25,7 @@ export interface ShopifyProduct {
     id: string;
     title: string;
     description: string;
+    descriptionHtml: string;
     handle: string;
     priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
     images: { edges: Array<{ node: ShopifyImage }> };
