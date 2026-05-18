@@ -721,16 +721,20 @@ function ProductDetailPage() {
                       const showSavings =
                         info != null && !info.isBaseline && info.savingsPct > 0;
                       const isSelected = effectiveSelectedPack === opt;
+                      const isMostPopular = opt === "20 Pack";
                       return (
                         <button
                           key={opt}
                           type="button"
                           role="radio"
                           aria-checked={isSelected}
-                          className={`pd-pack-btn${isSelected ? " is-selected" : ""}`}
+                          className={`pd-pack-btn${isSelected ? " is-selected" : ""}${isMostPopular ? " is-popular" : ""}`}
                           style={{ ["--flavor-color" as string]: product.color } as React.CSSProperties}
                           onClick={() => setSelectedPack(opt)}
                         >
+                          {isMostPopular && (
+                            <span className="pd-pack-btn-badge">Most Popular!</span>
+                          )}
                           <span className="pd-pack-btn-name">{opt}</span>
                           {showSavings && (
                             <span className="pd-pack-btn-savings">
