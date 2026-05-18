@@ -1004,12 +1004,11 @@
 .pd-hero-pack {
   display: flex;
   gap: 0.5rem;
-  margin: 1.5rem 0 calc(var(--base) * 0.55);
+  margin: 0.75rem 0 calc(var(--base) * 0.55);
   flex-wrap: wrap;
   align-items: stretch;
 }
 .pd-pack-btn {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1046,20 +1045,4 @@
 }
 .pd-pack-btn.is-selected .pd-pack-btn-savings {
   color: #fefbe0;
-}
-.pd-pack-btn-badge {
-  position: absolute;
-  top: -0.7rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--flavor-color, #1a1a1a);
-  color: #fefbe0;
-  font-size: 0.6rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.18rem 0.5rem;
-  border-radius: 999px;
-  line-height: 1;
-  white-space: nowrap;
 }
