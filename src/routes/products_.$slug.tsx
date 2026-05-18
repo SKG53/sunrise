@@ -348,6 +348,7 @@ function ProductDetailPage() {
   // list) changes.
   const relatedCornerRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [qty, setQty] = useState(1);
+  const [blurbExpanded, setBlurbExpanded] = useState(false);
 
   useEffect(() => {
     const paint = () => {
@@ -662,16 +663,37 @@ function ProductDetailPage() {
 
                 <div className="pd-hero-descriptor">{product.descriptor}</div>
 
-                {shopifyProduct?.node.descriptionHtml?.trim() ? (
-                  <div
-                    className="pd-hero-blurb"
-                    dangerouslySetInnerHTML={{
-                      __html: shopifyProduct.node.descriptionHtml,
-                    }}
-                  />
-                ) : (
-                  <p className="pd-hero-blurb">{product.blurb}</p>
-                )}
+                {(() => {
+                  const html = shopifyProduct?.node.descriptionHtml?.trim();
+                  if (!html) {
+                    return <p className="pd-hero-blurb">{product.blurb}</p>;
+                  }
+                  const firstClose = html.indexOf("</p>");
+                  const head =
+                    firstClose >= 0 ? html.slice(0, firstClose + 4) : html;
+                  const rest =
+                    firstClose >= 0 ? html.slice(firstClose + 4).trim() : "";
+                  return (
+                    <div className="pd-hero-blurb">
+                      <div dangerouslySetInnerHTML={{ __html: head }} />
+                      {rest && (
+                        <>
+                          {blurbExpanded && (
+                            <div dangerouslySetInnerHTML={{ __html: rest }} />
+                          )}
+                          <button
+                            type="button"
+                            className="pd-hero-blurb-toggle"
+                            onClick={() => setBlurbExpanded((v) => !v)}
+                            aria-expanded={blurbExpanded}
+                          >
+                            {blurbExpanded ? "Read less" : "Read more"}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 <div className="pd-hero-price">
                   {shopifyMapping ? (
