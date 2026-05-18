@@ -886,6 +886,38 @@
   max-width: 72ch;
 }
 
+/* "See the full FAQ →" wayfinding link beneath the list. Right-aligned,
+   understated — link not button, since this is wayfinding, not CTA. Hover
+   color tracks the policy-page link convention (near-black → tier-10). */
+.s10-faq-more {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: calc(var(--base) * 0.7);
+}
+.s10-faq-more-link {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.36);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--near-black);
+  text-decoration: none;
+  border-bottom: 1px solid var(--near-black);
+  padding-bottom: 2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.s10-faq-more-link:hover {
+  color: var(--tier-10);
+  border-bottom-color: var(--tier-10);
+}
+.s10-faq-more-link span {
+  display: inline-block;
+  margin-left: calc(var(--base) * 0.18);
+  transition: transform 0.2s ease;
+}
+.s10-faq-more-link:hover span {
+  transform: translateX(3px);
+}
+
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 980px) {
   .s04-trifecta {

@@ -252,26 +252,48 @@ function renderLockup(tier: Tier, base: number, color: string): string {
 // pattern, identical styling. Ingredients are hardcoded (not per-SKU) to
 // match home exactly.
 
-const FAQS = [
+// ── FAQ DATA ─────────────────────────────────────────────────────────────
+// PDP shows three FAQs at point-of-purchase. Base flavors (Core SKUs) get
+// a format-justification question and an empty-stomach practical question.
+// Variant SKUs (+CBG / +CBN / +THCV) get cannabinoid education questions
+// instead — appropriate to the shopper context, and also reduces duplicate-
+// content overlap across the 24 PDP URLs. Both groups close on the same
+// lab-testing trust question. Selection is by product.cannabinoid presence,
+// so all 24 SKUs (live + non-live) are covered automatically. Copy locked
+// to v6 of canonical /faq master.
+const FAQS_BASE: Array<{ q: string; a: string }> = [
   {
-    q: "How much THC is in each can?",
-    // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
-    // a: "Each can holds two servings. Total THC per can matches the tier on the front — 5mg, 10mg, 30mg, or 60mg — so per serving is half that number. Start low, go slow.",
-    a: "Each can holds two servings. Total THC per can matches the tier on the front — 10mg or 60mg — so per serving is half that number. Start low, go slow.",
+    q: "Why is this different from a gummy or edible?",
+    a: "Emulsion and absorption. The Delta-9 THC in our seltzers is emulsified into microscopic droplets, which lets your body absorb it faster and more consistently than a typical gummy. That means onset around 30 to 40 minutes instead of 60 to 90, and a cleaner taper on the way out.",
   },
   {
-    q: "How long does it take to feel an effect?",
-    a: "Emulsified Delta-9 hits faster than a standard edible — typically 15 to 30 minutes — and the peak is generally shorter and cleaner. Effects vary by body and setting.",
+    q: "Can I drink on an empty stomach?",
+    a: "You can, though without food the THC tends to absorb faster and the lift can arrive in a less predictable way. Eating something first lets you pace yourself and helps make for a more comfortable experience.",
   },
   {
-    q: "What's the difference between the cannabinoid variants?",
-    a: "+CBG tracks toward focus, +CBN toward relax, +THCV toward elevate. Each minor cannabinoid is blended at 30mg per can alongside the stated THC dose.",
-  },
-  {
-    q: "Where are the COAs?",
-    a: "Every batch is full-panel tested. Scan the QR code on the can or visit the COAs link from any page on the site.",
+    q: "Is the product third-party lab tested?",
+    a: "Every batch. Full-panel testing by an accredited third-party lab covers cannabinoid potency and contaminants. Scan the QR code on any can to visit our website and navigate to the COAs page, where you can pull up the Certificate of Analysis for that batch.",
   },
 ];
+
+const FAQS_VARIANT: Array<{ q: string; a: string }> = [
+  {
+    q: "What are CBG, CBN, and THCV?",
+    a: "Minor cannabinoids — the supporting cast alongside Delta-9 THC. CBG tracks toward focus and uplift, CBN toward relaxation and unwinding, THCV toward clarity and engagement. Every variant in the lineup blends 30mg of one of these alongside the stated Delta-9 dose, shifting the character of the experience without changing the THC level.",
+  },
+  {
+    q: "How does THC actually work in the body?",
+    a: "THC and other cannabinoids work through the endocannabinoid system — a network of receptors in the brain and body that helps regulate mood, appetite, pain, and sleep. THC binds to those receptors (mainly the ones called CB1 and CB2) to produce the lift. Receptor density and tolerance vary by person, which is why the same can can feel different from one body to another.",
+  },
+  {
+    q: "Is the product third-party lab tested?",
+    a: "Every batch. Full-panel testing by an accredited third-party lab covers cannabinoid potency and contaminants. Scan the QR code on any can to visit our website and navigate to the COAs page, where you can pull up the Certificate of Analysis for that batch.",
+  },
+];
+
+function getFaqsForProduct(p: Product): Array<{ q: string; a: string }> {
+  return p.cannabinoid ? FAQS_VARIANT : FAQS_BASE;
+}
 
 // ── ROUTE ────────────────────────────────────────────────────────────────
 export const Route = createFileRoute("/products_/$slug")({
@@ -979,7 +1001,7 @@ function ProductDetailPage() {
               </h2>
             </div>
             <div className="pd-faq-list">
-              {FAQS.map((item, idx) => (
+              {getFaqsForProduct(product).map((item, idx) => (
                 <details key={idx} className="pd-faq-item">
                   <summary className="pd-faq-q">
                     <span>{item.q}</span>
@@ -988,6 +1010,11 @@ function ProductDetailPage() {
                   <div className="pd-faq-a">{item.a}</div>
                 </details>
               ))}
+            </div>
+            <div className="pd-faq-more">
+              <a href="/faq" className="pd-faq-more-link">
+                See the full FAQ <span aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
         </section>

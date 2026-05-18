@@ -206,46 +206,36 @@ const EFFECTS: EffectCardData[] = [
 ];
 
 // ── FAQ DATA ─────────────────────────────────────────────────────────────
-// SKU-moment questions (dose, onset, variants, ingredients). Intentionally
-// disjoint from the broader first-time-visitor FAQs on the home page.
+// SKU-moment questions for shoppers actively choosing. Curated subset of
+// the canonical /faq master — six questions covering the full shopper
+// decision arc: selection → first-time confidence → variant understanding
+// → onset expectation → dietary screen → post-purchase practicality. Copy
+// locked to v6 of canonical FAQ. Footer link directs to /faq for the full
+// set.
 const FAQS: Array<{ q: string; a: string }> = [
   {
     q: "How do I pick the right potency?",
-    // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
-    // a: "If you've never had a hemp-infused seltzer — or never above 5mg — start with 5MG. One serving is a light, social lift. If you're already comfortable with THC beverages, 10MG is the everyday middle. 30MG and 60MG are for longer sessions and deeper unwinds. Start low, go slow.",
-    a: "If you've never had a hemp-infused seltzer, start with 10MG. One serving is a light, social lift — easy to pace, easy to come back to. 60MG is the bigger swing — for longer sessions and deeper unwinds. Start low, go slow.",
+    a: "Depends on you and the moment. 5MG is light and social, 10MG more present, 30MG fuller and longer, 60MG a real evening for high-tolerance consumers. When in doubt, start lower.",
   },
   {
-    q: "What's the difference between the base flavors and the ones with +CBG, +CBN, or +THCV?",
-    // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
-    // a: "Every tier has six flavors — three base and three enhanced with a minor cannabinoid. CBG leans toward focus and uplift. CBN leans toward relax and unwind. THCV leans toward elevate and engage. The THC dose is identical between the two; the minor cannabinoid shifts the character of the experience.",
-    a: "Some flavors include a minor cannabinoid blend on top of the THC dose. CBG leans toward focus and uplift. CBN leans toward relax and unwind. THCV leans toward elevate and engage. The THC dose is identical between the base and enhanced versions; the minor cannabinoid shifts the character of the experience.",
+    q: "I've never tried a hemp seltzer. Where should I start?",
+    a: "Start lower than you think and work your way up. Begin with half a serving, wait the full window for the lift to arrive, and decide from there. A first session is for finding where your line is — not testing it.",
   },
   {
-    q: "How many servings are in a can?",
-    a: "Two. Every SUNRISE can is 12 fl oz and contains two servings. One serving of a 10MG can is 5mg THC. One serving of a 60MG can is 30mg THC. Plan your pour accordingly.",
+    q: "What are CBG, CBN, and THCV?",
+    a: "Minor cannabinoids — the supporting cast alongside Delta-9 THC. CBG tracks toward focus and uplift, CBN toward relaxation and unwinding, THCV toward clarity and engagement. Every variant in the lineup blends 30mg of one of these alongside the stated Delta-9 dose, shifting the character of the experience without changing the THC level.",
   },
   {
-    q: "Can I mix tiers in one session?",
-    // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
-    // a: "We wouldn't recommend it. Stacking a 10MG and a 30MG is around 40mg of THC — a big swing if you paced for 10. Pick a tier and stay with it.",
-    a: "We wouldn't recommend it. Stacking a 10MG and a 60MG is 70mg of THC — a big swing if you paced for 10. Pick a tier and stay with it.",
+    q: "How long until I feel it?",
+    a: "Usually 30 to 40 minutes. Faster than a gummy or chocolate, slower than an inhaled product. Wait the full hour before drinking more so the onset has time to settle in.",
   },
   {
-    q: "What's actually inside a SUNRISE?",
-    a: "Purified water, pure cane sugar, natural flavoring, emulsified hemp extract, B12, citric acid, and sodium benzoate. That is the ingredient list. Lemonade and Limeade flavors also contain fresh lemon or lime juice.",
+    q: "Is SUNRISE gluten-free, vegan, and free of major allergens?",
+    a: "Yes — all three. Every can is gluten-free, vegan, and free of the eight major allergens (milk, eggs, fish, shellfish, tree nuts, peanuts, wheat, and soy).",
   },
   {
-    q: "Is SUNRISE gluten-free, vegan, or allergen-safe?",
-    a: "Gluten-free and vegan. Free of the eight major allergens. Manufactured in a facility that handles lemon and lime juice for Lemonade and Limeade varieties.",
-  },
-  {
-    q: "Can I drink SUNRISE on an empty stomach?",
-    a: "Yes, but expect a faster onset. Emulsified THC absorbs more quickly without food slowing it down. For your first time with a new tier, eat something first and pace yourself.",
-  },
-  {
-    q: "How should I store my cans?",
-    a: "Cool, upright, out of direct sunlight. Heat and sunlight degrade cannabinoids over time. Best-by date printed on every can.",
+    q: "How should I store the cans?",
+    a: "Cool, dry, out of direct sunlight. Refrigeration isn't required but recommended for the best taste. Every can has a best-by date printed on it — drink before that date for freshness and full potency.",
   },
 ];
 
@@ -638,6 +628,11 @@ function ProductsPage() {
                   </div>
                 );
               })}
+            </div>
+            <div className="p-faq-more">
+              <a href="/faq" className="p-faq-more-link">
+                See the full FAQ <span aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
         </section>
