@@ -4,6 +4,7 @@ import appCss from "../styles.css?url";
 import sunriseCss from "../styles/sunrise-shell.css?url";
 import { useCartSync } from "../hooks/useCartSync";
 import { AgeGate } from "../components/AgeGate";
+import { AnnouncementBar } from "../components/AnnouncementBar";
 
 function NotFoundComponent() {
   return (
@@ -79,6 +80,7 @@ function RootComponent() {
   useCartSync();
   return (
     <>
+      <AnnouncementBar />
       <Outlet />
       <AgeGate />
     </>

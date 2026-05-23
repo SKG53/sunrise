@@ -227,6 +227,36 @@ main { flex: 1; width: 100%; }
    where the lowercase "s" signals plurality, not uppercase drift.                */
 .no-transform { text-transform: none; letter-spacing: normal; }
 
+/* ── ANNOUNCEMENT BAR ───────────────────────────────────────────────────────
+   Site-wide free-shipping bar. Mounted in __root.tsx; sits above the sticky
+   header on every route. Static / non-sticky — scrolls away on scroll while
+   the header pins beneath it. Solid gold field, near-black text; the whole
+   bar is a link to /products.
+   ========================================================================== */
+.announcement-bar {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: var(--gold);
+  color: var(--near-black);
+  padding-block: calc(var(--base) * 0.23);
+  padding-inline: var(--section-pad-x);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.28);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  transition: background 200ms ease-out;
+}
+/* Hover — darkened gold (no --gold-hover token exists; literal kept local) */
+.announcement-bar:hover { background: #B38422; }
+.announcement-bar-emph { font-weight: 700; }
+
 /* ── SITE HEADER ────────────────────────────────────────────────────────── */
 .site-header {
   background: var(--cream);
