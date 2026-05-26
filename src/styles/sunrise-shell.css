@@ -252,6 +252,9 @@ main { flex: 1; width: 100%; }
   text-overflow: ellipsis;
   text-decoration: none;
   transition: background 200ms ease-out;
+  position: sticky;
+  top: 0;
+  z-index: 51;
 }
 /* Hover — darkened gold (no --gold-hover token exists; literal kept local) */
 .announcement-bar:hover { background: #B38422; }
