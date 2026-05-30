@@ -476,7 +476,7 @@
   text-align: center;
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: clamp(calc(var(--base) * 0.9), 4.5vw, calc(var(--base) * 1.6));
+  font-size: clamp(calc(var(--base) * 1.35), 6.75vw, calc(var(--base) * 2.4));
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--near-black, #1A1A1A);
