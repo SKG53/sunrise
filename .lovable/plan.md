@@ -1,60 +1,69 @@
 ## Goal
 
-Switch the `/social` rotating-can animation from a single sprite-sheet WebP to 10 discrete WebP frames cycled by stacked `<img>` elements with staggered opacity keyframes.
+Flesh out `/event-signup` with brand-styled headings and a full product grid, while keeping the existing form + success message intact.
 
-## Heads-up: missing image attachments
+## Changes
 
-You said you're attaching the 10 can images, but only the patch file came through in this message. I only see:
+**File:** `src/routes/event-signup.tsx`
 
-- `user-uploads://SBev.BC.WebsiteDesign.AllPages.26.v3.text-only.patch`
+### 1. Top heading (above form, always visible)
 
-I need all 10 of these before the page will render correctly:
+Add a heading block above the existing form card:
+- Line 1: `LEARN MORE ABOUT` — bold black, large display text
+- Line 2: `SUNRISE` wordmark (gradient, via `renderWordmark(base * 4, "gradient")`), bigger than line 1, on its own line
+- Painted via a ref + `useEffect` using the same `getBasePx()` + `document.fonts.ready` pattern as home/products
 
-```
-lemonade-360-1.webp
-lemonade-360-2.webp
-lemonade-360-3.webp
-lemonade-360-4.webp
-lemonade-360-5.webp
-lemonade-360-6.webp
-lemonade-360-7.webp
-lemonade-360-8.webp
-lemonade-360-9.webp
-lemonade-360-10.webp
-```
+### 2. Products section (always visible, below the form/success card)
 
-Please re-attach the 10 WebPs in your next message ("hold to push" may have only sent the patch). Once they're attached I'll execute the plan below in one pass.
+New section with:
+- Heading: `VIEW ALL OUR PRODUCTS BELOW` (same bold black display style as line 1 of the top heading)
+- Three rows, one per tier (10MG, 30MG, 60MG), each laid out as: **left column = potency lockup**, **right column = 6 product cards in a responsive grid**
 
-## What the patch does
+Lockups (left column, painted via refs):
+- 10MG → `render10mgLockup`
+- 30MG → `render30mgLockup`
+- 60MG → `render60mgLockup`
 
-**`src/routes/social.css`**
-- Updates the section header comment to describe 10 individual frames (960×1920, q85) instead of the 6000×1200 sprite.
-- Removes `overflow: hidden` from `.social-rotator` (no longer needed — frames are absolute and clipped by aspect-ratio).
-- Replaces `.social-rotator-strip` (translateX sprite track) with `.social-rotator-frame` — absolute-positioned, `inset: 0`, `object-fit: cover`, starts at `opacity: 0`, runs `social-can-rotate 6s linear infinite`.
-- Rewrites `@keyframes social-can-rotate` from a translateX sweep to a hard opacity step: `0%`/`10%` opacity 1, `10.001%`→`100%` opacity 0. Combined with a per-frame `animation-delay` of `(i × 0.6s)`, exactly one frame is visible per 0.6s slot — pure stop-motion, no cross-fade.
-- Updates `prefers-reduced-motion` block: targets `.social-rotator-frame`, hides all of them, then re-shows `:first-child` (frame 1, front-facing).
+Cards (right column) reuse the existing home `.s03-card` visual pattern: flooded can frame with the flavor color, can image at `/images/cans/{slug}.webp`, name + descriptor below, cream tier lockup top-left, rotated cannabinoid strip on the right edge when applicable. Card data sourced from the `TIERS` constant defined in `src/routes/products.tsx` — the 6 flavors per tier with name, descriptor, flavorColor, and optional cannabinoid. Slug derived with the same `toSlug` helper pattern.
 
-**`src/routes/social.tsx`**
-- Replaces the inline comment block with one describing the stacked-frame approach.
-- Replaces the single `<div className="social-rotator-strip"><img src="lemonade-360.webp" /></div>` with `[1..10].map(n => <img className="social-rotator-frame" src={`/images/cans/lemonade-360-${n}.webp`} style={{ animationDelay: `${(n-1) * 0.6}s` }} />)`.
+### 3. Buyable vs COMING SOON state
 
-## Files to write
+Per-card classification:
+- **Buyable (clickable Link to `/products/$slug`, shows "Shop" CTA):**
+  - 10MG: Strawberry, Watermelon, Lemonade
+  - 60MG: Passionfruit Mango, Wild Cherry Peach, Blueberry Lemonade, Blood Orange +CBG, Blackberry +CBN, Strawberry Kiwi +THCV (all 6)
+- **Coming Soon (NOT clickable, no button, COMING SOON outlined badge overlay):**
+  - 10MG cannabinoid variants: Tangerine +CBG, Blackberry Lemonade +CBN, Blueberry Acai +THCV
+  - All 30MG (all 6 flavors)
 
-1. `src/routes/social.css` — apply hunks (touch only the lines in the patch; preserve everything else, formatting and all).
-2. `src/routes/social.tsx` — apply JSX hunk (the single `s04-center` block).
-3. `public/images/cans/lemonade-360-1.webp` … `lemonade-360-10.webp` — copy verbatim from your uploads. No resize, no recompress, no rename. The existing `lemonade-360.webp` (the old sprite) stays in place untouched — patch doesn't reference it and removing it isn't in scope.
+Coming Soon cards:
+- Same full-color can frame / lockup / flavor flood — no dimming
+- Rendered as a `<div>` (not a `<Link>`), non-clickable
+- A centered outlined pill badge over the can: `COMING SOON` (cream border + cream text on the flooded background)
+- No "Shop" / buy button rendered at all
 
-## Scope fence (per your standing rules)
+Buyable cards wrap the can + meta in a `<Link to="/products/$slug">` — matching the home page pattern. No new add-to-cart logic.
 
-- No edits outside the two files in the patch + the 10 new image assets.
-- No reformatting of untouched lines in `social.css`, no import reordering in `social.tsx`.
-- No touching `vite.config.ts`, `wrangler.jsonc`, `package.json`, `tsconfig.json`, `routeTree.gen.ts`, `src/router.tsx`.
-- WebPs copied byte-for-byte — no transcoding.
+### 4. Styles
 
-## Verification after apply
+**File:** `src/routes/contact.css` (already imported by the page) — append a small `.es-*` namespace:
+- `.es-top-heading` / `.es-top-heading-line1` / `.es-top-heading-wordmark` — bold black display text, wordmark slot scales fluidly
+- `.es-products-heading` — same display style, mirrors line 1
+- `.es-tier-row` — CSS grid, `grid-template-columns: minmax(auto, 14rem) 1fr`, gap, stacks to single column on mobile
+- `.es-tier-lockup` — left column lockup slot
+- `.es-card-grid` — responsive grid for the 6 cards (3-up desktop, 2-up tablet, 1-up mobile)
+- `.es-card` / `.es-card-can` / `.es-card-tier` / `.es-card-cannabinoid` / `.es-card-meta` — mirrors `.s03-card-*` from home.css; rules copied locally so this page doesn't depend on home.css
+- `.es-coming-soon-badge` — absolute-centered outlined pill (cream 1.5px border, cream text, transparent fill, uppercase, letter-spaced)
 
-- Visit `/social`, confirm the can rotates smoothly through 10 stop-motion steps over 6s.
-- Toggle OS "Reduce Motion" → can freezes on frame 1 (front-facing).
-- DevTools Network tab: 10 separate `lemonade-360-N.webp` requests, each ~100–190 KB, no `lemonade-360.webp` (sprite) request.
+### 5. Painting brand marks
 
-Re-attach the 10 WebPs and I'll execute.
+One consolidated `useEffect` that:
+- Reads `getBasePx()`
+- Paints the top wordmark, the 3 tier lockups (left column), and each card's tier lockup + cannabinoid strip
+- Re-runs on resize and after `document.fonts.ready`
+
+## Out of scope
+
+- No changes to form fields, submit logic, success message copy, or the backend HubSpot push.
+- No new routes, no cart logic, no Shopify calls (cards link to existing `/products/$slug` PDPs).
+- No changes to home or products pages.
