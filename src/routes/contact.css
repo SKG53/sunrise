@@ -443,3 +443,193 @@
   .c-success-ctas { flex-direction: column; }
   .c-success-ctas .btn { width: 100%; text-align: center; }
 }
+
+/* ==========================================================================
+   EVENT SIGNUP (.es-*) — page-specific additions for /event-signup
+   ========================================================================== */
+
+/* Top heading: "LEARN MORE ABOUT" + SUNRISE wordmark on its own line */
+.es-top-heading {
+  text-align: center;
+  margin: calc(var(--base) * 1.2) 0 calc(var(--base) * 1) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.3);
+}
+.es-top-heading-line1 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 0.9), 4.5vw, calc(var(--base) * 1.6));
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--near-black, #1A1A1A);
+  line-height: 1;
+}
+.es-top-heading-wordmark {
+  display: inline-block;
+  line-height: 0;
+}
+
+/* Secondary heading above product grid */
+.es-products-heading {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 0.9), 4.5vw, calc(var(--base) * 1.6));
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--near-black, #1A1A1A);
+  line-height: 1;
+  margin: calc(var(--base) * 2) 0 calc(var(--base) * 1.2) 0;
+}
+
+/* Products container */
+.es-products {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 1.5);
+  margin-bottom: calc(var(--base) * 2);
+}
+
+/* Each tier row: lockup left, 6-card grid right */
+.es-tier-row {
+  display: grid;
+  grid-template-columns: minmax(0, 14rem) 1fr;
+  gap: calc(var(--base) * 1);
+  align-items: start;
+}
+.es-tier-lockup-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: calc(var(--base) * 0.6);
+}
+.es-tier-lockup {
+  display: inline-block;
+  line-height: 0;
+}
+
+/* Card grid — 3-up desktop, 2-up tablet, 1-up mobile */
+.es-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: calc(var(--base) * 0.4);
+}
+@media (max-width: 900px) {
+  .es-tier-row { grid-template-columns: 1fr; }
+  .es-tier-lockup-col { padding-top: 0; }
+  .es-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .es-card-grid { grid-template-columns: 1fr; }
+}
+
+/* Card — mirrors .s03-card visual pattern */
+.es-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  border: 2px solid var(--warm-gray-faint);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out;
+}
+.es-card-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+.es-card-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
+}
+.es-card-can {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 0.3);
+  overflow: hidden;
+}
+.es-card-can img {
+  width: 75%;
+  height: 75%;
+  object-fit: contain;
+  object-position: center;
+  transform: translateY(calc(var(--base) * 0.18));
+}
+.es-card-tier {
+  position: absolute;
+  top: calc(var(--base) * 0.24);
+  left: calc(var(--base) * 0.32);
+  display: inline-block;
+  pointer-events: none;
+  z-index: 2;
+}
+.es-card-cannabinoid {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--base) * 0.15);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.es-card-cannabinoid > * {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: inline-block;
+  transform: rotate(-90deg);
+  transform-origin: 0 100%;
+  white-space: nowrap;
+}
+.es-card-meta {
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.32) calc(var(--base) * 0.4);
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.1);
+}
+.es-card-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.33);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.2;
+}
+.es-card-descriptor {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Coming Soon — outlined cream pill centered over the can */
+.es-coming-soon-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.28);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream, #FEFBE0);
+  border: 1.5px solid var(--cream, #FEFBE0);
+  padding: calc(var(--base) * 0.2) calc(var(--base) * 0.5);
+  border-radius: 999px;
+  background: transparent;
+  z-index: 3;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.es-card-coming-soon { cursor: default; }
