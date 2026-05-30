@@ -115,7 +115,7 @@ function EventSignupPage() {
       }
       // Tier lockups (left column of each tier row) — dark text on cream bg
       const tierColor: Record<TierKey, string> = { '10': '#CC1F39', '30': '#0B6134', '60': '#61213A' }
-      const lockupSize = base * 2.2
+      const lockupSize = base * 3.8
       const r10 = tierLockupRefs.current['10']
       const r30 = tierLockupRefs.current['30']
       const r60 = tierLockupRefs.current['60']
