@@ -18,6 +18,7 @@ import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as FindRouteImport } from './routes/find'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as EventSignupRouteImport } from './routes/event-signup'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AgeVerificationPolicyRouteImport } from './routes/age-verification-policy'
 import { Route as AccessibilityStatementRouteImport } from './routes/accessibility-statement'
@@ -76,6 +77,11 @@ const FindRoute = FindRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventSignupRoute = EventSignupRouteImport.update({
+  id: '/event-signup',
+  path: '/event-signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/accessibility-statement': typeof AccessibilityStatementRoute
   '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
+  '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/accessibility-statement': typeof AccessibilityStatementRoute
   '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
+  '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/accessibility-statement': typeof AccessibilityStatementRoute
   '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
+  '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/accessibility-statement'
     | '/age-verification-policy'
     | '/contact'
+    | '/event-signup'
     | '/faq'
     | '/find'
     | '/privacy-policy'
@@ -261,6 +271,7 @@ export interface FileRouteTypes {
     | '/accessibility-statement'
     | '/age-verification-policy'
     | '/contact'
+    | '/event-signup'
     | '/faq'
     | '/find'
     | '/privacy-policy'
@@ -286,6 +297,7 @@ export interface FileRouteTypes {
     | '/accessibility-statement'
     | '/age-verification-policy'
     | '/contact'
+    | '/event-signup'
     | '/faq'
     | '/find'
     | '/privacy-policy'
@@ -312,6 +324,7 @@ export interface RootRouteChildren {
   AccessibilityStatementRoute: typeof AccessibilityStatementRoute
   AgeVerificationPolicyRoute: typeof AgeVerificationPolicyRoute
   ContactRoute: typeof ContactRoute
+  EventSignupRoute: typeof EventSignupRoute
   FaqRoute: typeof FaqRoute
   FindRoute: typeof FindRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
@@ -395,6 +408,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/event-signup': {
+      id: '/event-signup'
+      path: '/event-signup'
+      fullPath: '/event-signup'
+      preLoaderRoute: typeof EventSignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -504,6 +524,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccessibilityStatementRoute: AccessibilityStatementRoute,
   AgeVerificationPolicyRoute: AgeVerificationPolicyRoute,
   ContactRoute: ContactRoute,
+  EventSignupRoute: EventSignupRoute,
   FaqRoute: FaqRoute,
   FindRoute: FindRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
@@ -526,3 +547,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
