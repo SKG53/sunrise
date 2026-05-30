@@ -203,8 +203,9 @@ function EventSignupPage() {
             </div>
             <div className="c-form-card">
                 {submitted ? (
-                  <div className="c-success" role="status" aria-live="polite">
-                    <div className="c-success-headline">Thanks for signing up. We'll be in touch soon!</div>
+                  <div className="c-success es-success" role="status" aria-live="polite">
+                    <div className="c-success-headline es-success-headline">Thanks for signing up.</div>
+                    <div className="es-success-cta">Shop your favorites now!</div>
                   </div>
                 ) : (
                   <form className="c-form" onSubmit={handleSubmit} noValidate>
