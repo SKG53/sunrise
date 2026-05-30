@@ -4,8 +4,6 @@
 
 **How to use.** Read this in full before writing any code, producing any Lovable prompt, or making any architectural recommendation about the site. If a request in session conflicts with anything documented here, raise the conflict before acting on it. Do not silently convert to more common patterns because they are easier to recall from training data.
 
-**Document version.** v1. Update whenever an architectural decision changes. Increment version, do not edit in place silently.
-
 ---
 
 ## 1. Stack — non-negotiable
@@ -15,13 +13,13 @@ The SUNRISE site is built on:
 - **React 19** (functional components, hooks)
 - **TanStack Start** — the SSR / full-stack React framework, not just TanStack Router alone. Key distinction: this framework renders HTML on the server before shipping to the browser.
 - **TanStack Router** — file-based routing, used within TanStack Start
-- **Vite 7** — build tool, configured via Lovable's opinionated preset
-- **Tailwind CSS v4** — the latest major version, using `@tailwindcss/vite` plugin (no `postcss.config.js`, no `tailwind.config.ts` file in the v3 sense)
+- **Vite** — build tool, configured via Lovable's opinionated preset
+- **Tailwind CSS v4** — using `@tailwindcss/vite` plugin (no `postcss.config.js`, no `tailwind.config.ts` file in the v3 sense)
 - **shadcn/ui** — UI component primitives, built on Radix, living in `src/components/ui/`
 - **TypeScript strict mode** — `"strict": true` in `tsconfig.json`
 - **Bun** — package manager (`bun.lockb`, `bunfig.toml`). npm-style lockfile (`package-lock.json`) coexists for compatibility.
 - **Cloudflare Workers** — deployment target. Entry point: `@tanstack/react-start/server-entry`. Configured via `wrangler.jsonc`.
-- **Lovable** — primary visual editor. The AI code generator building and iterating on this codebase.
+- **Lovable** — primary deploy pipeline. Claude writes code; Lovable applies patches and publishes.
 
 **This is Lovable's TanStack Start preset, not the default Lovable SPA template.** The difference matters: the default Lovable template is a client-side Vite + React SPA with `react-router-dom` and `src/pages/`. That is a **different project architecture** and none of its patterns apply here. See Section 13 for the explicit "do not" list.
 
@@ -34,57 +32,45 @@ SSR + edge deployment were deliberate architectural choices, not defaults. The r
 1. **SEO parity with every crawler.** SSR ships fully-formed HTML. Google can execute JS, but Bing, DuckDuckGo, LinkedIn previews, Facebook / Twitter / iMessage link scrapers, and AI crawlers mostly cannot. SSR guarantees all of them see content immediately. For a consumer brand with ecommerce ambitions, this is table stakes.
 2. **Social sharing previews work.** Open Graph tags only matter if the scraper sees them. On SPAs, scrapers frequently see the empty shell. SSR fixes this.
 3. **First-paint performance.** Users see real HTML while JS is still downloading, not a loading spinner.
-4. **E-commerce readiness.** Product detail pages are dynamic — they'll eventually pull from Shopify's Storefront API. SSR with `loader` functions is the canonical pattern: the server fetches product data, renders the page, and ships it. This is textbook e-commerce architecture.
+4. **E-commerce readiness.** Product detail pages are dynamic — they pull from Shopify's Storefront API. SSR with `loader` functions is the canonical pattern: the server fetches product data, renders the page, and ships it.
 5. **Edge deployment via Cloudflare Workers.** Runs the site close to users globally. Also gives easy access to edge-side Shopify API calls, KV storage, R2 for images, and Workers AI if ever needed.
 
 **Deviation cost.** Moving away from this stack requires rebuilding. Keep everything here.
 
 ---
 
-## 3. File structure — canonical layout
+## 3. File structure — conventions, not enumeration
 
-```
-sunrise/
-├── .lovable/                      # Lovable project state — do not edit manually
-├── public/                        # Static assets served as-is
-├── src/
-│   ├── components/
-│   │   ├── SiteHeader.tsx         # Top nav, shared across all routes
-│   │   ├── SiteFooter.tsx         # Footer, shared across all routes
-│   │   └── ui/                    # shadcn/ui primitives (button, dialog, etc.)
-│   ├── hooks/
-│   │   └── use-mobile.tsx
-│   ├── lib/
-│   │   ├── utils.ts               # cn() helper, misc utilities
-│   │   └── sunrise-components.ts  # Brand-mark render functions (wordmark, lockups, stat blocks)
-│   ├── routes/
-│   │   ├── __root.tsx             # Root layout. Defines <html>, <head>, shell, default meta
-│   │   ├── index.tsx              # Home (/)
-│   │   ├── about.tsx              # About (/about)
-│   │   ├── contact.tsx            # Contact (/contact)
-│   │   ├── find.tsx               # Find retailers (/find)
-│   │   ├── products.tsx           # Product grid listing (/products)
-│   │   ├── products_.$slug.tsx    # Product detail dynamic route (/products/{slug})
-│   │   ├── *.css                  # Per-route scoped styles (see Section 8)
-│   │   └── routeTree.gen.ts       # AUTO-GENERATED. Never edit by hand.
-│   ├── styles/
-│   │   └── sunrise-shell.css      # Brand tokens, typography, global classes
-│   ├── styles.css                 # Tailwind v4 + shadcn tokens (OKLCH format)
-│   └── router.tsx                 # Router factory (createRouter with config)
-├── components.json                # shadcn/ui config
-├── eslint.config.js
-├── package.json
-├── tsconfig.json
-├── vite.config.ts                 # Minimal — wraps Lovable's TanStack preset
-└── wrangler.jsonc                 # Cloudflare Workers config
-```
+The exact file tree drifts faster than this document gets updated. **For the current tree, read the repo.** This section describes the conventions; the repo is the ground truth.
 
-**Important absences — if you see any of these, you're in the wrong template:**
-- ❌ No `src/pages/` directory (that's react-router convention, and the SPA template)
-- ❌ No `index.html` in repo root (SSR, not SPA)
-- ❌ No `postcss.config.js` or `tailwind.config.ts` (Tailwind v4 uses CSS-based config)
-- ❌ No `App.tsx` as primary entry (routing is file-based, there is no central App)
-- ❌ No `main.tsx` as client entry (handled by TanStack Start)
+### Top-level conventions
+
+- `src/routes/` — every page lives here. File-based routing per Section 4.
+- `src/components/` — shared React components (header, footer, drawers, gates, icons, maps).
+- `src/components/ui/` — shadcn/ui primitives. Generated via the shadcn CLI.
+- `src/lib/` — utilities and locked branded renderers (`sunrise-components.ts`).
+- `src/data/` — static data (coverage state list, etc.).
+- `src/hooks/` — custom React hooks.
+- `src/integrations/` — third-party integration glue.
+- `src/stores/` — Zustand stores (cart, etc.).
+- `src/styles/sunrise-shell.css` — brand foundation (tokens, typography, header/footer).
+- `src/styles.css` — Tailwind + shadcn token layer (OKLCH).
+- `src/routes/*.css` — per-route scoped styles.
+- `public/` — static assets served as-is (images, GeoJSON, etc.).
+
+### Naming conventions
+
+- Routes: `<name>.tsx` for static, `<name>_.$param.tsx` for dynamic detail pages (see Section 4).
+- Per-route CSS: `<name>.css` colocated in `src/routes/`. Class names are page-prefixed (`.home-hero`, `.p-coverage`, `.a-s01-section`, etc.).
+- Components: PascalCase `.tsx`, optional same-name `.css` colocated.
+
+### Important absences — if you see any of these, you're in the wrong template
+
+- No `src/pages/` directory (that's react-router convention, and the SPA template)
+- No `index.html` in repo root (SSR, not SPA)
+- No `postcss.config.js` or `tailwind.config.ts` (Tailwind v4 uses CSS-based config)
+- No `App.tsx` as primary entry (routing is file-based, there is no central App)
+- No `main.tsx` as client entry (handled by TanStack Start)
 
 ---
 
@@ -100,7 +86,7 @@ File-based routing. File names map to URL paths using specific conventions.
 | `about.tsx` | `/about` | Static route |
 | `products.tsx` | `/products` | Static route |
 | `products_.$slug.tsx` | `/products/:slug` | Dynamic route. `$slug` = dynamic param. |
-| `products.$slug.tsx` (no underscore) | would nest under `/products` layout | ✋ We use the underscore variant |
+| `products.$slug.tsx` (no underscore) | would nest under `/products` layout | We use the underscore variant |
 
 **Underscore prefix (`products_.$slug.tsx`).** This opts the detail route **out of** the parent `/products` layout. Both routes are siblings that happen to share a URL prefix, not parent-and-child. This is a TanStack convention. Never rename to remove the underscore without understanding the layout consequences.
 
@@ -135,6 +121,7 @@ Defines the HTML shell: `<html>`, `<head>`, `<body>`. Also defines:
 - Default error component (`DefaultErrorComponent`)
 - 404 component (`NotFoundComponent`)
 - Imports global CSS (`styles.css`, `sunrise-shell.css`)
+- Mounts global-shell components (announcement bar, age gate)
 
 The `RootShell` component is where `<HeadContent />` (TanStack's meta-injection point) and `<Scripts />` (client JS bundle) are placed. Do not move or rename these.
 
@@ -162,19 +149,17 @@ function ProductDetailPage() {
 }
 ```
 
-**Current state:** `products_.$slug.tsx` uses this pattern. Other routes don't currently need it because their data is static. When Shopify integration happens, `products.tsx` and `products_.$slug.tsx` will both gain loaders that call the Storefront API.
+`products_.$slug.tsx` uses this pattern. Other routes use it as needed. When Shopify integration ships, `products.tsx` and `products_.$slug.tsx` both gain loaders that call the Storefront API.
 
 ### 5.2 Server functions — `createServerFn`
 
-For actions that must run server-only (API calls with secrets, writes, auth), use `createServerFn`. This exposes a server function that's called from client components but executes server-side. Standard pattern for form submissions, protected Shopify calls, retailer-data reads, contact form handling.
-
-Not yet used in the codebase. When added, follow TanStack Start's docs — don't invent a custom RPC layer.
+For actions that must run server-only (API calls with secrets, writes, auth), use `createServerFn`. This exposes a server function that's called from client components but executes server-side. Standard pattern for form submissions, protected Shopify calls, contact form handling. Follow TanStack Start's docs — don't invent a custom RPC layer.
 
 ### 5.3 What NOT to do
 
-- ❌ Do not fetch data in `useEffect` for content that should be SEO-indexed. That defeats SSR — the data only appears after client hydration.
-- ❌ Do not call `fetch()` inside component bodies for server data. Use `loader`.
-- ❌ Do not put Shopify API tokens or any secrets in client-side code. They must be in server functions or loaders.
+- Do not fetch data in `useEffect` for content that should be SEO-indexed. That defeats SSR — the data only appears after client hydration.
+- Do not call `fetch()` inside component bodies for server data. Use `loader`.
+- Do not put Shopify API tokens or any secrets in client-side code. They must be in server functions or loaders.
 
 ---
 
@@ -188,7 +173,7 @@ TanStack Start provides a `head()` function per route that declares meta tags. T
 head: () => ({
   meta: [
     { charSet: "utf-8" },
-    { name: "viewport", content: "width=device-width, initial-scale=1" },
+    { name: "viewport", content: "width=1100" },
     { title: "SUNRISE — Hemp-Infused Delta-9 Seltzer" },
     { name: "description", content: "..." },
     { property: "og:title", content: "..." },
@@ -206,7 +191,7 @@ head: () => ({
 }),
 ```
 
-**Current state — needs pre-launch fix.** The live `__root.tsx` still contains Lovable boilerplate (title "Lovable App", author "Lovable", Twitter handle "@Lovable", OG image pointing to a Lovable preview CDN URL). This must be replaced with real SUNRISE values before launch.
+The actual root meta values, including any Lovable boilerplate that needs replacing pre-launch, are tracked as gaps in the Unified Handoff. Do not embed the literal current values here.
 
 ### 6.2 Per-route overrides
 
@@ -225,7 +210,7 @@ head: () => ({
 }),
 ```
 
-**Current state — minimal but functional.** Every route has a `head()` with title and description. None have per-route OG overrides, canonical URLs, or structured data yet. These should be added as SEO work progresses.
+Every route should declare at minimum a `title` and `description`. Per-route OG overrides, canonical URLs, and structured data are tracked as the SEO sequencing in the Unified Handoff.
 
 ### 6.3 Dynamic head from loader data
 
@@ -245,23 +230,11 @@ head: ({ loaderData }) => {
 },
 ```
 
-`products_.$slug.tsx` already uses this pattern. Every SKU will have dynamic per-product meta once all product data is wired.
+`products_.$slug.tsx` uses this pattern.
 
-### 6.4 Planned SEO additions (not yet in code)
+### 6.4 Age gate and SEO — critical design rule
 
-These are additive — no architecture change required:
-- `public/robots.txt` — `Sitemap: https://savorsunrise.com/sitemap.xml` and standard allow rules
-- `sitemap.xml` — either static in `public/` or dynamic via a TanStack server route that generates from the product list
-- JSON-LD structured data:
-  - `Organization` schema in `__root.tsx`
-  - `Product` schema in `products_.$slug.tsx`
-  - `BreadcrumbList` on product detail
-- Per-route canonical URLs
-- Per-SKU OG images (can be generated dynamically via a Cloudflare Worker image route)
-
-### 6.5 Age gate and SEO — critical design rule
-
-The age gate (not yet built) MUST be designed as a client-side overlay that does NOT prevent SSR content from being in the HTML. Crawlers cannot click gates. Content must be server-rendered and indexed; the gate is a visual layer that a human dismisses on first visit. Patterns like "return null until age verified" at the page component level will break SEO.
+The age gate MUST be a client-side overlay that does NOT prevent SSR content from being in the HTML. Crawlers cannot click gates. Content must be server-rendered and indexed; the gate is a visual layer that a human dismisses on first visit. Patterns like "return null until age verified" at the page component level will break SEO.
 
 ---
 
@@ -278,14 +251,12 @@ The age gate (not yet built) MUST be designed as a client-side overlay that does
 ### 7.2 Layer 2: `src/styles/sunrise-shell.css` — brand foundation
 
 - Imports Montserrat via Google Fonts (`@import url(...)` — see Section 9, scheduled for refactor)
-- Defines brand tokens as CSS custom properties:
-  - `--cream: #FEFBE0` (canonical background)
-  - `--gold: #C4922A`, `--near-black: #1A1A1A`, etc.
-  - Tier colors: `--tier-5`, `--tier-10`, `--tier-30`, `--tier-60`
-  - Spacing/sizing tokens: `--base`, `--container-max`, `--section-pad-y`
+- Defines brand tokens as CSS custom properties (cream, gold, near-black, tier colors, spacing/sizing tokens like `--base`, `--container-max`, `--section-pad-y`)
 - Defines shared typographic scale, button base styles, container class
-- Defines site header and footer shared styles
+- Defines site header, footer, and announcement-bar shared styles
 - Imported once in `__root.tsx` so it applies globally
+
+**Color authority.** The canonical color definitions for the SUNRISE system live in `SUNRISE_Colors_v2.xlsx` (the brand-doc spreadsheet — covering tier colors, flavor colors, cannabinoid blocks, system colors, and the seven-stop wordmark gradient). The implementation of those colors as CSS tokens lives in `sunrise-shell.css`. **Do not hard-code hex values anywhere else** — neither in documentation, nor in per-route CSS, nor inline in components. Reference the token (`var(--tier-10)`) or the spreadsheet.
 
 ### 7.3 Layer 3: `src/routes/*.css` — per-route scoped styles
 
@@ -301,16 +272,17 @@ The age gate (not yet built) MUST be designed as a client-side overlay that does
 | Tailwind utility classes | Layer 1 |
 | Brand color tokens (hex) | Layer 2 |
 | Typography scale | Layer 2 |
-| Header/footer shared styles | Layer 2 |
+| Header / footer / announcement-bar shared styles | Layer 2 |
 | Page-specific layouts | Layer 3 |
 | One-off component styles | Layer 3 or inline |
 
 ### 7.5 What NOT to do
 
-- ❌ Do not install or configure `postcss.config.js`. Tailwind v4 doesn't need it.
-- ❌ Do not create `tailwind.config.ts` (v3 style). All config goes in `styles.css` via `@theme inline`.
-- ❌ Do not import fonts from route-level CSS. Fonts are site-wide in `sunrise-shell.css` (will be hoisted to `__root.tsx` head links in a future refactor).
-- ❌ Do not mix hex and OKLCH in the same layer. `styles.css` is OKLCH; `sunrise-shell.css` is hex.
+- Do not install or configure `postcss.config.js`. Tailwind v4 doesn't need it.
+- Do not create `tailwind.config.ts` (v3 style). All config goes in `styles.css` via `@theme inline`.
+- Do not import fonts from route-level CSS. Fonts are site-wide in `sunrise-shell.css` (will be hoisted to `__root.tsx` head links in a future refactor).
+- Do not mix hex and OKLCH in the same layer. `styles.css` is OKLCH; `sunrise-shell.css` is hex.
+- Do not hard-code brand hexes anywhere outside `sunrise-shell.css`. Use the tokens.
 
 ---
 
@@ -318,14 +290,11 @@ The age gate (not yet built) MUST be designed as a client-side overlay that does
 
 ### 8.1 Shell components
 
-- `src/components/SiteHeader.tsx` — top nav. Used in every route's JSX.
-- `src/components/SiteFooter.tsx` — footer. Used in every route's JSX.
-
-Each route imports and renders both. They are not automatic — adding them to a new route is explicit.
+Header, footer, age gate, announcement bar, cart drawer — all live in `src/components/`. Header and footer are imported and rendered explicitly in each route; the rest are mounted in `__root.tsx`.
 
 ### 8.2 shadcn/ui primitives — `src/components/ui/`
 
-Full shadcn/ui library is installed. These are Radix-based primitives (Button, Dialog, Input, Select, etc.). Use them as the base for any generic UI element.
+Full shadcn/ui library is installed. Radix-based primitives (Button, Dialog, Input, Select, etc.). Use them as the base for any generic UI element.
 
 To add a new shadcn component, use the shadcn CLI:
 ```
@@ -335,11 +304,7 @@ It will install to `src/components/ui/` and respect the config in `components.js
 
 ### 8.3 Brand component library — `src/lib/sunrise-components.ts`
 
-Critical file. Contains the locked JS render functions for SUNRISE brand marks:
-- `renderWordmark(base, bg)` — the SUNRISE wordmark with gradient
-- `render5mgLockup`, `render10mgLockup`, `render30mgLockup`, `render60mgLockup` — potency lockups
-- `render12ozStatBlock` — the 12 oz / CAN stat block
-- `getBasePx()` — responsive base-size helper
+Critical file. Contains the locked JS render functions for SUNRISE brand marks (wordmark, potency lockups, 12oz stat block, etc.).
 
 **Current usage pattern:** these are called in `useEffect`, with output mounted via `ref.current.innerHTML = ...`. This renders the marks **client-side only** — they don't appear in server-rendered HTML.
 
@@ -373,18 +338,13 @@ Critical file. Contains the locked JS render functions for SUNRISE brand marks:
 
 ### 10.1 Configuration
 
-`wrangler.jsonc`:
-```json
-{
-  "name": "tanstack-start-app",
-  "compatibility_date": "2025-09-24",
-  "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry"
-}
-```
+`wrangler.jsonc` defines:
+- `name` — the worker name
+- `compatibility_date` — the runtime baseline date
+- `compatibility_flags: ["nodejs_compat"]` — enables Node API polyfills that some libraries (including Shopify SDKs) need
+- `main: "@tanstack/react-start/server-entry"` — TanStack Start's server entry, do not override
 
-- `nodejs_compat` — enables Node API polyfills that some libraries (including potential Shopify SDKs) need
-- `main` points to TanStack Start's server entry — do not override
+For the current values, read `wrangler.jsonc` in the repo.
 
 ### 10.2 Environment variables
 
@@ -404,21 +364,17 @@ Deployment happens via Lovable's publish flow. We don't need to run `wrangler de
 
 ## 11. Lovable integration — what it handles
 
-Lovable is the primary editor. Specifically:
+Lovable is the deploy pipeline. Specifically:
 
-- Builds UI components and pages from natural-language prompts
+- Applies Claude-authored patches via its dashboard
 - Manages `vite.config.ts` via the `@lovable.dev/vite-tanstack-config` package — **do not modify `vite.config.ts` manually** without understanding this dependency
 - Tracks state in `.lovable/` directory
 - Commits and pushes to `main` on GitHub
 - Renders a live preview synced with the GitHub state
 
-### 11.1 Good prompts to Lovable vs. surgical commits
+**Lovable's design AI is NOT used for design.** Claude writes code; Lovable is the deploy pipeline. Brand-spec precision work (exact hex codes, exact font weights, pixel-perfect spacing) is produced as patches in Claude session and applied through Lovable.
 
-- **Structural work** (new pages, new sections, layout changes) → Lovable prompt
-- **Brand-spec precision work** (exact hex codes, exact font weights, pixel-perfect spacing) → produce patch or diff in Claude session, apply via Lovable or direct commit
-- **Configuration changes** (wrangler, package.json, tsconfig) → usually direct edit rather than Lovable
-
-### 11.2 Things that will confuse Lovable
+### 11.1 Things that will confuse Lovable
 
 If you prompt Lovable with patterns from the default SPA template, it may regenerate files in ways that drift from TanStack Start. Be explicit in prompts:
 - Mention "TanStack Start file-based routing" when adding routes
@@ -428,42 +384,29 @@ If you prompt Lovable with patterns from the default SPA template, it may regene
 
 ---
 
-## 12. Current known gaps (status as of v1)
+## 12. Open items
 
-| Item | Severity | Category |
-|---|---|---|
-| Lovable boilerplate meta in `__root.tsx` | Pre-launch fix required | SEO content |
-| No canonical URLs | Pre-launch fix | SEO content |
-| No `robots.txt` | Pre-launch fix | SEO technical |
-| No `sitemap.xml` | Pre-launch fix | SEO technical |
-| No JSON-LD structured data | Pre-launch add | SEO content |
-| Per-route OG images missing | Pre-launch add | SEO content |
-| Font loading via CSS `@import` | Performance refactor | Performance |
-| Brand marks render client-only via innerHTML | Future refactor | Performance |
-| Age gate not yet built | Design + build pending | Feature |
-| Shopify integration | Planned, not started | Feature |
-| `find.tsx` uses stub retailer data | Migrate to API/CMS when selected | Data |
-
-None of these require architectural changes. All are additions or data-level fixes.
+Current gaps, pending workstreams, and known issues are tracked in the Unified Handoff. Do not duplicate them here — they drift faster than this document gets updated.
 
 ---
 
 ## 13. Do not — explicit
 
-- ❌ Do not introduce `react-router-dom`. TanStack Router is the router.
-- ❌ Do not introduce `@vitejs/plugin-react-swc` as a direct plugin (that's the SPA template). The Lovable TanStack preset handles React via Babel-compatible plugin internally.
-- ❌ Do not create `src/pages/`. Routes go in `src/routes/`.
-- ❌ Do not create `index.html` at repo root. SSR does not use an HTML shell file.
-- ❌ Do not create `postcss.config.js` or `tailwind.config.ts`. Tailwind v4 is CSS-configured.
-- ❌ Do not edit `src/routeTree.gen.ts` by hand. It's auto-generated.
-- ❌ Do not modify `vite.config.ts` beyond the minimum without understanding the Lovable TanStack preset's behavior.
-- ❌ Do not remove or rename `HeadContent` or `Scripts` in `__root.tsx`.
-- ❌ Do not convert the site to CSR ("just use React"). The whole point of this setup is SSR.
-- ❌ Do not fetch SEO-critical data in `useEffect`. Use `loader`.
-- ❌ Do not install Shopify JS SDKs client-side without checking bundle size. Prefer Storefront API GraphQL calls via server functions.
-- ❌ Do not block SSR content behind the age gate. Content must be in the HTML; the gate is a visual overlay.
-- ❌ Do not change the output of functions in `src/lib/sunrise-components.ts`. They are brand-locked specifications.
-- ❌ Do not use hex color values inside `styles.css`. That layer is OKLCH-only. Use hex in `sunrise-shell.css` for brand tokens.
+- Do not introduce `react-router-dom`. TanStack Router is the router.
+- Do not introduce `@vitejs/plugin-react-swc` as a direct plugin (that's the SPA template). The Lovable TanStack preset handles React via Babel-compatible plugin internally.
+- Do not create `src/pages/`. Routes go in `src/routes/`.
+- Do not create `index.html` at repo root. SSR does not use an HTML shell file.
+- Do not create `postcss.config.js` or `tailwind.config.ts`. Tailwind v4 is CSS-configured.
+- Do not edit `src/routeTree.gen.ts` by hand. It's auto-generated.
+- Do not modify `vite.config.ts` beyond the minimum without understanding the Lovable TanStack preset's behavior.
+- Do not remove or rename `HeadContent` or `Scripts` in `__root.tsx`.
+- Do not convert the site to CSR ("just use React"). The whole point of this setup is SSR.
+- Do not fetch SEO-critical data in `useEffect`. Use `loader`.
+- Do not install Shopify JS SDKs client-side without checking bundle size. Prefer Storefront API GraphQL calls via server functions.
+- Do not block SSR content behind the age gate. Content must be in the HTML; the gate is a visual overlay.
+- Do not change the output of functions in `src/lib/sunrise-components.ts`. They are brand-locked specifications.
+- Do not hard-code brand hexes outside `sunrise-shell.css`. Use the tokens; the canonical source is `SUNRISE_Colors_v2.xlsx`.
+- Do not use hex color values inside `styles.css`. That layer is OKLCH-only. Use hex in `sunrise-shell.css` for brand tokens.
 
 ---
 
@@ -500,13 +443,13 @@ Same as static, but filename uses `$param` convention (e.g., `recipes_.$id.tsx` 
 
 ### Adding Shopify integration
 
-Outline (not yet implemented):
+Outline:
 1. Add Shopify Storefront API token via `wrangler secret put SHOPIFY_STOREFRONT_TOKEN`
 2. Create `src/lib/shopify.ts` with a GraphQL client that reads the token server-side
 3. In `products.tsx` loader: call Shopify's `products` query, return the list
 4. In `products_.$slug.tsx` loader: call `productByHandle(slug)`, return the product
-5. Shopping cart: either Shopify's cart API or Shopify's Buy Button embed; decide based on UX requirements
-6. Checkout: redirect to Shopify's hosted checkout (simplest) or use headless checkout (more work, more control)
+5. Shopping cart: implementation depends on the cart drawer's current backing store
+6. Checkout: redirect to Shopify's hosted checkout (current pattern)
 
 ### Adding JSON-LD
 
@@ -532,7 +475,7 @@ head: () => ({
 ## 16. Glossary
 
 - **SSR** — Server-Side Rendering. Server generates HTML and ships it. Opposite of CSR (client-side rendering).
-- **SPA** — Single-Page Application. JS-heavy, client-rendered. What sunrise-test is and what this project is NOT.
+- **SPA** — Single-Page Application. JS-heavy, client-rendered. Not what this project is.
 - **Loader** — TanStack Router / Start function that fetches data server-side before a route renders.
 - **Server function** — `createServerFn`-wrapped function that runs server-only, callable from client components.
 - **Hydration** — The process of attaching JS event handlers to server-rendered HTML once the client JS bundle loads.
@@ -542,4 +485,4 @@ head: () => ({
 
 ---
 
-**End of document. Version 1. Update when architecture changes.**
+**End of document. Update when architecture changes.**
