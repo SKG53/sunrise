@@ -503,23 +503,18 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 0;
-  /* Reserve vertical room equal to the unrotated lockup width so the rotated
-     element doesn't overflow into adjacent rows. */
+  /* Push lockup down so its visual top edge aligns with the top of the
+     adjacent card grid. With transform-origin: center center and rotate(-90),
+     the rotated visual extends roughly (text_width − text_height)/2 above its
+     layout box top; padding-top by that delta brings the visual top to 0. */
+  padding-top: calc(var(--base) * 1.3);
   min-height: calc(var(--base) * 8);
 }
 .es-tier-lockup {
   display: inline-block;
   line-height: 0;
-  /* Rotate -90 around top-left so the visual top edge aligns with the layout
-     top, then push the visual rightward by half its rotated height (≈ font
-     size) so it sits centered in the column. translateX moves in the rotated
-     local frame, which after -90 corresponds to vertical, so the chain is
-     applied right-to-left: rotate first (geometry), then translate visually
-     down... we use a translateY in original coords AFTER rotation to nudge. */
-  transform: rotate(-90deg) translate(-100%, 0);
-  transform-origin: top left;
-  margin-left: calc(var(--base) * 1.9);
+  transform: rotate(-90deg);
+  transform-origin: center center;
   white-space: nowrap;
 }
 
