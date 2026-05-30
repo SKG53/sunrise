@@ -22,18 +22,25 @@ export const Route = createFileRoute('/event-signup')({
 })
 
 function EventSignupPage() {
-  const [name, setName] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [submitted, setSubmitted] = useState(false)
-  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string }>({})
+  const [errors, setErrors] = useState<{
+    firstName?: string
+    lastName?: string
+    email?: string
+    phone?: string
+  }>({})
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const next: typeof errors = {}
-    if (!name.trim()) next.name = 'Name needed.'
+    if (!firstName.trim()) next.firstName = 'First name needed.'
+    if (!lastName.trim()) next.lastName = 'Last name needed.'
     if (!email.trim()) next.email = 'Email needed.'
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = 'Email looks off.'
     if (!phone.trim()) next.phone = 'Phone needed.'
@@ -47,7 +54,8 @@ function EventSignupPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: name.trim(),
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
           email: email.trim(),
           phone: phone.trim(),
           eventName: EVENT_NAME,
@@ -69,82 +77,53 @@ function EventSignupPage() {
     <>
       <SiteHeader />
       <main>
-        <section className="c-pagehero">
-          <h1 className="c-pagehero-title" aria-label="Event Signup">
-            {'Event Signup'.split('').map((ch, i) => (
-              <span key={i} aria-hidden="true">{ch === ' ' ? '\u00A0' : ch}</span>
-            ))}
-          </h1>
-        </section>
-
-        <section className="c-hero">
-          <div className="container">
-            <div className="c-hero-inner">
-              <h1 className="c-hero-headline">
-                Save your <em className="accent-italic">spot</em>
-              </h1>
-              <p className="c-hero-body">
-                Drop your details below and we'll send updates about {EVENT_NAME}.
-              </p>
-            </div>
-          </div>
-        </section>
-
         <section className="c-form-section">
           <div className="container">
-            <div className="c-form-grid">
-              <div className="c-form-side">
-                <div className="c-eyebrow">Event RSVP</div>
-                <h2 className="c-form-headline">
-                  Tell us who's <span className="accent">coming</span>
-                </h2>
-                <p className="c-form-sub">
-                  Your info goes straight to our team. We'll never share it.
-                </p>
-              </div>
-
-              <div className="c-form-card">
+            <div className="c-form-card">
                 {submitted ? (
                   <div className="c-success" role="status" aria-live="polite">
-                    <div className="c-success-eyebrow">You're In</div>
-                    <div className="c-success-headline">Thanks for signing up</div>
+                    <div className="c-success-headline">Submission successful</div>
                     <p className="c-success-body">
-                      We've got your details and will be in touch with event info soon.
+                      Thanks for signing up. We'll be in touch with event info soon.
                     </p>
-                    <div className="c-success-ctas">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={() => {
-                          setSubmitted(false)
-                          setName('')
-                          setEmail('')
-                          setPhone('')
-                          setErrors({})
-                        }}
-                      >
-                        Sign Up Another
-                      </button>
-                    </div>
                   </div>
                 ) : (
                   <form className="c-form" onSubmit={handleSubmit} noValidate>
                     <div className="c-form-row">
                       <label className="c-field">
-                        <span className="c-field-label">Name</span>
+                        <span className="c-field-label">First Name</span>
                         <input
                           type="text"
-                          className={`c-input${errors.name ? ' c-input-error' : ''}`}
-                          value={name}
+                          className={`c-input${errors.firstName ? ' c-input-error' : ''}`}
+                          value={firstName}
                           onChange={(e) => {
-                            setName(e.target.value)
-                            if (errors.name) setErrors({ ...errors, name: undefined })
+                            setFirstName(e.target.value)
+                            if (errors.firstName) setErrors({ ...errors, firstName: undefined })
                           }}
                           required
-                          autoComplete="name"
-                          aria-invalid={errors.name ? true : undefined}
+                          autoComplete="given-name"
+                          aria-invalid={errors.firstName ? true : undefined}
                         />
-                        {errors.name && <span className="c-field-error">{errors.name}</span>}
+                        {errors.firstName && <span className="c-field-error">{errors.firstName}</span>}
+                      </label>
+                    </div>
+
+                    <div className="c-form-row">
+                      <label className="c-field">
+                        <span className="c-field-label">Last Name</span>
+                        <input
+                          type="text"
+                          className={`c-input${errors.lastName ? ' c-input-error' : ''}`}
+                          value={lastName}
+                          onChange={(e) => {
+                            setLastName(e.target.value)
+                            if (errors.lastName) setErrors({ ...errors, lastName: undefined })
+                          }}
+                          required
+                          autoComplete="family-name"
+                          aria-invalid={errors.lastName ? true : undefined}
+                        />
+                        {errors.lastName && <span className="c-field-error">{errors.lastName}</span>}
                       </label>
                     </div>
 
@@ -188,9 +167,8 @@ function EventSignupPage() {
 
                     <div className="c-form-submit">
                       <button type="submit" className="btn btn-primary" disabled={submitting}>
-                        {submitting ? 'Sending…' : 'Sign Me Up'}
+                        {submitting ? 'Sending…' : 'Submit'}
                       </button>
-                      <span className="c-form-note">We'll never share your information.</span>
                       {submitError && (
                         <span
                           className="c-field-error"
@@ -203,7 +181,6 @@ function EventSignupPage() {
                     </div>
                   </form>
                 )}
-              </div>
             </div>
           </div>
         </section>
