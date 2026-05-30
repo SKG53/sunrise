@@ -115,7 +115,7 @@ function EventSignupPage() {
       }
       // Tier lockups (left column of each tier row) — dark text on cream bg
       const tierColor: Record<TierKey, string> = { '10': '#CC1F39', '30': '#0B6134', '60': '#61213A' }
-      const lockupSize = base * 2.2
+      const lockupSize = base * 3.8
       const r10 = tierLockupRefs.current['10']
       const r30 = tierLockupRefs.current['30']
       const r60 = tierLockupRefs.current['60']
@@ -337,15 +337,29 @@ function EventSignupPage() {
                                 aria-label={`+${f.cannabinoid}`}
                               />
                             )}
-                            {f.comingSoon && (
-                              <span className="es-coming-soon-badge">Coming Soon</span>
-                            )}
                           </div>
-                          <div className="es-card-meta">
-                            <div className="es-card-name">{f.name}</div>
-                            <div className="es-card-descriptor" style={{ color: f.flavorColor }}>
-                              {f.descriptor}
+                          {f.comingSoon && (
+                            <div className="es-coming-soon-row" style={{ borderColor: f.flavorColor }}>
+                              <span className="es-coming-soon-badge" style={{ color: f.flavorColor, borderColor: f.flavorColor }}>
+                                Coming Soon
+                              </span>
                             </div>
+                          )}
+                          <div className="es-card-meta">
+                            <div className="es-card-meta-text">
+                              <div className="es-card-name">{f.name}</div>
+                              <div className="es-card-descriptor" style={{ color: f.flavorColor }}>
+                                {f.descriptor}
+                              </div>
+                            </div>
+                            {!f.comingSoon && (
+                              <span
+                                className="es-card-shop"
+                                style={{ background: f.flavorColor }}
+                              >
+                                Shop
+                              </span>
+                            )}
                           </div>
                         </>
                       )
