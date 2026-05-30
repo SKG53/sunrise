@@ -18,6 +18,7 @@ import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as FindRouteImport } from './routes/find'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as EventSignupRouteImport } from './routes/event-signup'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AgeVerificationPolicyRouteImport } from './routes/age-verification-policy'
 import { Route as AccessibilityStatementRouteImport } from './routes/accessibility-statement'
@@ -27,6 +28,7 @@ import { Route as ProductsSlugRouteImport } from './routes/products_.$slug'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicNewsletterRouteImport } from './routes/api/public/newsletter'
+import { Route as ApiPublicEventSignupRouteImport } from './routes/api/public/event-signup'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -77,6 +79,11 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventSignupRoute = EventSignupRouteImport.update({
+  id: '/event-signup',
+  path: '/event-signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -122,6 +129,11 @@ const ApiPublicNewsletterRoute = ApiPublicNewsletterRouteImport.update({
   path: '/api/public/newsletter',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicEventSignupRoute = ApiPublicEventSignupRouteImport.update({
+  id: '/api/public/event-signup',
+  path: '/api/public/event-signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
@@ -152,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/accessibility-statement': typeof AccessibilityStatementRoute
   '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
+  '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -164,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -176,6 +190,7 @@ export interface FileRoutesByTo {
   '/accessibility-statement': typeof AccessibilityStatementRoute
   '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
+  '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -188,6 +203,7 @@ export interface FileRoutesByTo {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -201,6 +217,7 @@ export interface FileRoutesById {
   '/accessibility-statement': typeof AccessibilityStatementRoute
   '/age-verification-policy': typeof AgeVerificationPolicyRoute
   '/contact': typeof ContactRoute
+  '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -213,6 +230,7 @@ export interface FileRoutesById {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products_/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -227,6 +245,7 @@ export interface FileRouteTypes {
     | '/accessibility-statement'
     | '/age-verification-policy'
     | '/contact'
+    | '/event-signup'
     | '/faq'
     | '/find'
     | '/privacy-policy'
@@ -239,6 +258,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/products/$slug'
     | '/api/public/contact'
+    | '/api/public/event-signup'
     | '/api/public/newsletter'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
@@ -251,6 +271,7 @@ export interface FileRouteTypes {
     | '/accessibility-statement'
     | '/age-verification-policy'
     | '/contact'
+    | '/event-signup'
     | '/faq'
     | '/find'
     | '/privacy-policy'
@@ -263,6 +284,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/products/$slug'
     | '/api/public/contact'
+    | '/api/public/event-signup'
     | '/api/public/newsletter'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
@@ -275,6 +297,7 @@ export interface FileRouteTypes {
     | '/accessibility-statement'
     | '/age-verification-policy'
     | '/contact'
+    | '/event-signup'
     | '/faq'
     | '/find'
     | '/privacy-policy'
@@ -287,6 +310,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/products_/$slug'
     | '/api/public/contact'
+    | '/api/public/event-signup'
     | '/api/public/newsletter'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
@@ -300,6 +324,7 @@ export interface RootRouteChildren {
   AccessibilityStatementRoute: typeof AccessibilityStatementRoute
   AgeVerificationPolicyRoute: typeof AgeVerificationPolicyRoute
   ContactRoute: typeof ContactRoute
+  EventSignupRoute: typeof EventSignupRoute
   FaqRoute: typeof FaqRoute
   FindRoute: typeof FindRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
@@ -312,6 +337,7 @@ export interface RootRouteChildren {
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
+  ApiPublicEventSignupRoute: typeof ApiPublicEventSignupRoute
   ApiPublicNewsletterRoute: typeof ApiPublicNewsletterRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -384,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/event-signup': {
+      id: '/event-signup'
+      path: '/event-signup'
+      fullPath: '/event-signup'
+      preLoaderRoute: typeof EventSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -447,6 +480,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNewsletterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/event-signup': {
+      id: '/api/public/event-signup'
+      path: '/api/public/event-signup'
+      fullPath: '/api/public/event-signup'
+      preLoaderRoute: typeof ApiPublicEventSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/contact': {
       id: '/api/public/contact'
       path: '/api/public/contact'
@@ -484,6 +524,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccessibilityStatementRoute: AccessibilityStatementRoute,
   AgeVerificationPolicyRoute: AgeVerificationPolicyRoute,
   ContactRoute: ContactRoute,
+  EventSignupRoute: EventSignupRoute,
   FaqRoute: FaqRoute,
   FindRoute: FindRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
@@ -496,6 +537,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
+  ApiPublicEventSignupRoute: ApiPublicEventSignupRoute,
   ApiPublicNewsletterRoute: ApiPublicNewsletterRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
@@ -505,12 +547,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
