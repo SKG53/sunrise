@@ -481,7 +481,21 @@
   text-transform: uppercase;
   color: var(--near-black, #1A1A1A);
   line-height: 1;
-  margin: calc(var(--base) * 2) 0 calc(var(--base) * 1.2) 0;
+/* Centered success state for /event-signup */
+.es-success {
+  align-items: center;
+  text-align: center;
+}
+.es-success-headline {
+  margin-bottom: calc(var(--base) * 0.5);
+}
+.es-success-cta {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.42);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--near-black);
 }
 
 /* Products container */
