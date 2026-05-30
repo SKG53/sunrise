@@ -7,6 +7,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 interface Body {
   name?: unknown
+  firstName?: unknown
+  lastName?: unknown
   email?: unknown
   phone?: unknown
   eventName?: unknown
@@ -32,7 +34,11 @@ export const Route = createFileRoute('/api/public/event-signup')({
           return Response.json({ error: 'Invalid JSON' }, { status: 400 })
         }
 
-        const name = typeof body.name === 'string' ? body.name.trim() : ''
+        const firstNameInput = typeof body.firstName === 'string' ? body.firstName.trim() : ''
+        const lastNameInput = typeof body.lastName === 'string' ? body.lastName.trim() : ''
+        const name = typeof body.name === 'string'
+          ? body.name.trim()
+          : [firstNameInput, lastNameInput].filter(Boolean).join(' ')
         const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
         const phone = typeof body.phone === 'string' ? body.phone.trim() : ''
         const eventName = typeof body.eventName === 'string' ? body.eventName.trim().slice(0, 200) : ''
@@ -47,8 +53,13 @@ export const Route = createFileRoute('/api/public/event-signup')({
           return Response.json({ error: 'Valid phone is required' }, { status: 400 })
         }
 
-        const [firstname, ...rest] = name.split(/\s+/)
-        const lastname = rest.join(' ')
+        let firstname = firstNameInput
+        let lastname = lastNameInput
+        if (!firstname) {
+          const [f, ...rest] = name.split(/\s+/)
+          firstname = f
+          if (!lastname) lastname = rest.join(' ')
+        }
 
         const properties: Record<string, string> = {
           email,
@@ -59,6 +70,9 @@ export const Route = createFileRoute('/api/public/event-signup')({
         // Stash the event name on a standard text property so the team can
         // see which event the signup came from inside HubSpot.
         if (eventName) properties.message = `Event signup: ${eventName}`
+        // Tag the signup source so HubSpot smart lists (e.g.
+        // "Centennial Signups – SUNRISE") can auto-populate by filter.
+        properties.event_signup_source = 'SUNRISE Tulsa Centennial'
 
         const headers = {
           Authorization: `Bearer ${LOVABLE_API_KEY}`,
