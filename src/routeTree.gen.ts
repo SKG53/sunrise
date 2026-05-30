@@ -27,6 +27,7 @@ import { Route as ProductsSlugRouteImport } from './routes/products_.$slug'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicNewsletterRouteImport } from './routes/api/public/newsletter'
+import { Route as ApiPublicEventSignupRouteImport } from './routes/api/public/event-signup'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -122,6 +123,11 @@ const ApiPublicNewsletterRoute = ApiPublicNewsletterRouteImport.update({
   path: '/api/public/newsletter',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicEventSignupRoute = ApiPublicEventSignupRouteImport.update({
+  id: '/api/public/event-signup',
+  path: '/api/public/event-signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/products_/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/products/$slug'
     | '/api/public/contact'
+    | '/api/public/event-signup'
     | '/api/public/newsletter'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/products/$slug'
     | '/api/public/contact'
+    | '/api/public/event-signup'
     | '/api/public/newsletter'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/products_/$slug'
     | '/api/public/contact'
+    | '/api/public/event-signup'
     | '/api/public/newsletter'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
@@ -312,6 +324,7 @@ export interface RootRouteChildren {
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
+  ApiPublicEventSignupRoute: typeof ApiPublicEventSignupRoute
   ApiPublicNewsletterRoute: typeof ApiPublicNewsletterRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -447,6 +460,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNewsletterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/event-signup': {
+      id: '/api/public/event-signup'
+      path: '/api/public/event-signup'
+      fullPath: '/api/public/event-signup'
+      preLoaderRoute: typeof ApiPublicEventSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/contact': {
       id: '/api/public/contact'
       path: '/api/public/contact'
@@ -496,6 +516,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
+  ApiPublicEventSignupRoute: ApiPublicEventSignupRoute,
   ApiPublicNewsletterRoute: ApiPublicNewsletterRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
