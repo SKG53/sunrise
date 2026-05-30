@@ -1,12 +1,76 @@
 // Simple event signup page — collects name, email, phone and pushes the
 // attendee into HubSpot via /api/public/event-signup.
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { Link } from '@tanstack/react-router'
+import { useEffect, useRef, useState } from 'react'
 import { SiteHeader } from '../components/SiteHeader'
 import { SiteFooter } from '../components/SiteFooter'
+import {
+  renderWordmark,
+  render10mgLockup,
+  render30mgLockup,
+  render60mgLockup,
+  renderCBGLockup,
+  renderCBNLockup,
+  renderTHCVLockup,
+  getBasePx,
+} from '../lib/sunrise-components'
 import './contact.css'
 
 const EVENT_NAME = 'SUNRISE Event'
+
+// ── PRODUCT GRID DATA ────────────────────────────────────────────────────
+type Cannabinoid = 'CBG' | 'CBN' | 'THCV'
+type TierKey = '10' | '30' | '60'
+type Flavor = {
+  name: string
+  descriptor: string
+  flavorColor: string
+  cannabinoid?: Cannabinoid
+  comingSoon?: boolean
+}
+
+function toSlug(tier: TierKey, f: Flavor): string {
+  const base = f.name.toLowerCase().replace(/\s+/g, '-')
+  const suffix = f.cannabinoid ? `-${f.cannabinoid.toLowerCase()}` : ''
+  return `${tier}mg-${base}${suffix}`
+}
+
+const TIERS: { tier: TierKey; flavors: Flavor[] }[] = [
+  {
+    tier: '10',
+    flavors: [
+      { name: 'Strawberry',          descriptor: 'Fresh + Fruity', flavorColor: '#CC1F39' },
+      { name: 'Watermelon',          descriptor: 'Sweet + Juicy',  flavorColor: '#0A6034' },
+      { name: 'Lemonade',            descriptor: 'Crisp + Tangy',  flavorColor: '#E0AD2C' },
+      { name: 'Tangerine',           descriptor: 'Bright + Zesty', flavorColor: '#F89A1F', cannabinoid: 'CBG',  comingSoon: true },
+      { name: 'Blackberry Lemonade', descriptor: 'Tart + Bold',    flavorColor: '#2E1E3D', cannabinoid: 'CBN',  comingSoon: true },
+      { name: 'Blueberry Acai',      descriptor: 'Rich + Vibrant', flavorColor: '#21285A', cannabinoid: 'THCV', comingSoon: true },
+    ],
+  },
+  {
+    tier: '30',
+    flavors: [
+      { name: 'Peach Mango',           descriptor: 'Lush + Tropical',   flavorColor: '#E89B5B', comingSoon: true },
+      { name: 'Cherry Limeade',        descriptor: 'Tart + Refreshing', flavorColor: '#67092A', comingSoon: true },
+      { name: 'Orange Lemonade',       descriptor: 'Bright + Tart',     flavorColor: '#FAA819', comingSoon: true },
+      { name: 'Kiwi Watermelon',       descriptor: 'Crisp + Cool',      flavorColor: '#A4BC47', cannabinoid: 'CBG',  comingSoon: true },
+      { name: 'Blueberry Pomegranate', descriptor: 'Tart + Vibrant',    flavorColor: '#21285A', cannabinoid: 'CBN',  comingSoon: true },
+      { name: 'Strawberry Watermelon', descriptor: 'Sweet + Fresh',     flavorColor: '#0A6034', cannabinoid: 'THCV', comingSoon: true },
+    ],
+  },
+  {
+    tier: '60',
+    flavors: [
+      { name: 'Passionfruit Mango',  descriptor: 'Bright + Breezy', flavorColor: '#60203A' },
+      { name: 'Wild Cherry Peach',   descriptor: 'Lush + Juicy',    flavorColor: '#861625' },
+      { name: 'Blueberry Lemonade',  descriptor: 'Rich + Tangy',    flavorColor: '#21285A' },
+      { name: 'Blood Orange',        descriptor: 'Tart + Punchy',   flavorColor: '#DC7F27', cannabinoid: 'CBG'  },
+      { name: 'Blackberry',          descriptor: 'Dark + Smooth',   flavorColor: '#2E1E3D', cannabinoid: 'CBN'  },
+      { name: 'Strawberry Kiwi',     descriptor: 'Sweet + Tangy',   flavorColor: '#CC1F39', cannabinoid: 'THCV' },
+    ],
+  },
+]
 
 export const Route = createFileRoute('/event-signup')({
   component: EventSignupPage,
@@ -35,6 +99,60 @@ function EventSignupPage() {
   }>({})
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+
+  // Refs for brand-mark painting
+  const wordmarkRef = useRef<HTMLSpanElement>(null)
+  const tierLockupRefs = useRef<Record<TierKey, HTMLSpanElement | null>>({ '10': null, '30': null, '60': null })
+  const cardTierRefs = useRef<Record<string, HTMLSpanElement | null>>({})
+  const cardCannabinoidRefs = useRef<Record<string, HTMLSpanElement | null>>({})
+
+  useEffect(() => {
+    const paint = () => {
+      const base = getBasePx()
+      // Top heading SUNRISE wordmark
+      if (wordmarkRef.current) {
+        wordmarkRef.current.innerHTML = renderWordmark(base * 3.2, 'gradient')
+      }
+      // Tier lockups (left column of each tier row) — dark text on cream bg
+      const tierColor: Record<TierKey, string> = { '10': '#CC1F39', '30': '#0B6134', '60': '#61213A' }
+      const lockupSize = base * 2.2
+      const r10 = tierLockupRefs.current['10']
+      const r30 = tierLockupRefs.current['30']
+      const r60 = tierLockupRefs.current['60']
+      if (r10) r10.innerHTML = render10mgLockup(lockupSize, tierColor['10'])
+      if (r30) r30.innerHTML = render30mgLockup(lockupSize, tierColor['30'])
+      if (r60) r60.innerHTML = render60mgLockup(lockupSize, tierColor['60'])
+
+      // Per-card tier badge + cannabinoid strip
+      const cardLockupBase = window.innerWidth <= 520 ? 28 : 44
+      TIERS.forEach(({ tier, flavors }) => {
+        flavors.forEach((f) => {
+          const slug = toSlug(tier, f)
+          const tEl = cardTierRefs.current[slug]
+          if (tEl) {
+            const html =
+              tier === '10' ? render10mgLockup(cardLockupBase, '#FEFBE0') :
+              tier === '30' ? render30mgLockup(cardLockupBase, '#FEFBE0') :
+                              render60mgLockup(cardLockupBase, '#FEFBE0')
+            tEl.innerHTML = html
+          }
+          const cEl = cardCannabinoidRefs.current[slug]
+          if (cEl && f.cannabinoid) {
+            const size = base * 0.91
+            const html =
+              f.cannabinoid === 'CBG' ? renderCBGLockup(size, '#FEFBE0') :
+              f.cannabinoid === 'CBN' ? renderCBNLockup(size, '#FEFBE0') :
+                                        renderTHCVLockup(size, '#FEFBE0')
+            cEl.innerHTML = html
+          }
+        })
+      })
+    }
+    paint()
+    if (document.fonts) document.fonts.ready.then(paint)
+    window.addEventListener('resize', paint)
+    return () => window.removeEventListener('resize', paint)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -79,6 +197,10 @@ function EventSignupPage() {
       <main>
         <section className="c-form-section">
           <div className="container">
+            <div className="es-top-heading">
+              <div className="es-top-heading-line1">LEARN MORE ABOUT</div>
+              <span className="es-top-heading-wordmark" ref={wordmarkRef} aria-label="SUNRISE" />
+            </div>
             <div className="c-form-card">
                 {submitted ? (
                   <div className="c-success" role="status" aria-live="polite">
@@ -178,6 +300,74 @@ function EventSignupPage() {
                     </div>
                   </form>
                 )}
+            </div>
+
+            {/* ── PRODUCTS SECTION ──────────────────────────────────── */}
+            <h2 className="es-products-heading">VIEW ALL OUR PRODUCTS BELOW</h2>
+            <div className="es-products">
+              {TIERS.map(({ tier, flavors }) => (
+                <div key={tier} className="es-tier-row">
+                  <div className="es-tier-lockup-col">
+                    <span
+                      className="es-tier-lockup"
+                      ref={(el) => { tierLockupRefs.current[tier] = el }}
+                      aria-label={`${tier} milligram THC`}
+                    />
+                  </div>
+                  <div className="es-card-grid">
+                    {flavors.map((f) => {
+                      const slug = toSlug(tier, f)
+                      const inner = (
+                        <>
+                          <div className="es-card-can" style={{ background: f.flavorColor }}>
+                            <img
+                              src={`/images/cans/${slug}.webp`}
+                              alt={`SUNRISE ${tier}mg THC ${f.name} hemp-infused seltzer can`}
+                              loading="lazy"
+                            />
+                            <span
+                              className="es-card-tier"
+                              ref={(el) => { cardTierRefs.current[slug] = el }}
+                              aria-hidden="true"
+                            />
+                            {f.cannabinoid && (
+                              <span
+                                className="es-card-cannabinoid"
+                                ref={(el) => { cardCannabinoidRefs.current[slug] = el }}
+                                aria-label={`+${f.cannabinoid}`}
+                              />
+                            )}
+                            {f.comingSoon && (
+                              <span className="es-coming-soon-badge">Coming Soon</span>
+                            )}
+                          </div>
+                          <div className="es-card-meta">
+                            <div className="es-card-name">{f.name}</div>
+                            <div className="es-card-descriptor" style={{ color: f.flavorColor }}>
+                              {f.descriptor}
+                            </div>
+                          </div>
+                        </>
+                      )
+                      return (
+                        <div
+                          key={slug}
+                          className={`es-card${f.comingSoon ? ' es-card-coming-soon' : ''}`}
+                          style={{ borderColor: f.flavorColor }}
+                        >
+                          {f.comingSoon ? (
+                            inner
+                          ) : (
+                            <Link to="/products/$slug" params={{ slug }} className="es-card-link">
+                              {inner}
+                            </Link>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
