@@ -507,7 +507,7 @@
      adjacent card grid. With transform-origin: center center and rotate(-90),
      the rotated visual extends roughly (text_width − text_height)/2 above its
      layout box top; padding-top by that delta brings the visual top to 0. */
-  padding-top: calc(var(--base) * 1.3);
+  padding-top: calc(var(--base) * 3.5);
   min-height: calc(var(--base) * 8);
 }
 .es-tier-lockup {
