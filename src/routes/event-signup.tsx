@@ -303,7 +303,7 @@ function EventSignupPage() {
             </div>
 
             {/* ── PRODUCTS SECTION ──────────────────────────────────── */}
-            <h2 className="es-products-heading">VIEW ALL OUR PRODUCTS BELOW</h2>
+            <h2 className="es-products-heading">ALL PRODUCT</h2>
             <div className="es-products">
               {TIERS.map(({ tier, flavors }) => (
                 <div key={tier} className="es-tier-row">
