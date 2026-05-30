@@ -82,10 +82,7 @@ function EventSignupPage() {
             <div className="c-form-card">
                 {submitted ? (
                   <div className="c-success" role="status" aria-live="polite">
-                    <div className="c-success-headline">Submission successful</div>
-                    <p className="c-success-body">
-                      Thanks for signing up. We'll be in touch with event info soon.
-                    </p>
+                    <div className="c-success-headline">Thanks for signing up. We'll be in touch soon!</div>
                   </div>
                 ) : (
                   <form className="c-form" onSubmit={handleSubmit} noValidate>
