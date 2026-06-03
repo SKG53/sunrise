@@ -8,8 +8,7 @@ import {
   // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render5mgLockup,
   render10mgLockup,
-  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-  // render30mgLockup,
+  render30mgLockup,
   render60mgLockup,
   renderCBGLockup,
   renderCBNLockup,
@@ -244,23 +243,22 @@ function HomePage() {
       // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
       // if (lockup5Ref.current)  lockup5Ref.current.innerHTML  = render5mgLockup(lockupBase,  "#FEFBE0");
       if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(lockupBase, "#FEFBE0");
-      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-      // if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(lockupBase, "#FEFBE0");
+      if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(lockupBase, "#FEFBE0");
       if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(lockupBase, "#FEFBE0");
       // S03 card lockups — paint the tier badge + (when present) the
       // cannabinoid right-strip for every visible card. The order here must
       // match the JSX render order downstream so refs[i] aligns to card[i].
       const visibleCards = S03_TIER_CARDS.filter((card) =>
-        SHOW_NON_LIVE_PRODUCTS || (card.tier !== 5 && card.tier !== 30)
+        SHOW_NON_LIVE_PRODUCTS || card.tier !== 5
       );
       visibleCards.forEach((card, i) => {
         const lockupEl = cardLockupRefs.current[i];
         if (lockupEl) {
-          // 5mg and 30mg branches are intentionally inert with the cleanup
-          // flag off; the filter above prevents those tiers from reaching
-          // this loop. Branches are wired for fast revival.
+          // 5mg branch is intentionally inert with the cleanup flag off;
+          // the filter above prevents it from reaching this loop.
           const html =
             card.tier === 10 ? render10mgLockup(cardLockupBase, "#FEFBE0") :
+            card.tier === 30 ? render30mgLockup(cardLockupBase, "#FEFBE0") :
             card.tier === 60 ? render60mgLockup(cardLockupBase, "#FEFBE0") :
                                "";
           if (html) lockupEl.innerHTML = html;
@@ -367,8 +365,8 @@ function HomePage() {
             </p>
             <div className="s03-card-grid">
               {S03_TIER_CARDS
-                // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg / 30mg cards when flag is false
-                .filter((card) => SHOW_NON_LIVE_PRODUCTS || (card.tier !== 5 && card.tier !== 30))
+                // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg cards when flag is false
+                .filter((card) => SHOW_NON_LIVE_PRODUCTS || card.tier !== 5)
                 .map((card, i) => {
                 return (
                   <div
@@ -477,8 +475,6 @@ function HomePage() {
                 </div>
                 <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
-              {/* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flag-gated */}
-              {SHOW_NON_LIVE_PRODUCTS && (
               <a href="/products?tier=30" className="s06-card t30">
                 <div className="s06-lockup-slot" ref={lockup30Ref} />
                 <div className="s06-card-meta">
@@ -490,7 +486,6 @@ function HomePage() {
                 </div>
                 <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
-              )}
               <a href="/products?tier=60" className="s06-card t60">
                 <div className="s06-lockup-slot" ref={lockup60Ref} />
                 <div className="s06-card-meta">
