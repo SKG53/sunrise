@@ -108,12 +108,11 @@ const S03_TIER_CARDS: S03Card[] = [
     color: "#CC1F39",
     tier: 10,
   },
-  // Hidden by SHOW_NON_LIVE_PRODUCTS gate today; live when flag is reversed.
   {
-    slug: "30mg-peach-mango",
-    flavor: "Peach Mango",
-    descriptor: "Lush + Tropical",
-    color: "#E89B5B",
+    slug: "30mg-cherry-limeade",
+    flavor: "Cherry Limeade",
+    descriptor: "Tart + Refreshing",
+    color: "#67092A",
     tier: 30,
   },
   {
@@ -124,11 +123,12 @@ const S03_TIER_CARDS: S03Card[] = [
     tier: 60,
   },
   {
-    slug: "10mg-watermelon",
-    flavor: "Watermelon",
-    descriptor: "Sweet + Juicy",
+    slug: "30mg-strawberry-watermelon-thcv",
+    flavor: "Strawberry Watermelon",
+    descriptor: "Sweet + Fresh",
     color: "#0A6034",
-    tier: 10,
+    tier: 30,
+    cannabinoid: "THCV",
   },
   {
     slug: "60mg-blood-orange-cbg",
@@ -249,7 +249,7 @@ function HomePage() {
       // cannabinoid right-strip for every visible card. The order here must
       // match the JSX render order downstream so refs[i] aligns to card[i].
       const visibleCards = S03_TIER_CARDS.filter((card) =>
-        SHOW_NON_LIVE_PRODUCTS || (card.tier !== 5 && card.tier !== 30)
+        SHOW_NON_LIVE_PRODUCTS || card.tier !== 5
       );
       visibleCards.forEach((card, i) => {
         const lockupEl = cardLockupRefs.current[i];
@@ -367,8 +367,8 @@ function HomePage() {
             </p>
             <div className="s03-card-grid">
               {S03_TIER_CARDS
-                // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg / 30mg cards in S03 (4-card layout)
-                .filter((card) => SHOW_NON_LIVE_PRODUCTS || (card.tier !== 5 && card.tier !== 30))
+                // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg cards when flag is false
+                .filter((card) => SHOW_NON_LIVE_PRODUCTS || card.tier !== 5)
                 .map((card, i) => {
                 return (
                   <div
