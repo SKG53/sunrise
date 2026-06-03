@@ -102,10 +102,10 @@ const S03_TIER_CARDS: S03Card[] = [
     tier: 5,
   },
   {
-    slug: "10mg-strawberry",
-    flavor: "Strawberry",
-    descriptor: "Fresh + Fruity",
-    color: "#CC1F39",
+    slug: "10mg-lemonade",
+    flavor: "Lemonade",
+    descriptor: "Crisp + Tangy",
+    color: "#E0AD2C",
     tier: 10,
   },
   {
