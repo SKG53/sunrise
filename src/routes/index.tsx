@@ -130,14 +130,6 @@ const S03_TIER_CARDS: S03Card[] = [
     tier: 30,
     cannabinoid: "THCV",
   },
-  {
-    slug: "60mg-blood-orange-cbg",
-    flavor: "Blood Orange",
-    descriptor: "Tart + Punchy",
-    color: "#DC7F27",
-    tier: 60,
-    cannabinoid: "CBG",
-  },
 ];
 
 // ── S02 BRAND STATEMENT LINES ────────────────────────────────────────────
