@@ -14,8 +14,7 @@ import {
   // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render5mgLockup,
   render10mgLockup,
-  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-  // render30mgLockup,
+  render30mgLockup,
   render60mgLockup,
   render12ozStatBlock,
   renderCBGLockup,
@@ -198,6 +197,13 @@ const LIVE_SLUGS = new Set<string>([
   "10mg-strawberry",
   "10mg-watermelon",
   "10mg-lemonade",
+  "30mg-peach-mango",
+  "30mg-cherry-limeade",
+  "30mg-orange-lemonade",
+  "30mg-kiwi-watermelon-cbg",
+  "30mg-blueberry-pomegranate-cbn",
+  "30mg-strawberry-watermelon-thcv",
+  "60mg-wild-cherry-peach",
   "60mg-blueberry-lemonade",
   "60mg-passionfruit-mango",
   "60mg-blood-orange-cbg",
@@ -242,8 +248,7 @@ function renderLockup(tier: Tier, base: number, color: string): string {
   // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // if (tier === 5) return render5mgLockup(base, color);
   if (tier === 10) return render10mgLockup(base, color);
-  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-  // if (tier === 30) return render30mgLockup(base, color);
+  if (tier === 30) return render30mgLockup(base, color);
   return render60mgLockup(base, color);
 }
 

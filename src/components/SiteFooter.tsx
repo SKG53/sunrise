@@ -99,10 +99,7 @@ export function SiteFooter() {
                 <li><a href="/products?tier=5">5mg THC</a></li>
               )}
               <li><a href="/products?tier=10">10mg THC</a></li>
-              {/* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flag-gated */}
-              {SHOW_NON_LIVE_PRODUCTS && (
-                <li><a href="/products?tier=30">30mg THC</a></li>
-              )}
+              <li><a href="/products?tier=30">30mg THC</a></li>
               <li><a href="/products?tier=60">60mg THC</a></li>
               <li><a href="/find">Find Near You</a></li>
             </ul>
