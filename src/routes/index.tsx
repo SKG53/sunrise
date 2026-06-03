@@ -249,13 +249,15 @@ function HomePage() {
       // cannabinoid right-strip for every visible card. The order here must
       // match the JSX render order downstream so refs[i] aligns to card[i].
       const visibleCards = S03_TIER_CARDS.filter((card) =>
-        SHOW_NON_LIVE_PRODUCTS || card.tier !== 5
+        SHOW_NON_LIVE_PRODUCTS || (card.tier !== 5 && card.tier !== 30)
       );
       visibleCards.forEach((card, i) => {
         const lockupEl = cardLockupRefs.current[i];
         if (lockupEl) {
-          // 5mg branch is intentionally inert with the cleanup flag off;
-          // the filter above prevents it from reaching this loop.
+          // 5mg and 30mg branches are intentionally inert in S03 with the
+          // cleanup flag off; the filter above prevents those tiers from
+          // reaching this loop. (30mg is revived elsewhere but the S03
+          // layout is sized for 4 cards.)
           const html =
             card.tier === 10 ? render10mgLockup(cardLockupBase, "#FEFBE0") :
             card.tier === 30 ? render30mgLockup(cardLockupBase, "#FEFBE0") :
@@ -365,8 +367,8 @@ function HomePage() {
             </p>
             <div className="s03-card-grid">
               {S03_TIER_CARDS
-                // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg cards when flag is false
-                .filter((card) => SHOW_NON_LIVE_PRODUCTS || card.tier !== 5)
+                // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg / 30mg cards in S03 (4-card layout)
+                .filter((card) => SHOW_NON_LIVE_PRODUCTS || (card.tier !== 5 && card.tier !== 30))
                 .map((card, i) => {
                 return (
                   <div
