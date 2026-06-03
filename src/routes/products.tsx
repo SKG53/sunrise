@@ -388,38 +388,7 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 03 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
-        <section className="p-effects">
-          <div className="container">
-            <h2 className="p-effects-headline">
-              Find your <span className="accent">effect</span>
-            </h2>
-            <p className="p-effects-subhead">
-              Every tier offers four paths — a classic THC core, or three enhanced with a minor cannabinoid for a more specific lift.
-            </p>
-            <div className="p-effects-grid">
-              {EFFECTS.map((e, i) => (
-                <div key={i} className="p-effect-card" style={{ background: e.bg }}>
-                  <div className="p-effect-eyebrow">{e.eyebrow}</div>
-                  <div className="p-effect-symbol">
-                    {e.symbol.startsWith("+") ? (
-                      <span
-                        ref={(el) => { effectRefs.current[i] = el; }}
-                        aria-label={e.symbol}
-                      />
-                    ) : (
-                      e.symbol
-                    )}
-                  </div>
-                  <div className="p-effect-body">{e.body}</div>
-                  <div className="p-effect-foot">{e.foot}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── 04 · TIER SWITCHER + PANEL ──────────────────────────────── */}
+        {/* ── 03 · TIER SWITCHER + PANEL ──────────────────────────────── */}
         <section className="p-switcher">
           <div className="container">
             <h2 className="p-switcher-headline">
@@ -507,6 +476,37 @@ function ProductsPage() {
                   </a>
                 ))}
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 04 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
+        <section className="p-effects">
+          <div className="container">
+            <h2 className="p-effects-headline">
+              Find your <span className="accent">effect</span>
+            </h2>
+            <p className="p-effects-subhead">
+              Every tier offers four paths — a classic THC core, or three enhanced with a minor cannabinoid for a more specific lift.
+            </p>
+            <div className="p-effects-grid">
+              {EFFECTS.map((e, i) => (
+                <div key={i} className="p-effect-card" style={{ background: e.bg }}>
+                  <div className="p-effect-eyebrow">{e.eyebrow}</div>
+                  <div className="p-effect-symbol">
+                    {e.symbol.startsWith("+") ? (
+                      <span
+                        ref={(el) => { effectRefs.current[i] = el; }}
+                        aria-label={e.symbol}
+                      />
+                    ) : (
+                      e.symbol
+                    )}
+                  </div>
+                  <div className="p-effect-body">{e.body}</div>
+                  <div className="p-effect-foot">{e.foot}</div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
