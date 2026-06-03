@@ -277,6 +277,14 @@
   text-transform: uppercase;
   color: var(--near-black);
   line-height: 1.2;
+  /* Reserve two lines of height so all four cards align their descriptor
+     + Buy Now rows horizontally even when a flavor name fits on one line
+     (e.g. "Lemonade"). Single-line names are vertically centered within
+     the reserved two-line block via flex. */
+  min-height: calc(1.2em * 2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .s03-card-descriptor {
   font-family: 'Montserrat', sans-serif;
