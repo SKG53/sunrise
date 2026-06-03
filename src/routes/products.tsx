@@ -391,13 +391,6 @@ function ProductsPage() {
         {/* ── 03 · TIER SWITCHER + PANEL ──────────────────────────────── */}
         <section className="p-switcher">
           <div className="container">
-            <h2 className="p-switcher-headline">
-              Find your <span className="accent">potency</span>
-            </h2>
-            <p className="p-switcher-subhead">
-              Six flavors per tier. Tap a tier to explore.
-            </p>
-
             <div className="p-switcher-bar">
               {(["5", "10", "30", "60"] as TierKey[])
                 // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg switcher button
