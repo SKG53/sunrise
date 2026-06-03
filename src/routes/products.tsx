@@ -7,8 +7,7 @@ import {
   // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render5mgLockup,
   render10mgLockup,
-  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-  // render30mgLockup,
+  render30mgLockup,
   render60mgLockup,
   renderCBGLockup,
   renderCBNLockup,
@@ -54,6 +53,13 @@ const LIVE_SLUGS = new Set<string>([
   "10mg-strawberry",
   "10mg-watermelon",
   "10mg-lemonade",
+  "30mg-peach-mango",
+  "30mg-cherry-limeade",
+  "30mg-orange-lemonade",
+  "30mg-kiwi-watermelon-cbg",
+  "30mg-blueberry-pomegranate-cbn",
+  "30mg-strawberry-watermelon-thcv",
+  "60mg-wild-cherry-peach",
   "60mg-blueberry-lemonade",
   "60mg-passionfruit-mango",
   "60mg-blood-orange-cbg",
@@ -274,7 +280,7 @@ function ProductsPage() {
     const t = params.get("tier");
     if (t === "5" || t === "10" || t === "30" || t === "60") {
       // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — ignore deep-links to non-live tiers
-      if (!SHOW_NON_LIVE_PRODUCTS && (t === "5" || t === "30")) return;
+      if (!SHOW_NON_LIVE_PRODUCTS && t === "5") return;
       setActiveTier(t);
     }
   }, []);
@@ -293,16 +299,15 @@ function ProductsPage() {
         // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
         // if (activeTier === "5")  html = render5mgLockup(size, "#FEFBE0");
         if (activeTier === "10") html = render10mgLockup(size, "#FEFBE0");
-        // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-        // if (activeTier === "30") html = render30mgLockup(size, "#FEFBE0");
+        if (activeTier === "30") html = render30mgLockup(size, "#FEFBE0");
         if (activeTier === "60") html = render60mgLockup(size, "#FEFBE0");
         panelLockupRef.current.innerHTML = html;
       }
 
       // ── Switcher button lockups — cream on active tier bg, tier-color on inactive cream bg ──
-      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter skips 5mg / 30mg switcher iterations
+      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter skips 5mg switcher iterations
       (["5", "10", "30", "60"] as TierKey[])
-        .filter((tier) => SHOW_NON_LIVE_PRODUCTS || (tier !== "5" && tier !== "30"))
+        .filter((tier) => SHOW_NON_LIVE_PRODUCTS || tier !== "5")
         .forEach((tier) => {
         const ref = switchRefs[tier].current;
         if (!ref) return;
@@ -313,8 +318,7 @@ function ProductsPage() {
         // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
         // if (tier === "5")  html = render5mgLockup(size, color);
         if (tier === "10") html = render10mgLockup(size, color);
-        // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-        // if (tier === "30") html = render30mgLockup(size, color);
+        if (tier === "30") html = render30mgLockup(size, color);
         if (tier === "60") html = render60mgLockup(size, color);
         ref.innerHTML = html;
       });
@@ -427,8 +431,8 @@ function ProductsPage() {
 
             <div className="p-switcher-bar">
               {(["5", "10", "30", "60"] as TierKey[])
-                // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg / 30mg switcher buttons
-                .filter((k) => SHOW_NON_LIVE_PRODUCTS || (k !== "5" && k !== "30"))
+                // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg switcher button
+                .filter((k) => SHOW_NON_LIVE_PRODUCTS || k !== "5")
                 .map((k) => (
                 <button
                   key={k}
