@@ -393,7 +393,14 @@ function HomePage() {
                         )}
                       </div>
                       <div className="s03-card-meta">
-                        <div className="s03-card-name">{card.flavor}</div>
+                        <div className="s03-card-name">
+                          {card.flavor.split(" ").map((word, wi, arr) => (
+                            <span key={wi} className="s03-card-name-line">
+                              {word}
+                              {wi < arr.length - 1 ? <br /> : null}
+                            </span>
+                          ))}
+                        </div>
                         <div className="s03-card-descriptor">{card.descriptor}</div>
                       </div>
                     </Link>
