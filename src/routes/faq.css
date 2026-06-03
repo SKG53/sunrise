@@ -31,11 +31,14 @@
    at :nth-child(3). Animation timing mirrors policy page convention. */
 .faq-pagehero {
   background: var(--tier-30);
-  min-height: 37.5vh;
+  /* "FAQ" is only 3 characters, so the standard 37.5vh policy-hero flood
+     reads as a giant empty green block on mobile. Cap to a shorter min-
+     height proportional to the title's visual footprint.                  */
+  min-height: min(28vh, 320px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--base) * 1.5) calc(var(--base) * 1);
+  padding: calc(var(--base) * 1.1) calc(var(--base) * 1);
 }
 .faq-pagehero-title {
   font-family: 'Montserrat', sans-serif;
