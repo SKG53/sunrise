@@ -556,8 +556,36 @@ function ProductDetailPage() {
     });
   };
 
+  // BreadcrumbList JSON-LD — mirrors the visible breadcrumb above exactly
+  // (Home → Products → {tier}mg → {flavor}) so screen and schema agree.
+  // `<` escaped so the JSON can't terminate the inline <script> early.
+  const breadcrumbJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://savorsunrise.com" },
+      { "@type": "ListItem", position: 2, name: "Products", item: "https://savorsunrise.com/products" },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${product.tier}mg`,
+        item: `https://savorsunrise.com/products?tier=${product.tier}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: product.flavor,
+        item: `https://savorsunrise.com/products/${product.slug}`,
+      },
+    ],
+  }).replace(/</g, "\\u003c");
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }}
+      />
       <SiteHeader activeNav="products" />
 
       <main style={{ ["--flavor-color" as string]: product.color } as React.CSSProperties}>
@@ -565,6 +593,8 @@ function ProductDetailPage() {
         <nav className="pd-breadcrumb" aria-label="Breadcrumb">
           <div className="container">
             <ol>
+              <li><a href="/">Home</a></li>
+              <li aria-hidden="true">·</li>
               <li><a href="/products">Products</a></li>
               <li aria-hidden="true">·</li>
               <li><a href={`/products?tier=${product.tier}`}>{product.tier}mg</a></li>
