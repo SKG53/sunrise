@@ -634,15 +634,19 @@ function ProductDetailPage() {
                         src={shopifyImage.url}
                         alt={
                           shopifyImage.altText ??
-                          `SUNRISE ${product.flavor} ${product.tier}mg THC hemp-infused seltzer can`
+                          `SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${product.cannabinoid ? ` + ${product.cannabinoid}` : ""} seltzer can`
                         }
+                        fetchPriority="high"
                       />
                     );
                   }
                   return (
                     <img
                       src={`/images/cans/${product.slug}.webp`}
-                      alt={`SUNRISE ${product.flavor} ${product.tier}mg THC hemp-infused seltzer can`}
+                      alt={`SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${product.cannabinoid ? ` + ${product.cannabinoid}` : ""} seltzer can`}
+                      width="960"
+                      height="1920"
+                      fetchPriority="high"
                     />
                   );
                 })()}
@@ -672,7 +676,7 @@ function ProductDetailPage() {
                         >
                           <img
                             src={edge.node.url}
-                            alt={edge.node.altText ?? `Thumbnail ${idx + 1}`}
+                            alt={edge.node.altText ?? `SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC seltzer — view ${idx + 1}`}
                             loading="lazy"
                             decoding="async"
                           />
@@ -1022,7 +1026,9 @@ function ProductDetailPage() {
                 <img
                   className="pd-inside-can"
                   src={`/images/cans/${product.slug}.webp`}
-                  alt={`SUNRISE ${product.tier}mg THC ${product.flavor} hemp-infused seltzer can`}
+                  alt={`SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${product.cannabinoid ? ` + ${product.cannabinoid}` : ""} seltzer can`}
+                  width="960"
+                  height="1920"
                   loading="lazy"
                   decoding="async"
                 />
@@ -1141,7 +1147,7 @@ function RelatedCan({ slug, flavorName, color, children }: { slug: string; flavo
       <div className="pd-related-can has-image" style={{ background: color }}>
         <img
           src={image.url}
-          alt={image.altText ?? `SUNRISE ${flavorName} can`}
+          alt={image.altText ?? `SUNRISE ${flavorName} hemp-infused THC seltzer can`}
           loading="lazy"
         />
         {children}
@@ -1152,7 +1158,9 @@ function RelatedCan({ slug, flavorName, color, children }: { slug: string; flavo
     <div className="pd-related-can has-image" style={{ background: color }}>
       <img
         src={`/images/cans/${slug}.webp`}
-        alt={`SUNRISE ${flavorName} can`}
+        alt={`SUNRISE ${flavorName} hemp-infused THC seltzer can`}
+        width="960"
+        height="1920"
         loading="lazy"
       />
       {children}

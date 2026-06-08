@@ -699,7 +699,7 @@ function FlavorCan({ slug, flavorName }: { slug: string; flavorName: string }) {
       <div className="p-flavor-can has-image">
         <img
           src={image.url}
-          alt={image.altText ?? `SUNRISE ${flavorName} can`}
+          alt={image.altText ?? `SUNRISE ${flavorName} hemp-infused THC seltzer can`}
           loading="lazy"
         />
       </div>

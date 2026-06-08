@@ -323,7 +323,9 @@ function EventSignupPage() {
                           <div className="es-card-can" style={{ background: f.flavorColor }}>
                             <img
                               src={`/images/cans/${slug}.webp`}
-                              alt={`SUNRISE ${tier}mg THC ${f.name} hemp-infused seltzer can`}
+                              alt={`SUNRISE ${f.name} ${tier}mg hemp-infused THC${f.cannabinoid ? ` + ${f.cannabinoid}` : ""} seltzer can`}
+                              width="960"
+                              height="1920"
                               loading="lazy"
                             />
                             <span

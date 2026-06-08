@@ -109,7 +109,7 @@ function SocialPage() {
                 <div
                   className="social-rotator"
                   role="img"
-                  aria-label="SUNRISE 10mg THC Lemonade hemp-infused seltzer can rotating"
+                  aria-label="SUNRISE Lemonade 10mg hemp-infused THC seltzer can rotating"
                 >
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
                     <img
