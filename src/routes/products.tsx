@@ -12,6 +12,7 @@ import {
   renderCBGLockup,
   renderCBNLockup,
   renderTHCVLockup,
+  renderWordmark,
   getBasePx,
 } from "../lib/sunrise-components";
 import { getShopifyMapping } from "@/lib/shopifyProductMap";
@@ -171,45 +172,80 @@ const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
   THCV: "Elevate + Engage",
 };
 
-// ── EFFECTS DATA (4-card Find Your Effect grid) ──────────────────────────
-// Positions: 1 = CORE (classic THC baseline), 2-4 = +CBG / +CBN / +THCV.
+// ── EFFECTS DATA (4-card Find Your SUNRISE grid) ─────────────────────────
+// Content is the finalized DTC Card 02 (front), verbatim. Positions:
+// 1 = CORE (classic THC), 2-4 = +CBG / +CBN / +THCV. `cann` null = core.
+// `icon` points at public/images/effects/<x>.svg — each icon's disc fill is
+// its panel color and its motif is cream, so they sit flush on the tier bg.
 type EffectCardData = {
   bg: string;
-  eyebrow: string;
-  symbol: string;
+  icon: string;
+  cann: Cannabinoid | null;
+  bestFor: string;
   body: string;
   foot: string;
 };
 const EFFECTS: EffectCardData[] = [
   {
     bg: "#1A1A1A",
-    eyebrow: "Pure · Classic",
-    symbol: "Core",
-    body: "Just THC. Clean, balanced, uncomplicated — the SUNRISE baseline.",
-    foot: "Three flavors per tier",
+    icon: "/images/effects/thc.svg",
+    cann: null,
+    bestFor: "Anytime",
+    body: "Full and familiar, this is the starting point for every SUNRISE experience.",
+    foot: "Pure + Classic",
   },
   {
     bg: "#DC7F27",
-    eyebrow: "Focus · Uplift",
-    symbol: "+CBG",
-    body: "Cannabigerol. The sharpener. Lifts without pulling focus.",
-    foot: "One flavor per tier",
+    icon: "/images/effects/cbg.svg",
+    cann: "CBG",
+    bestFor: "Daytime",
+    body: "Gently elevates the mood and experience for a subtle, clear-headed lift.",
+    foot: "Focus + Uplift",
   },
   {
     bg: "#2E1E3D",
-    eyebrow: "Relax · Unwind",
-    symbol: "+CBN",
-    body: "Cannabinol. The settler. Evening weight, softer edges.",
-    foot: "One flavor per tier",
+    icon: "/images/effects/cbn.svg",
+    cann: "CBN",
+    bestFor: "Nighttime",
+    body: "Gently relaxes and mellows the mind for a calming overall experience.",
+    foot: "Relax + Unwind",
   },
   {
     bg: "#CC1F39",
-    eyebrow: "Elevate · Engage",
-    symbol: "+THCV",
-    body: "Tetrahydrocannabivarin. The lift. Cleaner, clearer, forward-leaning.",
-    foot: "One flavor per tier",
+    icon: "/images/effects/thcv.svg",
+    cann: "THCV",
+    bestFor: "Focus & Clarity",
+    body: "Leans forward with a slightly sharper lift to enhance focus and motivation.",
+    foot: "Elevate + Engage",
   },
 ];
+
+// Card-local symbol composer for the effect cards. Mirrors DTC Card 02's
+// "THC + <minor>" lockup: a small rotated, faded "THC" (the card's .thc-vert,
+// 0.55 opacity) set left of the big cream mark. The big mark IS the locked
+// renderCBGLockup / renderCBNLockup / renderTHCVLockup verbatim. The small THC
+// is styled here at the usage site rather than added to sunrise-components.ts.
+// `base` is the px size of the big mark (matches .p-effect-symbol scale).
+function renderEffectSymbol(cann: Cannabinoid | null, base: number, color: string): string {
+  const thcWord = (sz: number) =>
+    `<span style="display:inline-block; text-align:left; line-height:1">` +
+    `<span style="font-family:Montserrat, sans-serif; font-size:${sz}px; font-weight:900; letter-spacing:${sz * -0.105}px; color:${color}">THC</span>` +
+    `</span>`;
+  if (!cann) return thcWord(base);
+  const t = base * 0.545; // vertical THC = 24/44 of the big mark, per the card
+  const w = base * 0.41;
+  const h = base * 0.91;
+  const vert =
+    `<span style="display:inline-block; position:relative; width:${w}px; height:${h}px; flex-shrink:0">` +
+    `<span style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-90deg); opacity:0.55; white-space:nowrap; line-height:1">` +
+    `<span style="font-family:Montserrat, sans-serif; font-size:${t}px; font-weight:900; letter-spacing:${t * -0.105}px; color:${color}">THC</span>` +
+    `</span></span>`;
+  const big =
+    cann === "CBG" ? renderCBGLockup(base, color) :
+    cann === "CBN" ? renderCBNLockup(base, color) :
+    renderTHCVLockup(base, color);
+  return vert + big;
+}
 
 // ── FAQ DATA ─────────────────────────────────────────────────────────────
 // SKU-moment questions for shoppers actively choosing. Curated subset of
@@ -262,9 +298,14 @@ function ProductsPage() {
     "60": switch60Ref,
   };
 
-  // Effect-card lockup refs (one per cannabinoid card; Core card has no lockup).
-  // Array indexed 0-3 to match EFFECTS positions. null when ref not yet attached.
-  const effectRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  // Effect-card symbol refs (one per card). The symbol container itself is
+  // the mount point; renderEffectSymbol() paints THC / THC+<minor> into it.
+  // Array indexed 0-3 to match EFFECTS positions. null when not yet attached.
+  const effectRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // SUNRISE wordmark in the S04 headline ("Find your SUNRISE"), painted
+  // client-side at the headline's cap height via renderWordmark().
+  const wordmarkRef = useRef<HTMLSpanElement>(null);
 
   // Flavor-corner lockup refs — one per cannabinoid flavor (positions 4–6 of
   // each tier). Repopulated on tier switch via React's ref callback; null
@@ -323,17 +364,19 @@ function ProductsPage() {
         ref.innerHTML = html;
       });
 
-      // ── Effect-card +CBG / +CBN / +THCV lockups — cream on tier bg ──
-      // Matches .p-effect-symbol font-size (calc(--base * 1.05)).
+      // ── S04 headline wordmark — "Find your SUNRISE", gradient on cream ──
+      // Sized to the headline cap height (base * 1.0) so it sits level with
+      // "FIND YOUR", per DTC Card 02.
+      if (wordmarkRef.current) {
+        wordmarkRef.current.innerHTML = renderWordmark(base * 1.0, "gradient");
+      }
+
+      // ── Effect-card symbols — THC (core) / THC + <minor> — cream on tier bg ──
+      // Sized to .p-effect-symbol (calc(--base * 1.05)).
       EFFECTS.forEach((e, i) => {
         const ref = effectRefs.current[i];
         if (!ref) return;
-        const size = base * 1.05;
-        let html = "";
-        if (e.symbol === "+CBG")  html = renderCBGLockup(size, "#FEFBE0");
-        else if (e.symbol === "+CBN")  html = renderCBNLockup(size, "#FEFBE0");
-        else if (e.symbol === "+THCV") html = renderTHCVLockup(size, "#FEFBE0");
-        ref.innerHTML = html;
+        ref.innerHTML = renderEffectSymbol(e.cann, base * 1.05, "#FEFBE0");
       });
 
       // ── Flavor-corner +CBG / +CBN / +THCV lockups — cream on tier bg ──
@@ -473,30 +516,32 @@ function ProductsPage() {
           </div>
         </section>
 
-        {/* ── 04 · FIND YOUR EFFECT (4 cards: Core + CBG/CBN/THCV) ─────── */}
+        {/* ── 04 · FIND YOUR SUNRISE (4 cards: THC + CBG/CBN/THCV) ─────── */}
         <section className="p-effects">
           <div className="container">
             <h2 className="p-effects-headline">
-              Find your <span className="accent">effect</span>
+              <span>Find your</span>
+              <span
+                className="p-effects-wordmark"
+                ref={wordmarkRef}
+                aria-label="SUNRISE"
+              />
             </h2>
             <p className="p-effects-subhead">
-              Every tier offers four paths — a classic THC core, or three enhanced with a minor cannabinoid for a more specific lift.
+              Every tier offers four paths — a classic THC core, or three enhanced with minor cannabinoids for a more specific experience.
             </p>
             <div className="p-effects-grid">
               {EFFECTS.map((e, i) => (
                 <div key={i} className="p-effect-card" style={{ background: e.bg }}>
-                  <div className="p-effect-eyebrow">{e.eyebrow}</div>
-                  <div className="p-effect-symbol">
-                    {e.symbol.startsWith("+") ? (
-                      <span
-                        ref={(el) => { effectRefs.current[i] = el; }}
-                        aria-label={e.symbol}
-                      />
-                    ) : (
-                      e.symbol
-                    )}
-                  </div>
+                  <img className="p-effect-icon" src={e.icon} alt="" aria-hidden="true" />
+                  <div
+                    className="p-effect-symbol"
+                    ref={(el) => { effectRefs.current[i] = el; }}
+                    aria-label={e.cann ? `THC + ${e.cann}` : "THC"}
+                  />
+                  <div className="p-effect-bestfor">Best for<br />{e.bestFor}</div>
                   <div className="p-effect-body">{e.body}</div>
+                  <div className="p-effect-spacer" />
                   <div className="p-effect-foot">{e.foot}</div>
                 </div>
               ))}
