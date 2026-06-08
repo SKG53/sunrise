@@ -111,9 +111,15 @@
   text-transform: uppercase;
   color: var(--near-black);
   line-height: 1.0;
-  text-align: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.4em;
 }
 .p-effects-headline .accent { color: var(--tier-10); }
+/* SUNRISE wordmark mounted client-side via renderWordmark(); sized to the
+   headline so it sits at the same cap height as "FIND YOUR", per DTC Card 02. */
+.p-effects-wordmark { display: inline-flex; }
 .p-effects-subhead {
   font-size: calc(var(--base) * 0.4);
   font-weight: 400;
@@ -136,41 +142,53 @@
   border-radius: 4px;
   display: flex;
   flex-direction: column;
-  min-height: calc(var(--base) * 5.0);
+  align-items: center;
+  text-align: center;
+  min-height: calc(var(--base) * 6.5);
   min-width: 0;
 }
-.p-effect-eyebrow {
-  font-size: calc(var(--base) * 0.22);
-  font-weight: 800;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(254, 251, 224, 0.8);
-  margin-bottom: calc(var(--base) * 0.3);
+.p-effect-icon {
+  width: calc(var(--base) * 2.08);
+  height: calc(var(--base) * 2.08);
+  flex-shrink: 0;
+  margin-bottom: calc(var(--base) * 0.2);
 }
 .p-effect-symbol {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.05);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  color: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
   line-height: 1.0;
-  margin-bottom: calc(var(--base) * 0.3);
+  min-height: calc(var(--base) * 1.05);
+  margin-bottom: calc(var(--base) * 0.25);
+}
+.p-effect-bestfor {
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(254, 251, 224, 0.85);
+  line-height: 1.3;
+  min-height: calc(var(--base) * 0.6);
+  margin-bottom: calc(var(--base) * 0.25);
 }
 .p-effect-body {
-  font-size: calc(var(--base) * 0.3);
+  font-size: calc(var(--base) * 0.26);
   font-weight: 400;
   line-height: 1.45;
-  color: rgba(254, 251, 224, 0.9);
-  max-width: 28ch;
+  color: rgba(254, 251, 224, 0.85);
+  max-width: 26ch;
+}
+.p-effect-spacer {
+  flex: 1;
+  min-height: calc(var(--base) * 0.3);
 }
 .p-effect-foot {
-  margin-top: auto;
-  padding-top: calc(var(--base) * 0.5);
-  font-size: calc(var(--base) * 0.19);
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-size: calc(var(--base) * 0.21);
+  font-weight: 800;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(254, 251, 224, 0.6);
+  color: rgba(254, 251, 224, 0.85);
 }
 
 /* ── SWITCHER ───────────────────────────────────────────────────────────── */
