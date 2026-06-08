@@ -110,11 +110,11 @@ function FindPage() {
       <main>
         {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
         <section className="f-pagehero">
-          <h1 className="f-pagehero-title" aria-label="Find Us">
+          <p className="f-pagehero-title" aria-label="Find Us">
             {"Find Us".split("").map((ch, i) => (
               <span key={i} aria-hidden="true">{ch === " " ? "\u00A0" : ch}</span>
             ))}
-          </h1>
+          </p>
         </section>
 
         {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
