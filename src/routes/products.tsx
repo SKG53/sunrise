@@ -409,11 +409,11 @@ function ProductsPage() {
       <main>
         {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
         <section className="p-pagehero">
-          <h1 className="p-pagehero-title" aria-label="Products">
+          <p className="p-pagehero-title" aria-label="Products">
             {"Products".split("").map((ch, i) => (
               <span key={i} aria-hidden="true">{ch === " " ? "\u00A0" : ch}</span>
             ))}
-          </h1>
+          </p>
         </section>
 
         {/* ── 02 · HERO ─────────────────────────────────────────────────── */}

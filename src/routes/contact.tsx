@@ -115,11 +115,11 @@ function ContactPage() {
       <main>
         {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
         <section className="c-pagehero">
-          <h1 className="c-pagehero-title" aria-label="Contact">
+          <p className="c-pagehero-title" aria-label="Contact">
             {"Contact".split("").map((ch, i) => (
               <span key={i} aria-hidden="true">{ch === " " ? "\u00A0" : ch}</span>
             ))}
-          </h1>
+          </p>
         </section>
 
         {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
