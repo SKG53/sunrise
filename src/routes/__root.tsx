@@ -6,6 +6,20 @@ import { useCartSync } from "../hooks/useCartSync";
 import { AgeGate } from "../components/AgeGate";
 import { AnnouncementBar } from "../components/AnnouncementBar";
 
+// Sitewide Organization JSON-LD (schema.org). Minimal, factual fields only —
+// no postal address (the only address on file is the BIAB production entity,
+// which never appears consumer-facing), no logo or sameAs yet (added later
+// once a transparent logo and claimed social URLs exist). `<` is escaped so
+// the JSON can't break out of the inline <script> tag.
+const ORG_JSON_LD = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "SUNRISE Beverage",
+  url: "https://savorsunrise.com",
+  email: "hello@savorsunrise.com",
+  telephone: "+1-877-674-7459",
+}).replace(/</g, "\\u003c");
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -74,6 +88,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: ORG_JSON_LD }}
+        />
         <Scripts />
       </body>
     </html>
