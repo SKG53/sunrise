@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { isValidElement, type ReactNode } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import "./faq.css";
@@ -435,9 +436,45 @@ const SECTIONS: FAQSection[] = [
 // character-stagger animation, cream content section below. Inside content:
 // two-column layout — sticky section menu on the left (anchor links jump to
 // each section), open content (no collapsible) on the right.
+// Recursively extract the visible text from an answer's ReactNode so the
+// schema mirrors exactly what's rendered on the page (mismatched schema =
+// Google "abuse" risk). Whitespace is collapsed to match browser rendering.
+function nodeToText(node: ReactNode): string {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string") return node;
+  if (typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(nodeToText).join("");
+  if (isValidElement(node)) {
+    return nodeToText((node.props as { children?: ReactNode }).children);
+  }
+  return "";
+}
+
+// FAQPage JSON-LD built from the visible SECTIONS array. Every question maps
+// to a Question entity with its rendered answer text. `<` escaped so the JSON
+// can't terminate the inline <script> early.
+const FAQ_JSON_LD = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: SECTIONS.flatMap((s) =>
+    s.items.map((it) => ({
+      "@type": "Question",
+      name: it.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: nodeToText(it.a).replace(/\s+/g, " ").trim(),
+      },
+    })),
+  ),
+}).replace(/</g, "\\u003c");
+
 function FAQPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: FAQ_JSON_LD }}
+      />
       <SiteHeader activeNav="faq" />
 
       <main>
