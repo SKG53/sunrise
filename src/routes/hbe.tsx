@@ -275,6 +275,11 @@ function EventSignupPage() {
             <div className="hero-wordmark-slot" ref={heroWmRef} />
             <div className="hero-subtitle">Crafted Beverages</div>
           </div>
+          <div className="hero-scroll-cue" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
         </section>
 
         <section className="c-form-section">
