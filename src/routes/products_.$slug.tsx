@@ -1010,7 +1010,7 @@ function ProductDetailPage() {
                 <div className="pd-inside-ing">
                   <div className="pd-inside-ing-name">Natural<br />Flavoring</div>
                   <div className="pd-inside-ing-desc">
-                    Sourced from real fruits and botanicals, our flavors deliver
+                    Sourced from simple ingredients and botanicals, our flavors deliver
                     bright, authentic notes true to their names.
                   </div>
                 </div>

@@ -28,9 +28,9 @@ export const Route = createFileRoute("/products")({
         name: "description",
         // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — original copy preserved for revival
         // content:
-        //   "Twenty-four hemp-infused seltzer flavors across four potency tiers: 5mg, 10mg, 30mg, and 60mg THC. Real fruit, pure cane sugar, federally-legal Delta-9.",
+        //   "Twenty-four hemp-infused seltzer flavors across four potency tiers: 5mg, 10mg, 30mg, and 60mg THC. Simple ingredients, pure cane sugar, federally-legal Delta-9.",
         content:
-          "Hemp-infused seltzer in two potency tiers: 10mg and 60mg THC. Real fruit, pure cane sugar, federally-legal Delta-9.",
+          "Hemp-infused seltzer in two potency tiers: 10mg and 60mg THC. Simple ingredients, pure cane sugar, federally-legal Delta-9.",
       },
     ],
     links: [
@@ -558,7 +558,7 @@ function ProductsPage() {
                 <span>Real <span className="accent">effects</span></span>
               </h2>
               <p className="p-inside-lead">
-                Every SUNRISE seltzer starts with real fruit, pure cane sugar, and hemp extract
+                Every SUNRISE seltzer starts with simple ingredients, pure cane sugar, and hemp extract
                 emulsified in small batches — nothing artificial, nothing you can't pronounce.
               </p>
             </div>
@@ -598,7 +598,7 @@ function ProductsPage() {
                   Every batch, <span className="accent">full-panel tested</span>
                 </h2>
                 <p className="p-transparency-body">
-                  Purified water, pure cane sugar, real fruit flavoring, emulsified
+                  Purified water, pure cane sugar, simple ingredients flavoring, emulsified
                   hemp extract, B12. Nothing to hide. See the full breakdown or
                   pull any flavor's COA — cannabinoid content, contaminant screen,
                   batch and date.
