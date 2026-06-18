@@ -3,6 +3,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
+import type { RefObject } from 'react'
 import { SiteHeader } from '../components/SiteHeader'
 import { SiteFooter } from '../components/SiteFooter'
 import {
@@ -15,63 +16,107 @@ import {
   renderTHCVLockup,
   getBasePx,
 } from '../lib/sunrise-components'
+import { getShopifyMapping } from '@/lib/shopifyProductMap'
+import { useShopifyProduct } from '@/hooks/useShopifyProduct'
 import './contact.css'
 import './home.css'
+import './products.css'
 
 const EVENT_NAME = 'Hemp Beverage Expo'
 
-// ── PRODUCT GRID DATA ────────────────────────────────────────────────────
+// ── PRODUCTS SECTION DATA (mirrors /products page) ───────────────────────
 type Cannabinoid = 'CBG' | 'CBN' | 'THCV'
-type TierKey = '10' | '30' | '60'
-type Flavor = {
-  name: string
-  descriptor: string
-  flavorColor: string
-  cannabinoid?: Cannabinoid
-  comingSoon?: boolean
+type TierKey = '5' | '10' | '30' | '60'
+
+function toSlug(tier: TierKey, flavor: { name: string; cannabinoid?: Cannabinoid }): string {
+  const flavorPart = flavor.name.toLowerCase().replace(/\s+/g, '-')
+  const variantSuffix = flavor.cannabinoid ? `-${flavor.cannabinoid.toLowerCase()}` : ''
+  return `${tier}mg-${flavorPart}${variantSuffix}`
 }
 
-function toSlug(tier: TierKey, f: Flavor): string {
-  const base = f.name.toLowerCase().replace(/\s+/g, '-')
-  const suffix = f.cannabinoid ? `-${f.cannabinoid.toLowerCase()}` : ''
-  return `${tier}mg-${base}${suffix}`
-}
+type Flavor = { name: string; descriptor: string; flavorColor: string; cannabinoid?: Cannabinoid }
+type TierData = { color: string; name: string; short: string; descriptors: string; copy: string; flavors: Flavor[] }
 
-const TIERS: { tier: TierKey; flavors: Flavor[] }[] = [
-  {
-    tier: '10',
+const SHOW_NON_LIVE_PRODUCTS = false
+const LIVE_SLUGS = new Set<string>([
+  '10mg-strawberry','10mg-watermelon','10mg-lemonade',
+  '30mg-peach-mango','30mg-cherry-limeade','30mg-orange-lemonade',
+  '30mg-kiwi-watermelon-cbg','30mg-blueberry-pomegranate-cbn','30mg-strawberry-watermelon-thcv',
+  '60mg-wild-cherry-peach','60mg-blueberry-lemonade','60mg-passionfruit-mango',
+  '60mg-blood-orange-cbg','60mg-blackberry-cbn','60mg-strawberry-kiwi-thcv',
+])
+
+const TIERS: Record<TierKey, TierData> = {
+  '5':  { color: '#DC7F27', name: 'Subtle Lift', short: 'Subtle Lift', descriptors: 'Light · Bright · Casual',
+    copy: 'First times, mid-week refreshments, or social sessions. Crisp, casual, easy to like.', flavors: [] },
+  '10': { color: '#CC1F39', name: 'Perfect Buzz', short: 'Perfect Buzz', descriptors: 'Smooth · Balanced · Social',
+    copy: 'Casual sips, afternoon resets, or social gatherings. The go-to tier — a steady, social lift.',
     flavors: [
-      { name: 'Strawberry',          descriptor: 'Fresh + Fruity', flavorColor: '#CC1F39' },
-      { name: 'Watermelon',          descriptor: 'Sweet + Juicy',  flavorColor: '#0A6034' },
-      { name: 'Lemonade',            descriptor: 'Crisp + Tangy',  flavorColor: '#E0AD2C' },
-      { name: 'Tangerine',           descriptor: 'Bright + Zesty', flavorColor: '#F89A1F', cannabinoid: 'CBG',  comingSoon: true },
-      { name: 'Blackberry Lemonade', descriptor: 'Tart + Bold',    flavorColor: '#2E1E3D', cannabinoid: 'CBN',  comingSoon: true },
-      { name: 'Blueberry Acai',      descriptor: 'Rich + Vibrant', flavorColor: '#21285A', cannabinoid: 'THCV', comingSoon: true },
-    ],
-  },
-  {
-    tier: '30',
+      { name: 'Strawberry',          descriptor: 'Fresh + Fruity',  flavorColor: '#CC1F39' },
+      { name: 'Watermelon',          descriptor: 'Sweet + Juicy',   flavorColor: '#0A6034' },
+      { name: 'Lemonade',            descriptor: 'Crisp + Tangy',   flavorColor: '#E0AD2C' },
+      { name: 'Tangerine',           descriptor: 'Bright + Zesty',  flavorColor: '#F89A1F', cannabinoid: 'CBG' },
+      { name: 'Blackberry Lemonade', descriptor: 'Tart + Bold',     flavorColor: '#2E1E3D', cannabinoid: 'CBN' },
+      { name: 'Blueberry Acai',      descriptor: 'Rich + Vibrant',  flavorColor: '#21285A', cannabinoid: 'THCV' },
+    ] },
+  '30': { color: '#0A6034', name: 'Deeper Dive', short: 'Deeper Dive', descriptors: 'Rich · Vibrant · Spirited',
+    copy: 'Extended sessions, creative inspirations, or evening unwinds. For when the mood calls for something richer.',
     flavors: [
       { name: 'Peach Mango',           descriptor: 'Lush + Tropical',   flavorColor: '#E89B5B' },
       { name: 'Cherry Limeade',        descriptor: 'Tart + Refreshing', flavorColor: '#67092A' },
       { name: 'Orange Lemonade',       descriptor: 'Bright + Tart',     flavorColor: '#FAA819' },
-      { name: 'Kiwi Watermelon',       descriptor: 'Crisp + Cool',      flavorColor: '#A4BC47', cannabinoid: 'CBG'  },
-      { name: 'Blueberry Pomegranate', descriptor: 'Tart + Vibrant',    flavorColor: '#21285A', cannabinoid: 'CBN'  },
+      { name: 'Kiwi Watermelon',       descriptor: 'Crisp + Cool',      flavorColor: '#A4BC47', cannabinoid: 'CBG' },
+      { name: 'Blueberry Pomegranate', descriptor: 'Tart + Vibrant',    flavorColor: '#21285A', cannabinoid: 'CBN' },
       { name: 'Strawberry Watermelon', descriptor: 'Sweet + Fresh',     flavorColor: '#0A6034', cannabinoid: 'THCV' },
-    ],
-  },
-  {
-    tier: '60',
+    ] },
+  '60': { color: '#2E1E3D', name: 'Elevated Experience', short: 'Elevated Experience', descriptors: 'Bold · Potent · Immersive',
+    copy: 'Late nights, deep decompressions, or weekend relaxation. The full expression — patience and respect required.',
     flavors: [
       { name: 'Passionfruit Mango',  descriptor: 'Bright + Breezy', flavorColor: '#60203A' },
       { name: 'Wild Cherry Peach',   descriptor: 'Lush + Juicy',    flavorColor: '#861625' },
       { name: 'Blueberry Lemonade',  descriptor: 'Rich + Tangy',    flavorColor: '#21285A' },
-      { name: 'Blood Orange',        descriptor: 'Tart + Punchy',   flavorColor: '#DC7F27', cannabinoid: 'CBG'  },
-      { name: 'Blackberry',          descriptor: 'Dark + Smooth',   flavorColor: '#2E1E3D', cannabinoid: 'CBN'  },
+      { name: 'Blood Orange',        descriptor: 'Tart + Punchy',   flavorColor: '#DC7F27', cannabinoid: 'CBG' },
+      { name: 'Blackberry',          descriptor: 'Dark + Smooth',   flavorColor: '#2E1E3D', cannabinoid: 'CBN' },
       { name: 'Strawberry Kiwi',     descriptor: 'Sweet + Tangy',   flavorColor: '#CC1F39', cannabinoid: 'THCV' },
-    ],
-  },
+    ] },
+}
+
+const LOCKUP_SIZE = 2.2
+
+const CANNABINOID_EFFECT: Record<Cannabinoid, string> = {
+  CBG: 'Focus + Uplift',
+  CBN: 'Relax + Unwind',
+  THCV: 'Elevate + Engage',
+}
+
+type EffectCardData = { bg: string; icon: string; cann: Cannabinoid | null; bestFor: string; body: string; foot: string }
+const EFFECTS: EffectCardData[] = [
+  { bg: '#1A1A1A', icon: '/images/effects/thc.svg',  cann: null,   bestFor: 'Anytime',           body: 'Full and familiar, this is the starting point for every SUNRISE experience.',  foot: 'Pure + Classic' },
+  { bg: '#DC7F27', icon: '/images/effects/cbg.svg',  cann: 'CBG',  bestFor: 'Daytime',           body: 'Gently elevates the mood and experience for a subtle, clear-headed lift.',     foot: 'Focus + Uplift' },
+  { bg: '#2E1E3D', icon: '/images/effects/cbn.svg',  cann: 'CBN',  bestFor: 'Nighttime',         body: 'Gently relaxes and mellows the mind for a calming overall experience.',         foot: 'Relax + Unwind' },
+  { bg: '#CC1F39', icon: '/images/effects/thcv.svg', cann: 'THCV', bestFor: 'Focus & Clarity',   body: 'Leans forward with a slightly sharper lift to enhance focus and motivation.',   foot: 'Elevate + Engage' },
 ]
+
+function renderEffectSymbol(cann: Cannabinoid | null, base: number, color: string): string {
+  const thcWord = (sz: number) =>
+    `<span style="display:inline-block; text-align:left; line-height:1">` +
+    `<span style="font-family:Montserrat, sans-serif; font-size:${sz}px; font-weight:900; letter-spacing:${sz * -0.105}px; color:${color}">THC</span>` +
+    `</span>`
+  if (!cann) return thcWord(base)
+  const t = base * 0.545
+  const w = base * 0.41
+  const h = base * 0.91
+  const vert =
+    `<span style="display:inline-block; position:relative; width:${w}px; height:${h}px; flex-shrink:0">` +
+    `<span style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-90deg); opacity:0.55; white-space:nowrap; line-height:1">` +
+    `<span style="font-family:Montserrat, sans-serif; font-size:${t}px; font-weight:900; letter-spacing:${t * -0.105}px; color:${color}">THC</span>` +
+    `</span></span>`
+  const big =
+    cann === 'CBG' ? renderCBGLockup(base, color) :
+    cann === 'CBN' ? renderCBNLockup(base, color) :
+    renderTHCVLockup(base, color)
+  return vert + big
+}
 
 export const Route = createFileRoute('/hbe')({
   component: EventSignupPage,
