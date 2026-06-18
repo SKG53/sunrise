@@ -500,6 +500,13 @@
   text-transform: uppercase;
   color: var(--near-black);
 }
+.es-success-actions {
+  display: flex;
+  gap: calc(var(--base) * 0.6);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: calc(var(--base) * 0.9);
+}
 
 /* Products container */
 .es-products {
