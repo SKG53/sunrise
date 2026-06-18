@@ -72,7 +72,14 @@ export const Route = createFileRoute('/api/public/event-signup')({
         if (eventName) properties.message = `Event signup: ${eventName}`
         // Tag the signup source so HubSpot smart lists (e.g.
         // "Centennial Signups – SUNRISE") can auto-populate by filter.
-        properties.event_signup_source = 'SUNRISE Tulsa Centennial'
+        // Map the form's eventName to the canonical source value HubSpot
+        // filters on. Unknown events fall back to the original Centennial
+        // value so existing lists keep working.
+        const SOURCE_MAP: Record<string, string> = {
+          'Hemp Beverage Expo': 'SUNRISE Hemp Beverage Expo',
+          'SUNRISE Event': 'SUNRISE Tulsa Centennial',
+        }
+        properties.event_signup_source = SOURCE_MAP[eventName] ?? 'SUNRISE Tulsa Centennial'
 
         const headers = {
           Authorization: `Bearer ${LOVABLE_API_KEY}`,
