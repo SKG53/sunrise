@@ -72,7 +72,7 @@ const TIERS: { tier: TierKey; flavors: Flavor[] }[] = [
   },
 ]
 
-export const Route = createFileRoute('/event-signup')({
+export const Route = createFileRoute('/hbe')({
   component: EventSignupPage,
   head: () => ({
     meta: [
