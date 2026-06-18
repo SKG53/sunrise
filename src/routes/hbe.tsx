@@ -90,6 +90,7 @@ function EventSignupPage() {
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [details, setDetails] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState<{
     firstName?: string
@@ -176,6 +177,7 @@ function EventSignupPage() {
           lastName: lastName.trim(),
           email: email.trim(),
           phone: phone.trim(),
+          details: details.trim(),
           eventName: EVENT_NAME,
         }),
       })
@@ -282,6 +284,20 @@ function EventSignupPage() {
                           aria-invalid={errors.phone ? true : undefined}
                         />
                         {errors.phone && <span className="c-field-error">{errors.phone}</span>}
+                      </label>
+                    </div>
+
+                    <div className="c-form-row">
+                      <label className="c-field">
+                        <span className="c-field-label">Additional Details</span>
+                        <textarea
+                          className="c-input"
+                          value={details}
+                          onChange={(e) => setDetails(e.target.value)}
+                          rows={4}
+                          maxLength={2000}
+                          placeholder="Business name, role (wholesaler, retailer, distributor), or anything else you'd like us to know."
+                        />
                       </label>
                     </div>
 

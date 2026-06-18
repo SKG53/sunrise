@@ -12,6 +12,7 @@ interface Body {
   email?: unknown
   phone?: unknown
   eventName?: unknown
+  details?: unknown
 }
 
 export const Route = createFileRoute('/api/public/event-signup')({
@@ -42,6 +43,7 @@ export const Route = createFileRoute('/api/public/event-signup')({
         const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
         const phone = typeof body.phone === 'string' ? body.phone.trim() : ''
         const eventName = typeof body.eventName === 'string' ? body.eventName.trim().slice(0, 200) : ''
+        const details = typeof body.details === 'string' ? body.details.trim().slice(0, 2000) : ''
         const referer = request.headers.get('referer')
         let refererPath = ''
         if (referer) {
@@ -79,7 +81,10 @@ export const Route = createFileRoute('/api/public/event-signup')({
         // Stash the event name on a standard text property so the team can
         // see which event the signup came from inside HubSpot.
         const displayedEventName = refererPath === '/hbe' ? 'Hemp Beverage Expo' : eventName
-        if (displayedEventName) properties.message = `Event signup: ${displayedEventName}`
+        const messageParts: string[] = []
+        if (displayedEventName) messageParts.push(`Event signup: ${displayedEventName}`)
+        if (details) messageParts.push(`Additional Details: ${details}`)
+        if (messageParts.length) properties.message = messageParts.join('\n\n')
         // Tag the signup source so HubSpot smart lists (e.g.
         // "Centennial Signups – SUNRISE") can auto-populate by filter.
         // Map the form's eventName to the canonical source value HubSpot
