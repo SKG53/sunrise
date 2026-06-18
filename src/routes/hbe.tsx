@@ -17,7 +17,7 @@ import {
 } from '../lib/sunrise-components'
 import './contact.css'
 
-const EVENT_NAME = 'SUNRISE Event'
+const EVENT_NAME = 'Hemp Beverage Expo'
 
 // ── PRODUCT GRID DATA ────────────────────────────────────────────────────
 type Cannabinoid = 'CBG' | 'CBN' | 'THCV'
@@ -76,10 +76,10 @@ export const Route = createFileRoute('/hbe')({
   component: EventSignupPage,
   head: () => ({
     meta: [
-      { title: `${EVENT_NAME} · Sign Up` },
+      { title: `${EVENT_NAME} · SUNRISE` },
       {
         name: 'description',
-        content: `RSVP for ${EVENT_NAME}. Drop your name, email, and phone and we'll be in touch.`,
+        content: `Visiting SUNRISE at the ${EVENT_NAME}? Drop your name, email, and phone and we'll stay in touch.`,
       },
     ],
   }),
@@ -198,14 +198,14 @@ function EventSignupPage() {
         <section className="c-form-section">
           <div className="container">
             <div className="es-top-heading">
-              <div className="es-top-heading-line1">LEARN MORE ABOUT</div>
+              <div className="es-top-heading-line1">VISIT US AT THE HEMP BEVERAGE EXPO</div>
               <span className="es-top-heading-wordmark" ref={wordmarkRef} aria-label="SUNRISE" />
             </div>
             <div className="c-form-card">
                 {submitted ? (
                   <div className="c-success es-success" role="status" aria-live="polite">
-                    <div className="c-success-headline es-success-headline">Thanks for signing up.</div>
-                    <div className="es-success-cta">Shop your favorites now!</div>
+                    <div className="c-success-headline es-success-headline">Thanks for stopping by!</div>
+                    <div className="es-success-cta">Explore our lineup below.</div>
                   </div>
                 ) : (
                   <form className="c-form" onSubmit={handleSubmit} noValidate>
