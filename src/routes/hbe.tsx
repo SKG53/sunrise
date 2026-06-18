@@ -143,6 +143,7 @@ function EventSignupPage() {
     lastName?: string
     email?: string
     phone?: string
+    details?: string
   }>({})
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -228,6 +229,7 @@ function EventSignupPage() {
     if (!email.trim()) next.email = 'Email needed.'
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = 'Email looks off.'
     if (!phone.trim()) next.phone = 'Phone needed.'
+    if (!details.trim()) next.details = 'Additional details needed.'
     setErrors(next)
     if (Object.keys(next).length > 0) return
 
@@ -380,13 +382,19 @@ function EventSignupPage() {
                       <label className="c-field">
                         <span className="c-field-label">Additional Details</span>
                         <textarea
-                          className="c-input"
+                          className={`c-input${errors.details ? ' c-input-error' : ''}`}
                           value={details}
-                          onChange={(e) => setDetails(e.target.value)}
+                          onChange={(e) => {
+                            setDetails(e.target.value)
+                            if (errors.details) setErrors({ ...errors, details: undefined })
+                          }}
                           rows={4}
                           maxLength={2000}
+                          required
+                          aria-invalid={errors.details ? true : undefined}
                           placeholder="Business name, role (wholesaler, retailer, distributor), or anything else you'd like us to know."
                         />
+                        {errors.details && <span className="c-field-error">{errors.details}</span>}
                       </label>
                     </div>
 
