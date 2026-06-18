@@ -62,7 +62,7 @@ function AboutPage() {
                   Our team brings decades of beverage manufacturing to the
                   work — formulation, production, blending, testing. What's
                   new is the category. What's not new is how we approach it.
-                  Every SUNRISE is made from real fruit and pure cane sugar,
+                  Every SUNRISE is made from simple ingredients and pure cane sugar,
                   emulsified with hemp extract in our own facility, tested
                   batch by batch before it ever reaches a can.
                 </p>
@@ -121,9 +121,9 @@ function AboutPage() {
                   aria-hidden="true"
                 />
                 <div className="a-icons-content">
-                  <div className="a-icons-title">Real Fruit, Real Flavor</div>
+                  <div className="a-icons-title">Simple Ingredients, Real Flavor</div>
                   <p className="a-icons-body">
-                    Real fruit flavors and natural ingredients ensure a delicious
+                    Simple ingredients flavors and natural ingredients ensure a delicious
                     experience without any weedy aftertastes.
                   </p>
                 </div>

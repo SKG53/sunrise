@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Hemp-infused Delta-9 seltzer. Real fruit, pure cane sugar, clean lift — four potency tiers from easy to elevated, engineered for refreshment.",
+          "Hemp-infused Delta-9 seltzer. Simple ingredients, pure cane sugar, clean lift — four potency tiers from easy to elevated, engineered for refreshment.",
       },
     ],
     links: [
@@ -542,7 +542,7 @@ function HomePage() {
                 <div className="s04-ing">
                   <div className="s04-ing-name">Natural<br />Flavoring</div>
                   <div className="s04-ing-desc">
-                    Sourced from real fruits and botanicals, our flavors deliver
+                    Sourced from simple ingredients and botanicals, our flavors deliver
                     bright, authentic notes true to their names.
                   </div>
                 </div>
