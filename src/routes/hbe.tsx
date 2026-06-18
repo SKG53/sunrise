@@ -407,87 +407,125 @@ function EventSignupPage() {
                   </form>
                 )}
             </div>
+          </div>
+        </section>
 
-            {/* ── PRODUCTS SECTION ──────────────────────────────────── */}
-            <h2 className="es-products-heading">OUR PRODUCTS</h2>
-            <div className="es-products">
-              {TIERS.map(({ tier, flavors }) => (
-                <div key={tier} className="es-tier-row">
-                  <div className="es-tier-lockup-col">
-                    <span
-                      className="es-tier-lockup"
-                      ref={(el) => { tierLockupRefs.current[tier] = el }}
-                      aria-label={`${tier} milligram THC`}
-                    />
-                  </div>
-                  <div className="es-card-grid">
-                    {flavors.map((f) => {
-                      const slug = toSlug(tier, f)
-                      const inner = (
-                        <>
-                          <div className="es-card-can" style={{ background: f.flavorColor }}>
-                            <img
-                              src={`/images/cans/${slug}.webp`}
-                              alt={`SUNRISE ${f.name} ${tier}mg hemp-infused THC${f.cannabinoid ? ` + ${f.cannabinoid}` : ""} seltzer can`}
-                              width="960"
-                              height="1920"
-                              loading="lazy"
-                            />
-                            <span
-                              className="es-card-tier"
-                              ref={(el) => { cardTierRefs.current[slug] = el }}
-                              aria-hidden="true"
-                            />
-                            {f.cannabinoid && (
-                              <span
-                                className="es-card-cannabinoid"
-                                ref={(el) => { cardCannabinoidRefs.current[slug] = el }}
-                                aria-label={`+${f.cannabinoid}`}
-                              />
-                            )}
-                          </div>
-                          {f.comingSoon && (
-                            <div className="es-coming-soon-row" style={{ borderColor: f.flavorColor }}>
-                              <span className="es-coming-soon-badge" style={{ color: f.flavorColor, borderColor: f.flavorColor }}>
-                                Coming Soon
-                              </span>
-                            </div>
-                          )}
-                          <div className="es-card-meta">
-                            <div className="es-card-meta-text">
-                              <div className="es-card-name">{f.name}</div>
-                              <div className="es-card-descriptor" style={{ color: f.flavorColor }}>
-                                {f.descriptor}
-                              </div>
-                            </div>
-                            {!f.comingSoon && (
-                              <span
-                                className="es-card-shop"
-                                style={{ background: f.flavorColor }}
-                              >
-                                Shop
-                              </span>
-                            )}
-                          </div>
-                        </>
-                      )
-                      return (
-                        <div
-                          key={slug}
-                          className={`es-card${f.comingSoon ? ' es-card-coming-soon' : ''}`}
-                          style={{ borderColor: f.flavorColor }}
-                        >
-                          {f.comingSoon ? (
-                            inner
-                          ) : (
-                            <Link to="/products/$slug" params={{ slug }} className="es-card-link">
-                              {inner}
-                            </Link>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
+        {/* ── PRODUCTS — Enjoy every last sip and pour ─────────────────── */}
+        <section className="p-hero" id="our-products">
+          <div className="container">
+            <div className="p-hero-inner">
+              <h2 className="p-hero-headline">
+                Enjoy every last<br />
+                <span className="accent">sip and pour.</span>
+              </h2>
+              <p className="p-hero-body">
+                Try one and try them all. Savor the SUNRISE with each and every one — all made with natural flavors.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── TIER SWITCHER + PANEL ─────────────────────────────────────── */}
+        <section className="p-switcher">
+          <div className="container">
+            <div className="p-switcher-bar">
+              {(['5', '10', '30', '60'] as TierKey[])
+                .filter((k) => SHOW_NON_LIVE_PRODUCTS || k !== '5')
+                .map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    className={'p-switch' + (activeTier === k ? ' active' : '')}
+                    onClick={() => setActiveTier(k)}
+                    style={activeTier === k ? { background: TIERS[k].color } : undefined}
+                    aria-pressed={activeTier === k}
+                  >
+                    <div className="p-switch-lockup" ref={switchRefs[k]} />
+                    <div className="p-switch-name" style={activeTier !== k ? { color: TIERS[k].color } : undefined}>
+                      {TIERS[k].short.split(' ').map((word, wi) => (
+                        <span key={wi}>{word}</span>
+                      ))}
+                    </div>
+                  </button>
+                ))}
+            </div>
+
+            <div
+              className="p-panel"
+              style={{
+                background: TIERS[activeTier].color,
+                ['--p-tier-color' as string]: TIERS[activeTier].color,
+              } as React.CSSProperties}
+            >
+              <div className="p-panel-head">
+                <div className="p-panel-lockup" ref={panelLockupRef} />
+                <div className="p-panel-head-text">
+                  <div className="p-panel-eyebrow">{TIERS[activeTier].descriptors}</div>
+                  <h3 className="p-panel-tier-name">{TIERS[activeTier].name}</h3>
+                  <p className="p-panel-copy">{TIERS[activeTier].copy}</p>
+                </div>
+              </div>
+
+              <div className="p-flavor-grid">
+                {TIERS[activeTier].flavors
+                  .filter((f) => SHOW_NON_LIVE_PRODUCTS || LIVE_SLUGS.has(toSlug(activeTier, f)))
+                  .map((f, i) => (
+                    <a
+                      key={i}
+                      href={`/products/${toSlug(activeTier, f)}`}
+                      className="p-flavor-card"
+                      aria-label={`${f.name} — ${TIERS[activeTier].name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ''}`}
+                      style={{ ['--flavor-color' as string]: f.flavorColor } as React.CSSProperties}
+                    >
+                      <FlavorCan slug={toSlug(activeTier, f)} flavorName={f.name} />
+                      <div className="p-flavor-meta">
+                        <div className="p-flavor-name">{f.name}</div>
+                        <div className="p-flavor-descriptor">{f.descriptor}</div>
+                        {f.cannabinoid && (
+                          <div className="p-flavor-pill">{CANNABINOID_EFFECT[f.cannabinoid]}</div>
+                        )}
+                      </div>
+                      <div className="p-flavor-cta">
+                        <span className="p-flavor-cta-label">Buy Now</span>
+                        <span className="p-flavor-cta-arrow">→</span>
+                      </div>
+                      {f.cannabinoid && (
+                        <span
+                          className="p-flavor-corner"
+                          ref={(el) => { cornerRefs.current[i] = el }}
+                          aria-label={`+${f.cannabinoid}`}
+                        />
+                      )}
+                    </a>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── FIND YOUR SUNRISE — minor cannabinoid cards ──────────────── */}
+        <section className="p-effects">
+          <div className="container">
+            <h2 className="p-effects-headline">
+              <span>Find your</span>
+              <span className="p-effects-wordmark" ref={wordmarkRef} aria-label="SUNRISE" />
+            </h2>
+            <p className="p-effects-subhead">
+              Every tier offers four paths — a classic THC core, or three enhanced with minor cannabinoids for a more specific experience.
+            </p>
+            <div className="p-effects-grid">
+              {EFFECTS.map((e, i) => (
+                <div key={i} className="p-effect-card" style={{ background: e.bg }}>
+                  <img className="p-effect-icon" src={e.icon} alt="" aria-hidden="true" />
+                  <div
+                    className="p-effect-symbol"
+                    ref={(el) => { effectRefs.current[i] = el }}
+                    aria-label={e.cann ? `THC + ${e.cann}` : 'THC'}
+                  />
+                  <div className="p-effect-bestfor">Best for<br />{e.bestFor}</div>
+                  <div className="p-effect-body">{e.body}</div>
+                  <div className="p-effect-spacer" />
+                  <div className="p-effect-foot">{e.foot}</div>
                 </div>
               ))}
             </div>
@@ -497,4 +535,23 @@ function EventSignupPage() {
       <SiteFooter />
     </>
   )
+}
+
+// ── FlavorCan ────────────────────────────────────────────────────────────
+function FlavorCan({ slug, flavorName }: { slug: string; flavorName: string }) {
+  const mapping = getShopifyMapping(slug)
+  const { product } = useShopifyProduct(mapping?.handle)
+  const image = product?.node.images.edges[0]?.node
+  if (image?.url) {
+    return (
+      <div className="p-flavor-can has-image">
+        <img
+          src={image.url}
+          alt={image.altText ?? `SUNRISE ${flavorName} hemp-infused THC seltzer can`}
+          loading="lazy"
+        />
+      </div>
+    )
+  }
+  return <div className="p-flavor-can" />
 }
