@@ -296,7 +296,7 @@ function EventSignupPage() {
                           onChange={(e) => setDetails(e.target.value)}
                           rows={4}
                           maxLength={2000}
-                          placeholder="Business name, role (wholesaler, retailer, distributor), or anything else you'd like us to know."
+                          placeholder="Please enter Company Name and whether you are a Wholesaler, Distributor, Retailer, or other type of business."
                         />
                       </label>
                     </div>
