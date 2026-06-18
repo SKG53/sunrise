@@ -147,59 +147,78 @@ function EventSignupPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
+  const [activeTier, setActiveTier] = useState<TierKey>('10')
+
   // Refs for brand-mark painting
   const heroWmRef = useRef<HTMLDivElement>(null)
-  const tierLockupRefs = useRef<Record<TierKey, HTMLSpanElement | null>>({ '10': null, '30': null, '60': null })
-  const cardTierRefs = useRef<Record<string, HTMLSpanElement | null>>({})
-  const cardCannabinoidRefs = useRef<Record<string, HTMLSpanElement | null>>({})
+  const panelLockupRef = useRef<HTMLDivElement>(null)
+  const switch5Ref = useRef<HTMLDivElement>(null)
+  const switch10Ref = useRef<HTMLDivElement>(null)
+  const switch30Ref = useRef<HTMLDivElement>(null)
+  const switch60Ref = useRef<HTMLDivElement>(null)
+  const switchRefs: Record<TierKey, RefObject<HTMLDivElement | null>> = {
+    '5': switch5Ref, '10': switch10Ref, '30': switch30Ref, '60': switch60Ref,
+  }
+  const effectRefs = useRef<(HTMLDivElement | null)[]>([])
+  const wordmarkRef = useRef<HTMLSpanElement>(null)
+  const cornerRefs = useRef<(HTMLSpanElement | null)[]>([])
 
   useEffect(() => {
     const paint = () => {
       const base = getBasePx()
-      // Hero SUNRISE wordmark (cream, matches home page)
-      if (heroWmRef.current) {
-        heroWmRef.current.innerHTML = renderWordmark(base * 2.8, 'cream')
-      }
-      // Tier lockups (left column of each tier row) — dark text on cream bg
-      const tierColor: Record<TierKey, string> = { '10': '#CC1F39', '30': '#0B6134', '60': '#61213A' }
-      const lockupSize = base * 3.8
-      const r10 = tierLockupRefs.current['10']
-      const r30 = tierLockupRefs.current['30']
-      const r60 = tierLockupRefs.current['60']
-      if (r10) r10.innerHTML = render10mgLockup(lockupSize, tierColor['10'])
-      if (r30) r30.innerHTML = render30mgLockup(lockupSize, tierColor['30'])
-      if (r60) r60.innerHTML = render60mgLockup(lockupSize, tierColor['60'])
+      if (heroWmRef.current) heroWmRef.current.innerHTML = renderWordmark(base * 2.8, 'cream')
 
-      // Per-card tier badge + cannabinoid strip
-      const cardLockupBase = window.innerWidth <= 520 ? 28 : 44
-      TIERS.forEach(({ tier, flavors }) => {
-        flavors.forEach((f) => {
-          const slug = toSlug(tier, f)
-          const tEl = cardTierRefs.current[slug]
-          if (tEl) {
-            const html =
-              tier === '10' ? render10mgLockup(cardLockupBase, '#FEFBE0') :
-              tier === '30' ? render30mgLockup(cardLockupBase, '#FEFBE0') :
-                              render60mgLockup(cardLockupBase, '#FEFBE0')
-            tEl.innerHTML = html
-          }
-          const cEl = cardCannabinoidRefs.current[slug]
-          if (cEl && f.cannabinoid) {
-            const size = base * 0.91
-            const html =
-              f.cannabinoid === 'CBG' ? renderCBGLockup(size, '#FEFBE0') :
-              f.cannabinoid === 'CBN' ? renderCBNLockup(size, '#FEFBE0') :
-                                        renderTHCVLockup(size, '#FEFBE0')
-            cEl.innerHTML = html
-          }
+      if (panelLockupRef.current) {
+        const size = base * LOCKUP_SIZE
+        let html = ''
+        if (activeTier === '10') html = render10mgLockup(size, '#FEFBE0')
+        if (activeTier === '30') html = render30mgLockup(size, '#FEFBE0')
+        if (activeTier === '60') html = render60mgLockup(size, '#FEFBE0')
+        panelLockupRef.current.innerHTML = html
+      }
+
+      ;(['5', '10', '30', '60'] as TierKey[])
+        .filter((tier) => SHOW_NON_LIVE_PRODUCTS || tier !== '5')
+        .forEach((tier) => {
+          const ref = switchRefs[tier].current
+          if (!ref) return
+          const isActive = tier === activeTier
+          const color = isActive ? '#FEFBE0' : TIERS[tier].color
+          const size = base * 1.2
+          let html = ''
+          if (tier === '10') html = render10mgLockup(size, color)
+          if (tier === '30') html = render30mgLockup(size, color)
+          if (tier === '60') html = render60mgLockup(size, color)
+          ref.innerHTML = html
         })
+
+      if (wordmarkRef.current) wordmarkRef.current.innerHTML = renderWordmark(base * 1.0, 'gradient')
+
+      EFFECTS.forEach((e, i) => {
+        const ref = effectRefs.current[i]
+        if (!ref) return
+        ref.innerHTML = renderEffectSymbol(e.cann, base * 1.05, '#FEFBE0')
       })
+
+      const tierData = TIERS[activeTier]
+      tierData.flavors
+        .filter((f) => SHOW_NON_LIVE_PRODUCTS || LIVE_SLUGS.has(toSlug(activeTier, f)))
+        .forEach((f, i) => {
+          const ref = cornerRefs.current[i]
+          if (!ref || !f.cannabinoid) return
+          const size = base * 0.91
+          const html =
+            f.cannabinoid === 'CBG' ? renderCBGLockup(size, '#FEFBE0') :
+            f.cannabinoid === 'CBN' ? renderCBNLockup(size, '#FEFBE0') :
+                                      renderTHCVLockup(size, '#FEFBE0')
+          ref.innerHTML = html
+        })
     }
     paint()
     if (document.fonts) document.fonts.ready.then(paint)
     window.addEventListener('resize', paint)
     return () => window.removeEventListener('resize', paint)
-  }, [])
+  }, [activeTier])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
