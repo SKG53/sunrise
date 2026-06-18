@@ -42,6 +42,15 @@ export const Route = createFileRoute('/api/public/event-signup')({
         const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
         const phone = typeof body.phone === 'string' ? body.phone.trim() : ''
         const eventName = typeof body.eventName === 'string' ? body.eventName.trim().slice(0, 200) : ''
+        const referer = request.headers.get('referer')
+        let refererPath = ''
+        if (referer) {
+          try {
+            refererPath = new URL(referer).pathname.toLowerCase()
+          } catch {
+            refererPath = ''
+          }
+        }
 
         if (!name || name.length > 200) {
           return Response.json({ error: 'Name is required' }, { status: 400 })
@@ -69,7 +78,8 @@ export const Route = createFileRoute('/api/public/event-signup')({
         if (lastname) properties.lastname = lastname
         // Stash the event name on a standard text property so the team can
         // see which event the signup came from inside HubSpot.
-        if (eventName) properties.message = `Event signup: ${eventName}`
+        const displayedEventName = refererPath === '/hbe' ? 'Hemp Beverage Expo' : eventName
+        if (displayedEventName) properties.message = `Event signup: ${displayedEventName}`
         // Tag the signup source so HubSpot smart lists (e.g.
         // "Centennial Signups – SUNRISE") can auto-populate by filter.
         // Map the form's eventName to the canonical source value HubSpot
@@ -79,7 +89,9 @@ export const Route = createFileRoute('/api/public/event-signup')({
           'Hemp Beverage Expo': 'SUNRISE Hemp Beverage Expo',
           'SUNRISE Event': 'SUNRISE Tulsa Centennial',
         }
-        properties.event_signup_source = SOURCE_MAP[eventName] ?? 'SUNRISE Tulsa Centennial'
+        properties.event_signup_source = refererPath === '/hbe'
+          ? 'SUNRISE Hemp Beverage Expo'
+          : SOURCE_MAP[eventName] ?? 'SUNRISE Tulsa Centennial'
 
         const headers = {
           Authorization: `Bearer ${LOVABLE_API_KEY}`,
