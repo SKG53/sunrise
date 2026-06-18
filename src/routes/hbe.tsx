@@ -16,6 +16,7 @@ import {
   getBasePx,
 } from '../lib/sunrise-components'
 import './contact.css'
+import './home.css'
 
 const EVENT_NAME = 'Hemp Beverage Expo'
 
@@ -102,7 +103,7 @@ function EventSignupPage() {
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   // Refs for brand-mark painting
-  const wordmarkRef = useRef<HTMLSpanElement>(null)
+  const heroWmRef = useRef<HTMLDivElement>(null)
   const tierLockupRefs = useRef<Record<TierKey, HTMLSpanElement | null>>({ '10': null, '30': null, '60': null })
   const cardTierRefs = useRef<Record<string, HTMLSpanElement | null>>({})
   const cardCannabinoidRefs = useRef<Record<string, HTMLSpanElement | null>>({})
@@ -110,9 +111,9 @@ function EventSignupPage() {
   useEffect(() => {
     const paint = () => {
       const base = getBasePx()
-      // Top heading SUNRISE wordmark
-      if (wordmarkRef.current) {
-        wordmarkRef.current.innerHTML = renderWordmark(base * 3.2, 'gradient')
+      // Hero SUNRISE wordmark (cream, matches home page)
+      if (heroWmRef.current) {
+        heroWmRef.current.innerHTML = renderWordmark(base * 2.8, 'cream')
       }
       // Tier lockups (left column of each tier row) — dark text on cream bg
       const tierColor: Record<TierKey, string> = { '10': '#CC1F39', '30': '#0B6134', '60': '#61213A' }
@@ -197,11 +198,25 @@ function EventSignupPage() {
     <>
       <SiteHeader />
       <main>
+        {/* ── HERO — matches home page (4 tier strips + wordmark + subtitle) */}
+        <section className="home-hero">
+          <div className="hero-strip">
+            <div className="hero-strip-col tier-5-bg" />
+            <div className="hero-strip-col tier-10-bg" />
+            <div className="hero-strip-col tier-30-bg" />
+            <div className="hero-strip-col tier-60-bg" />
+          </div>
+          <div className="hero-overlay">
+            <h1 className="sr-only">SUNRISE — Hemp Beverage Expo</h1>
+            <div className="hero-wordmark-slot" ref={heroWmRef} />
+            <div className="hero-subtitle">Crafted Beverages</div>
+          </div>
+        </section>
+
         <section className="c-form-section">
           <div className="container">
             <div className="es-top-heading">
               <div className="es-top-heading-line1">VISIT US AT THE HEMP BEVERAGE EXPO</div>
-              <span className="es-top-heading-wordmark" ref={wordmarkRef} aria-label="SUNRISE" />
             </div>
             <div className="c-form-card">
                 {submitted ? (
