@@ -16,6 +16,7 @@ import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as HbeRouteImport } from './routes/hbe'
 import { Route as FindRouteImport } from './routes/find'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EventSignupRouteImport } from './routes/event-signup'
@@ -67,6 +68,11 @@ const ProductsRoute = ProductsRouteImport.update({
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HbeRoute = HbeRouteImport.update({
+  id: '/hbe',
+  path: '/hbe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FindRoute = FindRouteImport.update({
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
+  '/hbe': typeof HbeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
+  '/hbe': typeof HbeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
@@ -220,6 +228,7 @@ export interface FileRoutesById {
   '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
+  '/hbe': typeof HbeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
@@ -248,6 +257,7 @@ export interface FileRouteTypes {
     | '/event-signup'
     | '/faq'
     | '/find'
+    | '/hbe'
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
@@ -274,6 +284,7 @@ export interface FileRouteTypes {
     | '/event-signup'
     | '/faq'
     | '/find'
+    | '/hbe'
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
@@ -300,6 +311,7 @@ export interface FileRouteTypes {
     | '/event-signup'
     | '/faq'
     | '/find'
+    | '/hbe'
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
@@ -327,6 +339,7 @@ export interface RootRouteChildren {
   EventSignupRoute: typeof EventSignupRoute
   FaqRoute: typeof FaqRoute
   FindRoute: typeof FindRoute
+  HbeRoute: typeof HbeRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
@@ -394,6 +407,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy-policy'
       fullPath: '/privacy-policy'
       preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hbe': {
+      id: '/hbe'
+      path: '/hbe'
+      fullPath: '/hbe'
+      preLoaderRoute: typeof HbeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/find': {
@@ -527,6 +547,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventSignupRoute: EventSignupRoute,
   FaqRoute: FaqRoute,
   FindRoute: FindRoute,
+  HbeRoute: HbeRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
   RefundPolicyRoute: RefundPolicyRoute,
@@ -547,12 +568,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
