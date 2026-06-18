@@ -280,13 +280,18 @@ function EventSignupPage() {
         <section className="c-form-section">
           <div className="container">
             <div className="es-top-heading">
-              <div className="es-top-heading-line1">VISIT US AT THE HEMP BEVERAGE EXPO</div>
+              <div className="es-top-heading-line1">JOIN US AT THE</div>
+              <div className="es-top-heading-line1">HEMP BEVERAGE EXPO</div>
             </div>
             <div className="c-form-card">
                 {submitted ? (
                   <div className="c-success es-success" role="status" aria-live="polite">
                     <div className="c-success-headline es-success-headline">Thanks for stopping by!</div>
                     <div className="es-success-cta">Explore our lineup below.</div>
+                    <div className="es-success-actions">
+                      <Link to="/" className="btn btn-primary">Home Page</Link>
+                      <a href="#our-products" className="btn btn-secondary">Products</a>
+                    </div>
                   </div>
                 ) : (
                   <form className="c-form" onSubmit={handleSubmit} noValidate>
