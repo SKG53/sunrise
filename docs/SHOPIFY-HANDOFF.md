@@ -1,27 +1,27 @@
-## Shopify ↔ Lovable Handoff Document
+# Shopify ↔ Lovable Handoff Document
 
-Once you approve this plan, I will save this exact content to `docs/SHOPIFY-HANDOFF.md` in the repo (so it travels with the remix), then disconnect Shopify. After you remix and reconnect, tell me "resume Shopify handoff" and I'll re-verify everything against this doc.
+Saved before disconnecting Shopify so a remix can pick up exactly where this project left off.
 
 ---
 
-### 1. Store identity (hardcoded — survives remix)
+## 1. Store identity (hardcoded — survives remix)
 
-These are **in the codebase** at `src/lib/shopify.ts` lines 5–8. They are publishable values, safe to commit. The remix will already have them:
+In `src/lib/shopify.ts` lines 5–8. Publishable values, safe to commit:
 
 - `SHOPIFY_API_VERSION = "2025-07"`
 - `SHOPIFY_STORE_PERMANENT_DOMAIN = "30dfrv-hs.myshopify.com"`
 - `SHOPIFY_STOREFRONT_TOKEN = "57d9eebab19ddb5f3b3d1e5dcd320b20"` (Storefront API access token — client-side safe)
 - `SHOPIFY_STOREFRONT_URL = https://30dfrv-hs.myshopify.com/api/2025-07/graphql.json`
 
-> ⚠️ If reconnecting the SAME store issues a new Storefront token, verify these still match by running `shopify--get_shop_permanent_domain` and `shopify--get_storefront_token` post-reconnect and updating `src/lib/shopify.ts` if different.
+> ⚠️ If reconnecting the SAME store issues a new Storefront token, verify by running `shopify--get_shop_permanent_domain` and `shopify--get_storefront_token` post-reconnect and updating `src/lib/shopify.ts` if different.
 
-### 2. Connection type
+## 2. Connection type
 
 - **Existing store** (not a Lovable-created dev store). No claim flow needed.
 - Only the Storefront API is used at runtime (no Admin API calls from the app).
 - Admin API access is only used by the Lovable agent tools (`shopify--*`) for product management via chat — not by the deployed site.
 
-### 3. Files that touch Shopify (all transfer in remix)
+## 3. Files that touch Shopify (all transfer in remix)
 
 | File | Role |
 |---|---|
@@ -35,7 +35,7 @@ These are **in the codebase** at `src/lib/shopify.ts` lines 5–8. They are publ
 | `src/routes/products_.$slug.tsx` | PDP — full Shopify integration (variants, pack selector, price, images, description, add-to-cart) |
 | `src/routes/hbe.tsx` | Uses `getShopifyMapping` |
 
-### 4. Runtime data flow
+## 4. Runtime data flow
 
 1. PDP loads → `useShopifyProduct(handle)` → `fetchProductByHandle` → Storefront GraphQL `product(handle)` query (returns id, title, description, descriptionHtml, priceRange, images[5], variants[10] with `id/title/price/availableForSale/selectedOptions`, options).
 2. User clicks Add to Cart → `cartStore.addItem`:
@@ -46,7 +46,7 @@ These are **in the codebase** at `src/lib/shopify.ts` lines 5–8. They are publ
 4. On tab visibility → `syncCart` runs `cart($id)` query; if `totalQuantity === 0` → `clearCart()`.
 5. `cartNotFound` errors from any mutation → `clearCart()` (cart expired on Shopify's side).
 
-### 5. Product mapping — the 24 SKUs
+## 5. Product mapping — the 24 SKUs
 
 `SHOPIFY_PRODUCT_MAP` in `src/lib/shopifyProductMap.ts` maps 4 tiers × 6 flavors:
 
@@ -57,45 +57,41 @@ These are **in the codebase** at `src/lib/shopify.ts` lines 5–8. They are publ
 
 Each maps to `{ handle, defaultPackOption: "Single Can" | "4-Pack Carton" }`. All default to Single Can. Cannabinoid variants (CBG/CBN/THCV) collapse to the base flavor's Shopify product.
 
-### 6. Cart schema (localStorage `shopify-cart`)
+## 6. Cart schema (localStorage `shopify-cart`)
 
 ```ts
 { items: CartItem[], cartId: string|null, checkoutUrl: string|null }
 CartItem = { lineId, variantId, productHandle, productTitle, variantTitle, imageUrl, price:{amount,currencyCode}, quantity, selectedOptions[] }
 ```
 
-Persisted carts from the CURRENT deployed site will still work after remix+reconnect **only if the same store is reconnected** (same `cartId` namespace).
+Persisted carts survive remix+reconnect only if the same store is reconnected (same `cartId` namespace).
 
-### 7. What breaks on disconnect (and heals on reconnect)
+## 7. What breaks on disconnect (and heals on reconnect)
 
 | While disconnected | Behavior |
 |---|---|
-| Preview / any new build | All Storefront calls return network errors, cart is broken, PDPs show loading spinner then error. |
-| Published live site (savorsunrise.com) | **Unaffected** — you're not republishing. Live continues using its baked-in credentials. |
+| Preview / any new build | Storefront calls fail, cart is broken, PDPs show loading/error. |
+| Published live site (savorsunrise.com) | Unaffected — not republishing. Live continues using baked-in credentials. |
 
-On reconnect: everything above works again the moment the token/domain match. If the reconnect issues a new Storefront token, update `src/lib/shopify.ts` line 8.
+On reconnect: everything works again the moment the token/domain match. If reconnect issues a new Storefront token, update `src/lib/shopify.ts` line 8.
 
-### 8. Other connectors on this project
+## 8. Other connectors on this project
 
-- **Lovable Cloud (Supabase)** — stays connected through remix... wait, actually **Cloud does NOT transfer**. Remix creates a fresh Cloud instance. The `VITE_SUPABASE_*` vars in `.env` will be regenerated. Currently only three env vars in `.env`:
+- **Lovable Cloud (Supabase)** does NOT transfer through remix. Remix gets a fresh Cloud instance. Current `.env` vars:
   - `VITE_SUPABASE_PROJECT_ID`
   - `VITE_SUPABASE_PUBLISHABLE_KEY`
   - `VITE_SUPABASE_URL`
-- **HubSpot** — was previously mentioned as connected; will not transfer either. Reconnect separately if used.
-- No custom secrets appear to be actively used by Shopify code paths (the Storefront token is hardcoded because it's publishable).
+- **HubSpot** — reconnect separately if the remix uses it.
+- No custom secrets are used by Shopify code paths (Storefront token is hardcoded because it's publishable).
 
-### 9. Verification checklist after remix + reconnect
+## 9. Verification checklist after remix + reconnect
 
-1. `shopify--get_shop_permanent_domain` returns `30dfrv-hs.myshopify.com` — if different, update `src/lib/shopify.ts` line 6.
-2. `shopify--get_storefront_token` — if different, update line 8.
+1. `shopify--get_shop_permanent_domain` returns `30dfrv-hs.myshopify.com` — else update `src/lib/shopify.ts` line 6.
+2. `shopify--get_storefront_token` — else update line 8.
 3. Load `/products/10mg-lemonade` — should render Shopify title/price/image and enable Add to Cart.
 4. Add to cart → open drawer → click Checkout → new tab opens Shopify checkout with `channel=online_store` param.
-5. Reconnect HubSpot / Cloud only if the remix actually uses them (Shopify code doesn't depend on either).
+5. Reconnect HubSpot / Cloud only if the remix actually uses them.
 
-### 10. Rollback
+## 10. Rollback
 
-If anything looks off after reconnect, the disconnect does NOT modify any code or Shopify store data. Reconnecting the same store should be sufficient. No migration or data restore is needed.
-
----
-
-**Implementation on approve:** save this document to `docs/SHOPIFY-HANDOFF.md`, then call `shopify--disconnect_store`.
+Disconnect modifies no code and no Shopify store data. Reconnecting the same store is sufficient — no migration or data restore needed.
