@@ -5,7 +5,7 @@
 export const SHOPIFY_API_VERSION = "2025-07";
 export const SHOPIFY_STORE_PERMANENT_DOMAIN = "30dfrv-hs.myshopify.com";
 export const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
-export const SHOPIFY_STOREFRONT_TOKEN = "57d9eebab19ddb5f3b3d1e5dcd320b20";
+export const SHOPIFY_STOREFRONT_TOKEN = "0c6e1f66aff25c00f2fc11de114ecbd9";
 
 export interface ShopifyImage {
   url: string;
