@@ -15,7 +15,7 @@ export const Route = createFileRoute("/about")({
       },
     ],
     links: [
-      { rel: "canonical", href: "https://savorsunrise.com/about" },
+      { rel: "canonical", href: "https://www.savorsunrise.com/about" },
     ],
   }),
 });

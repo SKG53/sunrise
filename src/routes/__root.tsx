@@ -18,7 +18,7 @@ const ORG_JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "SUNRISE Beverage",
-  url: "https://savorsunrise.com",
+  url: "https://www.savorsunrise.com",
   email: "hello@savorsunrise.com",
   telephone: "+1-877-674-7459",
 }).replace(/</g, "\\u003c");

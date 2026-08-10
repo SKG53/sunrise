@@ -318,7 +318,7 @@ export const Route = createFileRoute("/products_/$slug")({
     if (!p) {
       return {
         meta: [{ title: "Product · SUNRISE" }],
-        links: [{ rel: "canonical", href: "https://savorsunrise.com/products" }],
+        links: [{ rel: "canonical", href: "https://www.savorsunrise.com/products" }],
       };
     }
     const variant = p.cannabinoid ? ` +${p.cannabinoid}` : "";
@@ -331,7 +331,7 @@ export const Route = createFileRoute("/products_/$slug")({
         },
       ],
       links: [
-        { rel: "canonical", href: `https://savorsunrise.com/products/${p.slug}` },
+        { rel: "canonical", href: `https://www.savorsunrise.com/products/${p.slug}` },
       ],
     };
   },
@@ -563,19 +563,19 @@ function ProductDetailPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://savorsunrise.com" },
-      { "@type": "ListItem", position: 2, name: "Products", item: "https://savorsunrise.com/products" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.savorsunrise.com" },
+      { "@type": "ListItem", position: 2, name: "Products", item: "https://www.savorsunrise.com/products" },
       {
         "@type": "ListItem",
         position: 3,
         name: `${product.tier}mg`,
-        item: `https://savorsunrise.com/products?tier=${product.tier}`,
+        item: `https://www.savorsunrise.com/products?tier=${product.tier}`,
       },
       {
         "@type": "ListItem",
         position: 4,
         name: product.flavor,
-        item: `https://savorsunrise.com/products/${product.slug}`,
+        item: `https://www.savorsunrise.com/products/${product.slug}`,
       },
     ],
   }).replace(/</g, "\\u003c");

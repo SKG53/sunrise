@@ -17,7 +17,7 @@ export const Route = createFileRoute("/age-verification-policy")({
     links: [
       {
         rel: "canonical",
-        href: "https://savorsunrise.com/age-verification-policy",
+        href: "https://www.savorsunrise.com/age-verification-policy",
       },
     ],
   }),

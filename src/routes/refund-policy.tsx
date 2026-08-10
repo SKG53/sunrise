@@ -15,7 +15,7 @@ export const Route = createFileRoute("/refund-policy")({
       },
     ],
     links: [
-      { rel: "canonical", href: "https://savorsunrise.com/refund-policy" },
+      { rel: "canonical", href: "https://www.savorsunrise.com/refund-policy" },
     ],
   }),
 });

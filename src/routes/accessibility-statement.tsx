@@ -17,7 +17,7 @@ export const Route = createFileRoute("/accessibility-statement")({
     links: [
       {
         rel: "canonical",
-        href: "https://savorsunrise.com/accessibility-statement",
+        href: "https://www.savorsunrise.com/accessibility-statement",
       },
     ],
   }),
