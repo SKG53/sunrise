@@ -193,23 +193,8 @@ const PRODUCTS: Product[] = [
 // file. See docs/active-potency-cleanup-2026-05-08.md.
 const SHOW_NON_LIVE_PRODUCTS = false;
 
-const LIVE_SLUGS = new Set<string>([
-  "10mg-strawberry",
-  "10mg-watermelon",
-  "10mg-lemonade",
-  "30mg-peach-mango",
-  "30mg-cherry-limeade",
-  "30mg-orange-lemonade",
-  "30mg-kiwi-watermelon-cbg",
-  "30mg-blueberry-pomegranate-cbn",
-  "30mg-strawberry-watermelon-thcv",
-  "60mg-wild-cherry-peach",
-  "60mg-blueberry-lemonade",
-  "60mg-passionfruit-mango",
-  "60mg-blood-orange-cbg",
-  "60mg-blackberry-cbn",
-  "60mg-strawberry-kiwi-thcv",
-]);
+// Live-slug set moved to src/lib/liveProducts.ts so /sitemap.xml can read the
+// exact same list (imported at the top of this file).
 
 // ── HELPERS ──────────────────────────────────────────────────────────────
 // Per-cannabinoid copy surfaced in Section 02 (variant SKUs only). "bestFor"

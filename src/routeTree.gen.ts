@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as SocialRouteImport } from './routes/social'
 import { Route as SmsMarketingPolicyRouteImport } from './routes/sms-marketing-policy'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProductsRouteImport } from './routes/products'
@@ -48,6 +49,11 @@ const SocialRoute = SocialRouteImport.update({
 const SmsMarketingPolicyRoute = SmsMarketingPolicyRouteImport.update({
   id: '/sms-marketing-policy',
   path: '/sms-marketing-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShippingPolicyRoute = ShippingPolicyRouteImport.update({
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/shipping-policy': typeof ShippingPolicyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
@@ -262,6 +271,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/refund-policy'
     | '/shipping-policy'
+    | '/sitemap.xml'
     | '/sms-marketing-policy'
     | '/social'
     | '/terms-of-service'
@@ -289,6 +299,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/refund-policy'
     | '/shipping-policy'
+    | '/sitemap.xml'
     | '/sms-marketing-policy'
     | '/social'
     | '/terms-of-service'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/refund-policy'
     | '/shipping-policy'
+    | '/sitemap.xml'
     | '/sms-marketing-policy'
     | '/social'
     | '/terms-of-service'
@@ -344,6 +356,7 @@ export interface RootRouteChildren {
   ProductsRoute: typeof ProductsRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
   ShippingPolicyRoute: typeof ShippingPolicyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SmsMarketingPolicyRoute: typeof SmsMarketingPolicyRoute
   SocialRoute: typeof SocialRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
@@ -379,6 +392,13 @@ declare module '@tanstack/react-router' {
       path: '/sms-marketing-policy'
       fullPath: '/sms-marketing-policy'
       preLoaderRoute: typeof SmsMarketingPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shipping-policy': {
@@ -552,6 +572,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsRoute: ProductsRoute,
   RefundPolicyRoute: RefundPolicyRoute,
   ShippingPolicyRoute: ShippingPolicyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SmsMarketingPolicyRoute: SmsMarketingPolicyRoute,
   SocialRoute: SocialRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
