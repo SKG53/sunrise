@@ -10,6 +10,7 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { LIVE_SLUGS } from "../lib/liveProducts";
 import {
   // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render5mgLockup,
@@ -193,23 +194,8 @@ const PRODUCTS: Product[] = [
 // file. See docs/active-potency-cleanup-2026-05-08.md.
 const SHOW_NON_LIVE_PRODUCTS = false;
 
-const LIVE_SLUGS = new Set<string>([
-  "10mg-strawberry",
-  "10mg-watermelon",
-  "10mg-lemonade",
-  "30mg-peach-mango",
-  "30mg-cherry-limeade",
-  "30mg-orange-lemonade",
-  "30mg-kiwi-watermelon-cbg",
-  "30mg-blueberry-pomegranate-cbn",
-  "30mg-strawberry-watermelon-thcv",
-  "60mg-wild-cherry-peach",
-  "60mg-blueberry-lemonade",
-  "60mg-passionfruit-mango",
-  "60mg-blood-orange-cbg",
-  "60mg-blackberry-cbn",
-  "60mg-strawberry-kiwi-thcv",
-]);
+// Live-slug set moved to src/lib/liveProducts.ts so /sitemap.xml can read the
+// exact same list (imported at the top of this file).
 
 // ── HELPERS ──────────────────────────────────────────────────────────────
 // Per-cannabinoid copy surfaced in Section 02 (variant SKUs only). "bestFor"
@@ -318,7 +304,7 @@ export const Route = createFileRoute("/products_/$slug")({
     if (!p) {
       return {
         meta: [{ title: "Product · SUNRISE" }],
-        links: [{ rel: "canonical", href: "https://savorsunrise.com/products" }],
+        links: [{ rel: "canonical", href: "https://www.savorsunrise.com/products" }],
       };
     }
     const variant = p.cannabinoid ? ` +${p.cannabinoid}` : "";
@@ -331,7 +317,7 @@ export const Route = createFileRoute("/products_/$slug")({
         },
       ],
       links: [
-        { rel: "canonical", href: `https://savorsunrise.com/products/${p.slug}` },
+        { rel: "canonical", href: `https://www.savorsunrise.com/products/${p.slug}` },
       ],
     };
   },
@@ -563,19 +549,19 @@ function ProductDetailPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://savorsunrise.com" },
-      { "@type": "ListItem", position: 2, name: "Products", item: "https://savorsunrise.com/products" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.savorsunrise.com" },
+      { "@type": "ListItem", position: 2, name: "Products", item: "https://www.savorsunrise.com/products" },
       {
         "@type": "ListItem",
         position: 3,
         name: `${product.tier}mg`,
-        item: `https://savorsunrise.com/products?tier=${product.tier}`,
+        item: `https://www.savorsunrise.com/products?tier=${product.tier}`,
       },
       {
         "@type": "ListItem",
         position: 4,
         name: product.flavor,
-        item: `https://savorsunrise.com/products/${product.slug}`,
+        item: `https://www.savorsunrise.com/products/${product.slug}`,
       },
     ],
   }).replace(/</g, "\\u003c");

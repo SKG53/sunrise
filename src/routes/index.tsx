@@ -29,7 +29,7 @@ export const Route = createFileRoute("/")({
       },
     ],
     links: [
-      { rel: "canonical", href: "https://savorsunrise.com/" },
+      { rel: "canonical", href: "https://www.savorsunrise.com/" },
     ],
   }),
 });

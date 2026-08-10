@@ -17,7 +17,7 @@ export const Route = createFileRoute("/sms-marketing-policy")({
     links: [
       {
         rel: "canonical",
-        href: "https://savorsunrise.com/sms-marketing-policy",
+        href: "https://www.savorsunrise.com/sms-marketing-policy",
       },
     ],
   }),

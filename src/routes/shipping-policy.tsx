@@ -15,7 +15,7 @@ export const Route = createFileRoute("/shipping-policy")({
       },
     ],
     links: [
-      { rel: "canonical", href: "https://savorsunrise.com/shipping-policy" },
+      { rel: "canonical", href: "https://www.savorsunrise.com/shipping-policy" },
     ],
   }),
 });

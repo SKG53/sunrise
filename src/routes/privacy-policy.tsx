@@ -15,7 +15,7 @@ export const Route = createFileRoute("/privacy-policy")({
       },
     ],
     links: [
-      { rel: "canonical", href: "https://savorsunrise.com/privacy-policy" },
+      { rel: "canonical", href: "https://www.savorsunrise.com/privacy-policy" },
     ],
   }),
 });

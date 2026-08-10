@@ -127,7 +127,14 @@ export const Route = createFileRoute('/hbe')({
         name: 'description',
         content: `Visiting SUNRISE at the ${EVENT_NAME}? Drop your name, email, and phone and we'll stay in touch.`,
       },
+      { property: 'og:title', content: `${EVENT_NAME} · SUNRISE` },
+      {
+        property: 'og:description',
+        content: `Visiting SUNRISE at the ${EVENT_NAME}? Drop your name, email, and phone and we'll stay in touch.`,
+      },
+      { property: 'og:url', content: 'https://www.savorsunrise.com/hbe' },
     ],
+    links: [{ rel: 'canonical', href: 'https://www.savorsunrise.com/hbe' }],
   }),
 })
 

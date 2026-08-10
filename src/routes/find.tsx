@@ -38,7 +38,7 @@ export const Route = createFileRoute("/find")({
       },
     ],
     links: [
-      { rel: "canonical", href: "https://savorsunrise.com/find" },
+      { rel: "canonical", href: "https://www.savorsunrise.com/find" },
     ],
   }),
 });
