@@ -81,6 +81,15 @@ export const Route = createFileRoute('/event-signup')({
         name: 'description',
         content: `RSVP for ${EVENT_NAME}. Drop your name, email, and phone and we'll be in touch.`,
       },
+      { property: 'og:title', content: `${EVENT_NAME} · Sign Up` },
+      {
+        property: 'og:description',
+        content: `RSVP for ${EVENT_NAME}. Drop your name, email, and phone and we'll be in touch.`,
+      },
+      { property: 'og:url', content: 'https://www.savorsunrise.com/event-signup' },
+    ],
+    links: [
+      { rel: 'canonical', href: 'https://www.savorsunrise.com/event-signup' },
     ],
   }),
 })
