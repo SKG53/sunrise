@@ -1,0 +1,257 @@
+/* ==========================================================================
+   SPIN-TO-WIN — marketing popup shown right after the 21+ age gate.
+   Visual language mirrors .age-gate (cream card, near-black type, pill
+   buttons) but with the tier color palette on the wheel itself. Sizing is
+   driven by var(--base) so it scales with the site's responsive system.
+   ========================================================================== */
+
+.spin {
+  position: fixed;
+  inset: 0;
+  z-index: 9998; /* one below .age-gate — gate always wins if both mount */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 0.4);
+}
+.spin-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.78);
+}
+.spin-card {
+  position: relative;
+  background: var(--cream);
+  border-radius: calc(var(--base) * 0.18);
+  padding: calc(var(--base) * 0.8) calc(var(--base) * 0.9) calc(var(--base) * 0.7);
+  width: 100%;
+  max-width: calc(var(--base) * 9.5);
+  box-shadow: 0 calc(var(--base) * 0.3) calc(var(--base) * 1.0) rgba(0, 0, 0, 0.25);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 94vh;
+  overflow-y: auto;
+}
+
+.spin-close {
+  position: absolute;
+  top: calc(var(--base) * 0.22);
+  right: calc(var(--base) * 0.3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: calc(var(--base) * 0.6);
+  line-height: 1;
+  color: rgba(26, 26, 26, 0.45);
+  transition: color 200ms ease-out;
+}
+.spin-close:hover { color: var(--near-black); }
+
+.spin-eyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 calc(var(--base) * 0.15);
+}
+.spin-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.68);
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin: 0 0 calc(var(--base) * 0.4);
+}
+
+/* ── WHEEL ──────────────────────────────────────────────────────────────
+   Pointer is a fixed gold triangle at 12 o'clock; the SVG rotates beneath
+   it. Rotation + transition are set inline by the component so the spin
+   duration and easing stay next to the timing logic that fires the state
+   change.                                                                 */
+.spin-wheel-wrap {
+  position: relative;
+  width: calc(var(--base) * 5.4);
+  height: calc(var(--base) * 5.4);
+  margin: 0 auto calc(var(--base) * 0.45);
+}
+.spin-wheel {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 calc(var(--base) * 0.06) calc(var(--base) * 0.16) rgba(0, 0, 0, 0.22));
+}
+.spin-rim {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 5;
+}
+.spin-hub {
+  fill: var(--cream);
+  stroke: var(--gold);
+  stroke-width: 4;
+}
+.spin-seg-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  fill: #FEFBE0;
+}
+.spin-seg-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  fill: rgba(254, 251, 224, 0.85);
+}
+/* Pointer sits above the rim and points down into the winning segment. */
+.spin-pointer {
+  position: absolute;
+  top: calc(var(--base) * -0.1);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  z-index: 2;
+  border-left: calc(var(--base) * 0.2) solid transparent;
+  border-right: calc(var(--base) * 0.2) solid transparent;
+  border-top: calc(var(--base) * 0.36) solid var(--gold);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* ── COPY + PRIZE ───────────────────────────────────────────────────────── */
+.spin-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.28);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-body);
+  margin: 0 0 calc(var(--base) * 0.4);
+}
+.spin-prize {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.5);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tier-30);
+  margin: 0 0 calc(var(--base) * 0.35);
+}
+
+/* ── FORM ───────────────────────────────────────────────────────────────── */
+.spin-form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.22);
+  width: 100%;
+  max-width: calc(var(--base) * 6.4);
+}
+.spin-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.24);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+.spin-input {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.28);
+  padding: calc(var(--base) * 0.28) calc(var(--base) * 0.35);
+  border: 2px solid rgba(26, 26, 26, 0.25);
+  border-radius: calc(var(--base) * 0.12);
+  background: #fff;
+  color: var(--near-black);
+  width: 100%;
+}
+.spin-input:focus {
+  outline: none;
+  border-color: var(--near-black);
+}
+.spin-error {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 600;
+  color: var(--tier-10);
+  margin: 0;
+}
+
+/* ── BUTTONS ────────────────────────────────────────────────────────────
+   Scoped like .age-gate-btn so the global .btn wipe/arrow pseudos don't
+   apply here.                                                             */
+.spin-btn {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--base) * 0.27);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.85);
+  border-radius: 9999px;
+  cursor: pointer;
+  line-height: 1;
+  text-align: center;
+  transition: background 200ms ease-out, color 200ms ease-out;
+}
+.spin-btn-primary {
+  background: var(--tier-10);
+  color: var(--cream);
+  border: 2px solid var(--tier-10);
+  min-width: calc(var(--base) * 4.6);
+}
+.spin-btn-primary:hover {
+  background: var(--tier-10-hover);
+  border-color: var(--tier-10-hover);
+}
+.spin-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ── CODE REVEAL ────────────────────────────────────────────────────────── */
+.spin-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--base) * 0.3);
+  width: 100%;
+  max-width: calc(var(--base) * 6.4);
+  margin: 0 auto calc(var(--base) * 0.4);
+  padding: calc(var(--base) * 0.26) calc(var(--base) * 0.36);
+  background: #fff;
+  border: 2px dashed var(--gold);
+  border-radius: calc(var(--base) * 0.12);
+  cursor: pointer;
+}
+.spin-code-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.34);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: var(--near-black);
+}
+.spin-code-copy {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.spin-fine {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 500;
+  color: rgba(26, 26, 26, 0.6);
+  margin: calc(var(--base) * 0.35) 0 0;
+}
+
+@media (max-width: 480px) {
+  .spin-card { padding: calc(var(--base) * 0.7) calc(var(--base) * 0.6) calc(var(--base) * 0.6); }
+  .spin-wheel-wrap { width: calc(var(--base) * 4.8); height: calc(var(--base) * 4.8); }
+}
