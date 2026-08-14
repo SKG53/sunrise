@@ -83,6 +83,9 @@ export function AgeGate() {
       // on next mount, which is acceptable degradation.
     }
     setState("hidden");
+    // Notify downstream popups (SpinWheel) that the gate has been cleared
+    // so they can mount immediately rather than polling sessionStorage.
+    window.dispatchEvent(new Event("sunrise:age-verified"));
   };
 
   const handleNo = () => setState("refused");
