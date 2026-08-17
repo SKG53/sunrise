@@ -28,10 +28,13 @@ const STORAGE_KEY = "sunrise:spin-wheel-seen";
 const AGE_KEY = "sunrise:age-verified";
 
 // ── PRIZE TABLE ─────────────────────────────────────────────────────────
-// Eight wheel segments. Each prize appears twice, never adjacent, so the
-// wheel reads as a full color wheel rather than four fat quarters.
-// `weight` controls likelihood (relative, per segment). `code` is the
-// shared Shopify discount code handed out for that prize.
+// Eight wheel segments. The wheel is now split across five prizes:
+// 5% (2 segments), 10% (2), Free Shipping (2), 15% (1), and 20% (1).
+// The same prize always uses the same color, and no identical prize is ever
+// adjacent. `weight` controls likelihood of THAT SEGMENT; the true odds are
+// the sum of that prize's segment weights over the total.
+//
+// Current odds: Free Shipping 20%, 5% 35%, 10% 25%, 15% 11%, 20% 9%.
 //
 // TODO(codes): replace these placeholders with the real Shopify codes.
 // Recommended Shopify setup per code: "Limit to one use per customer" +
@@ -44,20 +47,18 @@ export type Prize = {
   weight: number;
 };
 
-// One prize = one color, reusing only the four home-hero tier colors.
-// `weight` = relative likelihood of THAT SEGMENT. Each prize occupies two
-// segments, so its true odds are the sum of its two weights over the total.
-// Example below: 10% = 6/16, 15% = 4/16, FREE SHIP = 4/16, 20% = 2/16.
-// Edit the numbers freely — nothing else needs to change.
+// The five colors are brand-adjacent: the four hero tier colors plus plum
+// for the new 5% slice. `weight` is per segment; multiply by segment count
+// to get each prize's contribution to the total. Adjust any numbers freely.
 export const PRIZES: Prize[] = [
-  { label: "10%", sub: "OFF", code: "SPIN10", color: "#DC7F27", weight: 3 },
-  { label: "15%", sub: "OFF", code: "SPIN15", color: "#CC1F39", weight: 2 },
-  { label: "20%", sub: "OFF", code: "SPIN20", color: "#0A6034", weight: 1 },
-  { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 2 },
-  { label: "10%", sub: "OFF", code: "SPIN10", color: "#DC7F27", weight: 3 },
-  { label: "15%", sub: "OFF", code: "SPIN15", color: "#CC1F39", weight: 2 },
-  { label: "20%", sub: "OFF", code: "SPIN20", color: "#0A6034", weight: 1 },
-  { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 2 },
+  { label: "5%", sub: "OFF", code: "SPIN5", color: "#822665", weight: 35 },
+  { label: "10%", sub: "OFF", code: "SPIN10", color: "#DC7F27", weight: 25 },
+  { label: "15%", sub: "OFF", code: "SPIN15", color: "#CC1F39", weight: 22 },
+  { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 20 },
+  { label: "20%", sub: "OFF", code: "SPIN20", color: "#0A6034", weight: 18 },
+  { label: "5%", sub: "OFF", code: "SPIN5", color: "#822665", weight: 35 },
+  { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 20 },
+  { label: "10%", sub: "OFF", code: "SPIN10", color: "#DC7F27", weight: 25 },
 ];
 
 const SEG = 360 / PRIZES.length;
