@@ -69,11 +69,12 @@
    Pointer is a fixed gold triangle at 12 o'clock; the SVG rotates beneath
    it. Rotation + transition are set inline by the component so the spin
    duration and easing stay next to the timing logic that fires the state
-   change.                                                                 */
+   change. With 10 segments, the wheel is sized a little larger so the
+   longest label (SHIPPING) still fits.                                                           */
 .spin-wheel-wrap {
   position: relative;
-  width: calc(var(--base) * 6);
-  height: calc(var(--base) * 6);
+  width: calc(var(--base) * 6.6);
+  height: calc(var(--base) * 6.6);
   margin: 0 auto calc(var(--base) * 0.45);
 }
 .spin-wheel {
@@ -108,7 +109,7 @@
 }
 /* Longer words (SHIPPING) need tighter metrics to stay inside the segment. */
 .spin-seg-sub-long {
-  font-size: 6.5px;
+  font-size: 5px;
   letter-spacing: 0.02em;
 }
 /* Pointer sits above the rim and points down into the winning segment. */
