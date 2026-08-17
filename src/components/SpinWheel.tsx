@@ -242,7 +242,7 @@ export function SpinWheel() {
             className="spin-wheel"
             viewBox="0 0 200 200"
             role="img"
-            aria-label="Prize wheel with 8 discount segments"
+            aria-label="Prize wheel with 10 discount segments"
             style={{
               transform: `rotate(${rotation}deg)`,
               transition:
