@@ -109,7 +109,7 @@
 }
 /* Longer words (SHIPPING) need tighter metrics to stay inside the segment. */
 .spin-seg-sub-long {
-  font-size: 5px;
+  font-size: 4.5px;
   letter-spacing: 0.02em;
 }
 /* Pointer sits above the rim and points down into the winning segment. */
