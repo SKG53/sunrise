@@ -49,15 +49,11 @@
 }
 .spin-close:hover { color: var(--near-black); }
 
-.spin-eyebrow {
-  font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.2);
-  font-weight: 800;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin: 0 0 calc(var(--base) * 0.15);
+.spin-wordmark {
+  margin: 0 auto calc(var(--base) * 0.3);
+  line-height: 0;
 }
+.spin-wordmark > * { margin: 0 auto; }
 .spin-heading {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
@@ -76,8 +72,8 @@
    change.                                                                 */
 .spin-wheel-wrap {
   position: relative;
-  width: calc(var(--base) * 5.4);
-  height: calc(var(--base) * 5.4);
+  width: calc(var(--base) * 6);
+  height: calc(var(--base) * 6);
   margin: 0 auto calc(var(--base) * 0.45);
 }
 .spin-wheel {
@@ -110,6 +106,11 @@
   letter-spacing: 0.14em;
   fill: rgba(254, 251, 224, 0.85);
 }
+/* Longer words (SHIPPING) need tighter metrics to stay inside the segment. */
+.spin-seg-sub-long {
+  font-size: 6.5px;
+  letter-spacing: 0.02em;
+}
 /* Pointer sits above the rim and points down into the winning segment. */
 .spin-pointer {
   position: absolute;
@@ -136,7 +137,7 @@
 }
 .spin-prize {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.5);
+  font-size: calc(var(--base) * 0.78);
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -253,5 +254,5 @@
 
 @media (max-width: 480px) {
   .spin-card { padding: calc(var(--base) * 0.7) calc(var(--base) * 0.6) calc(var(--base) * 0.6); }
-  .spin-wheel-wrap { width: calc(var(--base) * 4.8); height: calc(var(--base) * 4.8); }
+  .spin-wheel-wrap { width: calc(var(--base) * 5.2); height: calc(var(--base) * 5.2); }
 }

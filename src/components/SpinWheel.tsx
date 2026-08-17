@@ -21,6 +21,7 @@
 // button, ESC and backdrop click all close it.
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 import "./SpinWheel.css";
 
 const STORAGE_KEY = "sunrise:spin-wheel-seen";
@@ -43,15 +44,20 @@ export type Prize = {
   weight: number;
 };
 
+// One prize = one color, reusing only the four home-hero tier colors.
+// `weight` = relative likelihood of THAT SEGMENT. Each prize occupies two
+// segments, so its true odds are the sum of its two weights over the total.
+// Example below: 10% = 6/16, 15% = 4/16, FREE SHIP = 4/16, 20% = 2/16.
+// Edit the numbers freely — nothing else needs to change.
 export const PRIZES: Prize[] = [
   { label: "10%", sub: "OFF", code: "SPIN10", color: "#DC7F27", weight: 3 },
   { label: "15%", sub: "OFF", code: "SPIN15", color: "#CC1F39", weight: 2 },
   { label: "20%", sub: "OFF", code: "SPIN20", color: "#0A6034", weight: 1 },
   { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 2 },
-  { label: "10%", sub: "OFF", code: "SPIN10", color: "#CC1F39", weight: 3 },
-  { label: "15%", sub: "OFF", code: "SPIN15", color: "#2E1E3D", weight: 2 },
-  { label: "20%", sub: "OFF", code: "SPIN20", color: "#822665", weight: 1 },
-  { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#0A6034", weight: 2 },
+  { label: "10%", sub: "OFF", code: "SPIN10", color: "#DC7F27", weight: 3 },
+  { label: "15%", sub: "OFF", code: "SPIN15", color: "#CC1F39", weight: 2 },
+  { label: "20%", sub: "OFF", code: "SPIN20", color: "#0A6034", weight: 1 },
+  { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 2 },
 ];
 
 const SEG = 360 / PRIZES.length;
@@ -96,6 +102,7 @@ export function SpinWheel() {
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const reduced = useRef(false);
+  const wmRef = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => {
     try {
@@ -141,6 +148,18 @@ export function SpinWheel() {
       window.removeEventListener("keydown", onKey);
     };
   }, [phase, close]);
+
+  // SUNRISE wordmark, same renderer/treatment as the age gate.
+  useEffect(() => {
+    if (phase === "hidden") return;
+    const paint = () => {
+      if (wmRef.current) wmRef.current.innerHTML = renderWordmark(getBasePx() * 0.8, "gradient");
+    };
+    paint();
+    if (document.fonts) document.fonts.ready.then(paint);
+    window.addEventListener("resize", paint);
+    return () => window.removeEventListener("resize", paint);
+  }, [phase]);
 
   const spin = () => {
     if (phase !== "idle") return;
@@ -209,9 +228,9 @@ export function SpinWheel() {
           &times;
         </button>
 
-        <p className="spin-eyebrow">Sunrise&trade; Welcome Offer</p>
+        <div className="spin-wordmark" ref={wmRef} aria-hidden="true" />
         <h2 id="spin-heading" className="spin-heading">
-          {phase === "revealed" ? "Here's Your Code" : prize ? "You Won!" : "Spin & Save"}
+          Spin &amp; Save
         </h2>
 
         <div className="spin-wheel-wrap">
@@ -237,7 +256,12 @@ export function SpinWheel() {
                 <text x="100" y="34" className="spin-seg-label" textAnchor="middle">
                   {p.label}
                 </text>
-                <text x="100" y="48" className="spin-seg-sub" textAnchor="middle">
+                <text
+                  x="100"
+                  y="48"
+                  className={`spin-seg-sub${p.sub.length > 4 ? " spin-seg-sub-long" : ""}`}
+                  textAnchor="middle"
+                >
                   {p.sub}
                 </text>
               </g>
@@ -250,7 +274,8 @@ export function SpinWheel() {
         {phase === "idle" && (
           <>
             <p className="spin-body">
-              One spin, one code. Up to 20% off your first order.
+              Spin wheel for a discount code on your first order, up to 20% off.
+              Exclusions, terms, and conditions apply.
             </p>
             <button type="button" className="spin-btn spin-btn-primary" onClick={spin} autoFocus>
               Spin the Wheel
@@ -300,7 +325,8 @@ export function SpinWheel() {
               Shop Now
             </a>
             <p className="spin-fine">
-              One use per customer. Applied at checkout.
+              One use per customer. Apply at checkout. Exclusions, terms, and
+              conditions apply.
             </p>
           </>
         )}
