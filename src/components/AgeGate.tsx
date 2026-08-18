@@ -119,7 +119,7 @@ export function AgeGate() {
               </button>
               <button
                 type="button"
-                className="age-gate-btn age-gate-btn-secondary"
+                className="age-gate-btn age-gate-btn-secondary age-gate-btn-no-arrow"
                 onClick={handleNo}
               >
                 No
