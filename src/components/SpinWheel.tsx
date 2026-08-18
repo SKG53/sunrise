@@ -311,7 +311,7 @@ export function SpinWheel() {
           <>
             <p className="spin-body">
               Spin the wheel and save on your first order! Applicable on any
-              product 20 packs or fewer. Exclusions, terms, and conditions apply.
+              20 packs or fewer. Exclusions, terms, and conditions apply.
             </p>
             <button type="button" className="spin-btn spin-btn-primary" onClick={spin} autoFocus>
               Spin the Wheel
@@ -358,7 +358,7 @@ export function SpinWheel() {
             </a>
             <p className="spin-fine">
               One use per customer, enter code at checkout. Applicable on any
-              product 20 packs or fewer. Exclusions, terms, and conditions apply.
+              20 packs or fewer. Exclusions, terms, and conditions apply.
             </p>
           </>
         )}
