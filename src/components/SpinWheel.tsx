@@ -36,7 +36,7 @@ const AGE_KEY = "sunrise:age-verified";
 //
 // Current odds: Free Shipping 20%, 5% 35%, 10% 25%, 15% 11%, 20% 9%.
 //
-// TODO(codes): replace these placeholders with the real Shopify codes.
+// Recommended Shopify setup per code: "Limit to one use per customer" +
 // Recommended Shopify setup per code: "Limit to one use per customer" +
 // require customer email at checkout.
 export type Prize = {
@@ -51,16 +51,16 @@ export type Prize = {
 // for the 5% slice. `weight` is per segment; multiply by segment count
 // to get each prize's contribution to the total. Adjust any numbers freely.
 export const PRIZES: Prize[] = [
-  { label: "5%", sub: "OFF", code: "SPIN5", color: "#822665", weight: 35 },
-  { label: "10%", sub: "OFF", code: "SPIN10", color: "#DC7F27", weight: 25 },
-  { label: "15%", sub: "OFF", code: "SPIN15", color: "#CC1F39", weight: 11 },
-  { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 20 },
-  { label: "20%", sub: "OFF", code: "SPIN20", color: "#0A6034", weight: 9 },
-  { label: "5%", sub: "OFF", code: "SPIN5", color: "#822665", weight: 35 },
-  { label: "10%", sub: "OFF", code: "SPIN10", color: "#DC7F27", weight: 25 },
-  { label: "15%", sub: "OFF", code: "SPIN15", color: "#CC1F39", weight: 11 },
-  { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 20 },
-  { label: "20%", sub: "OFF", code: "SPIN20", color: "#0A6034", weight: 9 },
+  { label: "5%", sub: "OFF", code: "SRSPINWIN5OFF", color: "#822665", weight: 35 },
+  { label: "10%", sub: "OFF", code: "SRSPINWIN10OFF", color: "#DC7F27", weight: 25 },
+  { label: "15%", sub: "OFF", code: "SRSPINWIN15OFF", color: "#CC1F39", weight: 11 },
+  { label: "FREE", sub: "SHIPPING", code: "SRSPINFREESHIP", color: "#2E1E3D", weight: 20 },
+  { label: "20%", sub: "OFF", code: "SRSPINWIN20OFF", color: "#0A6034", weight: 9 },
+  { label: "5%", sub: "OFF", code: "SRSPINWIN5OFF", color: "#822665", weight: 35 },
+  { label: "10%", sub: "OFF", code: "SRSPINWIN10OFF", color: "#DC7F27", weight: 25 },
+  { label: "15%", sub: "OFF", code: "SRSPINWIN15OFF", color: "#CC1F39", weight: 11 },
+  { label: "FREE", sub: "SHIPPING", code: "SRSPINFREESHIP", color: "#2E1E3D", weight: 20 },
+  { label: "20%", sub: "OFF", code: "SRSPINWIN20OFF", color: "#0A6034", weight: 9 },
 ];
 
 const SEG = 360 / PRIZES.length;
