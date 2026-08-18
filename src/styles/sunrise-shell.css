@@ -821,7 +821,6 @@ main { flex: 1; width: 100%; }
   gap: calc(var(--base) * 0.3);
   justify-content: center;
   margin-bottom: calc(var(--base) * 0.7);
-  flex-wrap: wrap;
 }
 /* Buttons match the .btn family's typographic treatment (uppercase,
    tracked, weight 700) but are scoped to .age-gate-btn classes so they
@@ -867,9 +866,10 @@ main { flex: 1; width: 100%; }
   top: calc(var(--base) * -0.055);
   transition: color 200ms ease-out;
 }
+.age-gate-btn-no-arrow::after { content: none; }
 .age-gate-btn:hover { color: var(--btn-hover-text, currentColor); }
 .age-gate-btn:hover::before { clip-path: inset(0 0 0 0); }
-.age-gate-btn:hover::after { animation: btn-arrow-dance 400ms ease-out; }
+.age-gate-btn:not(.age-gate-btn-no-arrow):hover::after { animation: btn-arrow-dance 400ms ease-out; }
 .age-gate-btn-primary {
   background: var(--near-black);
   color: var(--cream);
