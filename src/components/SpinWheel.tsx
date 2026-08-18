@@ -57,9 +57,9 @@ export const PRIZES: Prize[] = [
   { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 20 },
   { label: "20%", sub: "OFF", code: "SPIN20", color: "#0A6034", weight: 9 },
   { label: "5%", sub: "OFF", code: "SPIN5", color: "#822665", weight: 35 },
-  { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 20 },
   { label: "10%", sub: "OFF", code: "SPIN10", color: "#DC7F27", weight: 25 },
   { label: "15%", sub: "OFF", code: "SPIN15", color: "#CC1F39", weight: 11 },
+  { label: "FREE", sub: "SHIPPING", code: "SPINSHIP", color: "#2E1E3D", weight: 20 },
   { label: "20%", sub: "OFF", code: "SPIN20", color: "#0A6034", weight: 9 },
 ];
 
