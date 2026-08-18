@@ -309,13 +309,13 @@ export function SpinWheel() {
 
         {phase === "idle" && (
           <>
-            <p className="spin-body">
-              Spin the wheel and save on your first order! Applicable on any
-              20 packs or fewer. Exclusions, terms, and conditions apply.
-            </p>
             <button type="button" className="spin-btn spin-btn-primary" onClick={spin} autoFocus>
               Spin the Wheel
             </button>
+            <p className="spin-fine">
+              Spin the wheel and save on your first order! Applicable on any
+              20 packs or fewer. Exclusions, terms, and conditions apply.
+            </p>
           </>
         )}
 
