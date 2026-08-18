@@ -829,6 +829,10 @@ main { flex: 1; width: 100%; }
    and a wipe ::before, which would be wrong here. Two variants:
    primary (solid near-black) and secondary (outlined near-black).          */
 .age-gate-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--base) * 0.25);
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: calc(var(--base) * 0.27);
@@ -838,27 +842,49 @@ main { flex: 1; width: 100%; }
   border-radius: 9999px;
   cursor: pointer;
   line-height: 1;
-  transition: background 200ms ease-out, color 200ms ease-out, border-color 200ms ease-out;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 200ms ease-out, border-color 200ms ease-out;
 }
+/* Same site-wide hover gesture as .btn: left-to-right wipe + dancing arrow. */
+.age-gate-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--btn-wipe-fill, transparent);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 400ms ease-out;
+  z-index: -1;
+}
+.age-gate-btn::after {
+  content: "→";
+  display: inline-block;
+  font-size: 1.35em;
+  line-height: 1;
+  position: relative;
+  top: calc(var(--base) * -0.055);
+  transition: color 200ms ease-out;
+}
+.age-gate-btn:hover { color: var(--btn-hover-text, currentColor); }
+.age-gate-btn:hover::before { clip-path: inset(0 0 0 0); }
+.age-gate-btn:hover::after { animation: btn-arrow-dance 400ms ease-out; }
 .age-gate-btn-primary {
   background: var(--near-black);
   color: var(--cream);
   border: 2px solid var(--near-black);
   min-width: calc(var(--base) * 4.0);
-}
-.age-gate-btn-primary:hover {
-  background: var(--cream);
-  color: var(--near-black);
+  --btn-wipe-fill: var(--cream);
+  --btn-hover-text: var(--near-black);
 }
 .age-gate-btn-secondary {
   background: transparent;
   color: var(--near-black);
   border: 2px solid var(--near-black);
   min-width: calc(var(--base) * 2.2);
-}
-.age-gate-btn-secondary:hover {
-  background: var(--near-black);
-  color: var(--cream);
+  --btn-wipe-fill: var(--near-black);
+  --btn-hover-text: var(--cream);
 }
 
 .age-gate-divider {
