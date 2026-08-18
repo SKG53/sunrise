@@ -351,8 +351,8 @@
   color: var(--gold);
 }
 .spin-copy-icon {
-  width: calc(var(--base) * 0.4);
-  height: calc(var(--base) * 0.4);
+  width: calc(var(--base) * 0.55);
+  height: calc(var(--base) * 0.55);
   color: var(--gold);
 }
 .spin-fine {
