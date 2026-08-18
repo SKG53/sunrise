@@ -109,12 +109,12 @@ function PrizeWithFireworks({ prize }: { prize: Prize }) {
             className="spin-burst"
             style={{ top: b.top, left: b.left, color: b.color, animationDelay: b.delay }}
           >
-            {Array.from({ length: 8 }).map((_, j) => (
-                <span
-                  key={j}
-                  className="spin-particle"
-                  style={{ "--rotate": `${j * 45}deg` } as CSSProperties}
-                />
+            {Array.from({ length: 12 }).map((_, j) => (
+              <span
+                key={j}
+                className="spin-particle"
+                style={{ "--rotate": `${j * 30}deg` } as CSSProperties}
+              />
             ))}
           </span>
         ))}
