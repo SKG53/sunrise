@@ -352,10 +352,8 @@ export function SpinWheel() {
               <span className="spin-code-text">{prize.code}</span>
               <span className="spin-code-copy">
                 <svg viewBox="0 0 24 24" aria-hidden="true" className="spin-copy-icon">
-                  <rect x="9" y="9" width="12" height="12" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
-                  <path d="M15 3h6v6" fill="none" stroke="currentColor" strokeWidth="2" />
-                  <path d="M15 3L3 15" fill="none" stroke="currentColor" strokeWidth="2" />
-                  <rect x="3" y="3" width="12" height="12" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <rect x="8" y="8" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <path d="M19 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" fill="none" stroke="currentColor" strokeWidth="2" />
                 </svg>
                 {copied ? "Copied!" : "Copy"}
               </span>
