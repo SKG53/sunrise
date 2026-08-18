@@ -20,7 +20,7 @@
 // DISMISSABLE: unlike the age gate this is marketing, not compliance — X
 // button, ESC and backdrop click all close it.
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 import "./SpinWheel.css";
 
@@ -92,6 +92,39 @@ function segmentPath(i: number) {
   const [x0, y0] = pt(100, 100, 94, a0);
   const [x1, y1] = pt(100, 100, 94, a1);
   return `M 100 100 L ${x0.toFixed(2)} ${y0.toFixed(2)} A 94 94 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`;
+}
+
+function PrizeWithFireworks({ prize }: { prize: Prize }) {
+  const bursts = [
+    { top: "40%", left: "24%", color: "var(--tier-5)", delay: "0s" },
+    { top: "34%", left: "70%", color: "var(--tier-10)", delay: "0.12s" },
+    { top: "64%", left: "52%", color: "var(--tier-30)", delay: "0.28s" },
+    { top: "48%", left: "46%", color: "var(--tier-60)", delay: "0.08s" },
+  ];
+  return (
+    <div className="spin-prize-wrap">
+      <div className="spin-fireworks" aria-hidden="true">
+        {bursts.map((b, i) => (
+          <span
+            key={i}
+            className="spin-burst"
+            style={{ top: b.top, left: b.left, color: b.color, animationDelay: b.delay }}
+          >
+            {Array.from({ length: 12 }).map((_, j) => (
+              <span
+                key={j}
+                className="spin-particle"
+                style={{ "--rotate": `${j * 30}deg` } as CSSProperties}
+              />
+            ))}
+          </span>
+        ))}
+      </div>
+      <p className="spin-prize">
+        {prize.label} {prize.sub}
+      </p>
+    </div>
+  );
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -290,9 +323,7 @@ export function SpinWheel() {
 
         {phase === "won" && prize && (
           <>
-            <p className="spin-prize">
-              {prize.label} {prize.sub}
-            </p>
+            <PrizeWithFireworks prize={prize} />
             <form className="spin-form" onSubmit={submitEmail}>
               <label className="spin-label" htmlFor="spin-email">
                 Enter your email and unlock your savings!
@@ -317,9 +348,7 @@ export function SpinWheel() {
 
         {phase === "revealed" && prize && (
           <>
-            <p className="spin-prize">
-              {prize.label} {prize.sub}
-            </p>
+            <PrizeWithFireworks prize={prize} />
             <button type="button" className="spin-code" onClick={copyCode} title="Copy code">
               <span className="spin-code-text">{prize.code}</span>
               <span className="spin-code-copy">{copied ? "Copied!" : "Copy"}</span>
