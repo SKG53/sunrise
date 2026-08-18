@@ -37,7 +37,6 @@ const AGE_KEY = "sunrise:age-verified";
 // Current odds: Free Shipping 20%, 5% 35%, 10% 25%, 15% 11%, 20% 9%.
 //
 // Recommended Shopify setup per code: "Limit to one use per customer" +
-// Recommended Shopify setup per code: "Limit to one use per customer" +
 // require customer email at checkout.
 export type Prize = {
   label: string;
@@ -313,7 +312,7 @@ export function SpinWheel() {
               Spin the Wheel
             </button>
             <p className="spin-fine">
-              Spin the wheel and save on your first order! Applicable on any
+              Spin the wheel and save on your first order. Applicable on any
               20 packs or fewer. Exclusions, terms, and conditions apply.
             </p>
           </>
@@ -351,7 +350,15 @@ export function SpinWheel() {
             <PrizeWithFireworks prize={prize} />
             <button type="button" className="spin-code" onClick={copyCode} title="Copy code">
               <span className="spin-code-text">{prize.code}</span>
-              <span className="spin-code-copy">{copied ? "Copied!" : "Copy"}</span>
+              <span className="spin-code-copy">
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="spin-copy-icon">
+                  <rect x="9" y="9" width="12" height="12" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <path d="M15 3h6v6" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <path d="M15 3L3 15" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <rect x="3" y="3" width="12" height="12" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                </svg>
+                {copied ? "Copied!" : "Copy"}
+              </span>
             </button>
             <a className="spin-btn spin-btn-primary" href="/products" onClick={close}>
               Shop Now
