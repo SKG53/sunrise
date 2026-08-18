@@ -36,7 +36,7 @@ const AGE_KEY = "sunrise:age-verified";
 //
 // Current odds: Free Shipping 20%, 5% 35%, 10% 25%, 15% 11%, 20% 9%.
 //
-// TODO(codes): replace these placeholders with the real Shopify codes.
+// Recommended Shopify setup per code: "Limit to one use per customer" +
 // Recommended Shopify setup per code: "Limit to one use per customer" +
 // require customer email at checkout.
 export type Prize = {
