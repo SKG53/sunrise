@@ -187,7 +187,10 @@
    Scoped like .age-gate-btn so the global .btn wipe/arrow pseudos don't
    apply here.                                                             */
 .spin-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--base) * 0.25);
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: calc(var(--base) * 0.27);
@@ -198,17 +201,41 @@
   cursor: pointer;
   line-height: 1;
   text-align: center;
-  transition: background 200ms ease-out, color 200ms ease-out;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 200ms ease-out, border-color 200ms ease-out;
 }
+/* Site-wide hover gesture: left-to-right wipe + dancing arrow (see .btn). */
+.spin-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--btn-wipe-fill, transparent);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 400ms ease-out;
+  z-index: -1;
+}
+.spin-btn::after {
+  content: "→";
+  display: inline-block;
+  font-size: 1.35em;
+  line-height: 1;
+  position: relative;
+  top: calc(var(--base) * -0.055);
+  transition: color 200ms ease-out;
+}
+.spin-btn:hover { color: var(--btn-hover-text, currentColor); }
+.spin-btn:hover::before { clip-path: inset(0 0 0 0); }
+.spin-btn:hover::after { animation: btn-arrow-dance 400ms ease-out; }
 .spin-btn-primary {
   background: var(--tier-10);
   color: var(--cream);
   border: 2px solid var(--tier-10);
   min-width: calc(var(--base) * 4.6);
-}
-.spin-btn-primary:hover {
-  background: var(--tier-10-hover);
-  border-color: var(--tier-10-hover);
+  --btn-wipe-fill: var(--cream);
+  --btn-hover-text: var(--tier-10);
 }
 .spin-btn-primary:disabled {
   opacity: 0.6;
