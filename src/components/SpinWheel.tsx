@@ -20,7 +20,7 @@
 // DISMISSABLE: unlike the age gate this is marketing, not compliance — X
 // button, ESC and backdrop click all close it.
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 import "./SpinWheel.css";
 
