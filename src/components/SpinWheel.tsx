@@ -322,9 +322,7 @@ export function SpinWheel() {
 
         {phase === "won" && prize && (
           <>
-            <p className="spin-prize">
-              {prize.label} {prize.sub}
-            </p>
+            <PrizeWithFireworks prize={prize} />
             <form className="spin-form" onSubmit={submitEmail}>
               <label className="spin-label" htmlFor="spin-email">
                 Enter your email and unlock your savings!
@@ -349,9 +347,7 @@ export function SpinWheel() {
 
         {phase === "revealed" && prize && (
           <>
-            <p className="spin-prize">
-              {prize.label} {prize.sub}
-            </p>
+            <PrizeWithFireworks prize={prize} />
             <button type="button" className="spin-code" onClick={copyCode} title="Copy code">
               <span className="spin-code-text">{prize.code}</span>
               <span className="spin-code-copy">{copied ? "Copied!" : "Copy"}</span>
