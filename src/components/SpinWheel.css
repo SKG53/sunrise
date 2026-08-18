@@ -156,7 +156,7 @@
 /* Fireworks burst behind the prize announcement. */
 .spin-fireworks {
   position: absolute;
-  inset: -35% -25%;
+  inset: -40% -28%;
   z-index: 0;
   pointer-events: none;
 }
@@ -165,27 +165,46 @@
   width: 0;
   height: 0;
   opacity: 0;
-  animation: spin-burst-pop 1.4s ease-out forwards;
+  animation: spin-burst-pop 1.5s ease-out forwards;
+}
+.spin-burst::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--base) * -0.25);
+  left: calc(var(--base) * -0.25);
+  width: calc(var(--base) * 0.5);
+  height: calc(var(--base) * 0.5);
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  box-shadow: 0 0 calc(var(--base) * 0.35) calc(var(--base) * 0.15) currentColor;
+  animation: spin-burst-flash 0.7s ease-out forwards;
 }
 .spin-particle {
   position: absolute;
   top: 0;
   left: 0;
-  width: calc(var(--base) * 0.12);
-  height: calc(var(--base) * 0.55);
-  margin-left: calc(var(--base) * -0.06);
+  width: calc(var(--base) * 0.14);
+  height: calc(var(--base) * 0.7);
+  margin-left: calc(var(--base) * -0.07);
   border-radius: 999px;
   background: currentColor;
-  box-shadow: 0 0 calc(var(--base) * 0.2) calc(var(--base) * 0.04) currentColor;
+  box-shadow: 0 0 calc(var(--base) * 0.3) calc(var(--base) * 0.06) currentColor;
   transform-origin: top center;
   opacity: 0;
-  animation: spin-particle-fly 1.4s ease-out forwards;
+  animation: spin-particle-fly 1.5s ease-out forwards;
 }
 
 @keyframes spin-burst-pop {
   0% { opacity: 0; transform: scale(0); }
   15% { opacity: 1; transform: scale(0.5); }
-  100% { opacity: 0; transform: scale(1.5); }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+
+@keyframes spin-burst-flash {
+  0% { opacity: 0.9; transform: scale(0); }
+  40% { opacity: 0.7; transform: scale(1.8); }
+  100% { opacity: 0; transform: scale(2.4); }
 }
 
 @keyframes spin-particle-fly {
@@ -193,9 +212,9 @@
     transform: rotate(var(--rotate)) translateY(0) scale(1);
     opacity: 1;
   }
-  50% { opacity: 0.9; }
+  50% { opacity: 0.95; }
   100% {
-    transform: rotate(var(--rotate)) translateY(calc(var(--base) * 2.2)) scale(0.1);
+    transform: rotate(var(--rotate)) translateY(calc(var(--base) * 2.6)) scale(0.1);
     opacity: 0;
   }
 }
