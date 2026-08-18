@@ -96,9 +96,10 @@ function segmentPath(i: number) {
 
 function PrizeWithFireworks({ prize }: { prize: Prize }) {
   const bursts = [
-    { top: "42%", left: "28%", color: "var(--tier-5)", delay: "0s" },
-    { top: "38%", left: "72%", color: "var(--tier-10)", delay: "0.15s" },
-    { top: "62%", left: "52%", color: "var(--tier-30)", delay: "0.3s" },
+    { top: "40%", left: "24%", color: "var(--tier-5)", delay: "0s" },
+    { top: "34%", left: "70%", color: "var(--tier-10)", delay: "0.12s" },
+    { top: "64%", left: "52%", color: "var(--tier-30)", delay: "0.28s" },
+    { top: "48%", left: "46%", color: "var(--tier-60)", delay: "0.08s" },
   ];
   return (
     <div className="spin-prize-wrap">
