@@ -53,7 +53,10 @@
   margin: 0 auto calc(var(--base) * 0.3);
   line-height: 0;
 }
-.spin-wordmark > * { margin: 0 auto; }
+/* Center the SUNRISE text ignoring the trailing ™ so the mark is optically centered. */
+.spin-wordmark > span {
+  transform: translateX(calc(var(--base) * 0.09));
+}
 .spin-heading {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
