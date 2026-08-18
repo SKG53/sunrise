@@ -277,8 +277,8 @@ export function SpinWheel() {
         {phase === "idle" && (
           <>
             <p className="spin-body">
-              Spin wheel for a discount code on your first order, up to 20% off.
-              Exclusions, terms, and conditions apply.
+              Spin the wheel and save on your first order! Applicable on any
+              product 20 Pack or smaller. Exclusions, terms, and conditions apply.
             </p>
             <button type="button" className="spin-btn spin-btn-primary" onClick={spin} autoFocus>
               Spin the Wheel
@@ -295,7 +295,7 @@ export function SpinWheel() {
             </p>
             <form className="spin-form" onSubmit={submitEmail}>
               <label className="spin-label" htmlFor="spin-email">
-                Enter your email to unlock your code
+                Enter your email and unlock your savings!
               </label>
               <input
                 id="spin-email"
@@ -328,8 +328,8 @@ export function SpinWheel() {
               Shop Now
             </a>
             <p className="spin-fine">
-              One use per customer. Apply at checkout. Exclusions, terms, and
-              conditions apply.
+              One use per customer, enter code at checkout. Applicable on any
+              product 20 Pack or smaller. Exclusions, terms, and conditions apply.
             </p>
           </>
         )}
