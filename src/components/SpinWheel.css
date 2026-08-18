@@ -136,14 +136,67 @@
   color: var(--text-body);
   margin: 0 0 calc(var(--base) * 0.4);
 }
+.spin-prize-wrap {
+  position: relative;
+  display: inline-block;
+  margin: 0 0 calc(var(--base) * 0.35);
+}
 .spin-prize {
+  position: relative;
+  z-index: 2;
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.78);
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--tier-30);
-  margin: 0 0 calc(var(--base) * 0.35);
+  margin: 0;
+}
+
+/* Fireworks burst behind the prize announcement. */
+.spin-fireworks {
+  position: absolute;
+  inset: -25% -20%;
+  z-index: 0;
+  pointer-events: none;
+}
+.spin-burst {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  animation: spin-burst-pop 1.3s ease-out forwards;
+}
+.spin-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--base) * 0.08);
+  height: calc(var(--base) * 0.38);
+  margin-left: calc(var(--base) * -0.04);
+  border-radius: 999px;
+  background: currentColor;
+  transform-origin: top center;
+  opacity: 0;
+  animation: spin-particle-fly 1.3s ease-out forwards;
+}
+
+@keyframes spin-burst-pop {
+  0% { opacity: 0; transform: scale(0); }
+  15% { opacity: 1; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+@keyframes spin-particle-fly {
+  0% {
+    transform: rotate(var(--rotate)) translateY(0) scale(1);
+    opacity: 1;
+  }
+  60% { opacity: 0.8; }
+  100% {
+    transform: rotate(var(--rotate)) translateY(calc(var(--base) * 1.6)) scale(0.15);
+    opacity: 0;
+  }
 }
 
 /* ── FORM ───────────────────────────────────────────────────────────────── */
