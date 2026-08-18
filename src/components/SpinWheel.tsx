@@ -94,6 +94,38 @@ function segmentPath(i: number) {
   return `M 100 100 L ${x0.toFixed(2)} ${y0.toFixed(2)} A 94 94 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`;
 }
 
+function PrizeWithFireworks({ prize }: { prize: Prize }) {
+  const bursts = [
+    { top: "42%", left: "28%", color: "var(--tier-5)", delay: "0s" },
+    { top: "38%", left: "72%", color: "var(--tier-10)", delay: "0.15s" },
+    { top: "62%", left: "52%", color: "var(--tier-30)", delay: "0.3s" },
+  ];
+  return (
+    <div className="spin-prize-wrap">
+      <div className="spin-fireworks" aria-hidden="true">
+        {bursts.map((b, i) => (
+          <span
+            key={i}
+            className="spin-burst"
+            style={{ top: b.top, left: b.left, color: b.color, animationDelay: b.delay }}
+          >
+            {Array.from({ length: 8 }).map((_, j) => (
+              <span
+                key={j}
+                className="spin-particle"
+                style={{ "--rotate": `${j * 45}deg` } as React.CSSProperties}
+              />
+            ))}
+          </span>
+        ))}
+      </div>
+      <p className="spin-prize">
+        {prize.label} {prize.sub}
+      </p>
+    </div>
+  );
+}
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function SpinWheel() {
