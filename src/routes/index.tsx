@@ -25,12 +25,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Refresh the way the world drinks. Simple and functional ingredients, with options and flavors for everyone. Savor the SUNRISE!",
+          "Hemp-infused Delta-9 THC seltzers in delicious fruit-forward flavors. Alcohol-free, made with simple ingredients — refresh the way the world drinks.",
       },
       {
         property: "og:description",
         content:
-          "Refresh the way the world drinks. Simple and functional ingredients, with options and flavors for everyone. Savor the SUNRISE!",
+          "Hemp-infused Delta-9 THC seltzers in delicious fruit-forward flavors. Alcohol-free, made with simple ingredients — refresh the way the world drinks.",
       },
     ],
     links: [
