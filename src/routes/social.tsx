@@ -13,6 +13,8 @@ export const Route = createFileRoute("/social")({
         content:
           "SUNRISE Beverage. Hemp-infused seltzer.",
       },
+      // Hidden from search engines — discoverable only via the footer easter egg.
+      { name: "robots", content: "noindex, nofollow" },
       { property: "og:title", content: "Social · SUNRISE" },
       { property: "og:description", content: "SUNRISE Beverage. Hemp-infused seltzer." },
       { property: "og:url", content: "https://www.savorsunrise.com/social" },
