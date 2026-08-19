@@ -58,12 +58,7 @@ export const Route = createRootRoute({
       { property: "og:title", content: "SUNRISE · Hemp-Infused Seltzer" },
       { property: "og:description", content: "SUNRISE hemp-infused seltzer. Simple ingredients, pure cane sugar, federally-legal Delta-9 THC across 10mg, 30mg, and 60mg potency tiers." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "SUNRISE · Hemp-Infused Seltzer" },
-      { name: "twitter:description", content: "SUNRISE hemp-infused seltzer. Simple ingredients, pure cane sugar, federally-legal Delta-9 THC across 10mg, 30mg, and 60mg potency tiers." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b7ac01c8-034b-4626-b147-8e372b6140e3/id-preview-297a98b0--64ea6beb-3ca0-49b4-8812-c0e9b2b4fe71.lovable.app-1776778303816.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b7ac01c8-034b-4626-b147-8e372b6140e3/id-preview-297a98b0--64ea6beb-3ca0-49b4-8812-c0e9b2b4fe71.lovable.app-1776778303816.png" },
+      { property: "og:image", content: "https://www.savorsunrise.com/og/SUNRISE_OG_Default_v1.png" },
     ],
     links: [
       {
