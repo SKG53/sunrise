@@ -96,6 +96,16 @@ function ContactPage() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.error || `Request failed (${res.status})`);
       }
+      // Non-blocking dual-write to HubSpot — mirrors the spin-wheel pattern.
+      // Fired in parallel and deliberately NOT awaited: the success message and
+      // the two emails (owned by /api/public/contact above) must never wait on,
+      // or fail because of, HubSpot. A rejected fetch is swallowed so it can't
+      // surface an error to the user.
+      fetch("/api/public/contact-hubspot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), email: email.trim() }),
+      }).catch(() => {});
       setSubmitted(true);
     } catch (err) {
       setSubmitError(
