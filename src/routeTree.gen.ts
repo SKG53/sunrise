@@ -29,6 +29,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsSlugRouteImport } from './routes/products_.$slug'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
+import { Route as ApiPublicSpinWheelHubspotRouteImport } from './routes/api/public/spin-wheel-hubspot'
 import { Route as ApiPublicNewsletterRouteImport } from './routes/api/public/newsletter'
 import { Route as ApiPublicEventSignupRouteImport } from './routes/api/public/event-signup'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
@@ -136,6 +137,12 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSpinWheelHubspotRoute =
+  ApiPublicSpinWheelHubspotRouteImport.update({
+    id: '/api/public/spin-wheel-hubspot',
+    path: '/api/public/spin-wheel-hubspot',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicNewsletterRoute = ApiPublicNewsletterRouteImport.update({
   id: '/api/public/newsletter',
   path: '/api/public/newsletter',
@@ -193,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
+  '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -221,6 +229,7 @@ export interface FileRoutesByTo {
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
+  '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -250,6 +259,7 @@ export interface FileRoutesById {
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
+  '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -280,6 +290,7 @@ export interface FileRouteTypes {
     | '/api/public/contact'
     | '/api/public/event-signup'
     | '/api/public/newsletter'
+    | '/api/public/spin-wheel-hubspot'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
@@ -308,6 +319,7 @@ export interface FileRouteTypes {
     | '/api/public/contact'
     | '/api/public/event-signup'
     | '/api/public/newsletter'
+    | '/api/public/spin-wheel-hubspot'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
@@ -336,6 +348,7 @@ export interface FileRouteTypes {
     | '/api/public/contact'
     | '/api/public/event-signup'
     | '/api/public/newsletter'
+    | '/api/public/spin-wheel-hubspot'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
@@ -365,6 +378,7 @@ export interface RootRouteChildren {
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicEventSignupRoute: typeof ApiPublicEventSignupRoute
   ApiPublicNewsletterRoute: typeof ApiPublicNewsletterRoute
+  ApiPublicSpinWheelHubspotRoute: typeof ApiPublicSpinWheelHubspotRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -513,6 +527,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/spin-wheel-hubspot': {
+      id: '/api/public/spin-wheel-hubspot'
+      path: '/api/public/spin-wheel-hubspot'
+      fullPath: '/api/public/spin-wheel-hubspot'
+      preLoaderRoute: typeof ApiPublicSpinWheelHubspotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/newsletter': {
       id: '/api/public/newsletter'
       path: '/api/public/newsletter'
@@ -581,6 +602,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicEventSignupRoute: ApiPublicEventSignupRoute,
   ApiPublicNewsletterRoute: ApiPublicNewsletterRoute,
+  ApiPublicSpinWheelHubspotRoute: ApiPublicSpinWheelHubspotRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,

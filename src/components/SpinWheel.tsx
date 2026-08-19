@@ -234,7 +234,17 @@ export function SpinWheel() {
         setError(data.error || "Something went wrong. Please try again.");
         return;
       }
+      // Non-blocking dual-write to HubSpot (spec v2). Fired in parallel and
+      // deliberately NOT awaited — the reward reveal below must never wait on
+      // (or fail because of) HubSpot. The Supabase write above remains the sole
+      // reward gate. A rejected fetch is swallowed so it can't surface an error.
+      fetch("/api/public/spin-wheel-hubspot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: value }),
+      }).catch(() => {});
       setPhase("revealed");
+
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
