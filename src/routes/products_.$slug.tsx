@@ -28,6 +28,7 @@ import {
 } from "../lib/sunrise-components";
 import { CannabinoidIcon } from "../components/CannabinoidIcon";
 import { getShopifyMapping } from "@/lib/shopifyProductMap";
+import { fetchProductByHandle } from "@/lib/shopify";
 import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import { useCartStore } from "@/stores/cartStore";
 // PD claim-strip icons — imported as raw SVG strings so they can be inlined
@@ -289,7 +290,7 @@ function getFaqsForProduct(p: Product): Array<{ q: string; a: string }> {
 // ── ROUTE ────────────────────────────────────────────────────────────────
 export const Route = createFileRoute("/products_/$slug")({
   component: ProductDetailPage,
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — non-live slugs return 404
     // Reverse: flip SHOW_NON_LIVE_PRODUCTS to true to lift the guard.
     if (!SHOW_NON_LIVE_PRODUCTS && !LIVE_SLUGS.has(params.slug)) {
@@ -297,7 +298,60 @@ export const Route = createFileRoute("/products_/$slug")({
     }
     const product = PRODUCTS.find((p) => p.slug === params.slug);
     if (!product) throw notFound();
-    return { product };
+
+    // Best-effort server-side price fetch for the Product JSON-LD offer.
+    // Runs in the loader (not the client hook) because Google requires
+    // structured data to be in the server-rendered HTML, not injected by
+    // JS after load. Capped at 2.5s and fully non-blocking: any failure
+    // just omits the offer (and thus the Product schema) for that render —
+    // the page always renders. GTIN is read live from the baseline
+    // (smallest / 4-pack) variant's barcode, so it self-populates as
+    // barcodes are entered in Shopify and is omitted while null.
+    let offer: {
+      lowPrice: string;
+      highPrice: string;
+      currency: string;
+      inStock: boolean;
+      gtin12: string | null;
+    } | null = null;
+    const mapping = getShopifyMapping(params.slug);
+    if (mapping?.handle) {
+      try {
+        const sp = await Promise.race([
+          fetchProductByHandle(mapping.handle),
+          new Promise<null>((r) => setTimeout(() => r(null), 2500)),
+        ]);
+        const priced = (sp?.node.variants.edges ?? [])
+          .map((e) => ({
+            amount: parseFloat(e.node.price.amount),
+            count: parseInt(e.node.title.match(/\d+/)?.[0] ?? "0", 10),
+            available: e.node.availableForSale,
+            barcode: e.node.barcode,
+          }))
+          .filter((v) => Number.isFinite(v.amount) && v.amount > 0);
+        if (priced.length > 0 && sp) {
+          const amounts = priced.map((v) => v.amount);
+          const withCount = priced.filter((v) => v.count > 0);
+          const baseline = withCount.length
+            ? withCount.reduce((min, v) => (v.count < min.count ? v : min))
+            : null;
+          const gtin12 =
+            baseline?.barcode && /^\d{12}$/.test(baseline.barcode)
+              ? baseline.barcode
+              : null;
+          offer = {
+            lowPrice: Math.min(...amounts).toFixed(2),
+            highPrice: Math.max(...amounts).toFixed(2),
+            currency: sp.node.priceRange.minVariantPrice.currencyCode || "USD",
+            inStock: priced.some((v) => v.available),
+            gtin12,
+          };
+        }
+      } catch {
+        // best-effort — leave offer null; the Product block is simply omitted
+      }
+    }
+    return { product, offer };
   },
   head: ({ loaderData }) => {
     const p = loaderData?.product;
@@ -325,7 +379,7 @@ export const Route = createFileRoute("/products_/$slug")({
 
 // ── COMPONENT ────────────────────────────────────────────────────────────
 function ProductDetailPage() {
-  const { product } = Route.useLoaderData();
+  const { product, offer } = Route.useLoaderData();
   const lockupRef = useRef<HTMLDivElement>(null);
   const stat12Ref = useRef<HTMLDivElement>(null);
   // Cannabinoid lockup refs — painted in useEffect below. Each is null on
@@ -566,12 +620,49 @@ function ProductDetailPage() {
     ],
   }).replace(/</g, "\\u003c");
 
+  // Product JSON-LD (merchant listing). Only emitted when the server-side
+  // offer fetch succeeded — a Product entity without offers earns nothing,
+  // so we omit the whole block rather than ship an incomplete one. Price
+  // range mirrors the visible bundle ladder (4-pack low → 80-pack high);
+  // gtin12 appears only once the 4-pack barcode is set in Shopify.
+  const productJsonLd = offer
+    ? JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: `SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC${
+          product.cannabinoid ? ` + ${product.cannabinoid}` : ""
+        } seltzer`,
+        description: product.blurb,
+        image: `https://www.savorsunrise.com/images/cans/${product.slug}.webp`,
+        brand: { "@type": "Brand", name: "SUNRISE" },
+        sku: product.slug,
+        ...(offer.gtin12 ? { gtin12: offer.gtin12 } : {}),
+        offers: {
+          "@type": "AggregateOffer",
+          priceCurrency: offer.currency,
+          lowPrice: offer.lowPrice,
+          highPrice: offer.highPrice,
+          availability: offer.inStock
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+          itemCondition: "https://schema.org/NewCondition",
+          url: `https://www.savorsunrise.com/products/${product.slug}`,
+        },
+      }).replace(/</g, "\\u003c")
+    : null;
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }}
       />
+      {productJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: productJsonLd }}
+        />
+      )}
       <SiteHeader activeNav="products" />
 
       <main style={{ ["--flavor-color" as string]: product.color } as React.CSSProperties}>

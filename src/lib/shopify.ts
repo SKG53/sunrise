@@ -17,6 +17,7 @@ export interface ShopifyVariant {
   title: string;
   price: { amount: string; currencyCode: string };
   availableForSale: boolean;
+  barcode: string | null;
   selectedOptions: Array<{ name: string; value: string }>;
 }
 
@@ -81,6 +82,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
             title
             price { amount currencyCode }
             availableForSale
+            barcode
             selectedOptions { name value }
           }
         }
