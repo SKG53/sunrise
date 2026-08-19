@@ -26,6 +26,12 @@ import "./SpinWheel.css";
 
 const STORAGE_KEY = "sunrise:spin-wheel-seen";
 const AGE_KEY = "sunrise:age-verified";
+// Persistent (localStorage) suppression for visitors who arrive from the
+// srbev.com lander after spinning there (URL carries ?ref=srbev). Unlike
+// STORAGE_KEY (per-session dismissal), this survives future sessions so a
+// visitor who already spun on the lander is never re-prompted here. Direct
+// visitors never get this key set, so they see the popup normally.
+const SUPPRESS_KEY = "sunrise:spin-suppressed";
 
 // ── PRIZE TABLE ─────────────────────────────────────────────────────────
 // Ten wheel segments. The wheel is split across five prizes:
@@ -154,8 +160,21 @@ export function SpinWheel() {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // Cross-domain hand-off (Option B): if this visitor arrived from the
+    // srbev.com lander AFTER spinning there, the lander appended ?ref=srbev to
+    // the link. Persistently suppress the main-site Spin & Save so they're never
+    // re-prompted. The param is left in the URL intact for analytics/attribution.
+    try {
+      if (new URLSearchParams(window.location.search).get("ref") === "srbev") {
+        localStorage.setItem(SUPPRESS_KEY, "true");
+      }
+    } catch {
+      /* URL or localStorage unavailable — fall through to normal behavior */
+    }
+
     const maybeShow = () => {
       try {
+        if (localStorage.getItem(SUPPRESS_KEY) === "true") return;
         if (sessionStorage.getItem(STORAGE_KEY) === "true") return;
         if (sessionStorage.getItem(AGE_KEY) !== "true") return;
       } catch {
