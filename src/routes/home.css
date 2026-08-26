@@ -993,7 +993,7 @@
     white-space: nowrap;
   }
   /* Tighten S02 vertical padding on mobile (was base*2.8 / 2.6 — too much dead space). */
-  .s02-brand-statement { padding: calc(var(--base) * 1) 0 calc(var(--base) * 1.6); }
+  .s02-brand-statement { padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.6); }
   .s08-inner { height: calc(var(--base) * 11); }
   .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }
