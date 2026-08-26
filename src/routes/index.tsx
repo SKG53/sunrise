@@ -366,7 +366,7 @@ function HomePage() {
           <div className="container">
             <h2 className="s03-pi-headline">
               Infused Seltzers<br />
-              Made with <span className="accent">natural ingredients.</span>
+              <span className="accent">Simple Ingredients</span>
             </h2>
             <p className="s03-pi-subhead">
               Clean, lightly carbonated, and crafted to showcase natural
