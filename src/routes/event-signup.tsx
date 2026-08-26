@@ -81,6 +81,10 @@ export const Route = createFileRoute('/event-signup')({
         name: 'description',
         content: `RSVP for ${EVENT_NAME}. Drop your name, email, and phone and we'll be in touch.`,
       },
+      // Single-event RSVP page (generic placeholder) — keep out of the search
+      // index. Mirrors the pattern on /social. If this page is ever repurposed
+      // for a real, promotable event, remove this line to re-enable indexing.
+      { name: 'robots', content: 'noindex, nofollow' },
       { property: 'og:title', content: `${EVENT_NAME} · Sign Up` },
       {
         property: 'og:description',
