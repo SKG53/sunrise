@@ -985,6 +985,15 @@
   .home-hero { height: 220px; }
   /* Hero strips stay 4-across (left→right) on mobile to match desktop composition;
      the wordmark is auto-fit to available width in index.tsx so it never overflows. */
+  /* Keep "CRAFTED BEVERAGES" on one line on phones (tighter tracking + no wrap). */
+  .hero-subtitle {
+    font-size: calc(var(--base) * 0.5);
+    letter-spacing: 0.22em;
+    padding-left: 0.22em;
+    white-space: nowrap;
+  }
+  /* Tighten S02 vertical padding on mobile (was base*2.8 / 2.6 — too much dead space). */
+  .s02-brand-statement { padding: calc(var(--base) * 1) 0 calc(var(--base) * 1.6); }
   .s08-inner { height: calc(var(--base) * 11); }
   .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }
