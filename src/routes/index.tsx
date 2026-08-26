@@ -236,7 +236,19 @@ function HomePage() {
       const base = getBasePx();
       const lockupBase = window.innerWidth <= 520 ? 48 : 80;
       const cardLockupBase = window.innerWidth <= 520 ? 28 : 44;
-      if (heroWmRef.current) heroWmRef.current.innerHTML = renderWordmark(base * 2.8, "cream");
+      if (heroWmRef.current) {
+        const slot = heroWmRef.current;
+        slot.innerHTML = renderWordmark(base * 2.8, "cream");
+        const overlay = slot.parentElement;
+        if (overlay) {
+          const sidePad = base * 0.8 * 2; // matches .hero-overlay horizontal padding
+          const avail = overlay.clientWidth - sidePad;
+          const natural = slot.scrollWidth;
+          if (avail > 0 && natural > avail * 0.9) {
+            slot.innerHTML = renderWordmark((base * 2.8) * (avail * 0.9) / natural, "cream");
+          }
+        }
+      }
       // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
       // if (lockup5Ref.current)  lockup5Ref.current.innerHTML  = render5mgLockup(lockupBase,  "#FEFBE0");
       if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(lockupBase, "#FEFBE0");
