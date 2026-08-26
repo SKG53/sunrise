@@ -856,6 +856,9 @@
   .p-inside-pillars { grid-template-columns: 1fr; }
   .p-inside-headline { font-size: calc(var(--base) * 1.0); }
   .p-hero-headline { font-size: calc(var(--base) * 1.35); }
+  /* Products page hero: 40% smaller on mobile (min-height 37.5vh->22.5vh,
+     padding-block base*1.5->base*0.9). */
+  .p-pagehero { min-height: 22.5vh; padding-block: calc(var(--base) * 0.9); }
 }
 @media (max-width: 520px) {
   /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis replaces
