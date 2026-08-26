@@ -371,7 +371,7 @@ function HomePage() {
             <p className="s03-pi-subhead">
               Clean, lightly carbonated, and crafted to showcase natural
               ingredients, our drinks are ready to be your new favorite!
-              Available in multiple flavors and doses, every can delivers
+              Available in multiple flavors and strengths, every can delivers
               exactly the experience you choose.
             </p>
             <div className="s03-card-grid">
