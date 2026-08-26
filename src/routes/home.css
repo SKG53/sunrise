@@ -982,7 +982,7 @@
   .s03-card-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {
-  .home-hero { height: 440px; }
+  .home-hero { height: 220px; }
   /* Hero strips stay 4-across (left→right) on mobile to match desktop composition;
      the wordmark is auto-fit to available width in index.tsx so it never overflows. */
   .s08-inner { height: calc(var(--base) * 11); }
