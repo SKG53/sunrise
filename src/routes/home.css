@@ -994,6 +994,9 @@
   }
   /* Tighten S02 vertical padding on mobile (was base*2.8 / 2.6 — too much dead space). */
   .s02-brand-statement { padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.6); }
+  /* S03 top padding zeroed on mobile: S02's bottom padding already supplies the gap,
+     so the DRINKS->INFUSED band matches the band above REFRESH (both = base*1.6). */
+  .s03-product-intro { padding-top: 0; }
   .s08-inner { height: calc(var(--base) * 11); }
   .s08-card { left: calc(var(--base) * 0.5); right: calc(var(--base) * 0.5); max-width: none; }
   .s02-manifesto-stack { --s02-stack-width: 92%; }
