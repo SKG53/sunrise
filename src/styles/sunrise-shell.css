@@ -917,3 +917,14 @@ main { flex: 1; width: 100%; }
   }
   .age-gate-actions { gap: calc(var(--base) * 0.2); }
 }
+
+/* ── MOBILE BODY COPY SIZE ───────────────────────────────────────────────────
+   All type derives from --base, which clamp-floors at 32px on phones, so body
+   copy rendered ~11–13px across the site. Lift every paragraph to a readable
+   size on mobile. Excludes the display page-hero titles (the only large <p>). */
+@media (max-width: 768px) {
+  p:not([class*="pagehero-title"]) {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+}
