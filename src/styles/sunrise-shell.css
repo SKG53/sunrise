@@ -953,3 +953,18 @@ section::before {
   pointer-events: none;
 }
 /* ── END TEMP DEV — SECTION TAGS ─────────────────────────────────────────── */
+
+/* ── MOBILE: INTERIOR PAGE-HERO (S01) SIZE + S01→S02 GAP ─────────────────────
+   Make every interior page-hero match the shortened height, and set the gap to
+   the following section to base*1.6 — matching the home S01→S02 gap. The
+   selector targets page-hero containers (…-pagehero) but not their children
+   (…-pagehero-title / -eyebrow). */
+@media (max-width: 768px) {
+  [class*="-pagehero"]:not([class*="-pagehero-"]) {
+    min-height: 22.5vh;
+    padding-block: calc(var(--base) * 0.9);
+  }
+  [class*="-pagehero"]:not([class*="-pagehero-"]) + section {
+    padding-top: calc(var(--base) * 1.6);
+  }
+}
