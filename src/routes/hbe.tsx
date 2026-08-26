@@ -127,6 +127,9 @@ export const Route = createFileRoute('/hbe')({
         name: 'description',
         content: `Visiting SUNRISE at the ${EVENT_NAME}? Drop your name, email, and phone and we'll stay in touch.`,
       },
+      // One-time event page (Hemp Beverage Expo) — keep out of the search
+      // index. Mirrors the pattern on /social.
+      { name: 'robots', content: 'noindex, nofollow' },
       { property: 'og:title', content: `${EVENT_NAME} · SUNRISE` },
       {
         property: 'og:description',
