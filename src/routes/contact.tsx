@@ -350,7 +350,9 @@ function ContactPage() {
                   <circle cx="17.5" cy="6.5" r="0.9" fill="currentColor" stroke="none" />
                 </svg>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/savorsunrise"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="c-social-handle"
                   aria-label="SUNRISE on Instagram"
                 >
