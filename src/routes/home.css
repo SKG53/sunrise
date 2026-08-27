@@ -472,6 +472,15 @@
   max-width: calc(var(--base) * 6);
 }
 .s04-ing-name {
+  display: block;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  text-align: inherit;
+  cursor: default;
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.38);
   font-weight: 800;
@@ -1060,4 +1069,50 @@
   .s04-whats-inside,
   .s07-story,
   .s10-faq { padding-block: calc(var(--base) * 0.8); }
+}
+
+@media (max-width: 768px) {
+  /* WHAT'S INSIDE on phones — restore the desktop-style flanking layout
+     (ingredients on either side of the can) instead of stacking, with the can
+     reduced enough that the side columns are legible, and each ingredient's
+     blurb collapsed into a tap-to-open accordion (the s04-ing-name button
+     toggles .s04-ing--open on its .s04-ing; single-open, handled in index.tsx). */
+  .s04-trifecta {
+    grid-template-columns: 1fr auto 1fr;
+    gap: calc(var(--base) * 0.35);
+    align-items: center;
+  }
+  .s04-center { order: 0; }                          /* undo stacked 'can on top' */
+  .s04-can { max-width: calc(var(--base) * 4.1); }   /* reduced so columns have room */
+  .s04-col { gap: calc(var(--base) * 0.5); }
+  .s04-col-left  { text-align: left;  align-items: flex-end; }
+  .s04-col-right { text-align: right; align-items: flex-start; }
+  .s04-ing { max-width: none; gap: calc(var(--base) * 0.15); }
+
+  /* Name = tap toggle: pointer + a +/- affordance (button chrome already reset). */
+  .s04-ing-name {
+    cursor: pointer;
+    font-size: calc(var(--base) * 0.34);
+  }
+  .s04-ing-name::after {
+    content: "+";
+    display: inline-block;
+    margin-left: 0.3em;
+    font-weight: 700;
+    color: var(--gold, #C4922A);
+  }
+  .s04-ing--open .s04-ing-name::after { content: "\2212"; }   /* minus */
+
+  /* Blurb collapses by default; expands when its ingredient is open. */
+  .s04-ing-desc {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.28s ease, opacity 0.2s ease;
+  }
+  .s04-ing--open .s04-ing-desc {
+    max-height: calc(var(--base) * 9);
+    opacity: 1;
+    margin-top: calc(var(--base) * 0.12);
+  }
 }
