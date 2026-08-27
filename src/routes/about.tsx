@@ -65,8 +65,9 @@ function AboutPage() {
           <div className="container">
             <div className="a-intro-inner">
               <h2 className="a-intro-headline">
-                Born in the <span className="accent">heart</span><br />
-                of America
+                Born in the{" "}
+                <br className="a-intro-br-d" />
+                <span className="accent">heart{" "}<br className="a-intro-br-m" />of America</span>
               </h2>
               <div className="a-intro-body">
                 <p>

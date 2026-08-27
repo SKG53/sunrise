@@ -80,9 +80,10 @@
   text-transform: uppercase;
   color: var(--near-black);
   margin: 0 auto calc(var(--base) * 0.9);
-  max-width: 22ch;
+  max-width: none;
 }
 .a-intro-headline .accent { color: var(--tier-5); }
+.a-intro-br-m { display: none; }
 .a-intro-body {
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.4);
@@ -326,6 +327,8 @@
 @media (max-width: 768px) {
   .a-build-pillars { grid-template-columns: 1fr; }
   .a-intro-headline { font-size: calc(var(--base) * 1.35); }
+  .a-intro-br-d { display: none; }
+  .a-intro-br-m { display: inline; }
   .a-build-headline { font-size: calc(var(--base) * 1.0); }
   .a-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .a-icons-item { grid-template-columns: calc(var(--base) * 1.3) 1fr; }
