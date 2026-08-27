@@ -1133,3 +1133,13 @@
 @media (prefers-reduced-motion: reduce) {
   .p-panel--collapsible .p-flavor-cta-arrow { animation: none; }
 }
+
+@media (max-width: 768px) {
+  /* "Full Ingredient Breakdown" (first CTA) → filled red, matching the homepage
+     primary button. The second CTA ("Download COAs") stays the secondary outline. */
+  .p-transparency-ctas .btn:first-child {
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-color);
+    border-color: var(--btn-primary-bg);
+  }
+}
