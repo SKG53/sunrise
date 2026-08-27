@@ -670,7 +670,7 @@ function HomePage() {
               </div>
               <div className="s07-copy">
                 <h2 className="s07-headline">
-                  Delicious drinks<br />Designed to deliver.
+                  <span className="s07-headline-l1">Delicious drinks<br /></span>Designed to deliver.
                 </h2>
                 <p className="s07-body">
                   SUNRISE was born with a simple conviction: it's about quality
