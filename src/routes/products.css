@@ -963,3 +963,24 @@
 @media (prefers-reduced-motion: reduce) {
   .p-panel-toggle { animation: none; }
 }
+
+@media (max-width: 768px) {
+  /* Cannabinoid corner tag (+CBG/+CBN/+THCV): on mobile the 2-col cards are
+     taller relative to the can, so the full-card-height strip centered the tag
+     BELOW the can ("slipped below the line"). Constrain the strip to the can's
+     height — padding-bottom:133.333% equals the card width × 4/3 (the can's 3:4
+     aspect), since padding % is relative to the card width — then absolutely
+     center the tag within it. Horizontal placement (right strip) is unchanged. */
+  .p-flavor-corner {
+    display: block;
+    bottom: auto;
+    height: 0;
+    padding-bottom: 133.333%;
+  }
+  .p-flavor-corner > * {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+  }
+}
