@@ -972,6 +972,26 @@
   .pd-section-headline { font-size: calc(var(--base) * 1.0); }
   .pd-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .pd-inside-headline { font-size: calc(var(--base) * 1.35); }
+  /* S02 mobile: lockup alone on the LEFT (spanning all rows), the three
+     claims stacked on the RIGHT — uses the full width instead of one tall
+     column. Claims are sized down so the widest ("NATURAL VEGAN") clears the
+     row on a ~360px phone; the 12oz lockup is painted smaller on mobile to
+     match (see render12ozStatBlock call in products_.$slug.tsx). */
+  .pd-stats-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: calc(var(--base) * 0.4);
+    row-gap: calc(var(--base) * 0.34);
+    justify-content: center;
+  }
+  .pd-stat { grid-column: 1; grid-row: 1 / span 3; }
+  .pd-claim {
+    grid-column: 2;
+    justify-content: flex-start;
+    --claim-icon-size: calc(var(--base) * 0.7);
+    --claim-text-size: calc(var(--base) * 0.56);
+  }
   /* S01 mobile: larger price; single full-width Add-to-Cart at the homepage
      btn-xl scale (--base override) now that Find Near You is removed. */
   .pd-price-amount { font-size: calc(var(--base) * 1.1); }
