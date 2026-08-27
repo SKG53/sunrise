@@ -1126,9 +1126,10 @@
 /*     The section-gap standardization above set padding-block: base*0.8, but  */
 /*     the .s07-can-lg staircase lift (translateY -1.0*base) then rides up to  */
 /*     the section's top edge, so the red reads as clipped/"incomplete."       */
-/*     Restore desktop-parity top headroom (1.8*base → ~0.8*base of red above  */
-/*     the lifted can) while keeping the standardized base*0.8 bottom. This is */
-/*     a deliberate exception to the uniform-gap rule: the boundary is a red   */
+/*     Top headroom set to 1.2*base (→ ~0.2*base of red above the lifted can)  */
+/*     to visually match the watermelon-can → "Designed to deliver." gap below */
+/*     the cans, while keeping the standardized base*0.8 bottom. This is a     */
+/*     deliberate exception to the uniform-gap rule: the boundary is a red     */
 /*     flood that needs breathing room, not dead space to be minimized.        */
 /* (2)+(3) Size the "Read Our Story" (S06) and "Find Near You" (S07) buttons   */
 /*     to the .btn-xl scale that "See the Full Lineup" uses — identical        */
@@ -1136,7 +1137,7 @@
 /*     every dimension (padding, font-size, gap, arrow, min-width) scales up   */
 /*     proportionally. Mobile-only; desktop untouched.                         */
 @media (max-width: 768px) {
-  .s07-story { padding-top: calc(var(--base) * 1.8); }
+  .s07-story { padding-top: calc(var(--base) * 1.2); }
   .s07-cta-row .btn,
   .s08-card .btn { --base: clamp(48px, 6vw, 75px); }
   /* Hide only the first line ("Delicious drinks") on mobile; the headline     */
