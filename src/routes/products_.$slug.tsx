@@ -382,6 +382,11 @@ function ProductDetailPage() {
   const { product, offer } = Route.useLoaderData();
   const lockupRef = useRef<HTMLDivElement>(null);
   const stat12Ref = useRef<HTMLDivElement>(null);
+  // What's-Inside accordion (mobile): single-open ingredient blurb, mirrors
+  // the home S04 rework. Desktop shows all blurbs; the CSS gates collapse.
+  const [openIng, setOpenIng] = useState<string | null>(null);
+  const toggleIng = (k: string) =>
+    setOpenIng((cur) => (cur === k ? null : k));
   // Cannabinoid lockup refs — painted in useEffect below. Each is null on
   // non-variant SKUs (Core flavors have no cannabinoid) and on placeholder
   // paths that don't render that DOM node.
