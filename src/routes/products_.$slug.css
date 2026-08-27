@@ -1128,3 +1128,11 @@
 .pd-pack-btn.is-selected .pd-pack-btn-savings {
   color: #fefbe0;
 }
+
+@keyframes pd-inside-plus-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pd-inside-ing-name::after { animation: none; }
+}
