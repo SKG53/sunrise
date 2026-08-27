@@ -372,11 +372,20 @@
 }
 
 @media (max-width: 768px) {
-  /* Modal type derives from --base, which clamp-floors at 32px on phones, and
-     the global mobile `p { font-size:16px }` rule (sunrise-shell.css) overrides
-     the fine print and the prize reveal up to body size. Restore the intended
-     hierarchy on mobile — scoped under .spin-card so it out-specifies that rule. */
+  /* Modal type derives from --base, which clamp-floors at 32px on phones, so
+     every calc(--base * <1) size collapses to ~6-11px; and the global mobile
+     `p { font-size:16px }` rule (sunrise-shell.css) over-corrects the <p>
+     elements up to body size. The non-<p> elements (buttons, label, input,
+     code) get neither treatment and render tiny, leaving the fine print larger
+     than the CTAs. Restore the intended hierarchy explicitly across all four
+     screens with fixed px, scoped under .spin-card so it out-specifies the
+     global rule. Ascending: copy < fine < label < btn < input < code < prize < heading. */
   .spin-card .spin-heading { font-size: 30px; }
   .spin-card .spin-prize { font-size: calc(var(--base) * 0.78); }
-  .spin-card .spin-fine { font-size: 11px; line-height: 1.45; }
+  .spin-card .spin-btn { font-size: 14px; }            /* CTAs — screens 1/3/4 */
+  .spin-card .spin-label { font-size: 13px; }          /* email prompt — screen 3 */
+  .spin-card .spin-input { font-size: 16px; }          /* 16px prevents iOS zoom-on-focus */
+  .spin-card .spin-code-text { font-size: 20px; }      /* coupon code — screen 4 */
+  .spin-card .spin-code-copy { font-size: 10px; }      /* copy microlabel — screen 4 */
+  .spin-card .spin-fine { font-size: 12px; line-height: 1.5; }  /* disclaimer — screens 1/4 */
 }
