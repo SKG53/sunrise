@@ -954,9 +954,10 @@ section::before {
 }
 /* ── END TEMP DEV — SECTION TAGS ─────────────────────────────────────────── */
 
-/* ── MOBILE: INTERIOR PAGE-HERO (S01) SIZE + S01→S02 GAP ─────────────────────
-   Make every interior page-hero match the shortened height, and set the gap to
-   the following section to base*1.6 — matching the home S01→S02 gap. The
+/* ── MOBILE: INTERIOR PAGE-HERO (S01) SIZE + S02 PADDING ─────────────────────
+   Make every interior page-hero match the shortened height, and give S02 (the
+   section right after S01) a uniform base*1.6 padding-block across all pages —
+   matching the home S02. PDPs have no -pagehero, so they are excluded. The
    selector targets page-hero containers (…-pagehero) but not their children
    (…-pagehero-title / -eyebrow). */
 @media (max-width: 768px) {
