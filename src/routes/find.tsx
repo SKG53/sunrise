@@ -66,6 +66,7 @@ function FindPage() {
   useEffect(() => {
     let cancelled = false;
     const containerNode = mapRef.current;
+    let detachResize: () => void = () => {};
 
     loadGoogleMaps()
       .then((maps) => {
@@ -76,7 +77,10 @@ function FindPage() {
           // so the geographic center stays centered.
           center: { lat: 38.5, lng: -96.5 },
           zoom: 4,
-          minZoom: 4,
+          // minZoom lowered to 3 so the mobile fit-to-bounds below can zoom out
+          // past 4 to frame all states on a narrow phone. Desktop never zooms
+          // (interaction locked, no fit) so it stays at 4.
+          minZoom: 3,
           maxZoom: 4,
           // All interaction disabled — this is a coverage display, not a
           // locator. Same lock-down as the home-page S07Map.
@@ -107,7 +111,33 @@ function FindPage() {
           strokeWeight: 1,
           clickable: false,
         });
-        map.data.loadGeoJson("/data/coverage-states.geojson");
+
+        // On mobile the fixed zoom-4 span is wider than a phone can show, so the
+        // outer coverage states get clipped. Fit the map to the polygons' bounds
+        // instead — all nine states always frame regardless of container width.
+        // Desktop keeps the fixed US-overview framing (refit is a no-op >768px).
+        const isMobile = () => typeof window !== "undefined" && window.innerWidth <= 768;
+        let coverageBounds: any = null;
+        const refit = () => {
+          if (coverageBounds && isMobile()) map.fitBounds(coverageBounds, 16);
+        };
+        map.data.loadGeoJson(
+          "/data/coverage-states.geojson",
+          null,
+          (features: any[]) => {
+            const b = new maps.LatLngBounds();
+            features.forEach((f) => {
+              const g = f.getGeometry();
+              if (g) g.forEachLatLng((ll: any) => b.extend(ll));
+            });
+            if (!b.isEmpty()) {
+              coverageBounds = b;
+              refit();
+            }
+          },
+        );
+        window.addEventListener("resize", refit);
+        detachResize = () => window.removeEventListener("resize", refit);
       })
       .catch((err) => {
         // eslint-disable-next-line no-console
@@ -116,6 +146,7 @@ function FindPage() {
 
     return () => {
       cancelled = true;
+      detachResize();
       if (containerNode) containerNode.innerHTML = "";
     };
   }, []);
