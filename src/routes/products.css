@@ -984,3 +984,12 @@
     transform: translate(-50%, -50%) rotate(-90deg);
   }
 }
+
+/* Mobile only: stack the S04 "Find your SUNRISE" headline so "FIND YOUR" sits on
+   one line and the SUNRISE wordmark drops to a second line beneath it. Desktop
+   keeps them side-by-side (flex row). Column + centered; nowrap keeps "FIND YOUR"
+   unbroken. Shared class — also applies to the /hbe "Find your SUNRISE" section. */
+@media (max-width: 768px) {
+  .p-effects-headline { flex-direction: column; align-items: center; }
+  .p-effects-headline > span:first-child { white-space: nowrap; }
+}
