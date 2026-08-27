@@ -1099,10 +1099,11 @@
     display: block;
     margin-top: calc(var(--base) * 0.1);
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.725em;
     line-height: 1;
     font-weight: 700;
     color: #E0AD2C;   /* match the "Each can?" headline accent */
+    animation: s04-plus-bounce 1.3s ease-in-out infinite;
   }
   .s04-ing--open .s04-ing-name::after { content: "\2212"; }   /* minus */
 
@@ -1144,4 +1145,14 @@
   /* the full two-line headline. SEO-safe: brand-voice copy, not a keyword     */
   /* heading, and the <h2> plus "Designed to deliver." stay in the HTML.       */
   .s07-headline-l1 { display: none; }
+}
+
+/* Subtle constant bounce on the What's Inside +/- toggles to draw attention.
+   Disabled for users who prefer reduced motion. */
+@keyframes s04-plus-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .s04-ing-name::after { animation: none; }
 }
