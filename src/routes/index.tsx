@@ -5,8 +5,7 @@ import { SiteFooter } from "../components/SiteFooter";
 import { S07Map } from "../components/S07Map";
 import {
   renderWordmark,
-  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-  // render5mgLockup,
+  render5mgLockup,
   render10mgLockup,
   render30mgLockup,
   render60mgLockup,
@@ -249,8 +248,7 @@ function HomePage() {
           }
         }
       }
-      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-      // if (lockup5Ref.current)  lockup5Ref.current.innerHTML  = render5mgLockup(lockupBase,  "#FEFBE0");
+      if (lockup5Ref.current)  lockup5Ref.current.innerHTML  = render5mgLockup(lockupBase,  "#FEFBE0");
       if (lockup10Ref.current) lockup10Ref.current.innerHTML = render10mgLockup(lockupBase, "#FEFBE0");
       if (lockup30Ref.current) lockup30Ref.current.innerHTML = render30mgLockup(lockupBase, "#FEFBE0");
       if (lockup60Ref.current) lockup60Ref.current.innerHTML = render60mgLockup(lockupBase, "#FEFBE0");
@@ -470,8 +468,11 @@ function HomePage() {
               Mellow moments to enhanced relaxation, find your favorite SUNRISE experience below.
             </p>
             <div className="s06-grid">
-              {/* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flag-gated */}
-              {SHOW_NON_LIVE_PRODUCTS && (
+              {/* 5mg tier. When the live-products flag is on, this renders as a
+                  normal linking card. While off (current), it renders as an inert
+                  COMING SOON placeholder — a <div> (no navigation), greyed via
+                  .s06-card-soon, with the Explore footer kept for visual parity. */}
+              {SHOW_NON_LIVE_PRODUCTS ? (
               <a href="/products?tier=5" className="s06-card t5">
                 <div className="s06-lockup-slot" ref={lockup5Ref} />
                 <div className="s06-card-meta">
@@ -483,6 +484,19 @@ function HomePage() {
                 </div>
                 <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
+              ) : (
+              <div className="s06-card t5 s06-card-soon" aria-label="5mg tier — coming soon">
+                <span className="s06-soon-badge">Coming Soon</span>
+                <div className="s06-lockup-slot" ref={lockup5Ref} />
+                <div className="s06-card-meta">
+                  <div className="s06-card-name">Subtle<br />Lift</div>
+                  <div className="s06-card-descriptor">Light · Bright</div>
+                  <div className="s06-card-occasion">
+                    First times, mid-week refreshments, or social sessions.
+                  </div>
+                </div>
+                <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
+              </div>
               )}
               <a href="/products?tier=10" className="s06-card t10">
                 <div className="s06-lockup-slot" ref={lockup10Ref} />

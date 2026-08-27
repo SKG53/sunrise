@@ -555,6 +555,40 @@
 .s06-card.t10 { background: var(--tier-10); --tier-color: var(--tier-10); }
 .s06-card.t30 { background: var(--tier-30); --tier-color: var(--tier-30); }
 .s06-card.t60 { background: var(--tier-60); --tier-color: var(--tier-60); }
+
+/* 5mg COMING SOON — inert greyed placeholder rendered as a <div> (no navigation)
+   while the live-products flag is off. A translucent grey overlay (::after) mutes
+   the tier color + content; the COMING SOON badge sits above it at full contrast.
+   pointer-events:none makes the whole card non-interactive (no hover, no link). */
+.s06-card-soon {
+  cursor: default;
+  pointer-events: none;
+}
+.s06-card-soon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(90, 90, 90, 0.55);
+  border-radius: inherit;
+  z-index: 2;
+}
+.s06-soon-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  background: var(--near-black);
+  color: var(--cream);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.32);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: calc(var(--base) * 0.18) calc(var(--base) * 0.42);
+  border-radius: 9999px;
+  white-space: nowrap;
+}
 .s06-lockup-slot { line-height: 0; }
 .s06-card-meta {
   margin-top: calc(var(--base) * 0.5);
