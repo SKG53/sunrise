@@ -1156,12 +1156,6 @@
   .s07-layout { gap: calc(var(--base) * 1.0); }
   .s07-cta-row .btn,
   .s08-card .btn { --base: clamp(48px, 6vw, 75px); }
-  /* Hide only the first line ("Delicious drinks") on mobile; the headline     */
-  /* then reads "Designed to deliver." The line + its <br /> are wrapped in    */
-  /* .s07-headline-l1 in index.tsx so this one rule drops both. Desktop shows  */
-  /* the full two-line headline. SEO-safe: brand-voice copy, not a keyword     */
-  /* heading, and the <h2> plus "Designed to deliver." stay in the HTML.       */
-  .s07-headline-l1 { display: none; }
 }
 
 /* Subtle constant bounce on the What's Inside +/- toggles to draw attention.
