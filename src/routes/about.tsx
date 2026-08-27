@@ -65,12 +65,13 @@ function AboutPage() {
           <div className="container">
             <div className="a-intro-inner">
               <h2 className="a-intro-headline">
-                Simple beginnings<br />
-                for a <span className="accent">new kind of drink</span>
+                Born in the <span className="accent">heart</span><br />
+                of America
               </h2>
               <div className="a-intro-body">
                 <p>
-                  SUNRISE started the way the best beverages always have — with a
+                  <span className="a-intro-emphasizer">Simple beginnings for a new kind of drink.</span>
+                  {" "}SUNRISE started the way the best beverages always have — with a
                   family, a workshop, and a conviction that what's on the shelf
                   could be better. Founded along America's historic Route 66, we
                   build every can the way we always have: in small batches, by
