@@ -489,7 +489,7 @@ function ProductsPage() {
             </div>
 
             <div
-              className={`p-panel${panelOpen ? " p-panel--open" : ""}`}
+              className={`p-panel p-panel--collapsible${panelOpen ? " p-panel--open" : ""}`}
               style={{
                 background: tier.color,
                 ["--p-tier-color" as string]: tier.color,
@@ -534,7 +534,8 @@ function ProductsPage() {
                       )}
                     </div>
                     <div className="p-flavor-cta">
-                      <span className="p-flavor-cta-label">Buy Now</span>
+                      <span className="p-flavor-cta-label p-flavor-cta-label--full">Buy Now</span>
+                      <span className="p-flavor-cta-label p-flavor-cta-label--short">Shop</span>
                       <span className="p-flavor-cta-arrow">→</span>
                     </div>
                     {f.cannabinoid && (
@@ -610,12 +611,12 @@ function ProductsPage() {
           <div className="container">
             <div className="p-inside-head">
               <h2 className="p-inside-headline">
-                <span>Natural ingredients</span>
-                <span>Real <span className="accent">effects</span></span>
+                <span>Simple</span>
+                <span className="accent">Ingredients</span>
               </h2>
               <p className="p-inside-lead">
                 Every SUNRISE seltzer starts with simple ingredients, pure cane sugar, and hemp extract
-                emulsified in small batches — nothing artificial, nothing you can't pronounce.
+                emulsified in small batches — no harsh chemicals, nothing you can't pronounce.
               </p>
             </div>
 
@@ -623,7 +624,7 @@ function ProductsPage() {
               <div className="p-inside-pillar">
                 <div className="p-inside-pillar-title">Flavor</div>
                 <p className="p-inside-pillar-body">
-                  Real, natural fruit and pure cane sugar. A crisp, mid-calorie profile
+                  Fruit-forward flavors and pure cane sugar. A crisp, mid-calorie profile
                   that tastes as good as it looks — no artificial sweeteners, no shortcuts.
                 </p>
               </div>
@@ -631,7 +632,7 @@ function ProductsPage() {
                 <div className="p-inside-pillar-title">Consistency</div>
                 <p className="p-inside-pillar-body">
                   Expertly emulsified hemp extracts deliver a reliable experience every
-                  single time. Can to can, batch to batch, sip to sip.
+                  single time. Sip to sip, can to can, batch to batch.
                 </p>
               </div>
               <div className="p-inside-pillar">

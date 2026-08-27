@@ -516,6 +516,9 @@
 .p-flavor-cta-label {
   line-height: 1;
 }
+/* Two labels share the CTA: "Buy Now" (desktop) and "Shop" (mobile, shown in
+   the <=768 block). Desktop hides the short one. */
+.p-flavor-cta-label--short { display: none; }
 .p-flavor-cta-arrow {
   display: inline-block;
   font-size: 1.15em;
@@ -1076,4 +1079,67 @@
   .p-effect-card.is-open .p-effect-collapse-inner { opacity: 1; }
   /* Spacer only exists to bottom-pin the foot on desktop; not needed compact. */
   .p-effect-spacer { display: none; }
+}
+
+/* Subtle continuous left-right nudge for the flavor-card CTA arrow on mobile
+   (touch has no hover, so the hover dance never fires there). Amplitude ~2px. */
+@keyframes p-flavor-arrow-nudge {
+  0%, 100% { transform: translateX(-2px); }
+  50%      { transform: translateX(2px); }
+}
+
+@media (max-width: 768px) {
+  /* ── Tier panel: kill the collapsed dead space ──────────────────────────
+     The panel head inherits padding-bottom/border-bottom/margin-bottom sized
+     for the expanded state. When collapsed, drop them so the lockup row sits
+     just above the flavor grid; restore the full spacing + divider when open.
+     Scoped to .p-panel--collapsible so /hbe's static panel is untouched. */
+  .p-panel--collapsible .p-panel-head {
+    row-gap: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+    margin-bottom: calc(var(--base) * 0.4);
+  }
+  .p-panel--collapsible.p-panel--open .p-panel-head {
+    row-gap: calc(var(--base) * 0.4);
+    padding-bottom: calc(var(--base) * 0.9);
+    border-bottom: 1px solid rgba(254, 251, 224, 0.25);
+    margin-bottom: calc(var(--base) * 0.9);
+  }
+
+  /* ── Flavor-card CTA on mobile: "Shop", larger, centered, bigger arrow ───
+     Scoped to .p-panel--collapsible so /hbe keeps its "Buy Now" CTA as-is. */
+  .p-panel--collapsible .p-flavor-cta-label--full { display: none; }
+  .p-panel--collapsible .p-flavor-cta-label--short { display: inline; }
+  .p-panel--collapsible .p-flavor-cta {
+    font-size: 12px;               /* up from ~8px (base*0.255 at 32px base) */
+    white-space: nowrap;           /* one word — never wrap, stays centered */
+    gap: calc(var(--base) * 0.28);
+  }
+  .p-panel--collapsible .p-flavor-cta-arrow {
+    font-size: 1.725em;            /* ~50% larger than the base 1.15em */
+    animation: p-flavor-arrow-nudge 1.4s ease-in-out infinite;
+  }
+  /* Per-card cadences: distinct durations + offset (negative) starts so the
+     arrows drift out of sync rather than moving as one. Covers up to 6 cards. */
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(1) .p-flavor-cta-arrow { animation-duration: 1.30s; animation-delay: -0.20s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(2) .p-flavor-cta-arrow { animation-duration: 1.55s; animation-delay: -0.65s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(3) .p-flavor-cta-arrow { animation-duration: 1.42s; animation-delay: -0.40s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(4) .p-flavor-cta-arrow { animation-duration: 1.68s; animation-delay: -0.90s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(5) .p-flavor-cta-arrow { animation-duration: 1.36s; animation-delay: -0.15s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(6) .p-flavor-cta-arrow { animation-duration: 1.60s; animation-delay: -0.75s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .p-panel--collapsible .p-flavor-cta-arrow { animation: none; }
+}
+
+@media (max-width: 768px) {
+  /* "Full Ingredient Breakdown" (first CTA) → filled red, matching the homepage
+     primary button. The second CTA ("Download COAs") stays the secondary outline. */
+  .p-transparency-ctas .btn:first-child {
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-color);
+    border-color: var(--btn-primary-bg);
+  }
 }
