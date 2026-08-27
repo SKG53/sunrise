@@ -1099,10 +1099,10 @@
     display: block;
     margin-top: calc(var(--base) * 0.1);
     text-align: center;
-    font-size: 1.3em;
+    font-size: 1.5em;
     line-height: 1;
     font-weight: 700;
-    color: var(--gold, #C4922A);
+    color: #E0AD2C;   /* match the "Each can?" headline accent */
   }
   .s04-ing--open .s04-ing-name::after { content: "\2212"; }   /* minus */
 
