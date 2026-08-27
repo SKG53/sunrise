@@ -871,3 +871,15 @@
   .p-faq-q-text { font-size: calc(var(--base) * 0.38); }
   .p-inside-headline > span { white-space: normal; }
 }
+
+@media (max-width: 768px) {
+  /* Broad section-gap standardization (mobile) — see home.css. p-hero (S02) is
+     already uniform via the shell +section rule (excluded). p-switcher keeps
+     top:0 so the p-hero->p-switcher gap stays base*1.6. */
+  .p-switcher { padding-top: 0; padding-bottom: calc(var(--base) * 0.8); }
+  .p-effects,
+  .p-inside,
+  .p-transparency,
+  .p-ptp,
+  .p-faq { padding-block: calc(var(--base) * 0.8); }
+}

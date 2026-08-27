@@ -1047,3 +1047,17 @@
   .s02-manifesto-stack { --s02-stack-width: 100%; }
   .s09-card { width: calc(var(--base) * 7); }
 }
+
+@media (max-width: 768px) {
+  /* Broad section-gap standardization (mobile). Uniform base*0.8 top+bottom per
+     in-scope content section so every section-to-section boundary = base*1.6.
+     Excludes the hero (S01) and s02-brand-statement (S02, already handled).
+     s03-product-intro keeps top:0 so the locked S02->S03 gap stays 1.6; only its
+     bottom is standardized. The s08-near-you map block (padding:0) is left as a
+     deliberate exception, so gaps immediately around the map are base*0.8. */
+  .s03-product-intro { padding-top: 0; padding-bottom: calc(var(--base) * 0.8); }
+  .s06-tiers,
+  .s04-whats-inside,
+  .s07-story,
+  .s10-faq { padding-block: calc(var(--base) * 0.8); }
+}
