@@ -162,6 +162,18 @@ const TIERS: Record<TierKey, TierData> = {
 // Unified lockup size across all four tiers.
 const LOCKUP_SIZE = 2.2;
 
+// The live tiers, in stack/scroll order — single source of truth for both the
+// switcher bar and the stacked panels so the two can never disagree. 5mg drops
+// out while SHOW_NON_LIVE_PRODUCTS is off.
+const LIVE_TIERS: TierKey[] = (["5", "10", "30", "60"] as TierKey[])
+  .filter((k) => SHOW_NON_LIVE_PRODUCTS || k !== "5");
+const panelDomId = (tier: TierKey) => `tier-${tier}mg`;
+function liveFlavors(tier: TierKey): Flavor[] {
+  return TIERS[tier].flavors.filter(
+    (f) => SHOW_NON_LIVE_PRODUCTS || LIVE_SLUGS.has(toSlug(tier, f)),
+  );
+}
+
 // Two-word effect phrases shown on flavor-card pills for +CBG / +CBN / +THCV
 // variants. Canonical per Brand memory ("+CBG = FOCUS + UPLIFT" etc.). Mirrors
 // the eyebrow text on the matching S03 effect cards.
@@ -295,12 +307,21 @@ function ProductsPage() {
       else next.add(i);
       return next;
     });
-  const [panelOpen, setPanelOpen] = useState(false);
-  // Reset the mobile panel accordion to collapsed whenever the tier changes,
-  // so it always returns to the default (lockup + bouncing plus).
-  useEffect(() => { setPanelOpen(false); }, [activeTier]);
+  // Per-tier accordion state for the stacked mobile panels — each panel's head
+  // detail collapses independently (was one boolean for the single panel).
+  const [openPanels, setOpenPanels] = useState<Set<TierKey>>(() => new Set());
+  const togglePanel = (k: TierKey) =>
+    setOpenPanels((prev) => {
+      const next = new Set(prev);
+      if (next.has(k)) next.delete(k);
+      else next.add(k);
+      return next;
+    });
 
-  const panelLockupRef = useRef<HTMLDivElement>(null);
+  // One lockup slot per stacked panel + the panel elements themselves (for
+  // jump-scroll and the scroll-spy), keyed by tier (was: single-panel refs).
+  const panelLockupRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const panelRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const switch5Ref = useRef<HTMLDivElement>(null);
   const switch10Ref = useRef<HTMLDivElement>(null);
   const switch30Ref = useRef<HTMLDivElement>(null);
@@ -321,10 +342,19 @@ function ProductsPage() {
   // client-side at the headline's cap height via renderWordmark().
   const wordmarkRef = useRef<HTMLSpanElement>(null);
 
-  // Flavor-corner lockup refs — one per cannabinoid flavor (positions 4–6 of
-  // each tier). Repopulated on tier switch via React's ref callback; null
-  // slots correspond to base flavors (no cannabinoid).
-  const cornerRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  // Flavor-corner lockup refs — keyed `${tier}-${index}` so a card can be
+  // identified once all live tiers are stacked on the page at once.
+  const cornerRefs = useRef<Record<string, HTMLSpanElement | null>>({});
+
+  // Switcher behavior: panel-swap on desktop, jump-nav on mobile. Desktop only
+  // sets the active tier (CSS shows the active panel, hides the rest); mobile
+  // shows every panel, so we also smooth-scroll to the tapped one.
+  const goToTier = (tierKey: TierKey) => {
+    setActiveTier(tierKey);
+    if (typeof window !== "undefined" && window.innerWidth <= 768) {
+      panelRefs.current[tierKey]?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   // Read ?tier= URL param on mount so Home tier cards (and any other
   // /products?tier=X deep-links) land on the correct panel. Invalid values
@@ -336,7 +366,7 @@ function ProductsPage() {
     if (t === "5" || t === "10" || t === "30" || t === "60") {
       // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — ignore deep-links to non-live tiers
       if (!SHOW_NON_LIVE_PRODUCTS && t === "5") return;
-      setActiveTier(t);
+      goToTier(t);
     }
   }, []);
 
@@ -347,17 +377,17 @@ function ProductsPage() {
     const paint = () => {
       const base = getBasePx();
 
-      // ── Panel lockup — cream on tier bg ──
-      if (panelLockupRef.current) {
+      // ── Panel lockups — one per stacked live tier, cream on the tier fill ──
+      LIVE_TIERS.forEach((tierKey) => {
+        const ref = panelLockupRefs.current[tierKey];
+        if (!ref) return;
         const size = base * LOCKUP_SIZE;
-        let html = "";
-        // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-        // if (activeTier === "5")  html = render5mgLockup(size, "#FEFBE0");
-        if (activeTier === "10") html = render10mgLockup(size, "#FEFBE0");
-        if (activeTier === "30") html = render30mgLockup(size, "#FEFBE0");
-        if (activeTier === "60") html = render60mgLockup(size, "#FEFBE0");
-        panelLockupRef.current.innerHTML = html;
-      }
+        ref.innerHTML =
+          // render5mgLockup wired for when SHOW_NON_LIVE_PRODUCTS flips on
+          tierKey === "10" ? render10mgLockup(size, "#FEFBE0") :
+          tierKey === "30" ? render30mgLockup(size, "#FEFBE0") :
+          tierKey === "60" ? render60mgLockup(size, "#FEFBE0") : "";
+      });
 
       // ── Switcher button lockups — cream on active tier bg, tier-color on inactive cream bg ──
       // 5mg is included so the COMING SOON switch cell paints its lockup; it is
@@ -396,19 +426,19 @@ function ProductsPage() {
         ref.innerHTML = renderEffectSymbol(e.cann, effSize, "#FEFBE0");
       });
 
-      // ── Flavor-corner +CBG / +CBN / +THCV lockups — cream on tier bg ──
-      // Vertical strip on the right edge of the card, rotated -90deg via
-      // CSS. Sized at base * 0.91 to match the PD page's related-card
-      // lockup so the two grids feel consistent.
-      TIERS[activeTier].flavors.forEach((f, i) => {
-        const ref = cornerRefs.current[i];
-        if (!ref || !f.cannabinoid) return;
-        const size = base * 0.91;
-        let html = "";
-        if (f.cannabinoid === "CBG")  html = renderCBGLockup(size, "#FEFBE0");
-        else if (f.cannabinoid === "CBN")  html = renderCBNLockup(size, "#FEFBE0");
-        else if (f.cannabinoid === "THCV") html = renderTHCVLockup(size, "#FEFBE0");
-        ref.innerHTML = html;
+      // ── Flavor-corner +CBG / +CBN / +THCV lockups — every card, every tier ──
+      // Keyed `${tier}-${index}` so all stacked tiers paint, not just one. Sized
+      // at base * 0.91 to match the PD page's related-card lockup.
+      LIVE_TIERS.forEach((tierKey) => {
+        liveFlavors(tierKey).forEach((f, i) => {
+          const ref = cornerRefs.current[`${tierKey}-${i}`];
+          if (!ref || !f.cannabinoid) return;
+          const size = base * 0.91;
+          ref.innerHTML =
+            f.cannabinoid === "CBG" ? renderCBGLockup(size, "#FEFBE0") :
+            f.cannabinoid === "CBN" ? renderCBNLockup(size, "#FEFBE0") :
+            f.cannabinoid === "THCV" ? renderTHCVLockup(size, "#FEFBE0") : "";
+        });
       });
     };
     paint();
@@ -417,7 +447,29 @@ function ProductsPage() {
     return () => window.removeEventListener("resize", paint);
   }, [activeTier]);
 
-  const tier = TIERS[activeTier];
+  // SCROLL-SPY (mobile only): the switcher is jump-nav, so keep its highlight
+  // synced to whichever stacked panel is in view. Guarded to mobile — on desktop
+  // the switcher swaps panels and only the active one is in the flow.
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const els = LIVE_TIERS
+      .map((t) => panelRefs.current[t])
+      .filter((el): el is HTMLDivElement => Boolean(el));
+    if (!els.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (window.innerWidth > 768) return;
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        const t = visible?.target.getAttribute("data-tier") as TierKey | null;
+        if (t) setActiveTier(t);
+      },
+      { rootMargin: "-20% 0px -40% 0px", threshold: [0.15, 0.5, 0.85] },
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
@@ -471,7 +523,7 @@ function ProductsPage() {
                   key={k}
                   type="button"
                   className={"p-switch" + (activeTier === k ? " active" : "")}
-                  onClick={() => setActiveTier(k)}
+                  onClick={() => goToTier(k)}
                   style={activeTier === k ? { background: TIERS[k].color } : undefined}
                   aria-pressed={activeTier === k}
                 >
@@ -488,66 +540,75 @@ function ProductsPage() {
               ))}
             </div>
 
-            <div
-              className={`p-panel p-panel--collapsible${panelOpen ? " p-panel--open" : ""}`}
-              style={{
-                background: tier.color,
-                ["--p-tier-color" as string]: tier.color,
-              } as React.CSSProperties}
-            >
-              <div className="p-panel-head">
-                <div className="p-panel-lockup" ref={panelLockupRef} />
-                <button
-                  type="button"
-                  className="p-panel-toggle"
-                  aria-expanded={panelOpen}
-                  aria-label={panelOpen ? "Hide tier details" : "Show tier details"}
-                  onClick={() => setPanelOpen((o) => !o)}
-                >{panelOpen ? "−" : "+"}</button>
-                <div className="p-panel-head-text">
-                  <div className="p-panel-eyebrow">{tier.descriptors}</div>
-                  <h3 className="p-panel-tier-name">{tier.name}</h3>
-                  <p className="p-panel-copy">{tier.copy}</p>
-                </div>
-              </div>
-
-              <div className="p-flavor-grid">
-                {tier.flavors
-                  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides non-live flavor cards (10mg cannabinoid variants, 60mg Wild Cherry Peach)
-                  .filter((f) => SHOW_NON_LIVE_PRODUCTS || LIVE_SLUGS.has(toSlug(activeTier, f)))
-                  .map((f, i) => (
-                  <a
-                    key={i}
-                    href={`/products/${toSlug(activeTier, f)}`}
-                    className="p-flavor-card"
-                    aria-label={`${f.name} — ${tier.name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ""}`}
-                    style={{ ["--flavor-color" as string]: f.flavorColor } as React.CSSProperties}
+            <div className="p-panel-stack">
+              {LIVE_TIERS.map((tierKey) => {
+                const td = TIERS[tierKey];
+                const isOpen = openPanels.has(tierKey);
+                return (
+                  <div
+                    key={tierKey}
+                    id={panelDomId(tierKey)}
+                    data-tier={tierKey}
+                    ref={(el) => { panelRefs.current[tierKey] = el; }}
+                    className={`p-panel p-panel--collapsible${activeTier === tierKey ? " p-panel--active" : ""}${isOpen ? " p-panel--open" : ""}`}
+                    style={{
+                      background: td.color,
+                      ["--p-tier-color" as string]: td.color,
+                    } as React.CSSProperties}
                   >
-                    <FlavorCan slug={toSlug(activeTier, f)} flavorName={f.name} />
-                    <div className="p-flavor-meta">
-                      <div className="p-flavor-name">{f.name}</div>
-                      <div className="p-flavor-descriptor">{f.descriptor}</div>
-                      {f.cannabinoid && (
-                        <div className="p-flavor-pill">
-                          {CANNABINOID_EFFECT[f.cannabinoid]}
-                        </div>
-                      )}
+                    <div className="p-panel-head">
+                      <div className="p-panel-lockup" ref={(el) => { panelLockupRefs.current[tierKey] = el; }} />
+                      <button
+                        type="button"
+                        className="p-panel-toggle"
+                        aria-expanded={isOpen}
+                        aria-label={isOpen ? "Hide tier details" : "Show tier details"}
+                        onClick={() => togglePanel(tierKey)}
+                      >{isOpen ? "−" : "+"}</button>
+                      <div className="p-panel-head-text">
+                        <div className="p-panel-eyebrow">{td.descriptors}</div>
+                        <h3 className="p-panel-tier-name">{td.name}</h3>
+                        <p className="p-panel-copy">{td.copy}</p>
+                      </div>
                     </div>
-                    <div className="p-flavor-cta">
-                      <span className="p-flavor-cta-label p-flavor-cta-label--full">Buy Now</span>
-                      <span className="p-flavor-cta-label p-flavor-cta-label--short">Shop</span>
-                      <span className="p-flavor-cta-arrow">→</span>
+
+                    <div className="p-flavor-grid">
+                      {liveFlavors(tierKey).map((f, i) => (
+                        <a
+                          key={i}
+                          href={`/products/${toSlug(tierKey, f)}`}
+                          className="p-flavor-card"
+                          aria-label={`${f.name} — ${td.name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ""}`}
+                          style={{ ["--flavor-color" as string]: f.flavorColor } as React.CSSProperties}
+                        >
+                          <FlavorCan slug={toSlug(tierKey, f)} flavorName={f.name} />
+                          <div className="p-flavor-meta">
+                            <div className="p-flavor-name">{f.name}</div>
+                            <div className="p-flavor-descriptor">{f.descriptor}</div>
+                            {f.cannabinoid && (
+                              <div className="p-flavor-pill">
+                                {CANNABINOID_EFFECT[f.cannabinoid]}
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-flavor-cta">
+                            <span className="p-flavor-cta-label p-flavor-cta-label--full">Buy Now</span>
+                            <span className="p-flavor-cta-label p-flavor-cta-label--short">Shop</span>
+                            <span className="p-flavor-cta-arrow">→</span>
+                          </div>
+                          {f.cannabinoid && (
+                            <span
+                              className="p-flavor-corner"
+                              ref={(el) => { cornerRefs.current[`${tierKey}-${i}`] = el; }}
+                              aria-label={`+${f.cannabinoid}`}
+                            />
+                          )}
+                        </a>
+                      ))}
                     </div>
-                    {f.cannabinoid && (
-                      <span
-                        className="p-flavor-corner"
-                        ref={(el) => { cornerRefs.current[i] = el; }}
-                        aria-label={`+${f.cannabinoid}`}
-                      />
-                    )}
-                  </a>
-                ))}
-              </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
