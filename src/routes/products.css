@@ -981,7 +981,8 @@
   50%      { transform: translateY(-4px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .p-panel-toggle { animation: none; }
+  .p-panel-toggle,
+  .p-effect-toggle { animation: none; }
 }
 
 @media (max-width: 768px) {
@@ -1026,35 +1027,41 @@
     padding: calc(var(--base) * 0.7) calc(var(--base) * 0.5);
   }
   .p-effect-bestfor { margin-bottom: calc(var(--base) * 0.1); }
+  /* Bigger top icon (blue) and "Best for" subtext (red) on mobile; scoped to the
+     products grid so the shared /hbe cards are unaffected. */
+  .p-effects-grid--collapsible .p-effect-icon {
+    width: calc(var(--base) * 2.6);
+    height: calc(var(--base) * 2.6);
+  }
+  .p-effects-grid--collapsible .p-effect-bestfor { font-size: calc(var(--base) * 0.3); }
 
-  /* Toggle: circular cream-outlined "+" — cream (not the ingredients gold) so it
-     stays legible on all four tier backgrounds, incl. the orange +CBG card. */
+  /* Toggle: plain cream "+" (no border/circle) to match the site's other plus
+     signs; bigger, and bounced — staggered per card (below) so they draw
+     attention without moving in unison. */
   .p-effect-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: calc(var(--base) * 0.95);
-    height: calc(var(--base) * 0.95);
-    margin-top: calc(var(--base) * 0.05);
+    display: inline-block;
+    margin-top: calc(var(--base) * 0.1);
     padding: 0;
-    border: 1.5px solid rgba(254, 251, 224, 0.7);
-    border-radius: 9999px;
-    background: transparent;
+    border: 0;
+    background: none;
     color: var(--cream);
     cursor: pointer;
     -webkit-appearance: none;
     appearance: none;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    animation: p-plus-bounce 0.9s ease-in-out infinite;
   }
-  .p-effect-toggle:hover { background: rgba(254, 251, 224, 0.12); }
   .p-effect-toggle-glyph {
     display: block;
     font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: calc(var(--base) * 0.62);
+    font-weight: 300;
+    font-size: calc(var(--base) * 0.95);
     line-height: 1;
     transition: transform 0.28s ease;
   }
+  .p-effect-card:nth-child(1) .p-effect-toggle { animation-duration: 0.82s; animation-delay: -0.10s; }
+  .p-effect-card:nth-child(2) .p-effect-toggle { animation-duration: 1.06s; animation-delay: -0.48s; }
+  .p-effect-card:nth-child(3) .p-effect-toggle { animation-duration: 0.92s; animation-delay: -0.27s; }
+  .p-effect-card:nth-child(4) .p-effect-toggle { animation-duration: 1.14s; animation-delay: -0.63s; }
   .p-effect-card.is-open .p-effect-toggle-glyph { transform: rotate(45deg); }
 
   /* Collapse: animate height via grid-template-rows 0fr->1fr (inner clips). */
