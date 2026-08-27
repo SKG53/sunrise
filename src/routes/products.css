@@ -923,7 +923,7 @@
      expands when .p-panel--open. Applies to whichever tier is active; 5mg is
      never shown, so it is handled too without appearing. */
   .p-panel-head {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr;
     align-items: center;
     gap: calc(var(--base) * 0.4) calc(var(--base) * 0.6);
   }
