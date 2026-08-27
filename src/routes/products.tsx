@@ -4,8 +4,7 @@ import type { RefObject } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import {
-  // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-  // render5mgLockup,
+  render5mgLockup,
   render10mgLockup,
   render30mgLockup,
   render60mgLockup,
@@ -346,9 +345,9 @@ function ProductsPage() {
       }
 
       // ── Switcher button lockups — cream on active tier bg, tier-color on inactive cream bg ──
-      // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter skips 5mg switcher iterations
+      // 5mg is included so the COMING SOON switch cell paints its lockup; it is
+      // never active (deep-links to tier 5 are ignored), so it paints tier-color.
       (["5", "10", "30", "60"] as TierKey[])
-        .filter((tier) => SHOW_NON_LIVE_PRODUCTS || tier !== "5")
         .forEach((tier) => {
         const ref = switchRefs[tier].current;
         if (!ref) return;
@@ -356,8 +355,7 @@ function ProductsPage() {
         const color = isActive ? "#FEFBE0" : TIERS[tier].color;
         const size = base * 1.2;
         let html = "";
-        // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
-        // if (tier === "5")  html = render5mgLockup(size, color);
+        if (tier === "5")  html = render5mgLockup(size, color);
         if (tier === "10") html = render10mgLockup(size, color);
         if (tier === "30") html = render30mgLockup(size, color);
         if (tier === "60") html = render60mgLockup(size, color);
@@ -435,8 +433,19 @@ function ProductsPage() {
         <section className="p-switcher">
           <div className="container">
             <div className="p-switcher-bar">
+              {/* 5mg — COMING SOON. Inert (div, not a button; does not switch the
+                  panel), greyed via .p-switch-soon to match the home tiers
+                  treatment. When the live-products flag flips on, this hides and
+                  the live 5mg button below takes over. */}
+              {!SHOW_NON_LIVE_PRODUCTS && (
+                <div className="p-switch p-switch-soon" aria-label="5mg tier — coming soon">
+                  <div className="p-switch-lockup" ref={switchRefs["5"]} />
+                  <div className="p-switch-name"><span>Coming</span><span>Soon</span></div>
+                </div>
+              )}
               {(["5", "10", "30", "60"] as TierKey[])
-                // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — filter hides 5mg switcher button
+                // 5mg shows as the coming-soon cell above while the flag is off;
+                // the filter keeps it out of the live-button map until the flag flips.
                 .filter((k) => SHOW_NON_LIVE_PRODUCTS || k !== "5")
                 .map((k) => (
                 <button
