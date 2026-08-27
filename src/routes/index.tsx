@@ -229,6 +229,8 @@ function HomePage() {
   const cardCannabinoidRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const manifestoRef = useRef<HTMLDivElement>(null);
   const [manifestoInView, setManifestoInView] = useState(false);
+  const [openIng, setOpenIng] = useState<string | null>(null);
+  const toggleIng = (k: string) => setOpenIng((cur) => (cur === k ? null : k));
 
   useEffect(() => {
     const paint = () => {
@@ -557,28 +559,28 @@ function HomePage() {
             </h2>
             <div className="s04-trifecta">
               <div className="s04-col s04-col-left">
-                <div className="s04-ing">
-                  <div className="s04-ing-name">Purified<br />Water</div>
+                <div className={`s04-ing${openIng === "water" ? " s04-ing--open" : ""}`}>
+                  <button type="button" className="s04-ing-name" aria-expanded={openIng === "water"} onClick={() => toggleIng("water")}>Purified<br />Water</button>
                   <div className="s04-ing-desc">
                     Reverse-osmosis filtered water carefully chosen for exceptional
                     hydration &amp; uncompromising flavor.
                   </div>
                 </div>
-                <div className="s04-ing">
-                  <div className="s04-ing-name">Pure Cane<br />Sugar</div>
+                <div className={`s04-ing${openIng === "sugar" ? " s04-ing--open" : ""}`}>
+                  <button type="button" className="s04-ing-name" aria-expanded={openIng === "sugar"} onClick={() => toggleIng("sugar")}>Pure Cane<br />Sugar</button>
                   <div className="s04-ing-desc">
                     A touch of real sugar for smooth, naturally derived sweetness.
                   </div>
                 </div>
-                <div className="s04-ing">
-                  <div className="s04-ing-name">Natural<br />Flavoring</div>
+                <div className={`s04-ing${openIng === "flavoring" ? " s04-ing--open" : ""}`}>
+                  <button type="button" className="s04-ing-name" aria-expanded={openIng === "flavoring"} onClick={() => toggleIng("flavoring")}>Natural<br />Flavoring</button>
                   <div className="s04-ing-desc">
                     Sourced from simple ingredients and botanicals, our flavors deliver
                     bright, authentic notes true to their names.
                   </div>
                 </div>
-                <div className="s04-ing">
-                  <div className="s04-ing-name">Fresh Lemon<br />Juice</div>
+                <div className={`s04-ing${openIng === "lemon" ? " s04-ing--open" : ""}`}>
+                  <button type="button" className="s04-ing-name" aria-expanded={openIng === "lemon"} onClick={() => toggleIng("lemon")}>Fresh Lemon<br />Juice</button>
                   <div className="s04-ing-desc">
                     Used exclusively in our Lemonade flavors, this ingredient brings
                     a hint of crisp acidity with a natural citrus lift.
@@ -597,29 +599,29 @@ function HomePage() {
                 />
               </div>
               <div className="s04-col s04-col-right">
-                <div className="s04-ing">
-                  <div className="s04-ing-name">Emulsified<br />Hemp Extract</div>
+                <div className={`s04-ing${openIng === "hemp" ? " s04-ing--open" : ""}`}>
+                  <button type="button" className="s04-ing-name" aria-expanded={openIng === "hemp"} onClick={() => toggleIng("hemp")}>Emulsified<br />Hemp Extract</button>
                   <div className="s04-ing-desc">
                     The good stuff — expertly blended cannabis extract for a clean
                     and consistent experience with every sip.
                   </div>
                 </div>
-                <div className="s04-ing">
-                  <div className="s04-ing-name">Naturally Sourced<br />Enhancers</div>
+                <div className={`s04-ing${openIng === "enhancers" ? " s04-ing--open" : ""}`}>
+                  <button type="button" className="s04-ing-name" aria-expanded={openIng === "enhancers"} onClick={() => toggleIng("enhancers")}>Naturally Sourced<br />Enhancers</button>
                   <div className="s04-ing-desc">
                     Functional ingredients like B12 that allow for a healthier,
                     more balanced experience without altering flavors.
                   </div>
                 </div>
-                <div className="s04-ing">
-                  <div className="s04-ing-name">Citric<br />Acid</div>
+                <div className={`s04-ing${openIng === "citric" ? " s04-ing--open" : ""}`}>
+                  <button type="button" className="s04-ing-name" aria-expanded={openIng === "citric"} onClick={() => toggleIng("citric")}>Citric<br />Acid</button>
                   <div className="s04-ing-desc">
                     A naturally occurring acid found in citrus fruits, this is used
                     to balance flavors and keep things bubbly.
                   </div>
                 </div>
-                <div className="s04-ing">
-                  <div className="s04-ing-name">Sodium<br />Benzoate</div>
+                <div className={`s04-ing${openIng === "benzoate" ? " s04-ing--open" : ""}`}>
+                  <button type="button" className="s04-ing-name" aria-expanded={openIng === "benzoate"} onClick={() => toggleIng("benzoate")}>Sodium<br />Benzoate</button>
                   <div className="s04-ing-desc">
                     A widely used food-safe preservative that helps keep each can
                     fresh without altering its flavor profile.
