@@ -326,6 +326,7 @@
   display: flex;
   flex-direction: column;
 }
+.p-panel-toggle { display: none; }   /* desktop: full detail shown, no accordion */
 .p-panel-eyebrow {
   font-size: calc(var(--base) * 0.22);
   font-weight: 800;
@@ -913,4 +914,52 @@
    too). Desktop unchanged. */
 @media (max-width: 768px) {
   .p-flavor-can img { width: 90%; height: 90%; }
+}
+
+@media (max-width: 768px) {
+  /* Product panel accordion (mobile): collapse the tier detail — descriptors,
+     name, copy — behind a bouncing + so the panel shows just the potency lockup
+     by default. Lockup + toggle share the top row; the detail spans below and
+     expands when .p-panel--open. Applies to whichever tier is active; 5mg is
+     never shown, so it is handled too without appearing. */
+  .p-panel-head {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: calc(var(--base) * 0.4) calc(var(--base) * 0.6);
+  }
+  .p-panel-toggle {
+    display: block;
+    justify-self: end;
+    align-self: center;
+    background: none;
+    border: 0;
+    padding: 0 calc(var(--base) * 0.2);
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    color: var(--cream);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: calc(var(--base) * 1.9);
+    line-height: 1;
+    animation: p-plus-bounce 0.9s ease-in-out infinite;
+  }
+  .p-panel-head-text {
+    grid-column: 1 / -1;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.25s ease;
+  }
+  .p-panel--open .p-panel-head-text {
+    max-height: calc(var(--base) * 14);
+    opacity: 1;
+  }
+}
+@keyframes p-plus-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .p-panel-toggle { animation: none; }
 }

@@ -284,6 +284,10 @@ const FAQS: Array<{ q: string; a: string }> = [
 function ProductsPage() {
   const [activeTier, setActiveTier] = useState<TierKey>("10");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [panelOpen, setPanelOpen] = useState(false);
+  // Reset the mobile panel accordion to collapsed whenever the tier changes,
+  // so it always returns to the default (lockup + bouncing plus).
+  useEffect(() => { setPanelOpen(false); }, [activeTier]);
 
   const panelLockupRef = useRef<HTMLDivElement>(null);
   const switch5Ref = useRef<HTMLDivElement>(null);
@@ -470,7 +474,7 @@ function ProductsPage() {
             </div>
 
             <div
-              className="p-panel"
+              className={`p-panel${panelOpen ? " p-panel--open" : ""}`}
               style={{
                 background: tier.color,
                 ["--p-tier-color" as string]: tier.color,
@@ -478,6 +482,13 @@ function ProductsPage() {
             >
               <div className="p-panel-head">
                 <div className="p-panel-lockup" ref={panelLockupRef} />
+                <button
+                  type="button"
+                  className="p-panel-toggle"
+                  aria-expanded={panelOpen}
+                  aria-label={panelOpen ? "Hide tier details" : "Show tier details"}
+                  onClick={() => setPanelOpen((o) => !o)}
+                >{panelOpen ? "−" : "+"}</button>
                 <div className="p-panel-head-text">
                   <div className="p-panel-eyebrow">{tier.descriptors}</div>
                   <h3 className="p-panel-tier-name">{tier.name}</h3>
