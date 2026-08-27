@@ -105,7 +105,7 @@
 }
 .p-effects-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -581,7 +581,7 @@
 .p-inside-headline {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.4);
   letter-spacing: 0.005em;
   line-height: 1.0;
   text-transform: uppercase;
@@ -652,7 +652,7 @@
 }
 .p-transparency-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.4);
   font-weight: 900;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -740,7 +740,7 @@
 }
 .p-faq-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 1.0);
+  font-size: calc(var(--base) * 1.5);
   font-weight: 900;
   letter-spacing: 0.015em;
   text-transform: uppercase;
@@ -889,12 +889,16 @@
     border-right: none;
   }
   .p-inside-pillars { grid-template-columns: 1fr; }
-  .p-inside-headline { font-size: calc(var(--base) * 1.0); }
-  /* Fit each logical line on one row on mobile: the existing <br /> splits the
-     headline into "ENJOY EVERY" / "SIP AND POUR."; at base*1.35 the longer line
-     overflowed the container and re-wrapped, so drop to base*1.15 (fits with
-     margin at ~314px content width) and nowrap to lock the two-line layout. */
-  .p-hero-headline { font-size: calc(var(--base) * 1.15); white-space: nowrap; }
+  .p-inside-headline { font-size: calc(var(--base) * 1.15); }
+  .p-transparency-headline { font-size: calc(var(--base) * 1.15); }
+  .p-ptp-headline { font-size: calc(var(--base) * 1.15); }
+  .p-effects-headline,
+  .p-faq-headline { font-size: calc(var(--base) * 1.25); }
+  /* Tier 2 headline. WATCH: a prior pass found base*1.35 overflowed the longer
+     line ("SIP AND POUR.") at ~314px content width; base*1.15 fit with margin.
+     Tier 2 mobile is base*1.25 — between the two — so verify on a narrow phone;
+     nowrap keeps the two-line layout. */
+  .p-hero-headline { font-size: calc(var(--base) * 1.25); white-space: nowrap; }
   /* Products page hero: 40% smaller on mobile (min-height 37.5vh->22.5vh,
      padding-block base*1.5->base*0.9). */
   .p-pagehero { min-height: 22.5vh; padding-block: calc(var(--base) * 0.9); }
@@ -908,7 +912,7 @@
      here because their detail is collapsed). /hbe uses the plain
      .p-effects-grid above and stays single-column. */
   .p-effects-grid--collapsible { grid-template-columns: repeat(2, 1fr); }
-  .p-ptp-headline { font-size: calc(var(--base) * 1.0); }
+  .p-ptp-headline { font-size: calc(var(--base) * 1.15); }
   .p-ptp-ctas { flex-direction: column; width: 100%; }
   .p-ptp-ctas .btn { width: 100%; text-align: center; }
   .p-faq-q-text { font-size: calc(var(--base) * 0.38); }

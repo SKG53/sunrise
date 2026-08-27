@@ -411,7 +411,10 @@ function ProductsPage() {
       // Sized to the headline cap height (base * 1.0) so it sits level with
       // "FIND YOUR", per DTC Card 02.
       if (wordmarkRef.current) {
-        wordmarkRef.current.innerHTML = renderWordmark(base * 1.0, "gradient");
+        // Sized to the p-effects-headline it sits beside — Tier 2 (base*1.5
+        // desktop / base*1.25 mobile) — so "SUNRISE" matches "Find your".
+        const wmSize = window.innerWidth <= 768 ? base * 1.25 : base * 1.5;
+        wordmarkRef.current.innerHTML = renderWordmark(wmSize, "gradient");
       }
 
       // ── Effect-card symbols — THC (core) / THC + <minor> — cream on tier bg ──

@@ -815,7 +815,7 @@
 }
 .s08-card-headline {
   font-family: 'Montserrat', sans-serif;
-  font-size: calc(var(--base) * 0.72);
+  font-size: calc(var(--base) * 1.0);
   font-weight: 900;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -1055,7 +1055,7 @@
   .s06-headline,
   .s07-headline,
   .s09-heading,
-  .s10-faq-headline { font-size: calc(var(--base) * 1.35); }
+  .s10-faq-headline { font-size: calc(var(--base) * 1.25); }
 }
 @media (max-width: 520px) {
   .s02-manifesto-stack { --s02-stack-width: 100%; }
