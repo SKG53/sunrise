@@ -412,7 +412,10 @@ function ProductDetailPage() {
         // lockup reads as a single cream unit on the flavor flood. The
         // function output is unchanged — only its display-layer color is
         // adapted to this surface's contrast needs.
-        stat12Ref.current.innerHTML = render12ozStatBlock(base * 2.64, "#FEFBE0");
+        stat12Ref.current.innerHTML = render12ozStatBlock(
+          base * (window.innerWidth <= 768 ? 0.95 : 2.64),
+          "#FEFBE0",
+        );
       }
 
       // ── Cannabinoid lockups (variant SKUs only) ──────────────────────
