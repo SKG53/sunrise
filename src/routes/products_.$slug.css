@@ -462,6 +462,15 @@
   max-width: calc(var(--base) * 6);
 }
 .pd-inside-ing-name {
+  display: block;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  text-align: inherit;
+  cursor: default;
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.38);
   font-weight: 800;
@@ -972,6 +981,54 @@
   .pd-section-headline { font-size: calc(var(--base) * 1.0); }
   .pd-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .pd-inside-headline { font-size: calc(var(--base) * 1.35); }
+  /* S04 mobile: match the reworked home "What's Inside" — flanking layout with
+     the can centered, and each blurb collapsed into a tap-to-open accordion
+     (.pd-inside-ing-name button toggles .pd-inside-ing--open; state in tsx). */
+  .pd-inside-trifecta {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: calc(var(--base) * 0.35);
+    align-items: center;
+  }
+  .pd-inside-center { order: 0; }
+  .pd-inside-can { max-width: calc(var(--base) * 4.82); }
+  .pd-ingredients .container { gap: calc(var(--base) * 0.8); }
+  .pd-inside-col { gap: calc(var(--base) * 0.5); }
+  .pd-inside-col-left,
+  .pd-inside-col-right { text-align: center; align-items: center; }
+  .pd-inside-ing { max-width: none; gap: calc(var(--base) * 0.15); }
+  .pd-inside-ing-name { cursor: pointer; font-size: calc(var(--base) * 0.34); }
+  .pd-inside-ing-name::after {
+    content: "+";
+    display: block;
+    margin-top: calc(var(--base) * 0.1);
+    text-align: center;
+    font-size: 1.725em;
+    line-height: 1;
+    font-weight: 700;
+    color: #E0AD2C;
+    animation: pd-inside-plus-bounce 0.9s ease-in-out infinite;
+  }
+  .pd-inside-col-left  .pd-inside-ing:nth-child(1) .pd-inside-ing-name::after { animation-duration: 0.82s; animation-delay: -0.10s; }
+  .pd-inside-col-left  .pd-inside-ing:nth-child(2) .pd-inside-ing-name::after { animation-duration: 1.06s; animation-delay: -0.55s; }
+  .pd-inside-col-left  .pd-inside-ing:nth-child(3) .pd-inside-ing-name::after { animation-duration: 0.94s; animation-delay: -0.30s; }
+  .pd-inside-col-left  .pd-inside-ing:nth-child(4) .pd-inside-ing-name::after { animation-duration: 1.14s; animation-delay: -0.72s; }
+  .pd-inside-col-right .pd-inside-ing:nth-child(1) .pd-inside-ing-name::after { animation-duration: 0.88s; animation-delay: -0.42s; }
+  .pd-inside-col-right .pd-inside-ing:nth-child(2) .pd-inside-ing-name::after { animation-duration: 1.00s; animation-delay: -0.18s; }
+  .pd-inside-col-right .pd-inside-ing:nth-child(3) .pd-inside-ing-name::after { animation-duration: 0.78s; animation-delay: -0.63s; }
+  .pd-inside-col-right .pd-inside-ing:nth-child(4) .pd-inside-ing-name::after { animation-duration: 1.10s; animation-delay: -0.25s; }
+  .pd-inside-ing--open .pd-inside-ing-name::after { content: "\2212"; }
+  .pd-inside-ing-desc {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.28s ease, opacity 0.2s ease;
+  }
+  .pd-inside-ing--open .pd-inside-ing-desc {
+    max-height: calc(var(--base) * 9);
+    opacity: 1;
+  }
+  /* S03 mobile: related-flavor cans +20% (75% -> 90% of frame), matching products. */
+  .pd-related-can img { width: 90%; height: 90%; }
   /* S02 mobile: lockup alone on the LEFT (spanning all rows), the three
      claims stacked on the RIGHT — uses the full width instead of one tall
      column. Claims are sized down so the widest ("NATURAL VEGAN") clears the
@@ -1070,4 +1127,12 @@
 }
 .pd-pack-btn.is-selected .pd-pack-btn-savings {
   color: #fefbe0;
+}
+
+@keyframes pd-inside-plus-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pd-inside-ing-name::after { animation: none; }
 }

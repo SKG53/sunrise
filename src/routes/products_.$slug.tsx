@@ -382,6 +382,11 @@ function ProductDetailPage() {
   const { product, offer } = Route.useLoaderData();
   const lockupRef = useRef<HTMLDivElement>(null);
   const stat12Ref = useRef<HTMLDivElement>(null);
+  // What's-Inside accordion (mobile): single-open ingredient blurb, mirrors
+  // the home S04 rework. Desktop shows all blurbs; the CSS gates collapse.
+  const [openIng, setOpenIng] = useState<string | null>(null);
+  const toggleIng = (k: string) =>
+    setOpenIng((cur) => (cur === k ? null : k));
   // Cannabinoid lockup refs — painted in useEffect below. Each is null on
   // non-variant SKUs (Core flavors have no cannabinoid) and on placeholder
   // paths that don't render that DOM node.
@@ -1073,28 +1078,28 @@ function ProductDetailPage() {
             </h2>
             <div className="pd-inside-trifecta">
               <div className="pd-inside-col pd-inside-col-left">
-                <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Purified<br />Water</div>
+                <div className={`pd-inside-ing${openIng === "water" ? " pd-inside-ing--open" : ""}`}>
+                  <button type="button" className="pd-inside-ing-name" aria-expanded={openIng === "water"} onClick={() => toggleIng("water")}>Purified<br />Water</button>
                   <div className="pd-inside-ing-desc">
                     Reverse-osmosis filtered water carefully chosen for exceptional
                     hydration &amp; uncompromising flavor.
                   </div>
                 </div>
-                <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Pure Cane<br />Sugar</div>
+                <div className={`pd-inside-ing${openIng === "sugar" ? " pd-inside-ing--open" : ""}`}>
+                  <button type="button" className="pd-inside-ing-name" aria-expanded={openIng === "sugar"} onClick={() => toggleIng("sugar")}>Pure Cane<br />Sugar</button>
                   <div className="pd-inside-ing-desc">
                     A touch of real sugar for smooth, naturally derived sweetness.
                   </div>
                 </div>
-                <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Natural<br />Flavoring</div>
+                <div className={`pd-inside-ing${openIng === "flavoring" ? " pd-inside-ing--open" : ""}`}>
+                  <button type="button" className="pd-inside-ing-name" aria-expanded={openIng === "flavoring"} onClick={() => toggleIng("flavoring")}>Natural<br />Flavoring</button>
                   <div className="pd-inside-ing-desc">
                     Sourced from simple ingredients and botanicals, our flavors deliver
                     bright, authentic notes true to their names.
                   </div>
                 </div>
-                <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Fresh Lemon<br />Juice</div>
+                <div className={`pd-inside-ing${openIng === "lemon" ? " pd-inside-ing--open" : ""}`}>
+                  <button type="button" className="pd-inside-ing-name" aria-expanded={openIng === "lemon"} onClick={() => toggleIng("lemon")}>Fresh Lemon<br />Juice</button>
                   <div className="pd-inside-ing-desc">
                     Used exclusively in our Lemonade flavors, this ingredient brings
                     a hint of crisp acidity with a natural citrus lift.
@@ -1113,29 +1118,29 @@ function ProductDetailPage() {
                 />
               </div>
               <div className="pd-inside-col pd-inside-col-right">
-                <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Emulsified<br />Hemp Extract</div>
+                <div className={`pd-inside-ing${openIng === "hemp" ? " pd-inside-ing--open" : ""}`}>
+                  <button type="button" className="pd-inside-ing-name" aria-expanded={openIng === "hemp"} onClick={() => toggleIng("hemp")}>Emulsified<br />Hemp Extract</button>
                   <div className="pd-inside-ing-desc">
                     The good stuff — expertly blended cannabis extract for a clean
                     and consistent experience with every sip.
                   </div>
                 </div>
-                <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Naturally Sourced<br />Enhancers</div>
+                <div className={`pd-inside-ing${openIng === "enhancers" ? " pd-inside-ing--open" : ""}`}>
+                  <button type="button" className="pd-inside-ing-name" aria-expanded={openIng === "enhancers"} onClick={() => toggleIng("enhancers")}>Naturally Sourced<br />Enhancers</button>
                   <div className="pd-inside-ing-desc">
                     Functional ingredients like B12 that allow for a healthier,
                     more balanced experience without altering flavors.
                   </div>
                 </div>
-                <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Citric<br />Acid</div>
+                <div className={`pd-inside-ing${openIng === "citric" ? " pd-inside-ing--open" : ""}`}>
+                  <button type="button" className="pd-inside-ing-name" aria-expanded={openIng === "citric"} onClick={() => toggleIng("citric")}>Citric<br />Acid</button>
                   <div className="pd-inside-ing-desc">
                     A naturally occurring acid found in citrus fruits, this is used
                     to balance flavors and keep things bubbly.
                   </div>
                 </div>
-                <div className="pd-inside-ing">
-                  <div className="pd-inside-ing-name">Sodium<br />Benzoate</div>
+                <div className={`pd-inside-ing${openIng === "benzoate" ? " pd-inside-ing--open" : ""}`}>
+                  <button type="button" className="pd-inside-ing-name" aria-expanded={openIng === "benzoate"} onClick={() => toggleIng("benzoate")}>Sodium<br />Benzoate</button>
                   <div className="pd-inside-ing-desc">
                     A widely used food-safe preservative that helps keep each can
                     fresh without altering its flavor profile.
