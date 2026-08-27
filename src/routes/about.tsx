@@ -24,20 +24,20 @@ export const Route = createFileRoute("/about")({
 // scroll strip. Base filenames map to /images/cans/<file>.webp. ──
 const ABOUT_CANS = [
   { file: "10mg-lemonade", name: "Lemonade 10mg" },
-  { file: "10mg-strawberry", name: "Strawberry 10mg" },
-  { file: "10mg-watermelon", name: "Watermelon 10mg" },
   { file: "30mg-cherry-limeade", name: "Cherry Limeade 30mg" },
-  { file: "30mg-orange-lemonade", name: "Orange Lemonade 30mg" },
-  { file: "30mg-peach-mango", name: "Peach Mango 30mg" },
-  { file: "30mg-kiwi-watermelon-cbg", name: "Kiwi Watermelon 30mg + CBG" },
-  { file: "30mg-blueberry-pomegranate-cbn", name: "Blueberry Pomegranate 30mg + CBN" },
-  { file: "30mg-strawberry-watermelon-thcv", name: "Strawberry Watermelon 30mg + THCV" },
   { file: "60mg-blueberry-lemonade", name: "Blueberry Lemonade 60mg" },
-  { file: "60mg-passionfruit-mango", name: "Passionfruit Mango 60mg" },
-  { file: "60mg-wild-cherry-peach", name: "Wild Cherry Peach 60mg" },
+  { file: "10mg-watermelon", name: "Watermelon 10mg" },
+  { file: "30mg-peach-mango", name: "Peach Mango 30mg" },
   { file: "60mg-blood-orange-cbg", name: "Blood Orange 60mg + CBG" },
-  { file: "60mg-blackberry-cbn", name: "Blackberry 60mg + CBN" },
+  { file: "10mg-strawberry", name: "Strawberry 10mg" },
+  { file: "30mg-blueberry-pomegranate-cbn", name: "Blueberry Pomegranate 30mg + CBN" },
   { file: "60mg-strawberry-kiwi-thcv", name: "Strawberry Kiwi 60mg + THCV" },
+  { file: "30mg-orange-lemonade", name: "Orange Lemonade 30mg" },
+  { file: "60mg-blackberry-cbn", name: "Blackberry 60mg + CBN" },
+  { file: "30mg-kiwi-watermelon-cbg", name: "Kiwi Watermelon 30mg + CBG" },
+  { file: "60mg-passionfruit-mango", name: "Passionfruit Mango 60mg" },
+  { file: "30mg-strawberry-watermelon-thcv", name: "Strawberry Watermelon 30mg + THCV" },
+  { file: "60mg-wild-cherry-peach", name: "Wild Cherry Peach 60mg" },
 ];
 
 // ── COMPONENT ────────────────────────────────────────────────────────────
@@ -108,17 +108,31 @@ function AboutPage() {
         <section className="a-cans">
           <div className="container">
             <div className="a-cans-scroll">
-              {ABOUT_CANS.map((c) => (
-                <img
-                  key={c.file}
-                  className="a-cans-scroll-can"
-                  src={`/images/cans/${c.file}.webp`}
-                  alt={`SUNRISE ${c.name} hemp-infused THC seltzer can`}
-                  width="960"
-                  height="1920"
-                  loading="lazy"
-                />
-              ))}
+              <div className="a-cans-track">
+                {ABOUT_CANS.map((c) => (
+                  <img
+                    key={c.file}
+                    className="a-cans-scroll-can"
+                    src={`/images/cans/${c.file}.webp`}
+                    alt={`SUNRISE ${c.name} hemp-infused THC seltzer can`}
+                    width="960"
+                    height="1920"
+                    loading="lazy"
+                  />
+                ))}
+                {ABOUT_CANS.map((c) => (
+                  <img
+                    key={`dup-${c.file}`}
+                    className="a-cans-scroll-can"
+                    src={`/images/cans/${c.file}.webp`}
+                    alt=""
+                    aria-hidden="true"
+                    width="960"
+                    height="1920"
+                    loading="lazy"
+                  />
+                ))}
+              </div>
             </div>
             <div className="a-build-pillars">
               <div className="a-build-pillar">
