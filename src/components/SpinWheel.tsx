@@ -207,7 +207,7 @@ export function SpinWheel() {
   useEffect(() => {
     if (phase === "hidden") return;
     const paint = () => {
-      if (wmRef.current) wmRef.current.innerHTML = renderWordmark(getBasePx() * 0.8, "gradient");
+      if (wmRef.current) wmRef.current.innerHTML = renderWordmark(getBasePx() * (window.matchMedia("(max-width: 768px)").matches ? 0.95 : 0.8), "gradient");
     };
     paint();
     if (document.fonts) document.fonts.ready.then(paint);

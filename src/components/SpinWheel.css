@@ -370,3 +370,13 @@
   .spin-card { padding: calc(var(--base) * 0.7) calc(var(--base) * 0.6) calc(var(--base) * 0.6); }
   .spin-wheel-wrap { width: calc(var(--base) * 5.6); height: calc(var(--base) * 5.6); }
 }
+
+@media (max-width: 768px) {
+  /* Modal type derives from --base, which clamp-floors at 32px on phones, and
+     the global mobile `p { font-size:16px }` rule (sunrise-shell.css) overrides
+     the fine print and the prize reveal up to body size. Restore the intended
+     hierarchy on mobile — scoped under .spin-card so it out-specifies that rule. */
+  .spin-card .spin-heading { font-size: 30px; }
+  .spin-card .spin-prize { font-size: calc(var(--base) * 0.78); }
+  .spin-card .spin-fine { font-size: 11px; line-height: 1.45; }
+}
