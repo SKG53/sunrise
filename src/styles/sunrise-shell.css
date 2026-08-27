@@ -966,6 +966,6 @@ section::before {
     padding-block: calc(var(--base) * 0.9);
   }
   [class*="-pagehero"]:not([class*="-pagehero-"]) + section {
-    padding-top: calc(var(--base) * 1.6);
+    padding-block: calc(var(--base) * 1.6);
   }
 }
