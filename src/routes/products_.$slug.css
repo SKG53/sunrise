@@ -972,6 +972,11 @@
   .pd-section-headline { font-size: calc(var(--base) * 1.0); }
   .pd-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .pd-inside-headline { font-size: calc(var(--base) * 1.35); }
+  /* S01 mobile: larger price; single full-width Add-to-Cart at the homepage
+     btn-xl scale (--base override) now that Find Near You is removed. */
+  .pd-price-amount { font-size: calc(var(--base) * 1.1); }
+  .pd-hero-ctas { flex-direction: column; width: 100%; }
+  .pd-hero-ctas .btn { width: 100%; text-align: center; --base: clamp(48px, 6vw, 75px); }
   /* HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — flex-basis replaces
      grid-template-columns. Original: .pd-related-grid { grid-template-columns: repeat(2, 1fr); } */
   .pd-related-card { flex-basis: calc((100% - (var(--base) * 0.4)) / 2); }
