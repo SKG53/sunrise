@@ -24,6 +24,7 @@ import { useEffect, useRef } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { loadGoogleMaps, MAP_STYLE } from "../lib/googleMaps";
+import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 import "./find.css";
 
 export const Route = createFileRoute("/find")({
@@ -45,6 +46,22 @@ export const Route = createFileRoute("/find")({
 
 function FindPage() {
   const mapRef = useRef<HTMLDivElement>(null);
+  // SUNRISE wordmark in the f-hero headline ("Find SUNRISE Near you"), painted
+  // client-side via renderWordmark(). Sized larger than the FIND/NEAR YOU text
+  // (base*1.6 mobile / base*2.0 desktop) so the wordmark reads as the hero on
+  // its own line rather than looking small next to the bold caps.
+  const wordmarkRef = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const paint = () => {
+      if (!wordmarkRef.current) return;
+      const mult = window.innerWidth <= 768 ? 1.6 : 2.0;
+      wordmarkRef.current.innerHTML = renderWordmark(getBasePx() * mult, "gradient");
+    };
+    paint();
+    window.addEventListener("resize", paint);
+    if (document.fonts?.ready) document.fonts.ready.then(paint);
+    return () => window.removeEventListener("resize", paint);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -122,7 +139,10 @@ function FindPage() {
           <div className="container">
             <div className="f-hero-inner">
               <h1 className="f-hero-headline">
-                Find SUNRISE<br />
+                <span className="f-hero-headline-lead">
+                  <span>Find</span>
+                  <span className="f-hero-wordmark" ref={wordmarkRef} aria-label="SUNRISE" />
+                </span>
                 <span className="accent">Near you</span>
               </h1>
               <p className="f-hero-body">
