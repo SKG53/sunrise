@@ -1078,15 +1078,15 @@
      blurb collapsed into a tap-to-open accordion (the s04-ing-name button
      toggles .s04-ing--open on its .s04-ing; single-open, handled in index.tsx). */
   .s04-trifecta {
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     gap: calc(var(--base) * 0.35);
     align-items: center;
   }
   .s04-center { order: 0; }                          /* undo stacked 'can on top' */
-  .s04-can { max-width: calc(var(--base) * 4.1); }   /* reduced so columns have room */
+  .s04-can { max-width: calc(var(--base) * 4.5); }   /* dead-centered by equal minmax(0,1fr) sides */
   .s04-col { gap: calc(var(--base) * 0.5); }
-  .s04-col-left  { text-align: left;  align-items: flex-end; }
-  .s04-col-right { text-align: right; align-items: flex-start; }
+  .s04-col-left,
+  .s04-col-right { text-align: center; align-items: center; }
   .s04-ing { max-width: none; gap: calc(var(--base) * 0.15); }
 
   /* Name = tap toggle: pointer + a +/- affordance (button chrome already reset). */
@@ -1096,8 +1096,11 @@
   }
   .s04-ing-name::after {
     content: "+";
-    display: inline-block;
-    margin-left: 0.3em;
+    display: block;
+    margin-top: calc(var(--base) * 0.1);
+    text-align: center;
+    font-size: 1.3em;
+    line-height: 1;
     font-weight: 700;
     color: var(--gold, #C4922A);
   }
