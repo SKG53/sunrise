@@ -976,3 +976,13 @@ section::before {
      back down under .age-gate-card so it out-specifies that rule. */
   .age-gate-card .age-gate-disclosure { font-size: 11px; line-height: 1.45; }
 }
+
+@media (max-width: 768px) {
+  /* On-color ghost CTAs (.btn-on-color-ghost — "Read Our Story", "Find Near You")
+     rely on a hover wipe to fill, which never fires on touch, so they read as
+     empty outlines on mobile. Present the filled (hover) end-state by default:
+     complete the wipe layer and use the hover text color. Uses the button's own
+     tokens, so it stays context-correct wherever the class is used. */
+  .btn-on-color-ghost::before { clip-path: inset(0 0 0 0); }
+  .btn-on-color-ghost { color: var(--btn-hover-text); }
+}
