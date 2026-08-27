@@ -909,7 +909,6 @@ function ProductDetailPage() {
                       Add to Your Cart
                     </a>
                   )}
-                  <a href="/find" className="btn btn-secondary">Find Near You</a>
                 </div>
               </div>
             </div>
