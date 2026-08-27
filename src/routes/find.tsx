@@ -139,7 +139,10 @@ function FindPage() {
           <div className="container">
             <div className="f-hero-inner">
               <h1 className="f-hero-headline">
-                Find SUNRISE<br />
+                <span className="f-hero-headline-lead">
+                  <span>Find</span>
+                  <span className="f-hero-wordmark" ref={wordmarkRef} aria-label="SUNRISE" />
+                </span>
                 <span className="accent">Near you</span>
               </h1>
               <p className="f-hero-body">
