@@ -741,11 +741,11 @@ main { flex: 1; width: 100%; }
     letter-spacing: 0.08em;
   }
 
-  .footer-row-main { grid-template-columns: 1fr 1fr; }
+  .footer-row-main { grid-template-columns: 1fr 1fr 1fr; }
   .footer-legal { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 520px) {
-  .footer-row-main { grid-template-columns: 1fr; }
+  .footer-row-main { grid-template-columns: 1fr 1fr 1fr; gap: calc(var(--base) * 0.4); }
   .footer-signup .signup-form { flex-direction: column; background: transparent; padding: 0; gap: 8px; }
   .footer-signup .signup-input { background: rgba(255,255,255,0.12); border-radius: 9999px; }
 }
