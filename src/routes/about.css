@@ -113,6 +113,29 @@
 .a-cans {
   padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 2.0);
 }
+/* Horizontal scroll strip of all 15 cans (both viewports). */
+.a-cans-scroll {
+  display: flex;
+  gap: calc(var(--base) * 0.5);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 calc(var(--base) * 0.1) calc(var(--base) * 0.5);
+  margin-bottom: calc(var(--base) * 1.3);
+}
+.a-cans-scroll::-webkit-scrollbar { height: 6px; }
+.a-cans-scroll::-webkit-scrollbar-track { background: transparent; }
+.a-cans-scroll::-webkit-scrollbar-thumb {
+  background: rgba(26, 26, 26, 0.18);
+  border-radius: 3px;
+}
+.a-cans-scroll-can {
+  flex: 0 0 auto;
+  width: calc(var(--base) * 3.2);
+  height: auto;
+  object-fit: contain;
+  scroll-snap-align: start;
+}
 .a-cans-row {
   display: flex;
   flex-direction: row;
