@@ -696,3 +696,11 @@
   white-space: nowrap;
 }
 .es-card-coming-soon { cursor: default; }
+
+@media (max-width: 768px) {
+  /* Broad section-gap standardization (mobile) — see home.css. c-hero (S02) is
+     excluded. c-form-section keeps top:0 for a base*1.6 S02->S03 gap. */
+  .c-form-section { padding-top: 0; padding-bottom: calc(var(--base) * 0.8); }
+  .c-direct,
+  .c-social { padding-block: calc(var(--base) * 0.8); }
+}

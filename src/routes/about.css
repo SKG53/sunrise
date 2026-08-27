@@ -307,3 +307,11 @@
   .a-ptp-ctas { flex-direction: column; width: 100%; }
   .a-ptp-ctas .btn { width: 100%; text-align: center; }
 }
+
+@media (max-width: 768px) {
+  /* Broad section-gap standardization (mobile) — see home.css. a-intro (S02) is
+     excluded (shell +section rule). a-cans keeps top:0 for a base*1.6 S02->S03 gap. */
+  .a-cans { padding-top: 0; padding-bottom: calc(var(--base) * 0.8); }
+  .a-build,
+  .a-ptp { padding-block: calc(var(--base) * 0.8); }
+}
