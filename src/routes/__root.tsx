@@ -50,7 +50,7 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=1100" },
       { title: "SUNRISE · Hemp-Infused Seltzer" },
       { name: "description", content: "SUNRISE hemp-infused seltzer. Simple ingredients, pure cane sugar, federally-legal Delta-9 THC across 10mg, 30mg, and 60mg potency tiers." },
       { name: "author", content: "SUNRISE Beverage" },
