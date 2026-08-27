@@ -772,6 +772,11 @@
   padding: 0;
   position: relative;
   overflow: hidden;
+  /* Contain the .s08-card's z-index: 1000 (needed to sit above Google Maps'
+     marker pane at z-index 600) inside this section's own stacking context, so
+     it no longer renders over the sticky site header (z-index 50) during scroll
+     the way it did before. Card stays above the map; section sits under header. */
+  isolation: isolate;
 }
 .s08-inner {
   position: relative;
