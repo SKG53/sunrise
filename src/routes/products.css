@@ -1149,3 +1149,30 @@
     border-color: var(--btn-primary-bg);
   }
 }
+
+/* ── Products: stacked-potency layout (mobile) ───────────────────────────────
+   All live tiers render as their own .p-panel inside .p-panel-stack. Desktop is
+   unchanged: the wrapper is transparent (display:contents) so panels behave as
+   the old single panel did, and only the switched-to (.p-panel--active) one
+   shows. Mobile shows the full stack; the switcher acts as jump-nav. Bound to
+   .p-panel-stack (products page only) so /hbe's single static panel is untouched. */
+.p-panel-stack { display: contents; }
+
+@media (min-width: 769px) {
+  /* Desktop keeps the swap: show only the active tier, hide the others. */
+  .p-panel-stack .p-panel--collapsible:not(.p-panel--active) { display: none; }
+}
+
+@media (max-width: 768px) {
+  /* Mobile: real vertical stack. The stack owns the inter-panel gap, so the
+     panels' own margin-top is zeroed to avoid doubling it. scroll-margin-top
+     keeps a jumped-to panel clear of the sticky announcement bar + header. */
+  .p-panel-stack {
+    display: grid;
+    gap: calc(var(--base) * 0.5);
+  }
+  .p-panel-stack .p-panel {
+    margin-top: 0;
+    scroll-margin-top: calc(var(--base) * 3.2);
+  }
+}
