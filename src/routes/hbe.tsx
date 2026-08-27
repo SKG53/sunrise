@@ -433,7 +433,7 @@ function EventSignupPage() {
           <div className="container">
             <div className="p-hero-inner">
               <h2 className="p-hero-headline">
-                Enjoy every last<br />
+                Enjoy every<br />
                 <span className="accent">sip and pour.</span>
               </h2>
               <p className="p-hero-body">

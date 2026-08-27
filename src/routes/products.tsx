@@ -419,7 +419,7 @@ function ProductsPage() {
           <div className="container">
             <div className="p-hero-inner">
               <h1 className="p-hero-headline">
-                Enjoy every last<br />
+                Enjoy every<br />
                 <span className="accent">sip and pour.</span>
               </h1>
               <p className="p-hero-body">
