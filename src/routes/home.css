@@ -1026,6 +1026,9 @@
     gap: calc(var(--base) * 0.8);
   }
   .s06-grid { grid-template-columns: repeat(2, 1fr); }
+  /* 2-col cards are far wider than the desktop 4-across, so the fixed 3/4.4
+     aspect-ratio forced them very tall with empty gaps. Size to content instead. */
+  .s06-card { aspect-ratio: auto; }
   .s02-manifesto-stack { --s02-stack-width: 78%; }
   .s03-card-grid { grid-template-columns: repeat(2, 1fr); }
 }
