@@ -1088,11 +1088,11 @@
   .p-effect-spacer { display: none; }
 }
 
-/* Subtle continuous left-right nudge for the flavor-card CTA arrow on mobile
-   (touch has no hover, so the hover dance never fires there). Amplitude ~2px. */
-@keyframes p-flavor-arrow-nudge {
-  0%, 100% { transform: translateX(-2px); }
-  50%      { transform: translateX(2px); }
+/* Subtle vertical hop for the flavor-card CTA "Shop" word on mobile
+   (touch has no hover, so the hover dance never fires there). Amplitude ~3px. */
+@keyframes p-flavor-shop-hop {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
 }
 
 @media (max-width: 768px) {
@@ -1114,31 +1114,30 @@
     margin-bottom: calc(var(--base) * 0.9);
   }
 
-  /* ── Flavor-card CTA on mobile: "Shop", larger, centered, bigger arrow ───
+  /* ── Flavor-card CTA on mobile: centered "Shop", no arrow, word hops ─────
      Scoped to .p-panel--collapsible so /hbe keeps its "Buy Now" CTA as-is. */
   .p-panel--collapsible .p-flavor-cta-label--full { display: none; }
-  .p-panel--collapsible .p-flavor-cta-label--short { display: inline; }
+  .p-panel--collapsible .p-flavor-cta-arrow { display: none; }
   .p-panel--collapsible .p-flavor-cta {
     font-size: 12px;               /* up from ~8px (base*0.255 at 32px base) */
-    white-space: nowrap;           /* one word — never wrap, stays centered */
-    gap: calc(var(--base) * 0.28);
+    white-space: nowrap;
   }
-  .p-panel--collapsible .p-flavor-cta-arrow {
-    font-size: 1.725em;            /* ~50% larger than the base 1.15em */
-    animation: p-flavor-arrow-nudge 1.4s ease-in-out infinite;
+  .p-panel--collapsible .p-flavor-cta-label--short {
+    display: inline-block;         /* inline-block so the hop transform applies */
+    animation: p-flavor-shop-hop 1.4s ease-in-out infinite;
   }
   /* Per-card cadences: distinct durations + offset (negative) starts so the
-     arrows drift out of sync rather than moving as one. Covers up to 6 cards. */
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(1) .p-flavor-cta-arrow { animation-duration: 1.30s; animation-delay: -0.20s; }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(2) .p-flavor-cta-arrow { animation-duration: 1.55s; animation-delay: -0.65s; }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(3) .p-flavor-cta-arrow { animation-duration: 1.42s; animation-delay: -0.40s; }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(4) .p-flavor-cta-arrow { animation-duration: 1.68s; animation-delay: -0.90s; }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(5) .p-flavor-cta-arrow { animation-duration: 1.36s; animation-delay: -0.15s; }
-  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(6) .p-flavor-cta-arrow { animation-duration: 1.60s; animation-delay: -0.75s; }
+     words drift out of sync rather than moving as one. Covers up to 6 cards. */
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(1) .p-flavor-cta-label--short { animation-duration: 1.30s; animation-delay: -0.20s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(2) .p-flavor-cta-label--short { animation-duration: 1.55s; animation-delay: -0.65s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(3) .p-flavor-cta-label--short { animation-duration: 1.42s; animation-delay: -0.40s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(4) .p-flavor-cta-label--short { animation-duration: 1.68s; animation-delay: -0.90s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(5) .p-flavor-cta-label--short { animation-duration: 1.36s; animation-delay: -0.15s; }
+  .p-panel--collapsible .p-flavor-grid .p-flavor-card:nth-child(6) .p-flavor-cta-label--short { animation-duration: 1.60s; animation-delay: -0.75s; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .p-panel--collapsible .p-flavor-cta-arrow { animation: none; }
+  .p-panel--collapsible .p-flavor-cta-label--short { animation: none; }
 }
 
 @media (max-width: 768px) {
