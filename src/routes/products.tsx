@@ -284,6 +284,17 @@ const FAQS: Array<{ q: string; a: string }> = [
 function ProductsPage() {
   const [activeTier, setActiveTier] = useState<TierKey>("10");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  // Effect cards: which cards have their below-"Best for" detail expanded.
+  // Independent per-card (a Set of indices) — it's a comparison grid, so more
+  // than one can be open at once. Only visible on mobile (see products.css).
+  const [openEffects, setOpenEffects] = useState<Set<number>>(() => new Set());
+  const toggleEffect = (i: number) =>
+    setOpenEffects((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
   const [panelOpen, setPanelOpen] = useState(false);
   // Reset the mobile panel accordion to collapsed whenever the tier changes,
   // so it always returns to the default (lockup + bouncing plus).
@@ -375,10 +386,14 @@ function ProductsPage() {
 
       // ── Effect-card symbols — THC (core) / THC + <minor> — cream on tier bg ──
       // Sized to .p-effect-symbol (calc(--base * 1.05)).
+      // At <=520px the effect grid is 2x2 (products.css), so cells are narrow;
+      // shrink the mark ~18% so the widest lockup (THC+THCV) clears the cell.
+      // Still the locked renderEffectSymbol, just a smaller size arg.
+      const effSize = window.innerWidth <= 520 ? base * 0.86 : base * 1.05;
       EFFECTS.forEach((e, i) => {
         const ref = effectRefs.current[i];
         if (!ref) return;
-        ref.innerHTML = renderEffectSymbol(e.cann, base * 1.05, "#FEFBE0");
+        ref.innerHTML = renderEffectSymbol(e.cann, effSize, "#FEFBE0");
       });
 
       // ── Flavor-corner +CBG / +CBN / +THCV lockups — cream on tier bg ──
@@ -550,9 +565,13 @@ function ProductsPage() {
             <p className="p-effects-subhead">
               Every tier offers four paths — a classic THC core, or three enhanced with minor cannabinoids for a more specific experience.
             </p>
-            <div className="p-effects-grid">
+            <div className="p-effects-grid p-effects-grid--collapsible">
               {EFFECTS.map((e, i) => (
-                <div key={i} className="p-effect-card" style={{ background: e.bg }}>
+                <div
+                  key={i}
+                  className={`p-effect-card${openEffects.has(i) ? " is-open" : ""}`}
+                  style={{ background: e.bg }}
+                >
                   <img className="p-effect-icon" src={e.icon} alt="" aria-hidden="true" />
                   <div
                     className="p-effect-symbol"
@@ -560,9 +579,26 @@ function ProductsPage() {
                     aria-label={e.cann ? `THC + ${e.cann}` : "THC"}
                   />
                   <div className="p-effect-bestfor">Best for<br />{e.bestFor}</div>
-                  <div className="p-effect-body">{e.body}</div>
-                  <div className="p-effect-spacer" />
-                  <div className="p-effect-foot">{e.foot}</div>
+                  {/* Toggle: shown only on mobile (products.css). The "+" rotates
+                      45deg into an "x" when open. Collapse wrapper below dissolves
+                      (display:contents) on desktop so layout is unchanged there. */}
+                  <button
+                    type="button"
+                    className="p-effect-toggle"
+                    aria-expanded={openEffects.has(i)}
+                    aria-controls={`p-effect-collapse-${i}`}
+                    aria-label={`${openEffects.has(i) ? "Hide" : "Show"} details for the ${e.bestFor} option`}
+                    onClick={() => toggleEffect(i)}
+                  >
+                    <span className="p-effect-toggle-glyph" aria-hidden="true">+</span>
+                  </button>
+                  <div className="p-effect-collapse" id={`p-effect-collapse-${i}`}>
+                    <div className="p-effect-collapse-inner">
+                      <div className="p-effect-body">{e.body}</div>
+                      <div className="p-effect-spacer" />
+                      <div className="p-effect-foot">{e.foot}</div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

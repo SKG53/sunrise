@@ -190,6 +190,15 @@
   text-transform: uppercase;
   color: rgba(254, 251, 224, 0.85);
 }
+/* Collapse wrapper + toggle are a MOBILE-ONLY disclosure (see the <=768 block).
+   On desktop/tablet the wrapper dissolves (display:contents) so body/spacer/foot
+   are direct flex children of the card exactly as before, and the toggle is
+   hidden — desktop layout is unchanged. These hooks (p-effect-collapse /
+   -toggle / -grid--collapsible) exist only on the products page, so /hbe, which
+   shares .p-effect* classes and imports this file, is unaffected. */
+.p-effect-collapse,
+.p-effect-collapse-inner { display: contents; }
+.p-effect-toggle { display: none; }
 
 /* ── SWITCHER ───────────────────────────────────────────────────────────── */
 .p-switcher {
@@ -888,6 +897,10 @@
      grid-template-columns. Original: .p-flavor-grid { grid-template-columns: 1fr; } */
   .p-flavor-card { flex-basis: calc((100% - (var(--base) * 0.4)) / 2); }
   .p-effects-grid { grid-template-columns: 1fr; }
+  /* Products page keeps a 2x2 grid on the narrowest phones (cards are compact
+     here because their detail is collapsed). /hbe uses the plain
+     .p-effects-grid above and stays single-column. */
+  .p-effects-grid--collapsible { grid-template-columns: repeat(2, 1fr); }
   .p-ptp-headline { font-size: calc(var(--base) * 1.0); }
   .p-ptp-ctas { flex-direction: column; width: 100%; }
   .p-ptp-ctas .btn { width: 100%; text-align: center; }
@@ -992,4 +1005,71 @@
 @media (max-width: 768px) {
   .p-effects-headline { flex-direction: column; align-items: center; }
   .p-effects-headline > span:first-child { white-space: nowrap; }
+}
+
+/* ── EFFECT CARDS · mobile disclosure (2x2 grid + collapse) ──────────────────
+   Products page only (hooks p-effect-collapse / -toggle live solely in
+   products.tsx). Below "Best for X" the body + paired descriptor collapse into
+   a tap-to-open disclosure; the "+" rotates 45deg into an "x" when open. Cards
+   are compact so the 2x2 grid (set at <=1024 and kept at <=520) reads cleanly. */
+@media (max-width: 768px) {
+  /* Compact card: no forced tall min-height, tighter padding for narrow cells. */
+  .p-effect-card {
+    min-height: 0;
+    padding: calc(var(--base) * 0.7) calc(var(--base) * 0.5);
+  }
+  .p-effect-bestfor { margin-bottom: calc(var(--base) * 0.1); }
+
+  /* Toggle: circular cream-outlined "+" — cream (not the ingredients gold) so it
+     stays legible on all four tier backgrounds, incl. the orange +CBG card. */
+  .p-effect-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--base) * 0.95);
+    height: calc(var(--base) * 0.95);
+    margin-top: calc(var(--base) * 0.05);
+    padding: 0;
+    border: 1.5px solid rgba(254, 251, 224, 0.7);
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--cream);
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .p-effect-toggle:hover { background: rgba(254, 251, 224, 0.12); }
+  .p-effect-toggle-glyph {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: calc(var(--base) * 0.62);
+    line-height: 1;
+    transition: transform 0.28s ease;
+  }
+  .p-effect-card.is-open .p-effect-toggle-glyph { transform: rotate(45deg); }
+
+  /* Collapse: animate height via grid-template-rows 0fr->1fr (inner clips). */
+  .p-effect-collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    width: 100%;
+    transition: grid-template-rows 0.32s ease;
+  }
+  .p-effect-card.is-open .p-effect-collapse { grid-template-rows: 1fr; }
+  .p-effect-collapse-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--base) * 0.22);
+    min-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-top: calc(var(--base) * 0.28);
+    transition: opacity 0.22s ease;
+  }
+  .p-effect-card.is-open .p-effect-collapse-inner { opacity: 1; }
+  /* Spacer only exists to bottom-pin the foot on desktop; not needed compact. */
+  .p-effect-spacer { display: none; }
 }
