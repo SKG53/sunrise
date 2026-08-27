@@ -905,3 +905,12 @@
   .p-ptp,
   .p-faq { padding-block: calc(var(--base) * 0.8); }
 }
+
+/* Flavor-card can images 20% larger on mobile only (75% → 90% of the frame).
+   object-fit: contain preserves aspect ratio; the can is height-bound inside the
+   3/4 frame, so scaling both dimensions from 75% to 90% enlarges the can ~1.2×.
+   Applies to every .p-flavor-card can (products grid; hbe.tsx imports this file
+   too). Desktop unchanged. */
+@media (max-width: 768px) {
+  .p-flavor-can img { width: 90%; height: 90%; }
+}
