@@ -1083,7 +1083,11 @@
     align-items: center;
   }
   .s04-center { order: 0; }                          /* undo stacked 'can on top' */
-  .s04-can { max-width: calc(var(--base) * 4.5); }   /* dead-centered by equal minmax(0,1fr) sides */
+  .s04-can { max-width: calc(var(--base) * 4.82); }   /* dead-centered by equal minmax(0,1fr) sides */
+  /* Match the headline->can gap to the can->red(section below) gap: the can is the
+     tallest element so it spans the trifecta top-to-bottom; setting the container
+     gap equal to the section's bottom padding (base*0.8) makes both gaps equal. */
+  .s04-whats-inside .container { gap: calc(var(--base) * 0.8); }
   .s04-col { gap: calc(var(--base) * 0.5); }
   .s04-col-left,
   .s04-col-right { text-align: center; align-items: center; }
@@ -1103,8 +1107,18 @@
     line-height: 1;
     font-weight: 700;
     color: #E0AD2C;   /* match the "Each can?" headline accent */
-    animation: s04-plus-bounce 1.3s ease-in-out infinite;
+    animation: s04-plus-bounce 0.9s ease-in-out infinite;
   }
+  /* Per-ingredient stagger — distinct durations (different cadences, so they
+     drift out of sync and never move as one) + offset start phases. */
+  .s04-col-left  .s04-ing:nth-child(1) .s04-ing-name::after { animation-duration: 0.82s; animation-delay: -0.10s; }
+  .s04-col-left  .s04-ing:nth-child(2) .s04-ing-name::after { animation-duration: 1.06s; animation-delay: -0.55s; }
+  .s04-col-left  .s04-ing:nth-child(3) .s04-ing-name::after { animation-duration: 0.94s; animation-delay: -0.30s; }
+  .s04-col-left  .s04-ing:nth-child(4) .s04-ing-name::after { animation-duration: 1.14s; animation-delay: -0.72s; }
+  .s04-col-right .s04-ing:nth-child(1) .s04-ing-name::after { animation-duration: 0.88s; animation-delay: -0.42s; }
+  .s04-col-right .s04-ing:nth-child(2) .s04-ing-name::after { animation-duration: 1.00s; animation-delay: -0.18s; }
+  .s04-col-right .s04-ing:nth-child(3) .s04-ing-name::after { animation-duration: 0.78s; animation-delay: -0.63s; }
+  .s04-col-right .s04-ing:nth-child(4) .s04-ing-name::after { animation-duration: 1.10s; animation-delay: -0.25s; }
   .s04-ing--open .s04-ing-name::after { content: "\2212"; }   /* minus */
 
   /* Blurb collapses by default; expands when its ingredient is open. */
