@@ -91,7 +91,7 @@ function TermsOfServicePage() {
                     allcaps copy in legal-conspicuous typography).            */}
                 <div className="tos-policy-callout">
                   <div className="tos-policy-callout-label">
-                    Important Notice — Please Read Carefully
+                    Important Notice - Please Read Carefully
                   </div>
                   <p className="tos-policy-allcaps">
                     THESE TERMS CONTAIN A BINDING ARBITRATION AGREEMENT, A
@@ -808,7 +808,7 @@ function TermsOfServicePage() {
                 </ol>
                 <p>Designated DMCA Agent:</p>
                 <p className="tos-policy-address">
-                  SUNRISE Beverage — Attn: DMCA Agent<br />
+                  SUNRISE Beverage - Attn: DMCA Agent<br />
                   2032 Utica Square, Unit #52521<br />
                   Tulsa, OK 74114<br />
                   United States<br />

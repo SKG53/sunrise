@@ -11,7 +11,7 @@ export const Route = createFileRoute("/refund-policy")({
       {
         name: "description",
         content:
-          "SUNRISE does not accept returns on beverage or other edible products. If something is wrong with your order — damaged, defective, or incorrect — get in touch and we'll make it right.",
+          "SUNRISE does not accept returns on beverage or other edible products. If something is wrong with your order - damaged, defective, or incorrect - get in touch and we'll make it right.",
       },
     ],
     links: [
@@ -77,7 +77,7 @@ function RefundPolicyPage() {
                 </ul>
                 <p>
                   We respond within five (5) business days. Resolutions vary
-                  by situation — typically replacement or refund — and we'll
+                  by situation - typically replacement or refund - and we'll
                   work out what fits best with you.
                 </p>
                 <p>

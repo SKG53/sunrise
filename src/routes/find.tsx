@@ -204,7 +204,7 @@ function FindPage() {
                   No store nearby? No problem
                 </h2>
                 <p className="f-fallback-body">
-                  Order SUNRISE direct to your door — or get to know us first.
+                  Order SUNRISE direct to your door - or get to know us first.
                 </p>
               </div>
               <div className="f-fallback-ctas">
@@ -229,7 +229,7 @@ function FindPage() {
                 </h2>
                 <p className="f-gateway-body">
                   Wholesale inquiries welcome. Small-batch craft, full-panel
-                  testing, dependable supply — built for retailers who care
+                  testing, dependable supply - built for retailers who care
                   about what they carry.
                 </p>
               </div>

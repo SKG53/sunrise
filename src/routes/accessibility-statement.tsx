@@ -146,7 +146,7 @@ function AccessibilityStatementPage() {
                   <li>
                     <strong>Mail:</strong>
                     <p className="acc-policy-address">
-                      SUNRISE Beverage — Attn: Accessibility<br />
+                      SUNRISE Beverage - Attn: Accessibility<br />
                       2032 Utica Square, Unit #52521<br />
                       Tulsa, OK 74114<br />
                       United States

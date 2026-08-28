@@ -93,20 +93,20 @@ type Product = {
 const PRODUCTS: Product[] = [
   // ── 5mg ────────────────────────────────────────────────────────────────
   { slug: "5mg-blackberry", tier: 5, flavor: "Blackberry", descriptor: "Dark + Smooth",
-    blurb: "Dark fruit done right. This is blackberry at its best — rich, juicy, and exceptionally smooth.",
+    blurb: "Dark fruit done right. This is blackberry at its best - rich, juicy, and exceptionally smooth.",
     color: "#2E1E3D" },
   { slug: "5mg-blood-orange", tier: 5, flavor: "Blood Orange", descriptor: "Tart + Punchy",
     blurb: "Not your average orange. Blood orange is tart and punchy like no other. You'll know this flavor hits different from the very first sip.",
     color: "#DC7F27" },
   { slug: "5mg-passionfruit-mango", tier: 5, flavor: "Passionfruit Mango", descriptor: "Bright + Breezy",
-    blurb: "Passionfruit's zest is paired with mango's silky follow-through. A warm tropical breeze — light, bright, and gone before you know it.",
+    blurb: "Passionfruit's zest is paired with mango's silky follow-through. A warm tropical breeze - light, bright, and gone before you know it.",
     color: "#60203A" },
   { slug: "5mg-blueberry-lemonade-cbg", tier: 5, flavor: "Blueberry Lemonade", descriptor: "Rich + Tangy",
     blurb: "Blueberry brings the sweetness. Lemon brings the kick. Rich, tangy, and effortlessly balanced in every single sip.",
     color: "#21285A", isLemonade: true,
     cannabinoid: "CBG", effect: "FOCUS" },
   { slug: "5mg-black-cherry-cbn", tier: 5, flavor: "Black Cherry", descriptor: "Deep + Sweet",
-    blurb: "Dark cherry at its finest — sweet, smooth, and full of character. Hits deep and leaves you wanting more.",
+    blurb: "Dark cherry at its finest - sweet, smooth, and full of character. Hits deep and leaves you wanting more.",
     color: "#36121D",
     cannabinoid: "CBN", effect: "RELAX" },
   { slug: "5mg-strawberry-peach-thcv", tier: 5, flavor: "Strawberry Peach", descriptor: "Sweet + Mellow",
@@ -119,17 +119,17 @@ const PRODUCTS: Product[] = [
     blurb: "Fresh, fruity, and full of real strawberry character. A classic experience worth reaching for over and over again.",
     color: "#CC1F39" },
   { slug: "10mg-watermelon", tier: 10, flavor: "Watermelon", descriptor: "Sweet + Juicy",
-    blurb: "Sweet, juicy, and effortlessly refreshing — watermelon at its most natural. Light and easy with a clean finish.",
+    blurb: "Sweet, juicy, and effortlessly refreshing - watermelon at its most natural. Light and easy with a clean finish.",
     color: "#0A6034" },
   { slug: "10mg-lemonade", tier: 10, flavor: "Lemonade", descriptor: "Crisp + Tangy",
-    blurb: "A timeless classic — crisp, tangy, and made with real lemon juice. Bright, clean, and perfectly balanced.",
+    blurb: "A timeless classic - crisp, tangy, and made with real lemon juice. Bright, clean, and perfectly balanced.",
     color: "#E0AD2C", isLemonade: true },
   { slug: "10mg-tangerine-cbg", tier: 10, flavor: "Tangerine", descriptor: "Bright + Zesty",
-    blurb: "Real tangerine flavor — vivid, punchy, and perfectly dialed in. Bright and zesty from the first sip until the can's gone.",
+    blurb: "Real tangerine flavor - vivid, punchy, and perfectly dialed in. Bright and zesty from the first sip until the can's gone.",
     color: "#F89A1F",
     cannabinoid: "CBG", effect: "FOCUS" },
   { slug: "10mg-blackberry-lemonade-cbn", tier: 10, flavor: "Blackberry Lemonade", descriptor: "Tart + Bold",
-    blurb: "Lemonade tartness with blackberry's deep fruit backbone — a bold combination that goes down remarkably easy.",
+    blurb: "Lemonade tartness with blackberry's deep fruit backbone - a bold combination that goes down remarkably easy.",
     color: "#2E1E3D", isLemonade: true,
     cannabinoid: "CBN", effect: "RELAX" },
   { slug: "10mg-blueberry-acai-thcv", tier: 10, flavor: "Blueberry Acai", descriptor: "Rich + Vibrant",
@@ -139,13 +139,13 @@ const PRODUCTS: Product[] = [
 
   // ── 30mg ───────────────────────────────────────────────────────────────
   { slug: "30mg-peach-mango", tier: 30, flavor: "Peach Mango", descriptor: "Lush + Tropical",
-    blurb: "Golden peach paired with irresistible mango — lush, tropical, and perfectly smooth. Serious depth that keeps you reaching back.",
+    blurb: "Golden peach paired with irresistible mango - lush, tropical, and perfectly smooth. Serious depth that keeps you reaching back.",
     color: "#E89B5B" },
   { slug: "30mg-cherry-limeade", tier: 30, flavor: "Cherry Limeade", descriptor: "Tart + Refreshing",
-    blurb: "Sweet cherry and tart lime — crisp, refreshing, and effortlessly easy to drink. Hits like the classic you've known forever.",
+    blurb: "Sweet cherry and tart lime - crisp, refreshing, and effortlessly easy to drink. Hits like the classic you've known forever.",
     color: "#67092A", isLimeade: true },
   { slug: "30mg-orange-lemonade", tier: 30, flavor: "Orange Lemonade", descriptor: "Bright + Tart",
-    blurb: "Bright and tart with real citrus depth — orange warmth layered with a lemon kick. Refreshing and built to be savored.",
+    blurb: "Bright and tart with real citrus depth - orange warmth layered with a lemon kick. Refreshing and built to be savored.",
     color: "#FAA819", isLemonade: true },
   { slug: "30mg-kiwi-watermelon-cbg", tier: 30, flavor: "Kiwi Watermelon", descriptor: "Crisp + Cool",
     blurb: "Crisp kiwi and cool watermelon is a pairing that just makes sense. Smooth and effortless, earning its place on every shelf.",
@@ -156,13 +156,13 @@ const PRODUCTS: Product[] = [
     color: "#21285A",
     cannabinoid: "CBN", effect: "RELAX" },
   { slug: "30mg-strawberry-watermelon-thcv", tier: 30, flavor: "Strawberry Watermelon", descriptor: "Sweet + Fresh",
-    blurb: "Strawberry sweetness folds into watermelon's fresh profile. Light, juicy, and effortlessly lovable — two fruits at their best.",
+    blurb: "Strawberry sweetness folds into watermelon's fresh profile. Light, juicy, and effortlessly lovable - two fruits at their best.",
     color: "#0A6034",
     cannabinoid: "THCV", effect: "ELEVATE" },
 
   // ── 60mg ───────────────────────────────────────────────────────────────
   { slug: "60mg-passionfruit-mango", tier: 60, flavor: "Passionfruit Mango", descriptor: "Bright + Breezy",
-    blurb: "Passionfruit's zest is paired with mango's silky follow-through. A warm tropical breeze — light, bright, and gone before you know it.",
+    blurb: "Passionfruit's zest is paired with mango's silky follow-through. A warm tropical breeze - light, bright, and gone before you know it.",
     color: "#60203A" },
   { slug: "60mg-wild-cherry-peach", tier: 60, flavor: "Wild Cherry Peach", descriptor: "Lush + Juicy",
     blurb: "Wild cherry depth with peach's raw sweetness. Together, they're lush, juicy, and something you'll savor down to the very last drop.",
@@ -175,7 +175,7 @@ const PRODUCTS: Product[] = [
     color: "#DC7F27",
     cannabinoid: "CBG", effect: "FOCUS" },
   { slug: "60mg-blackberry-cbn", tier: 60, flavor: "Blackberry", descriptor: "Dark + Smooth",
-    blurb: "Dark fruit done right. This is blackberry at its best — rich, juicy, and exceptionally smooth.",
+    blurb: "Dark fruit done right. This is blackberry at its best - rich, juicy, and exceptionally smooth.",
     color: "#2E1E3D",
     cannabinoid: "CBN", effect: "RELAX" },
   { slug: "60mg-strawberry-kiwi-thcv", tier: 60, flavor: "Strawberry Kiwi", descriptor: "Sweet + Tangy",
@@ -271,11 +271,11 @@ const FAQS_BASE: Array<{ q: string; a: string }> = [
 const FAQS_VARIANT: Array<{ q: string; a: string }> = [
   {
     q: "What are CBG, CBN, and THCV?",
-    a: "Minor cannabinoids — the supporting cast alongside Delta-9 THC. CBG tracks toward focus and uplift, CBN toward relaxation and unwinding, THCV toward clarity and engagement. Every variant in the lineup blends 30mg of one of these alongside the stated Delta-9 dose, shifting the character of the experience without changing the THC level.",
+    a: "Minor cannabinoids - the supporting cast alongside Delta-9 THC. CBG tracks toward focus and uplift, CBN toward relaxation and unwinding, THCV toward clarity and engagement. Every variant in the lineup blends 30mg of one of these alongside the stated Delta-9 dose, shifting the character of the experience without changing the THC level.",
   },
   {
     q: "How does THC actually work in the body?",
-    a: "THC and other cannabinoids work through the endocannabinoid system — a network of receptors in the brain and body that helps regulate mood, appetite, pain, and sleep. THC binds to those receptors (mainly the ones called CB1 and CB2) to produce the lift. Receptor density and tolerance vary by person, which is why the same can can feel different from one body to another.",
+    a: "THC and other cannabinoids work through the endocannabinoid system - a network of receptors in the brain and body that helps regulate mood, appetite, pain, and sleep. THC binds to those receptors (mainly the ones called CB1 and CB2) to produce the lift. Receptor density and tolerance vary by person, which is why the same can can feel different from one body to another.",
   },
   {
     q: "Is the product third-party lab tested?",
@@ -761,7 +761,7 @@ function ProductDetailPage() {
                         >
                           <img
                             src={edge.node.url}
-                            alt={edge.node.altText ?? `SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC seltzer — view ${idx + 1}`}
+                            alt={edge.node.altText ?? `SUNRISE ${product.flavor} ${product.tier}mg hemp-infused THC seltzer - view ${idx + 1}`}
                             loading="lazy"
                             decoding="async"
                           />
@@ -1121,7 +1121,7 @@ function ProductDetailPage() {
                 <div className={`pd-inside-ing${openIng === "hemp" ? " pd-inside-ing--open" : ""}`}>
                   <button type="button" className="pd-inside-ing-name" aria-expanded={openIng === "hemp"} onClick={() => toggleIng("hemp")}>Emulsified<br />Hemp Extract</button>
                   <div className="pd-inside-ing-desc">
-                    The good stuff — expertly blended cannabis extract for a clean
+                    The good stuff - expertly blended cannabis extract for a clean
                     and consistent experience with every sip.
                   </div>
                 </div>

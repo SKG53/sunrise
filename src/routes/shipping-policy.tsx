@@ -120,7 +120,7 @@ function ShippingPolicyPage() {
                   </strong>
                 </p>
                 <p>
-                  The carrier — not SUNRISE — performs the age check at
+                  The carrier - not SUNRISE - performs the age check at
                   delivery. Please ensure that someone 21 or older is
                   available at the shipping address you provide.
                 </p>

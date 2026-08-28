@@ -34,7 +34,7 @@ export const Route = createFileRoute("/contact")({
       {
         name: "description",
         content:
-          "Questions, wholesale inquiries, press, or just saying hi — reach the SUNRISE team by form or email.",
+          "Questions, wholesale inquiries, press, or just saying hi - reach the SUNRISE team by form or email.",
       },
     ],
     links: [
@@ -141,7 +141,7 @@ function ContactPage() {
                 Give us a <em className="accent-italic">buzz</em>
               </h1>
               <p className="c-hero-body">
-                Wholesale, press, product questions, or anything else — we
+                Wholesale, press, product questions, or anything else - we
                 read every note. Use the form below or drop us an email.
               </p>
             </div>

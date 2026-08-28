@@ -24,12 +24,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Hemp-infused Delta-9 THC seltzers in delicious fruit-forward flavors. Alcohol-free, made with simple ingredients — refresh the way the world drinks.",
+          "Hemp-infused Delta-9 THC seltzers in delicious fruit-forward flavors. Alcohol-free, made with simple ingredients - refresh the way the world drinks.",
       },
       {
         property: "og:description",
         content:
-          "Hemp-infused Delta-9 THC seltzers in delicious fruit-forward flavors. Alcohol-free, made with simple ingredients — refresh the way the world drinks.",
+          "Hemp-infused Delta-9 THC seltzers in delicious fruit-forward flavors. Alcohol-free, made with simple ingredients - refresh the way the world drinks.",
       },
     ],
     links: [
@@ -56,11 +56,11 @@ const SHOW_NON_LIVE_PRODUCTS = false;
 const FAQS = [
   {
     q: "What is hemp?",
-    a: "Hemp is a variant of the cannabis plant with 0.3% Delta-9 THC or less by dry weight — federally legal under the 2018 Farm Bill. It still carries the same psychoactive properties at higher doses, so we encourage customers to choose their experience based on comfort and habit.",
+    a: "Hemp is a variant of the cannabis plant with 0.3% Delta-9 THC or less by dry weight - federally legal under the 2018 Farm Bill. It still carries the same psychoactive properties at higher doses, so we encourage customers to choose their experience based on comfort and habit.",
   },
   {
     q: "Is SUNRISE legal?",
-    a: "Yes — our beverages are 100% federally legal because every can uses hemp-derived Delta-9 THC at or below 0.3% by dry weight, which makes them legal under the 2018 Farm Bill. State laws vary, however. Please check your local rules for specific guidelines on hemp-infused beverage consumption.",
+    a: "Yes - our beverages are 100% federally legal because every can uses hemp-derived Delta-9 THC at or below 0.3% by dry weight, which makes them legal under the 2018 Farm Bill. State laws vary, however. Please check your local rules for specific guidelines on hemp-infused beverage consumption.",
   },
   {
     q: "How will it feel?",
@@ -330,7 +330,7 @@ function HomePage() {
             <div className="hero-strip-col tier-60-bg" />
           </div>
           <div className="hero-overlay">
-            <h1 className="sr-only">SUNRISE — Hemp-Infused Seltzers</h1>
+            <h1 className="sr-only">SUNRISE - Hemp-Infused Seltzers</h1>
             <div className="hero-wordmark-slot" ref={heroWmRef} />
             <div className="hero-subtitle">Crafted Beverages</div>
           </div>
@@ -487,7 +487,7 @@ function HomePage() {
                 <div className="s06-card-footer"><span className="s06-card-footer-label">Explore</span><span className="s06-card-footer-arrow">→</span></div>
               </a>
               ) : (
-              <div className="s06-card t5 s06-card-soon" aria-label="5mg tier — coming soon">
+              <div className="s06-card t5 s06-card-soon" aria-label="5mg tier - coming soon">
                 <span className="s06-soon-badge">Coming Soon</span>
                 <div className="s06-lockup-slot" ref={lockup5Ref} />
                 <div className="s06-card-meta">
@@ -602,7 +602,7 @@ function HomePage() {
                 <div className={`s04-ing${openIng === "hemp" ? " s04-ing--open" : ""}`}>
                   <button type="button" className="s04-ing-name" aria-expanded={openIng === "hemp"} onClick={() => toggleIng("hemp")}>Emulsified<br />Hemp Extract</button>
                   <div className="s04-ing-desc">
-                    The good stuff — expertly blended cannabis extract for a clean
+                    The good stuff - expertly blended cannabis extract for a clean
                     and consistent experience with every sip.
                   </div>
                 </div>
