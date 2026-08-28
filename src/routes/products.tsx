@@ -422,7 +422,7 @@ function ProductsPage() {
       // At <=520px the effect grid is 2x2 (products.css), so cells are narrow;
       // shrink the mark ~18% so the widest lockup (THC+THCV) clears the cell.
       // Still the locked renderEffectSymbol, just a smaller size arg.
-      const effSize = window.innerWidth <= 520 ? base * 0.94 : base * 1.05;
+      const effSize = window.innerWidth <= 520 ? base * 1.0 : base * 1.05;
       EFFECTS.forEach((e, i) => {
         const ref = effectRefs.current[i];
         if (!ref) return;

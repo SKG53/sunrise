@@ -1028,16 +1028,16 @@
   /* Compact card: no forced tall min-height, tighter padding for narrow cells. */
   .p-effect-card {
     min-height: 0;
-    padding: calc(var(--base) * 0.7) calc(var(--base) * 0.5);
+    padding: calc(var(--base) * 0.7) calc(var(--base) * 0.42);
   }
   .p-effect-bestfor { margin-bottom: calc(var(--base) * 0.1); }
   /* Bigger top icon (blue) and "Best for" subtext (red) on mobile; scoped to the
      products grid so the shared /hbe cards are unaffected. */
   .p-effects-grid--collapsible .p-effect-icon {
-    width: calc(var(--base) * 2.6);
-    height: calc(var(--base) * 2.6);
+    width: calc(var(--base) * 3.0);
+    height: calc(var(--base) * 3.0);
   }
-  .p-effects-grid--collapsible .p-effect-bestfor { font-size: calc(var(--base) * 0.3); }
+  .p-effects-grid--collapsible .p-effect-bestfor { font-size: calc(var(--base) * 0.34); }
 
   /* Toggle: plain cream "+" (no border/circle) to match the site's other plus
      signs; bigger, and bounced — staggered per card (below) so they draw
@@ -1058,7 +1058,7 @@
     display: block;
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: calc(var(--base) * 0.95);
+    font-size: calc(var(--base) * 1.12);
     line-height: 1;
     transition: transform 0.28s ease;
   }
@@ -1080,7 +1080,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: calc(var(--base) * 0.22);
+    gap: calc(var(--base) * 0.3);
     min-height: 0;
     overflow: hidden;
     opacity: 0;
@@ -1088,6 +1088,10 @@
     transition: opacity 0.22s ease;
   }
   .p-effect-card.is-open .p-effect-collapse-inner { opacity: 1; }
+  /* Expand text was rendering at the desktop base (~8px/7px on phones) — far too
+     small to read. Bump the body sentence and the paired descriptor for mobile. */
+  .p-effects-grid--collapsible .p-effect-body { font-size: calc(var(--base) * 0.44); line-height: 1.4; }
+  .p-effects-grid--collapsible .p-effect-foot { font-size: calc(var(--base) * 0.32); }
   /* Spacer only exists to bottom-pin the foot on desktop; not needed compact. */
   .p-effect-spacer { display: none; }
 }
