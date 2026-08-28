@@ -879,12 +879,12 @@ main { flex: 1; width: 100%; }
 .age-gate-btn:hover::before { clip-path: inset(0 0 0 0); }
 .age-gate-btn:not(.age-gate-btn-no-arrow):hover::after { animation: btn-arrow-dance 400ms ease-out; }
 .age-gate-btn-primary {
-  background: var(--near-black);
+  background: var(--tier-10);
   color: var(--cream);
-  border: 2px solid var(--near-black);
+  border: 2px solid var(--tier-10);
   min-width: calc(var(--base) * 4.0);
   --btn-wipe-fill: var(--cream);
-  --btn-hover-text: var(--near-black);
+  --btn-hover-text: var(--tier-10);
 }
 .age-gate-btn-secondary {
   background: transparent;
@@ -893,6 +893,27 @@ main { flex: 1; width: 100%; }
   min-width: calc(var(--base) * 2.2);
   --btn-wipe-fill: var(--near-black);
   --btn-hover-text: var(--cream);
+}
+
+/* ── Touch = no hover: disable the button wipe gesture on mobile ──────────────
+   Phones can't hover, so the left-to-right fill wipe, the text color flip, and
+   the dancing arrow never make sense on tap. On mobile every button rests in
+   its base state instead. Re-pointing --btn-hover-text to each variant's OWN
+   base color makes the color flip a no-op; the wipe pseudo stays clipped and
+   the arrow stays put. Desktop hover behavior is untouched. */
+@media (max-width: 768px) {
+  .btn:hover::before { clip-path: inset(0 100% 0 0); }
+  .btn:hover::after { animation: none; }
+  .btn-primary        { --btn-hover-text: var(--btn-primary-color); }
+  .btn-secondary      { --btn-hover-text: var(--near-black); }
+  .btn-flavor         { --btn-hover-text: var(--cream); }
+  .btn-on-color       { --btn-hover-text: var(--on-color-text, var(--tier-10)); }
+  .btn-on-color-ghost { --btn-hover-text: var(--cream); }
+
+  .age-gate-btn:hover::before { clip-path: inset(0 100% 0 0); }
+  .age-gate-btn:not(.age-gate-btn-no-arrow):hover::after { animation: none; }
+  .age-gate-btn-primary   { --btn-hover-text: var(--cream); }
+  .age-gate-btn-secondary { --btn-hover-text: var(--near-black); }
 }
 
 .age-gate-divider {
