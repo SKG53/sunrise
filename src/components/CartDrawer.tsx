@@ -122,7 +122,7 @@ export function CartDrawer() {
           {items.length === 0 ? (
             <div className="cart-empty">
               <p className="cart-empty-title">Your cart is empty</p>
-              <p className="cart-empty-sub">Pick a flavor — start with our seltzers.</p>
+              <p className="cart-empty-sub">Pick a flavor - start with our seltzers.</p>
               <a
                 href="/products"
                 className="cart-empty-cta"

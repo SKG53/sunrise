@@ -69,8 +69,8 @@ function SmsMarketingPolicyPage() {
                   submitting any opt-in form (whether on our website, at
                   checkout, in store, or at an event), you expressly consent
                   to receive recurring marketing and promotional text
-                  messages — including those sent using an automatic
-                  telephone dialing system or pre-recorded voice message —
+                  messages - including those sent using an automatic
+                  telephone dialing system or pre-recorded voice message -
                   from SUNRISE Beverage at the number provided.
                 </p>
                 <p>

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/faq")({
       {
         name: "description",
         content:
-          "Frequently asked questions about SUNRISE hemp-derived Delta-9 THC seltzers — potency, effects, ingredients, legality, shipping, and safety.",
+          "Frequently asked questions about SUNRISE hemp-derived Delta-9 THC seltzers - potency, effects, ingredients, legality, shipping, and safety.",
       },
     ],
     links: [
@@ -39,7 +39,7 @@ const SECTIONS: FAQSection[] = [
         a: (
           <p>
             Hemp is a variant of the cannabis plant with 0.3% Delta-9 THC or
-            less by dry weight — federally legal under the 2018 Farm Bill. It
+            less by dry weight - federally legal under the 2018 Farm Bill. It
             still carries the same psychoactive properties at higher doses, so
             we encourage customers to choose their experience based on comfort
             and habit.
@@ -53,7 +53,7 @@ const SECTIONS: FAQSection[] = [
           <p>
             Delta-9 THC is the cannabinoid responsible for the lift in
             cannabis. The molecule is chemically identical whether it comes
-            from hemp or marijuana — what changes is legal status. Hemp-derived
+            from hemp or marijuana - what changes is legal status. Hemp-derived
             Delta-9 is federally legal at concentrations of 0.3% or less by
             dry weight.
           </p>
@@ -64,7 +64,7 @@ const SECTIONS: FAQSection[] = [
         q: "What are CBG, CBN, and THCV?",
         a: (
           <p>
-            Minor cannabinoids — the supporting cast alongside Delta-9 THC.
+            Minor cannabinoids - the supporting cast alongside Delta-9 THC.
             CBG tracks toward focus and uplift, CBN toward relaxation and
             unwinding, THCV toward clarity and engagement. Every variant in
             the lineup blends 30mg of one of these alongside the stated
@@ -79,7 +79,7 @@ const SECTIONS: FAQSection[] = [
         a: (
           <p>
             THC and other cannabinoids work through the endocannabinoid
-            system — a network of receptors in the brain and body that helps
+            system - a network of receptors in the brain and body that helps
             regulate mood, appetite, pain, and sleep. THC binds to those
             receptors (mainly the ones called CB1 and CB2) to produce the
             lift. Receptor density and tolerance vary by person, which is why
@@ -112,7 +112,7 @@ const SECTIONS: FAQSection[] = [
           <p>
             Start lower than you think and work your way up. Begin with half a
             serving, wait the full window for the lift to arrive, and decide
-            from there. A first session is for finding where your line is —
+            from there. A first session is for finding where your line is -
             not testing it.
           </p>
         ),
@@ -122,7 +122,7 @@ const SECTIONS: FAQSection[] = [
         q: "Can I mix potencies in one session?",
         a: (
           <p>
-            Not advised. Mixing potencies stacks the dose — a 10MG plus a 30MG
+            Not advised. Mixing potencies stacks the dose - a 10MG plus a 30MG
             is 40mg of THC, which can land harder than expected. Pick one
             potency and stay with it for the session.
           </p>
@@ -234,7 +234,7 @@ const SECTIONS: FAQSection[] = [
         q: "Is SUNRISE gluten-free, vegan, and free of major allergens?",
         a: (
           <p>
-            Yes — all three. Every can is gluten-free, vegan, and free of the
+            Yes - all three. Every can is gluten-free, vegan, and free of the
             eight major allergens (milk, eggs, fish, shellfish, tree nuts,
             peanuts, wheat, and soy).
           </p>
@@ -247,7 +247,7 @@ const SECTIONS: FAQSection[] = [
           <p>
             Cool, dry, out of direct sunlight. Refrigeration isn't required
             but recommended for the best taste. Every can has a best-by date
-            printed on it — drink before that date for freshness and full
+            printed on it - drink before that date for freshness and full
             potency.
           </p>
         ),
@@ -329,7 +329,7 @@ const SECTIONS: FAQSection[] = [
         q: "Is SUNRISE legal?",
         a: (
           <p>
-            Yes — our beverages are 100% federally legal because every can
+            Yes - our beverages are 100% federally legal because every can
             uses hemp-derived Delta-9 THC at or below 0.3% by dry weight,
             which makes them legal under the 2018 Farm Bill. State laws vary,
             however. Please check your local rules for specific guidelines on
@@ -352,7 +352,7 @@ const SECTIONS: FAQSection[] = [
         q: "Is it legal in my state?",
         a: (
           <p>
-            Most US states allow hemp-derived Delta-9 THC beverages — but not
+            Most US states allow hemp-derived Delta-9 THC beverages - but not
             all. We only ship to states where the product is legal, so if
             checkout completes for your address, you're good.
           </p>
@@ -394,7 +394,7 @@ const SECTIONS: FAQSection[] = [
         q: "Why do you check ID at checkout?",
         a: (
           <p>
-            SUNRISE is an adult product — consumers must be 21 or older. ID
+            SUNRISE is an adult product - consumers must be 21 or older. ID
             verification at checkout ensures every order goes to a verified
             adult and that we stay compliant with the regulations governing
             hemp-derived THC beverages.
@@ -406,7 +406,7 @@ const SECTIONS: FAQSection[] = [
         q: "What's your return policy?",
         a: (
           <p>
-            All sales are final — we don't accept returns on beverages once
+            All sales are final - we don't accept returns on beverages once
             sealed cans leave our facility. If your order arrives damaged,
             defective, or incorrect, email{" "}
             <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>{" "}

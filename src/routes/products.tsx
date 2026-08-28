@@ -117,7 +117,7 @@ const TIERS: Record<TierKey, TierData> = {
     name: "Perfect Buzz",
     short: "Perfect Buzz",
     descriptors: "Smooth · Balanced · Social",
-    copy: "Casual sips, afternoon resets, or social gatherings. The go-to tier — a steady, social lift.",
+    copy: "Casual sips, afternoon resets, or social gatherings. The go-to tier - a steady, social lift.",
     flavors: [
       { name: "Strawberry",          descriptor: "Fresh + Fruity",  flavorColor: "#CC1F39" },
       { name: "Watermelon",          descriptor: "Sweet + Juicy",   flavorColor: "#0A6034" },
@@ -147,7 +147,7 @@ const TIERS: Record<TierKey, TierData> = {
     name: "Elevated Experience",
     short: "Elevated Experience",
     descriptors: "Bold · Potent · Immersive",
-    copy: "Late nights, deep decompressions, or weekend relaxation. The full expression — patience and respect required.",
+    copy: "Late nights, deep decompressions, or weekend relaxation. The full expression - patience and respect required.",
     flavors: [
       { name: "Passionfruit Mango",  descriptor: "Bright + Breezy", flavorColor: "#60203A" },
       { name: "Wild Cherry Peach",   descriptor: "Lush + Juicy",    flavorColor: "#861625" },
@@ -272,11 +272,11 @@ const FAQS: Array<{ q: string; a: string }> = [
   },
   {
     q: "I've never tried a hemp seltzer. Where should I start?",
-    a: "Start lower than you think and work your way up. Begin with half a serving, wait the full window for the lift to arrive, and decide from there. A first session is for finding where your line is — not testing it.",
+    a: "Start lower than you think and work your way up. Begin with half a serving, wait the full window for the lift to arrive, and decide from there. A first session is for finding where your line is - not testing it.",
   },
   {
     q: "What are CBG, CBN, and THCV?",
-    a: "Minor cannabinoids — the supporting cast alongside Delta-9 THC. CBG tracks toward focus and uplift, CBN toward relaxation and unwinding, THCV toward clarity and engagement. Every variant in the lineup blends 30mg of one of these alongside the stated Delta-9 dose, shifting the character of the experience without changing the THC level.",
+    a: "Minor cannabinoids - the supporting cast alongside Delta-9 THC. CBG tracks toward focus and uplift, CBN toward relaxation and unwinding, THCV toward clarity and engagement. Every variant in the lineup blends 30mg of one of these alongside the stated Delta-9 dose, shifting the character of the experience without changing the THC level.",
   },
   {
     q: "How long until I feel it?",
@@ -284,11 +284,11 @@ const FAQS: Array<{ q: string; a: string }> = [
   },
   {
     q: "Is SUNRISE gluten-free, vegan, and free of major allergens?",
-    a: "Yes — all three. Every can is gluten-free, vegan, and free of the eight major allergens (milk, eggs, fish, shellfish, tree nuts, peanuts, wheat, and soy).",
+    a: "Yes - all three. Every can is gluten-free, vegan, and free of the eight major allergens (milk, eggs, fish, shellfish, tree nuts, peanuts, wheat, and soy).",
   },
   {
     q: "How should I store the cans?",
-    a: "Cool, dry, out of direct sunlight. Refrigeration isn't required but recommended for the best taste. Every can has a best-by date printed on it — drink before that date for freshness and full potency.",
+    a: "Cool, dry, out of direct sunlight. Refrigeration isn't required but recommended for the best taste. Every can has a best-by date printed on it - drink before that date for freshness and full potency.",
   },
 ];
 
@@ -497,7 +497,7 @@ function ProductsPage() {
                 <span className="accent">sip and pour.</span>
               </h1>
               <p className="p-hero-body">
-                Try one and try them all. Savor the SUNRISE with each and every one — all made with natural flavors.
+                Try one and try them all. Savor the SUNRISE with each and every one - all made with natural flavors.
               </p>
             </div>
           </div>
@@ -512,7 +512,7 @@ function ProductsPage() {
                   treatment. When the live-products flag flips on, this hides and
                   the live 5mg button below takes over. */}
               {!SHOW_NON_LIVE_PRODUCTS && (
-                <div className="p-switch p-switch-soon" aria-label="5mg tier — coming soon">
+                <div className="p-switch p-switch-soon" aria-label="5mg tier - coming soon">
                   <div className="p-switch-lockup" ref={switchRefs["5"]} />
                   <div className="p-switch-name"><span>Coming</span><span>Soon</span></div>
                 </div>
@@ -581,7 +581,7 @@ function ProductsPage() {
                           key={i}
                           href={`/products/${toSlug(tierKey, f)}`}
                           className="p-flavor-card"
-                          aria-label={`${f.name} — ${td.name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ""}`}
+                          aria-label={`${f.name} - ${td.name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ""}`}
                           style={{ ["--flavor-color" as string]: f.flavorColor } as React.CSSProperties}
                         >
                           <FlavorCan slug={toSlug(tierKey, f)} flavorName={f.name} />
@@ -628,7 +628,7 @@ function ProductsPage() {
               />
             </h2>
             <p className="p-effects-subhead">
-              Every tier offers four paths — a classic THC core, or three enhanced with minor cannabinoids for a more specific experience.
+              Every tier offers four paths - a classic THC core, or three enhanced with minor cannabinoids for a more specific experience.
             </p>
             <div className="p-effects-grid p-effects-grid--collapsible">
               {EFFECTS.map((e, i) => (
@@ -680,7 +680,7 @@ function ProductsPage() {
               </h2>
               <p className="p-inside-lead">
                 Every SUNRISE seltzer starts with simple ingredients, pure cane sugar, and hemp extract
-                emulsified in small batches — no harsh chemicals, nothing you can't pronounce.
+                emulsified in small batches - no harsh chemicals, nothing you can't pronounce.
               </p>
             </div>
 
@@ -689,7 +689,7 @@ function ProductsPage() {
                 <div className="p-inside-pillar-title">Flavor</div>
                 <p className="p-inside-pillar-body">
                   Fruit-forward flavors and pure cane sugar. A crisp, mid-calorie profile
-                  that tastes as good as it looks — no artificial sweeteners, no shortcuts.
+                  that tastes as good as it looks - no artificial sweeteners, no shortcuts.
                 </p>
               </div>
               <div className="p-inside-pillar">
@@ -721,7 +721,7 @@ function ProductsPage() {
                 <p className="p-transparency-body">
                   Purified water, pure cane sugar, simple ingredients flavoring, emulsified
                   hemp extract, B12. Nothing to hide. See the full breakdown or
-                  pull any flavor's COA — cannabinoid content, contaminant screen,
+                  pull any flavor's COA - cannabinoid content, contaminant screen,
                   batch and date.
                 </p>
               </div>

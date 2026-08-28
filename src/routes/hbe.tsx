@@ -50,7 +50,7 @@ const TIERS: Record<TierKey, TierData> = {
   '5':  { color: '#DC7F27', name: 'Subtle Lift', short: 'Subtle Lift', descriptors: 'Light · Bright · Casual',
     copy: 'First times, mid-week refreshments, or social sessions. Crisp, casual, easy to like.', flavors: [] },
   '10': { color: '#CC1F39', name: 'Perfect Buzz', short: 'Perfect Buzz', descriptors: 'Smooth · Balanced · Social',
-    copy: 'Casual sips, afternoon resets, or social gatherings. The go-to tier — a steady, social lift.',
+    copy: 'Casual sips, afternoon resets, or social gatherings. The go-to tier - a steady, social lift.',
     flavors: [
       { name: 'Strawberry',          descriptor: 'Fresh + Fruity',  flavorColor: '#CC1F39' },
       { name: 'Watermelon',          descriptor: 'Sweet + Juicy',   flavorColor: '#0A6034' },
@@ -70,7 +70,7 @@ const TIERS: Record<TierKey, TierData> = {
       { name: 'Strawberry Watermelon', descriptor: 'Sweet + Fresh',     flavorColor: '#0A6034', cannabinoid: 'THCV' },
     ] },
   '60': { color: '#2E1E3D', name: 'Elevated Experience', short: 'Elevated Experience', descriptors: 'Bold · Potent · Immersive',
-    copy: 'Late nights, deep decompressions, or weekend relaxation. The full expression — patience and respect required.',
+    copy: 'Late nights, deep decompressions, or weekend relaxation. The full expression - patience and respect required.',
     flavors: [
       { name: 'Passionfruit Mango',  descriptor: 'Bright + Breezy', flavorColor: '#60203A' },
       { name: 'Wild Cherry Peach',   descriptor: 'Lush + Juicy',    flavorColor: '#861625' },
@@ -283,7 +283,7 @@ function EventSignupPage() {
             <div className="hero-strip-col tier-60-bg" />
           </div>
           <div className="hero-overlay">
-            <h1 className="sr-only">SUNRISE — Hemp Beverage Expo</h1>
+            <h1 className="sr-only">SUNRISE - Hemp Beverage Expo</h1>
             <div className="hero-wordmark-slot" ref={heroWmRef} />
             <div className="hero-subtitle">Crafted Beverages</div>
           </div>
@@ -437,7 +437,7 @@ function EventSignupPage() {
                 <span className="accent">sip and pour.</span>
               </h2>
               <p className="p-hero-body">
-                Try one and try them all. Savor the SUNRISE with each and every one — all made with natural flavors.
+                Try one and try them all. Savor the SUNRISE with each and every one - all made with natural flavors.
               </p>
             </div>
           </div>
@@ -492,7 +492,7 @@ function EventSignupPage() {
                       key={i}
                       href={`/products/${toSlug(activeTier, f)}`}
                       className="p-flavor-card"
-                      aria-label={`${f.name} — ${TIERS[activeTier].name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ''}`}
+                      aria-label={`${f.name} - ${TIERS[activeTier].name}${f.cannabinoid ? ` with ${f.cannabinoid}` : ''}`}
                       style={{ ['--flavor-color' as string]: f.flavorColor } as React.CSSProperties}
                     >
                       <FlavorCan slug={toSlug(activeTier, f)} flavorName={f.name} />
@@ -529,7 +529,7 @@ function EventSignupPage() {
               <span className="p-effects-wordmark" ref={wordmarkRef} aria-label="SUNRISE" />
             </h2>
             <p className="p-effects-subhead">
-              Every tier offers four paths — a classic THC core, or three enhanced with minor cannabinoids for a more specific experience.
+              Every tier offers four paths - a classic THC core, or three enhanced with minor cannabinoids for a more specific experience.
             </p>
             <div className="p-effects-grid">
               {EFFECTS.map((e, i) => (

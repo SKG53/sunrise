@@ -72,7 +72,7 @@ function AboutPage() {
               <div className="a-intro-body">
                 <p>
                   <span className="a-intro-emphasizer">Simple beginnings for a new kind of drink.</span>
-                  {" "}SUNRISE started the way the best beverages always have — with a
+                  {" "}SUNRISE started the way the best beverages always have - with a
                   family, a workshop, and a conviction that what's on the shelf
                   could be better. Founded along America's historic Route 66, we
                   build every can the way we always have: in small batches, by
@@ -80,7 +80,7 @@ function AboutPage() {
                   markets around the country have opened up.
                 </p>
                 <p>
-                  Our team brings years of beverage manufacturing to the table —
+                  Our team brings years of beverage manufacturing to the table -
                   formulation, production, and testing. What's new is the category.
                   What's not new is how we approach it. Every SUNRISE can is made
                   from simple ingredients and pure cane sugar, emulsified with hemp
@@ -91,7 +91,7 @@ function AboutPage() {
                 <p>
                   <span className="a-intro-emphasizer">Every can, every batch.</span>
                   {" "}Made in-house. Made to be what the category has been missing
-                  — simple ingredients, delicious flavors, and real effects that
+                  - simple ingredients, delicious flavors, and real effects that
                   deliver consistency with every sip.
                 </p>
               </div>

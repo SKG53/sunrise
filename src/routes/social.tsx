@@ -134,7 +134,7 @@ function SocialPage() {
                 <div className="s04-ing">
                   <div className="s04-ing-name">Emulsified<br />Hemp Extract</div>
                   <div className="s04-ing-desc">
-                    The good stuff — expertly blended cannabis extract for a clean
+                    The good stuff - expertly blended cannabis extract for a clean
                     and consistent experience with every sip.
                   </div>
                 </div>
