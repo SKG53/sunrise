@@ -121,6 +121,8 @@
   color: var(--gold);
 }
 .faq-menu-num {
+  /* Section numbers hidden from display (markup kept in code) */
+  display: none;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   font-size: calc(var(--base) * 0.30);
@@ -157,6 +159,8 @@
   margin: 0 0 calc(var(--base) * 0.6);
 }
 .faq-section-num {
+  /* Section numbers hidden from display (markup kept in code) */
+  display: none;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: calc(var(--base) * 0.32);
