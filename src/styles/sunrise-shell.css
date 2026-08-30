@@ -950,30 +950,6 @@ main { flex: 1; width: 100%; }
   }
 }
 
-/* ── TEMP DEV — SECTION TAGS (ALL PAGES) · DELETE THIS BLOCK BEFORE LAUNCH ────
-   Auto-numbers every <section> on every page via a CSS counter, shown as a tiny
-   corner tag (S01, S02, …). Triage aid only. To remove: delete this block. */
-body { counter-reset: sxn; }
-section { position: relative; }
-section::before {
-  counter-increment: sxn;
-  content: "S" counter(sxn, decimal-leading-zero);
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  z-index: 60;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  color: rgba(254, 251, 224, 0.85);
-  background: rgba(26, 26, 26, 0.45);
-  padding: 2px 4px;
-  border-radius: 3px;
-  pointer-events: none;
-}
-/* ── END TEMP DEV — SECTION TAGS ─────────────────────────────────────────── */
 
 /* ── MOBILE: INTERIOR PAGE-HERO (S01) SIZE + S02 PADDING ─────────────────────
    Make every interior page-hero match the shortened height, and give S02 (the
