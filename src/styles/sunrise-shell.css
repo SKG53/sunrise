@@ -983,6 +983,6 @@ main { flex: 1; width: 100%; }
   .btn-on-color-ghost {
     background: var(--cream);
     border-color: transparent;
-    color: var(--btn-hover-text);
+    color: var(--on-color-text, var(--tier-10));
   }
 }
