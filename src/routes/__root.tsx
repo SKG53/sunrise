@@ -12,8 +12,8 @@ const GTM_HEAD_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.star
 
 // Sitewide Organization JSON-LD (schema.org). Minimal, factual fields only —
 // no postal address (the only address on file is the BIAB production entity,
-// which never appears consumer-facing), no logo or sameAs yet (added later
-// once a transparent logo and claimed social URLs exist). `<` is escaped so
+// which never appears consumer-facing), no logo yet; sameAs lists the claimed
+// Instagram profile (add more as they're confirmed). `<` is escaped so
 // the JSON can't break out of the inline <script> tag.
 const ORG_JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
@@ -22,6 +22,7 @@ const ORG_JSON_LD = JSON.stringify({
   url: "https://www.savorsunrise.com",
   email: "hello@savorsunrise.com",
   telephone: "+1-877-674-7459",
+  sameAs: ["https://www.instagram.com/savorsunrise"],
 }).replace(/</g, "\\u003c");
 
 function NotFoundComponent() {
