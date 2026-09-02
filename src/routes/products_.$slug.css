@@ -1085,13 +1085,13 @@
   .pd-stat-cb {
     display: flex;
     align-items: center;
-    gap: calc(var(--base) * 0.26);
+    gap: calc(var(--base) * 0.22);
     border-left: 1px solid rgba(254, 251, 224, 0.22);
-    padding-left: calc(var(--base) * 0.3);
+    padding-left: calc(var(--base) * 0.22);
   }
   .pd-stat-cb-icon {
-    width: calc(var(--base) * 1.75);
-    height: calc(var(--base) * 1.75);
+    width: calc(var(--base) * 1.66);
+    height: calc(var(--base) * 1.66);
     flex-shrink: 0;
     display: block;
   }
@@ -1101,35 +1101,47 @@
     align-items: flex-start;
     gap: calc(var(--base) * 0.06);
   }
+  .pd-stat-cb-lockrow {
+    display: flex;
+    align-items: flex-end;
+    gap: calc(var(--base) * 0.12);
+  }
   .pd-stat-cb-lockup { line-height: 0; }
+  /* The "+" reveal affordance sits in the open space to the right of the
+     cannabinoid word (CBN/CBG/THCV). Cream, bouncing (reused What's-Inside
+     keyframe); flips to "−" when open. */
   .pd-stat-cb-toggle {
     background: none;
     border: 0;
-    padding: 0;
+    padding: calc(var(--base) * 0.12);
+    margin: calc(var(--base) * -0.12) calc(var(--base) * -0.12)
+      calc(var(--base) * -0.06) calc(var(--base) * -0.12);
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+  .pd-stat-cb-toggle::after {
+    content: "+";
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: calc(var(--base) * 0.52);
+    line-height: 1;
+    color: var(--cream);
+    animation: pd-inside-plus-bounce 0.92s ease-in-out infinite;
+  }
+  .pd-stats-grid.is-cb-open .pd-stat-cb-toggle::after { content: "\2212"; }
+  .pd-stat-cb-bestfor {
     font-family: 'Montserrat', sans-serif;
     font-style: italic;
     font-weight: 800;
     font-size: calc(var(--base) * 0.34);
     line-height: 1.15;
     color: var(--cream);
-    text-align: left;
-    display: inline-block;
-    white-space: normal;
-    max-width: calc(var(--base) * 3.8);
+    max-width: calc(var(--base) * 4.6);
   }
-  .pd-stat-cb-toggle::after {
-    content: "+";
-    display: inline-block;
-    margin-left: 0.34em;
-    font-style: normal;
-    font-size: 1.5em;
-    line-height: 1;
-    font-weight: 700;
-    color: var(--cream);
-    animation: pd-inside-plus-bounce 0.92s ease-in-out infinite;
-  }
-  .pd-stats-grid.is-cb-open .pd-stat-cb-toggle::after { content: "\2212"; }
   .pd-stat-cb-detail {
     display: flex;
     flex-direction: column;
@@ -1147,7 +1159,7 @@
   }
   .pd-stat-cb-body {
     font-family: 'Montserrat', sans-serif;
-    font-size: calc(var(--base) * 0.3);
+    font-size: calc(var(--base) * 0.27);
     font-weight: 400;
     line-height: 1.4;
     color: rgba(254, 251, 224, 0.9);

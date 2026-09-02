@@ -458,7 +458,7 @@ function ProductDetailPage() {
       // Mobile-only merged stat strip: smaller +30 lockup that shares the top
       // line with the 12oz lockup. Hidden on desktop via CSS; painted anyway.
       if (statCbLockupRef.current) {
-        statCbLockupRef.current.innerHTML = mg30Lockup(base * 0.86, "#FEFBE0");
+        statCbLockupRef.current.innerHTML = mg30Lockup(base * 0.80, "#FEFBE0");
       }
     };
     paint();
@@ -1020,19 +1020,23 @@ function ProductDetailPage() {
                       className="pd-stat-cb-icon"
                     />
                     <div className="pd-stat-cb-cluster">
-                      <div
-                        className="pd-stat-cb-lockup"
-                        ref={statCbLockupRef}
-                        aria-label={`+30 mg ${product.cannabinoid}`}
-                      />
-                      <button
-                        type="button"
-                        className="pd-stat-cb-toggle"
-                        aria-expanded={cbOpen}
-                        onClick={() => setCbOpen((o) => !o)}
-                      >
+                      <div className="pd-stat-cb-lockrow">
+                        <div
+                          className="pd-stat-cb-lockup"
+                          ref={statCbLockupRef}
+                          aria-label={`+30 mg ${product.cannabinoid}`}
+                        />
+                        <button
+                          type="button"
+                          className="pd-stat-cb-toggle"
+                          aria-expanded={cbOpen}
+                          aria-label={`${cbOpen ? "Hide" : "Show"} ${product.cannabinoid} effect details`}
+                          onClick={() => setCbOpen((o) => !o)}
+                        />
+                      </div>
+                      <div className="pd-stat-cb-bestfor">
                         Best for {cbCopy.bestFor}
-                      </button>
+                      </div>
                     </div>
                   </div>
                 )}
