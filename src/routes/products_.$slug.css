@@ -1049,16 +1049,22 @@
      content lives here now. 12oz size is painted per context in the route
      (base*1.5 base / base*0.92 variant); see render12ozStatBlock call. */
   .pd-cannabinoid { display: none; }
+  /* Reclaim side space in the flavor band on mobile — it's a full-bleed color
+     block and doesn't need the full site gutter, so content fills the width. */
+  .pd-stats .container {
+    padding-left: calc(var(--base) * 0.55);
+    padding-right: calc(var(--base) * 0.55);
+  }
   .pd-stats-grid {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: calc(var(--base) * 0.42);
+    gap: calc(var(--base) * 0.28);
     justify-content: flex-start;
     /* Cap + center the whole block so it stays cohesive across the mobile
        range (375–768px) instead of spreading edge-to-edge at the wider end.
        Both rows span this same width, so their left/right bounds line up. */
-    max-width: calc(var(--base) * 11);
+    max-width: calc(var(--base) * 15);
     width: 100%;
     margin-inline: auto;
   }
@@ -1081,7 +1087,7 @@
     --claim-text-size: calc(var(--base) * 0.6);
   }
   /* Variant: split the top line — 12oz left, cannabinoid cluster right. */
-  .pd-stats-grid--variant .pd-stat-top { justify-content: space-between; }
+  .pd-stats-grid--variant .pd-stat-top { justify-content: space-between; flex-wrap: wrap; row-gap: calc(var(--base) * 0.3); }
   .pd-stat-cb {
     display: flex;
     align-items: center;
@@ -1090,8 +1096,8 @@
     padding-left: calc(var(--base) * 0.22);
   }
   .pd-stat-cb-icon {
-    width: calc(var(--base) * 1.66);
-    height: calc(var(--base) * 1.66);
+    width: clamp(calc(var(--base) * 1.7), 18vw, calc(var(--base) * 2.6));
+    height: clamp(calc(var(--base) * 1.7), 18vw, calc(var(--base) * 2.6));
     flex-shrink: 0;
     display: block;
   }
@@ -1104,7 +1110,7 @@
   .pd-stat-cb-lockrow {
     display: flex;
     align-items: flex-end;
-    gap: calc(var(--base) * 0.12);
+    gap: clamp(calc(var(--base) * 0.22), 2.2vw, calc(var(--base) * 0.42));
   }
   .pd-stat-cb-lockup { line-height: 0; }
   /* The "+" reveal affordance sits in the open space to the right of the
@@ -1127,7 +1133,7 @@
     display: inline-block;
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
-    font-size: calc(var(--base) * 0.52);
+    font-size: clamp(calc(var(--base) * 0.52), 5vw, calc(var(--base) * 0.75));
     line-height: 1;
     color: var(--cream);
     animation: pd-inside-plus-bounce 0.92s ease-in-out infinite;
