@@ -259,13 +259,30 @@ main { flex: 1; width: 100%; }
    bar is a link to /products.
    ========================================================================== */
 .announcement-bar {
-  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 51;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  text-align: center;
   background: var(--gold);
   color: var(--near-black);
   padding-block: calc(var(--base) * 0.23);
   padding-inline: var(--section-pad-x);
+  overflow: visible; /* let the mini fireworks spill around the bar */
+  transition: background 450ms ease-out;
+}
+/* Hover — darkened gold (no --gold-hover token exists; literal kept local) */
+.announcement-bar:hover { background: #B38422; }
+/* Sale slide flips the whole field to the complementary deep purple. */
+.announcement-bar.is-sale { background: var(--tier-60); }
+.announcement-bar.is-sale:hover { background: #241730; }
+
+/* Slides are stacked in one grid cell and cross left→right. */
+.announcement-bar-track { display: grid; position: relative; z-index: 2; }
+.announcement-bar-slide {
+  grid-area: 1 / 1;
   font-family: 'Montserrat', sans-serif;
   font-size: calc(var(--base) * 0.28);
   font-weight: 600;
@@ -273,17 +290,72 @@ main { flex: 1; width: 100%; }
   text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-align: center;
+  color: inherit;
   text-decoration: none;
-  transition: background 200ms ease-out;
-  position: sticky;
-  top: 0;
-  z-index: 51;
+  opacity: 0;
+  transform: translateX(-34px); /* parked left, ready to enter */
+  transition: opacity 450ms ease, transform 450ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
-/* Hover — darkened gold (no --gold-hover token exists; literal kept local) */
-.announcement-bar:hover { background: #B38422; }
+.announcement-bar-slide.is-active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+.announcement-bar-slide.is-leaving { opacity: 0; transform: translateX(34px); } /* exit right */
 .announcement-bar-emph { font-weight: 700; }
+.announcement-bar.is-sale .announcement-bar-slide { color: var(--cream); }
+.announcement-bar.is-sale .announcement-bar-emph { color: var(--gold); }
+
+/* Mini fireworks — the Spin & Save particle style, scaled for the bar. */
+.announcement-bar-fw { position: absolute; inset: -6px -2%; z-index: 1; pointer-events: none; overflow: visible; }
+.ann-burst { position: absolute; width: 0; height: 0; opacity: 0; animation: ann-burst-pop 1.2s ease-out forwards; }
+.ann-burst::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  box-shadow: 0 0 10px 4px currentColor;
+  animation: ann-burst-flash 0.6s ease-out forwards;
+}
+.ann-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 13px;
+  margin-left: -1.5px;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 7px 1px currentColor;
+  transform-origin: top center;
+  opacity: 0;
+  animation: ann-particle-fly 1.2s ease-out forwards;
+}
+@keyframes ann-burst-pop {
+  0% { opacity: 0; transform: scale(0); }
+  15% { opacity: 1; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+@keyframes ann-burst-flash {
+  0% { opacity: 0.9; transform: scale(0); }
+  40% { opacity: 0.7; transform: scale(1.6); }
+  100% { opacity: 0; transform: scale(2.2); }
+}
+@keyframes ann-particle-fly {
+  0% { transform: rotate(var(--rotate)) translateY(0) scale(1); opacity: 1; }
+  50% { opacity: 0.95; }
+  100% { transform: rotate(var(--rotate)) translateY(36px) scale(0.1); opacity: 0; }
+}
+/* Reduced motion: still rotate (so both messages are seen) but drop the
+   horizontal slide to a plain fade; fireworks are suppressed in the component. */
+@media (prefers-reduced-motion: reduce) {
+  .announcement-bar-slide { transition: opacity 250ms ease; transform: none; }
+  .announcement-bar-slide.is-active,
+  .announcement-bar-slide.is-leaving { transform: none; }
+}
 
 /* ── SITE HEADER ────────────────────────────────────────────────────────── */
 .site-header {
@@ -757,10 +829,12 @@ main { flex: 1; width: 100%; }
   .site-header .nav-right { margin-left: auto; }
   .nav-hamburger { display: inline-flex; }
 
-  /* Free-shipping bar: legible on mobile (base*0.28 rendered a ~9px sliver). */
+  /* Announcement bar: legible on mobile (base*0.28 rendered a ~9px sliver). */
   .announcement-bar {
     padding-block: 10px;
     padding-inline: 14px;
+  }
+  .announcement-bar-slide {
     font-size: 12px;
     letter-spacing: 0.08em;
   }
