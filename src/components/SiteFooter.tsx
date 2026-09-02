@@ -33,6 +33,14 @@ export function SiteFooter() {
         setStatusMsg(data?.error || "Something went wrong. Please try again.");
         return;
       }
+      // ADDITIVE — fires alongside the existing footer behavior.
+      // Not awaited: the footer success message must never wait on HubSpot,
+      // and a HubSpot failure must never surface an error to the user.
+      fetch("/api/public/newsletter-hubspot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      }).catch(() => {});
       setStatus("success");
       setStatusMsg("Cheers! You’re on the list. ☀️");
       setEmail("");
