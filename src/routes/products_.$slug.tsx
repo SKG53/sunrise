@@ -426,7 +426,7 @@ function ProductDetailPage() {
           base *
             (window.innerWidth <= 768
               ? product.cannabinoid
-                ? 0.92 // variant: shares the top line with the +30mg cluster
+                ? 1.08 // variant: shares the top line with the +30mg cluster
                 : 1.5 // base: focal stat, centered on its own line (Option D)
               : 2.64),
           "#FEFBE0",
@@ -458,7 +458,7 @@ function ProductDetailPage() {
       // Mobile-only merged stat strip: smaller +30 lockup that shares the top
       // line with the 12oz lockup. Hidden on desktop via CSS; painted anyway.
       if (statCbLockupRef.current) {
-        statCbLockupRef.current.innerHTML = mg30Lockup(base * 0.82, "#FEFBE0");
+        statCbLockupRef.current.innerHTML = mg30Lockup(base * 0.86, "#FEFBE0");
       }
     };
     paint();
