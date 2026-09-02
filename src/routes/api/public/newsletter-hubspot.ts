@@ -74,6 +74,27 @@ export const Route = createFileRoute('/api/public/newsletter-hubspot')({
         // relabel or regress an existing contact (spec §5.2 / §5.3). Only stamp
         // the web signup source.
         if (createRes.status === 409) {
+          // First-touch: preserve the original acquisition source. Read the
+          // existing contact and only stamp web_signup_source when it is empty —
+          // never overwrite a source set by an earlier signup. If the lookup
+          // can't confirm it's empty (non-OK response), skip the write rather
+          // than risk a clobber; the create path already attributes brand-new
+          // contacts, so a handler-created contact always keeps its first source.
+          const lookupRes = await fetch(
+            `${GATEWAY_URL}/crm/v3/objects/contacts/${encodeURIComponent(email)}?idProperty=email&properties=web_signup_source`,
+            { headers },
+          )
+          if (!lookupRes.ok) {
+            const text = await lookupRes.text()
+            console.error('newsletter HubSpot lookup failed', lookupRes.status, text)
+            return Response.json({ success: true, updated: false, preserved: true })
+          }
+          const existing = (await lookupRes.json().catch(() => ({}))) as {
+            properties?: { web_signup_source?: string }
+          }
+          if (existing.properties?.web_signup_source) {
+            return Response.json({ success: true, updated: false, preserved: true })
+          }
           const updateProperties: Record<string, string> = {
             web_signup_source: 'Newsletter',
           }
