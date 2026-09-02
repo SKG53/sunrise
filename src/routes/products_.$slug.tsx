@@ -392,6 +392,7 @@ function ProductDetailPage() {
   // paths that don't render that DOM node.
   const bcCbRef = useRef<HTMLSpanElement>(null);            // breadcrumb
   const cannabinoidLockupRef = useRef<HTMLDivElement>(null); // big +30 MG / CBG potency lockup in S02 cannabinoid section
+  const statCbLockupRef = useRef<HTMLDivElement>(null); // mobile-only +30 MG lockup inside the merged stat strip (variant SKUs)
   // Related-card corner lockups — one slot per "Others in Tier" card. Null
   // entries correspond to base-flavor siblings (no cannabinoid). Repopulated
   // via React's ref callback whenever the SKU (and therefore the sibling
@@ -399,6 +400,10 @@ function ProductDetailPage() {
   const relatedCornerRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [qty, setQty] = useState(1);
   const [blurbExpanded, setBlurbExpanded] = useState(false);
+  // Mobile-only: the merged stat strip on variant SKUs tucks the three
+  // cannabinoid effect lines behind a bouncing "+" (same architecture as
+  // "What's Inside"). Collapsed by default; toggled by the "Best for X" button.
+  const [cbOpen, setCbOpen] = useState(false);
 
   useEffect(() => {
     const paint = () => {
@@ -418,7 +423,12 @@ function ProductDetailPage() {
         // function output is unchanged — only its display-layer color is
         // adapted to this surface's contrast needs.
         stat12Ref.current.innerHTML = render12ozStatBlock(
-          base * (window.innerWidth <= 768 ? 0.95 : 2.64),
+          base *
+            (window.innerWidth <= 768
+              ? product.cannabinoid
+                ? 0.92 // variant: shares the top line with the +30mg cluster
+                : 1.5 // base: focal stat, centered on its own line (Option D)
+              : 2.64),
           "#FEFBE0",
         );
       }
@@ -444,6 +454,11 @@ function ProductDetailPage() {
       // React element, not painted here) sits to its left as a co-anchor.
       if (cannabinoidLockupRef.current) {
         cannabinoidLockupRef.current.innerHTML = mg30Lockup(base * 1.8, "#FEFBE0");
+      }
+      // Mobile-only merged stat strip: smaller +30 lockup that shares the top
+      // line with the 12oz lockup. Hidden on desktop via CSS; painted anyway.
+      if (statCbLockupRef.current) {
+        statCbLockupRef.current.innerHTML = mg30Lockup(base * 0.82, "#FEFBE0");
       }
     };
     paint();
@@ -979,45 +994,93 @@ function ProductDetailPage() {
         {/* block defines the section break.                                 */}
         <section className="pd-stats">
           <div className="container">
-            <div className="pd-stats-grid">
-              <div className="pd-stat">
-                <div className="pd-stat-lockup" ref={stat12Ref} aria-hidden="true" />
+            <div
+              className={
+                "pd-stats-grid" +
+                (product.cannabinoid ? " pd-stats-grid--variant" : "") +
+                (cbOpen ? " is-cb-open" : "")
+              }
+            >
+              {/* Top line. Base PDP: 12oz focal stat, centered (Option D).
+                  Variant PDP: 12oz on the left, the +30mg cannabinoid cluster
+                  on the right, split by a hairline. .pd-stat-top and
+                  .pd-claim-row collapse to display:contents on desktop, so the
+                  desktop stat row (12oz + three claims, space-between) is
+                  byte-for-byte unchanged; the cluster and detail are hidden on
+                  desktop, where that copy lives in the .pd-cannabinoid band. */}
+              <div className="pd-stat-top">
+                <div className="pd-stat">
+                  <div className="pd-stat-lockup" ref={stat12Ref} aria-hidden="true" />
+                </div>
+                {product.cannabinoid && cbCopy && (
+                  <div className="pd-stat-cb">
+                    <CannabinoidIcon
+                      cannabinoid={product.cannabinoid}
+                      bgColor={product.color}
+                      className="pd-stat-cb-icon"
+                    />
+                    <div className="pd-stat-cb-cluster">
+                      <div
+                        className="pd-stat-cb-lockup"
+                        ref={statCbLockupRef}
+                        aria-label={`+30 mg ${product.cannabinoid}`}
+                      />
+                      <button
+                        type="button"
+                        className="pd-stat-cb-toggle"
+                        aria-expanded={cbOpen}
+                        onClick={() => setCbOpen((o) => !o)}
+                      >
+                        Best for {cbCopy.bestFor}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="pd-claim" role="img" aria-label="Gluten Free">
-                <span
-                  className="pd-claim-icon"
-                  aria-hidden="true"
-                  dangerouslySetInnerHTML={{ __html: glutenFreeIcon }}
-                />
-                <span
-                  className="pd-claim-text"
-                  aria-hidden="true"
-                  dangerouslySetInnerHTML={{ __html: glutenFreeText }}
-                />
-              </div>
-              <div className="pd-claim" role="img" aria-label="Natural Vegan">
-                <span
-                  className="pd-claim-icon"
-                  aria-hidden="true"
-                  dangerouslySetInnerHTML={{ __html: naturalVeganIcon }}
-                />
-                <span
-                  className="pd-claim-text"
-                  aria-hidden="true"
-                  dangerouslySetInnerHTML={{ __html: naturalVeganText }}
-                />
-              </div>
-              <div className="pd-claim" role="img" aria-label="Zero Alcohol">
-                <span
-                  className="pd-claim-icon"
-                  aria-hidden="true"
-                  dangerouslySetInnerHTML={{ __html: zeroAlcoholIcon }}
-                />
-                <span
-                  className="pd-claim-text"
-                  aria-hidden="true"
-                  dangerouslySetInnerHTML={{ __html: zeroAlcoholText }}
-                />
+              {product.cannabinoid && cbCopy && (
+                <div className="pd-stat-cb-detail">
+                  <p className="pd-stat-cb-body">{cbCopy.body1}</p>
+                  <p className="pd-stat-cb-body">{cbCopy.body2}</p>
+                  <p className="pd-stat-cb-body">{cbCopy.body3}</p>
+                </div>
+              )}
+              <div className="pd-claim-row">
+                <div className="pd-claim" role="img" aria-label="Gluten Free">
+                  <span
+                    className="pd-claim-icon"
+                    aria-hidden="true"
+                    dangerouslySetInnerHTML={{ __html: glutenFreeIcon }}
+                  />
+                  <span
+                    className="pd-claim-text"
+                    aria-hidden="true"
+                    dangerouslySetInnerHTML={{ __html: glutenFreeText }}
+                  />
+                </div>
+                <div className="pd-claim" role="img" aria-label="Natural Vegan">
+                  <span
+                    className="pd-claim-icon"
+                    aria-hidden="true"
+                    dangerouslySetInnerHTML={{ __html: naturalVeganIcon }}
+                  />
+                  <span
+                    className="pd-claim-text"
+                    aria-hidden="true"
+                    dangerouslySetInnerHTML={{ __html: naturalVeganText }}
+                  />
+                </div>
+                <div className="pd-claim" role="img" aria-label="Zero Alcohol">
+                  <span
+                    className="pd-claim-icon"
+                    aria-hidden="true"
+                    dangerouslySetInnerHTML={{ __html: zeroAlcoholIcon }}
+                  />
+                  <span
+                    className="pd-claim-text"
+                    aria-hidden="true"
+                    dangerouslySetInnerHTML={{ __html: zeroAlcoholText }}
+                  />
+                </div>
               </div>
             </div>
           </div>
