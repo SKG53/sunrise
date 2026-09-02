@@ -823,15 +823,18 @@ main { flex: 1; width: 100%; }
   /* held that auto margin) is now display:none and contributes no flex. */
   .site-header {
     padding: calc(var(--base) * 0.4) var(--section-pad-x);
+    /* Pin 16px lower to stay flush under the taller (1.5x) mobile bar. */
+    top: calc(var(--base) * 0.74 + 16px);
   }
   .site-header .site-nav { display: none; }
   .site-header .nav-cta { display: none; }
   .site-header .nav-right { margin-left: auto; }
   .nav-hamburger { display: inline-flex; }
 
-  /* Announcement bar: legible on mobile (base*0.28 rendered a ~9px sliver). */
+  /* Announcement bar: legible on mobile (base*0.28 rendered a ~9px sliver).
+     padding-block 18px → 48px total height (1.5x the prior 32px). */
   .announcement-bar {
-    padding-block: 10px;
+    padding-block: 18px;
     padding-inline: 14px;
   }
   .announcement-bar-slide {
