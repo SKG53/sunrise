@@ -422,15 +422,21 @@ function ProductDetailPage() {
         // lockup reads as a single cream unit on the flavor flood. The
         // function output is unchanged — only its display-layer color is
         // adapted to this surface's contrast needs.
-        stat12Ref.current.innerHTML = render12ozStatBlock(
-          base *
-            (window.innerWidth <= 768
-              ? product.cannabinoid
-                ? 1.08 // variant: shares the top line with the +30mg cluster
-                : 1.5 // base: focal stat, centered on its own line (Option D)
-              : 2.64),
-          "#FEFBE0",
-        );
+        // Fluid, viewport-scaled sizing so both PDP styles FILL the band on
+        // real phones (≈390–430px) instead of floating small inside the cap.
+        // - Variant: 12oz painted at the SAME fluid size as the +30 lockup so
+        //   the two read matched; scales up with width, stays one line to ~360.
+        // - Base PDP: the focal centered 12oz runs large (it's alone on its
+        //   line) and scales with width.
+        // - Desktop unchanged (2.64).
+        const vw = window.innerWidth;
+        const size =
+          vw > 768
+            ? base * 2.64
+            : product.cannabinoid
+              ? Math.max(30, Math.min(vw * 0.085, 41)) // variant: matched
+              : Math.max(base * 1.9, Math.min(vw * 0.18, base * 3.6)); // base focal
+        stat12Ref.current.innerHTML = render12ozStatBlock(size, "#FEFBE0");
       }
 
       // ── Cannabinoid lockups (variant SKUs only) ──────────────────────
@@ -458,7 +464,11 @@ function ProductDetailPage() {
       // Mobile-only merged stat strip: smaller +30 lockup that shares the top
       // line with the 12oz lockup. Hidden on desktop via CSS; painted anyway.
       if (statCbLockupRef.current) {
-        statCbLockupRef.current.innerHTML = mg30Lockup(base * 0.80, "#FEFBE0");
+        const vw = window.innerWidth;
+        statCbLockupRef.current.innerHTML = mg30Lockup(
+          Math.max(30, Math.min(vw * 0.085, 41)),
+          "#FEFBE0",
+        );
       }
     };
     paint();
