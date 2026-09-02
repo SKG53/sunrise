@@ -104,6 +104,30 @@ main { flex: 1; width: 100%; }
    isolation: isolate contains the wipe pseudo at z-index: -1 — wipe paints
    above the button's own background but below text content, no wrapping spans
    needed. */
+
+/* ── BUTTON SYSTEM MAP — where the moving parts live ─────────────────────────
+   It reads as many rules, but it's ONE mechanism + per-variant tokens, not a
+   rule per button. Three places to know:
+     • ENGINE: `.btn` + `.btn:hover` / `::before` / `::after` (directly below).
+       The whole gesture, defined once for every button. Don't add per-variant
+       hover rules — set the two tokens instead.
+     • VARIANT TOKENS: each `.btn-*` (and the age-gate `.age-gate-btn-*` twins)
+       only declares two custom props —
+         --btn-wipe-fill   : color that slides in on hover
+         --btn-hover-text  : color text + arrow flip to while filled
+       That pair is how a variant inverts for context (cream-on-flood vs
+       dark-on-cream). Add a new button style by declaring these two, nothing
+       more.
+     • MOBILE OFF-SWITCH: the `@media (max-width: 768px)` block further down.
+       Touch has no hover, so it CANCELS the gesture — un-slides the wipe, stops
+       the arrow, and repoints each --btn-hover-text to the variant's OWN
+       resting color so the (non-firing) flip is a no-op.
+   ⚠ GOTCHA: because that mobile block rewrites --btn-hover-text to a resting
+   value, any rule that fills a button by default on mobile must set `color` to
+   the real destination token (e.g. --on-color-text), NOT --btn-hover-text —
+   down there it's no longer the "flipped" color. Using it is exactly what made
+   the on-color-ghost CTA render cream-on-cream.
+   ─────────────────────────────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
