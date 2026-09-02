@@ -602,7 +602,7 @@ function HomePage() {
                 <div className={`s04-ing${openIng === "hemp" ? " s04-ing--open" : ""}`}>
                   <button type="button" className="s04-ing-name" aria-expanded={openIng === "hemp"} onClick={() => toggleIng("hemp")}>Emulsified<br />Hemp Extract</button>
                   <div className="s04-ing-desc">
-                    The good stuff - expertly blended cannabis extract for a clean
+                    The good stuff - expertly blended hemp extract for a clean
                     and consistent experience with every sip.
                   </div>
                 </div>
