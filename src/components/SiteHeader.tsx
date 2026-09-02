@@ -30,7 +30,9 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
   useEffect(() => {
     const paint = () => {
       const base = getBasePx();
-      if (wmRef.current)       wmRef.current.innerHTML       = renderWordmark(base * 0.69, "gradient");
+      // Header wordmark 40% larger on mobile (0.69 → 0.966×base); desktop unchanged.
+      const headerWm = window.innerWidth <= 768 ? base * 0.69 * 1.4 : base * 0.69;
+      if (wmRef.current)       wmRef.current.innerHTML       = renderWordmark(headerWm, "gradient");
       if (drawerWmRef.current) drawerWmRef.current.innerHTML = renderWordmark(base * 0.85, "gradient");
     };
     paint();
