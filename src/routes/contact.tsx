@@ -388,7 +388,7 @@ function ContactPage() {
                   <path d="M4.5 3.5C4.5 4.6 3.6 5.5 2.5 5.5S.5 4.6.5 3.5 1.4 1.5 2.5 1.5 4.5 2.4 4.5 3.5zM.8 7.5h3.4v15.5H.8V7.5zm6.4 0h3.2v2.1h.1c.5-.9 1.7-1.9 3.6-1.9 3.8 0 4.5 2.5 4.5 5.8V23h-3.4v-7.8c0-1.9 0-4.3-2.6-4.3s-3 2-3 4.2V23H7.2V7.5z" />
                 </svg>
                 <a
-                  href="#"
+                  aria-disabled="true"
                   className="c-social-handle"
                   aria-label="SUNRISE on LinkedIn"
                 >
