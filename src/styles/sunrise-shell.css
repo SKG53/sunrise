@@ -837,16 +837,20 @@ main { flex: 1; width: 100%; }
   .site-header .nav-right { margin-left: auto; }
   .nav-hamburger { display: inline-flex; }
 
-  /* Announcement bar: legible on mobile (base*0.28 rendered a ~9px sliver).
-     padding-block 18px → 48px total height (1.5x the prior 32px). */
+  /* Announcement bar: mobile height ~doubled. The longer sale line ("… (In cart)")
+     can't fit one line at 16px on a phone, so the slide wraps to two lines within
+     the taller bar; keep "15% Sitewide" from breaking mid-phrase. */
   .announcement-bar {
-    padding-block: 18px;
+    padding-block: 24px;
     padding-inline: 14px;
   }
   .announcement-bar-slide {
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 1.3;
     letter-spacing: 0.08em;
+    white-space: normal;
   }
+  .announcement-bar-emph { white-space: nowrap; }
 
   .footer-row-main { grid-template-columns: 1fr 1fr 1fr; }
   .footer-legal { flex-direction: column; align-items: flex-start; }
