@@ -1,6 +1,7 @@
-// SPIN-TO-WIN — marketing popup that appears immediately after the 21+ age
-// gate is cleared. Free to spin; the discount code is masked until the
-// visitor submits an email.
+// SPIN-TO-WIN — marketing popup. The 21+ age gate stays immediate and blocks
+// the page; once it's cleared, the wheel does NOT pop right away. It arms a set
+// of delayed triggers and appears on the first of: a 10s floor... (see GATING).
+// Free to spin; the discount code is masked until the visitor submits an email.
 //
 // FLOW: idle → spinning (4s) → won (prize shown, code masked, email form)
 //       → revealed (code + copy button + shop link).
@@ -9,9 +10,12 @@
 // lives in Shopify — each code is limited to one use per customer — so a new
 // browsing session re-showing the wheel costs nothing.
 //
-// GATING: does not render until the age gate's sessionStorage flag is set.
-// AgeGate dispatches `sunrise:age-verified` on YES; we also check the flag on
-// mount so returning-in-session visitors (flag already true) still get it.
+// GATING: never shows until age is verified (AgeGate dispatches
+// `sunrise:age-verified`; we also check the flag on mount for returning-in-
+// session visitors). Once eligible we ARM triggers and reveal on whichever
+// fires first: a 10s floor, scrolling past 70% of the Simple Ingredients cards
+// (.s03-card-grid), a 15s fallback, or desktop exit-intent. The floor counts
+// from age-verification, so nothing fires while the gate is still up.
 //
 // OUTCOME: chosen up front from PRIZES via weighted random, then the final
 // rotation is computed to land that segment under the pointer. The animation
@@ -154,7 +158,10 @@ export function SpinWheel() {
     setPhase("hidden");
   }, []);
 
-  // Show once the age gate is cleared and we haven't shown it this session.
+  // Age gate stays immediate; the wheel arms delayed triggers once eligible and
+  // reveals on the first of: 10s floor, scroll past 70% of the Simple Ingredients
+  // cards, 15s fallback, or desktop exit-intent. The floor counts from arming
+  // (i.e. from age-verification), so nothing fires while the gate is still up.
   useEffect(() => {
     reduced.current =
       typeof window !== "undefined" &&
@@ -172,20 +179,62 @@ export function SpinWheel() {
       /* URL or localStorage unavailable — fall through to normal behavior */
     }
 
-    const maybeShow = () => {
+    const FLOOR_MS = 10000;
+    const FALLBACK_MS = 15000;
+    let armed = false;
+    let done = false;
+    let armedAt = 0;
+    const timers: number[] = [];
+
+    const eligible = () => {
       try {
-        if (localStorage.getItem(SUPPRESS_KEY) === "true") return;
-        if (sessionStorage.getItem(STORAGE_KEY) === "true") return;
-        if (sessionStorage.getItem(AGE_KEY) !== "true") return;
+        if (localStorage.getItem(SUPPRESS_KEY) === "true") return false;
+        if (sessionStorage.getItem(STORAGE_KEY) === "true") return false;
+        if (sessionStorage.getItem(AGE_KEY) !== "true") return false;
       } catch {
-        return;
+        return false;
       }
+      return true;
+    };
+    const onScroll = () => {
+      if (Date.now() - armedAt < FLOOR_MS) return;
+      const el = document.querySelector(".s03-card-grid");
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      // Fire once 70% of the Simple Ingredients cards have scrolled above the top.
+      if (r.top + r.height * 0.7 <= 0) reveal();
+    };
+    const onMouseOut = (e: MouseEvent) => {
+      if (Date.now() - armedAt < FLOOR_MS) return;
+      if (e.relatedTarget) return; // moved to another element, not out of window
+      if ((e.clientY ?? 1) <= 0) reveal(); // left via the top edge (exit-intent)
+    };
+    const cleanup = () => {
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("mouseout", onMouseOut);
+      timers.forEach((t) => clearTimeout(t));
+    };
+    const reveal = () => {
+      if (done) return;
+      done = true;
+      cleanup();
       setPhase((p) => (p === "hidden" ? "idle" : p));
     };
+    const arm = () => {
+      if (armed || done || !eligible()) return;
+      armed = true;
+      armedAt = Date.now();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      document.addEventListener("mouseout", onMouseOut);
+      timers.push(window.setTimeout(reveal, FALLBACK_MS));
+    };
 
-    maybeShow();
-    window.addEventListener("sunrise:age-verified", maybeShow);
-    return () => window.removeEventListener("sunrise:age-verified", maybeShow);
+    arm(); // returning-in-session (already age-verified) arms right away
+    window.addEventListener("sunrise:age-verified", arm);
+    return () => {
+      cleanup();
+      window.removeEventListener("sunrise:age-verified", arm);
+    };
   }, []);
 
   // Body scroll lock + ESC to dismiss while visible.
