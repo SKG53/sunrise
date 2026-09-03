@@ -304,6 +304,12 @@ main { flex: 1; width: 100%; }
 .announcement-bar.is-sale .announcement-bar-slide { color: var(--cream); }
 .announcement-bar.is-sale .announcement-bar-emph { color: var(--gold); }
 
+/* Desktop only: bar 50% taller with 2-step-larger slide type. Mobile unchanged. */
+@media (min-width: 769px) {
+  .announcement-bar { padding-block: calc(var(--base) * 0.345); }
+  .announcement-bar-slide { font-size: calc(var(--base) * 0.36); }
+}
+
 /* Mini fireworks — the Spin & Save particle style, scaled for the bar. */
 .announcement-bar-fw { position: absolute; inset: -6px -2%; z-index: 1; pointer-events: none; overflow: visible; }
 .ann-burst { position: absolute; width: 0; height: 0; opacity: 0; animation: ann-burst-pop 1.2s ease-out forwards; }
