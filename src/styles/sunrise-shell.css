@@ -308,10 +308,6 @@ main { flex: 1; width: 100%; }
 @media (min-width: 769px) {
   .announcement-bar { padding-block: calc(var(--base) * 0.345); }
   .announcement-bar-slide { font-size: calc(var(--base) * 0.36); }
-  /* Header sticks flush under the (now taller) banner. Banner height =
-     2*0.345 + 0.36 (font, line-height 1) = 1.05*base. Without this the header
-     kept the old 0.74*base top and slid ~16px up under the banner on scroll. */
-  .site-header { top: calc(var(--base) * 1.05); }
 }
 
 /* Mini fireworks — the Spin & Save particle style, scaled for the bar. */
@@ -376,7 +372,12 @@ main { flex: 1; width: 100%; }
   align-items: center;
   gap: calc(var(--base) * 0.8);
   position: sticky;
-  top: calc(var(--base) * 0.74);
+  /* Sticks flush under the announcement bar. Desktop bar height =
+     2*0.345 + 0.36 (font, line-height 1) = 1.05*base; the mobile media query
+     below overrides this to a fixed 50px to match the mobile bar. The old
+     0.74*base was calibrated to a shorter bar and let the header slide up
+     under it on scroll. */
+  top: calc(var(--base) * 1.05);
   z-index: 50;
 }
 .site-header .wordmark-slot { line-height: 0; flex-shrink: 0; }
