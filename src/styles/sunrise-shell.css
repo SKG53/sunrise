@@ -308,6 +308,10 @@ main { flex: 1; width: 100%; }
 @media (min-width: 769px) {
   .announcement-bar { padding-block: calc(var(--base) * 0.345); }
   .announcement-bar-slide { font-size: calc(var(--base) * 0.36); }
+  /* Header sticks flush under the (now taller) banner. Banner height =
+     2*0.345 + 0.36 (font, line-height 1) = 1.05*base. Without this the header
+     kept the old 0.74*base top and slid ~16px up under the banner on scroll. */
+  .site-header { top: calc(var(--base) * 1.05); }
 }
 
 /* Mini fireworks — the Spin & Save particle style, scaled for the bar. */
@@ -829,8 +833,10 @@ main { flex: 1; width: 100%; }
   /* held that auto margin) is now display:none and contributes no flex. */
   .site-header {
     padding: calc(var(--base) * 0.4) var(--section-pad-x);
-    /* Pin 16px lower to stay flush under the taller (1.5x) mobile bar. */
-    top: calc(var(--base) * 0.74 + 16px);
+    /* Flush under the mobile bar. Bar height = 18*2 + 14 (font) = 50px exactly;
+       the old 0.74*base+16px (~40px) left the header 10px short, so it slid up
+       under the bar on the first bit of scroll. */
+    top: 50px;
   }
   .site-header .site-nav { display: none; }
   .site-header .nav-cta { display: none; }
