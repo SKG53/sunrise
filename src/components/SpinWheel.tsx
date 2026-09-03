@@ -13,9 +13,10 @@
 // GATING: never shows until age is verified (AgeGate dispatches
 // `sunrise:age-verified`; we also check the flag on mount for returning-in-
 // session visitors). Once eligible we ARM triggers and reveal on whichever
-// fires first: a 10s floor, scrolling past 70% of the Simple Ingredients cards
-// (.s03-card-grid), a 15s fallback, or desktop exit-intent. The floor counts
-// from age-verification, so nothing fires while the gate is still up.
+// fires first: scrolling through ~70% of the Simple Ingredients cards
+// (.s03-card-grid) — which fires on its own, no time gate — a 10s time
+// fallback, or desktop exit-intent (guarded for the first 2s). Nothing can
+// fire while the age gate is up, since we only arm after age-verification.
 //
 // OUTCOME: chosen up front from PRIZES via weighted random, then the final
 // rotation is computed to land that segment under the pointer. The animation
@@ -179,8 +180,8 @@ export function SpinWheel() {
       /* URL or localStorage unavailable — fall through to normal behavior */
     }
 
-    const FLOOR_MS = 10000;
-    const FALLBACK_MS = 15000;
+    const FALLBACK_MS = 10000; // time-based fallback if they neither scroll nor exit
+    const EXIT_GUARD_MS = 2000; // don't count exit-intent in the first moment
     let armed = false;
     let done = false;
     let armedAt = 0;
@@ -197,15 +198,18 @@ export function SpinWheel() {
       return true;
     };
     const onScroll = () => {
-      if (Date.now() - armedAt < FLOOR_MS) return;
+      // Fires on its own — NOT gated by the time fallback — so scrolling through
+      // the Simple Ingredients cards can trigger the wheel before the 10s mark.
       const el = document.querySelector(".s03-card-grid");
       if (!el) return;
       const r = el.getBoundingClientRect();
-      // Fire once 70% of the Simple Ingredients cards have scrolled above the top.
-      if (r.top + r.height * 0.7 <= 0) reveal();
+      // Fire once the 70%-height point of the cards passes above the vertical
+      // middle of the viewport — i.e. the visitor has scrolled through ~70% of
+      // the cards while they're still on screen.
+      if (r.top + r.height * 0.7 <= window.innerHeight / 2) reveal();
     };
     const onMouseOut = (e: MouseEvent) => {
-      if (Date.now() - armedAt < FLOOR_MS) return;
+      if (Date.now() - armedAt < EXIT_GUARD_MS) return;
       if (e.relatedTarget) return; // moved to another element, not out of window
       if ((e.clientY ?? 1) <= 0) reveal(); // left via the top edge (exit-intent)
     };
@@ -227,6 +231,7 @@ export function SpinWheel() {
       window.addEventListener("scroll", onScroll, { passive: true });
       document.addEventListener("mouseout", onMouseOut);
       timers.push(window.setTimeout(reveal, FALLBACK_MS));
+      onScroll(); // in case the visitor is already past the cards on arm
     };
 
     arm(); // returning-in-session (already age-verified) arms right away
