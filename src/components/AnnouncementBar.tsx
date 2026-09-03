@@ -30,7 +30,7 @@ const BANNERS: Banner[] = [
     node: (
       <>
         Labor Day Sale - Save{" "}
-        <span className="announcement-bar-emph">15% Sitewide</span> (In cart)
+        <span className="announcement-bar-emph">15% Sitewide</span>
       </>
     ),
   },
