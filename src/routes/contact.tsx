@@ -5,6 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { readUtms } from "../lib/utms";
 import "./contact.css";
 
 // Accepted topic values for the URL param routing layer. Keep in sync with
@@ -104,7 +105,7 @@ function ContactPage() {
       fetch("/api/public/contact-hubspot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), email: email.trim() }),
+        body: JSON.stringify({ name: name.trim(), email: email.trim(), ...readUtms() }),
       }).catch(() => {});
       setSubmitted(true);
     } catch (err) {

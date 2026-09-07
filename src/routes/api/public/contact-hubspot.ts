@@ -22,6 +22,10 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 interface Body {
   name?: unknown
   email?: unknown
+  utm_source?: unknown
+  utm_campaign?: unknown
+  utm_content?: unknown
+  utm_term?: unknown
 }
 
 export const Route = createFileRoute('/api/public/contact-hubspot')({
@@ -56,6 +60,13 @@ export const Route = createFileRoute('/api/public/contact-hubspot')({
         const firstname = nameParts.length > 0 ? nameParts[0] : ''
         const lastname = nameParts.length > 1 ? nameParts.slice(1).join(' ') : ''
 
+        // UTM attribution — pass through verbatim (length-guarded only).
+        const asUtm = (v: unknown) => (typeof v === 'string' && v.length <= 512 ? v : '')
+        const utm_source = asUtm(body.utm_source)
+        const utm_campaign = asUtm(body.utm_campaign)
+        const utm_content = asUtm(body.utm_content)
+        const utm_term = asUtm(body.utm_term)
+
         const headers = {
           Authorization: `Bearer ${LOVABLE_API_KEY}`,
           'X-Connection-Api-Key': HUBSPOT_API_KEY,
@@ -74,6 +85,10 @@ export const Route = createFileRoute('/api/public/contact-hubspot')({
         }
         if (firstname) createProperties.firstname = firstname
         if (lastname) createProperties.lastname = lastname
+        if (utm_source) createProperties.utm_source = utm_source
+        if (utm_campaign) createProperties.utm_campaign = utm_campaign
+        if (utm_content) createProperties.utm_content = utm_content
+        if (utm_term) createProperties.utm_term = utm_term
 
         const createRes = await fetch(`${GATEWAY_URL}/crm/v3/objects/contacts`, {
           method: 'POST',
@@ -114,6 +129,10 @@ export const Route = createFileRoute('/api/public/contact-hubspot')({
           const updateProperties: Record<string, string> = {
             web_signup_source: 'Contact Form',
           }
+          if (utm_source) updateProperties.utm_source = utm_source
+          if (utm_campaign) updateProperties.utm_campaign = utm_campaign
+          if (utm_content) updateProperties.utm_content = utm_content
+          if (utm_term) updateProperties.utm_term = utm_term
           const updateRes = await fetch(
             `${GATEWAY_URL}/crm/v3/objects/contacts/${encodeURIComponent(email)}?idProperty=email`,
             {

@@ -1,4 +1,5 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import sunriseCss from "../styles/sunrise-shell.css?url";
@@ -6,6 +7,7 @@ import { useCartSync } from "../hooks/useCartSync";
 import { AgeGate } from "../components/AgeGate";
 import { SpinWheel } from "../components/SpinWheel";
 import { AnnouncementBar } from "../components/AnnouncementBar";
+import { captureUtms } from "../lib/utms";
 
 const GTM_ID = "GTM-M7W7CDK2";
 const GTM_HEAD_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`;
@@ -122,6 +124,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   useCartSync();
+  // First-touch UTM capture. Runs client-side after hydration; the FB restore
+  // script leaves utm_* on the URL, so they're still readable here. No-op after
+  // the first visit (cookie already set) or when no utm_* params are present.
+  useEffect(() => { captureUtms(); }, []);
   return (
     <>
       <AnnouncementBar />
