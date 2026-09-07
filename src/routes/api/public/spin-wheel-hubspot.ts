@@ -15,6 +15,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 interface Body {
   email?: unknown
   utm_source?: unknown
+  utm_medium?: unknown
   utm_campaign?: unknown
   utm_content?: unknown
   utm_term?: unknown
@@ -47,9 +48,10 @@ export const Route = createFileRoute('/api/public/spin-wheel-hubspot')({
 
         // UTM attribution — pass through verbatim (already lowercase/opaque by
         // design); only length-guard against abuse. Internal names match the URL
-        // param keys one-to-one; utm_medium is intentionally not stored.
+        // param keys one-to-one — all five stored, including utm_medium.
         const asUtm = (v: unknown) => (typeof v === 'string' && v.length <= 512 ? v : '')
         const utm_source = asUtm(body.utm_source)
+        const utm_medium = asUtm(body.utm_medium)
         const utm_campaign = asUtm(body.utm_campaign)
         const utm_content = asUtm(body.utm_content)
         const utm_term = asUtm(body.utm_term)
@@ -71,6 +73,7 @@ export const Route = createFileRoute('/api/public/spin-wheel-hubspot')({
           lifecyclestage: 'lead',
         }
         if (utm_source) createProperties.utm_source = utm_source
+        if (utm_medium) createProperties.utm_medium = utm_medium
         if (utm_campaign) createProperties.utm_campaign = utm_campaign
         if (utm_content) createProperties.utm_content = utm_content
         if (utm_term) createProperties.utm_term = utm_term
@@ -115,6 +118,7 @@ export const Route = createFileRoute('/api/public/spin-wheel-hubspot')({
             web_signup_source: 'Website Pop-up',
           }
           if (utm_source) updateProperties.utm_source = utm_source
+          if (utm_medium) updateProperties.utm_medium = utm_medium
           if (utm_campaign) updateProperties.utm_campaign = utm_campaign
           if (utm_content) updateProperties.utm_content = utm_content
           if (utm_term) updateProperties.utm_term = utm_term
