@@ -10,6 +10,16 @@ import { AnnouncementBar } from "../components/AnnouncementBar";
 const GTM_ID = "GTM-M7W7CDK2";
 const GTM_HEAD_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`;
 
+// Cross-domain Facebook identity restore. Visitors arriving from srbev.com carry
+// the click ID (fbc) and browser ID (fbp) as URL params on the "Yes" click-through
+// (srbev and savorsunrise are different root domains, so the pixel cookies can't
+// carry on their own). This runs BEFORE the GTM/pixel loader below, writing _fbc
+// and _fbp to root-scoped cookies (.savorsunrise.com, so they reach the shop
+// subdomain too) so the shared pixel (2142042653011938) initializes with the same
+// identity. Values are strictly format-validated (no cookie injection), then the
+// params are stripped from the URL. No-op when the params are absent.
+const FB_RESTORE_SCRIPT = `(function(){try{var q=new URLSearchParams(location.search),c=q.get('fbc'),p=q.get('fbp');if(!c&&!p)return;var o='; path=/; domain=.savorsunrise.com; max-age=7776000; SameSite=Lax; Secure';if(c&&c.length<=256&&/^fb\\.\\d\\.\\d+\\.[A-Za-z0-9_.-]+$/.test(c))document.cookie='_fbc='+c+o;if(p&&p.length<=256&&/^fb\\.\\d\\.\\d+\\.\\d+$/.test(p))document.cookie='_fbp='+p+o;q.delete('fbc');q.delete('fbp');var s=q.toString();history.replaceState({},'',location.pathname+(s?'?'+s:'')+location.hash);}catch(e){}})();`;
+
 // Sitewide Organization JSON-LD (schema.org). Minimal, factual fields only —
 // no postal address (the only address on file is the BIAB production entity,
 // which never appears consumer-facing), no logo yet; sameAs lists the claimed
@@ -85,6 +95,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: FB_RESTORE_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: GTM_HEAD_SCRIPT }} />
         <HeadContent />
       </head>
