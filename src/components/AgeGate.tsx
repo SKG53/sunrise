@@ -38,6 +38,30 @@ export function AgeGate() {
   // private browsing / disabled-cookies contexts; failing closed (showing
   // gate) is the conservative choice for compliance.
   useEffect(() => {
+    // Cross-domain age passthrough (STRICT): a visitor who already passed the
+    // gate on srbev.com arrives on the Yes-click link carrying ?av=srbev. Since
+    // srbev and savorsunrise are different root domains, no cookie can carry the
+    // verified state — this URL flag is the only bridge, and it is set ONLY on
+    // srbev's "Yes" click, never on "No", direct visits, or organic traffic.
+    // Honor it once: mark this session verified, let dependents (e.g. the wheel)
+    // proceed, and strip the flag from the URL so it can't be shared as a bypass.
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("av") === "srbev") {
+        sessionStorage.setItem(STORAGE_KEY, "true");
+        window.dispatchEvent(new Event("sunrise:age-verified"));
+        params.delete("av");
+        const qs = params.toString();
+        window.history.replaceState(
+          {},
+          "",
+          window.location.pathname + (qs ? `?${qs}` : "") + window.location.hash
+        );
+        return; // already verified via srbev — stay hidden, never show the gate
+      }
+    } catch {
+      /* URL/sessionStorage unavailable — fall through to the normal gate */
+    }
     try {
       const verified = sessionStorage.getItem(STORAGE_KEY) === "true";
       if (!verified) setState("question");
