@@ -1100,3 +1100,19 @@ main { flex: 1; width: 100%; }
     color: var(--on-color-text, var(--tier-10));
   }
 }
+
+/* Sale-slide fine print: "(applied in cart)" beneath 15% Sitewide on mobile,
+   beside it on desktop. Smaller + de-emphasized (cream, not the gold emph). */
+.announcement-bar-note {
+  font-weight: 600;
+  font-size: 0.7em;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+@media (min-width: 769px) {
+  .announcement-bar-note { margin-left: 0.5em; }
+}
+@media (max-width: 768px) {
+  .announcement-bar-note { display: block; margin-top: 2px; }
+}
