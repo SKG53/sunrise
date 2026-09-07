@@ -1,7 +1,7 @@
 // First-touch UTM persistence, mirroring the fbc/fbp cookie pattern in __root.tsx.
 // captureUtms(): call once, as early as possible on load.
 // readUtms(): call at capture/submit time.
-const KEYS = ['utm_source', 'utm_campaign', 'utm_content', 'utm_term'] as const
+const KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'] as const
 const COOKIE = 'sr_utms'
 
 export function captureUtms(): void {
