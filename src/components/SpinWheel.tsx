@@ -27,6 +27,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
+import { readUtms } from "../lib/utms";
 import "./SpinWheel.css";
 
 const STORAGE_KEY = "sunrise:spin-wheel-seen";
@@ -314,7 +315,7 @@ export function SpinWheel() {
       fetch("/api/public/spin-wheel-hubspot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: value }),
+        body: JSON.stringify({ email: value, ...readUtms() }),
       }).catch(() => {});
       setPhase("revealed");
 
