@@ -62,13 +62,13 @@ export type Prize = {
 // to get each prize's contribution to the total. Adjust any numbers freely.
 export const PRIZES: Prize[] = [
   { label: "5%", sub: "OFF", code: "SRSPINWIN5OFF", color: "#822665", weight: 15 },
-  { label: "10%", sub: "OFF", code: "SRSPINWIN10OFF", color: "#DC7F27", weight: 35 },
-  { label: "15%", sub: "OFF", code: "SRSPINWIN15OFF", color: "#CC1F39", weight: 20 },
+  { label: "10%", sub: "OFF", code: "SRSPINWIN10OFF", color: "#DC7F27", weight: 20 },
+  { label: "15%", sub: "OFF", code: "SRSPINWIN15OFF", color: "#CC1F39", weight: 35 },
   { label: "FREE", sub: "SHIPPING", code: "SRSPINFREESHIP", color: "#2E1E3D", weight: 20 },
   { label: "20%", sub: "OFF", code: "SRSPINWIN20OFF", color: "#0A6034", weight: 10 },
   { label: "5%", sub: "OFF", code: "SRSPINWIN5OFF", color: "#822665", weight: 15 },
-  { label: "10%", sub: "OFF", code: "SRSPINWIN10OFF", color: "#DC7F27", weight: 35 },
-  { label: "15%", sub: "OFF", code: "SRSPINWIN15OFF", color: "#CC1F39", weight: 20 },
+  { label: "10%", sub: "OFF", code: "SRSPINWIN10OFF", color: "#DC7F27", weight: 20 },
+  { label: "15%", sub: "OFF", code: "SRSPINWIN15OFF", color: "#CC1F39", weight: 35 },
   { label: "FREE", sub: "SHIPPING", code: "SRSPINFREESHIP", color: "#2E1E3D", weight: 20 },
   { label: "20%", sub: "OFF", code: "SRSPINWIN20OFF", color: "#0A6034", weight: 10 },
 ];
