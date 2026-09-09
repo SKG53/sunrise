@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { track } from "@/lib/track";
 import {
   CART_QUERY,
   addLineToShopifyCart,
@@ -48,6 +49,23 @@ export const useCartStore = create<CartStore>()(
         const { items, cartId, clearCart } = get();
         const existing = items.find((i) => i.variantId === item.variantId);
 
+        const fireAddToCart = () =>
+          track("add_to_cart", {
+            currency: item.price.currencyCode,
+            value: Number((Number(item.price.amount) * item.quantity).toFixed(2)),
+            items: [
+              {
+                item_id: item.variantId,
+                item_name: item.productTitle,
+                item_variant: item.variantTitle,
+                price: Number(item.price.amount),
+                quantity: item.quantity,
+              },
+            ],
+            content_id: item.variantId,
+            content_name: item.productTitle,
+          });
+
         set({ isLoading: true });
         try {
           if (!cartId) {
@@ -58,6 +76,7 @@ export const useCartStore = create<CartStore>()(
                 checkoutUrl: result.checkoutUrl,
                 items: [{ ...item, lineId: result.lineId }],
               });
+              fireAddToCart();
             }
           } else if (existing) {
             const newQty = existing.quantity + item.quantity;
@@ -70,6 +89,7 @@ export const useCartStore = create<CartStore>()(
                   i.variantId === item.variantId ? { ...i, quantity: newQty } : i
                 ),
               });
+              fireAddToCart();
             } else if (result.cartNotFound) {
               clearCart();
             }
@@ -78,6 +98,7 @@ export const useCartStore = create<CartStore>()(
             if (result.success) {
               const cur = get().items;
               set({ items: [...cur, { ...item, lineId: result.lineId ?? null }] });
+              fireAddToCart();
             } else if (result.cartNotFound) {
               clearCart();
             }

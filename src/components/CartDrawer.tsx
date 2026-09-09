@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/stores/cartStore";
+import { track } from "@/lib/track";
 import "./CartDrawer.css";
 
 export function CartDrawer() {
@@ -41,6 +42,19 @@ export function CartDrawer() {
   const handleCheckout = () => {
     const url = getCheckoutUrl();
     if (url) {
+      track("begin_checkout", {
+        currency,
+        value: Number(totalPrice.toFixed(2)),
+        num_items: totalItems,
+        items: items.map((i) => ({
+          item_id: i.variantId,
+          item_name: i.productTitle,
+          item_variant: i.variantTitle,
+          price: Number(i.price.amount),
+          quantity: i.quantity,
+        })),
+        content_ids: items.map((i) => i.variantId),
+      });
       window.open(url, "_blank");
       setIsOpen(false);
     }

@@ -11,6 +11,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { LIVE_SLUGS } from "../lib/liveProducts";
+import { track } from "../lib/track";
 import {
   // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render5mgLockup,
@@ -613,6 +614,31 @@ function ProductDetailPage() {
 
   const displayPrice = selectedVariant?.price.amount;
   const isInStock = selectedVariant?.availableForSale ?? false;
+
+  // view_item — fire once per product view, after the live Shopify variant
+  // resolves (async). Keyed on shopifyProduct/selectedVariant, not the loader
+  // `product` (which has no price/title/variantId). useRef guards once-per-slug.
+  const viewItemFiredFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (!shopifyProduct || !selectedVariant) return;
+    if (viewItemFiredFor.current === product.slug) return;
+    viewItemFiredFor.current = product.slug;
+    track("view_item", {
+      currency: selectedVariant.price.currencyCode,
+      value: Number(selectedVariant.price.amount),
+      items: [
+        {
+          item_id: selectedVariant.id,
+          item_name: shopifyProduct.node.title,
+          item_variant: selectedVariant.title,
+          price: Number(selectedVariant.price.amount),
+        },
+      ],
+      content_id: selectedVariant.id,
+      content_name: shopifyProduct.node.title,
+      product_handle: shopifyProduct.node.handle,
+    });
+  }, [shopifyProduct, selectedVariant, product.slug]);
 
   const handleAddToCart = async () => {
     if (!shopifyProduct || !selectedVariant) return;
