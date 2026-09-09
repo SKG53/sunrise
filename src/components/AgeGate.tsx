@@ -24,6 +24,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
+import { track } from "../lib/track";
 
 const STORAGE_KEY = "sunrise:age-verified";
 
@@ -110,6 +111,7 @@ export function AgeGate() {
     // Notify downstream popups (SpinWheel) that the gate has been cleared
     // so they can mount immediately rather than polling sessionStorage.
     window.dispatchEvent(new Event("sunrise:age-verified"));
+    track("age_gate_pass");
   };
 
   const handleNo = () => setState("refused");
