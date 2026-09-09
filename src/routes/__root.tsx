@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import sunriseCss from "../styles/sunrise-shell.css?url";
+import cartDrawerCss from "../components/CartDrawer.css?url";
 import { useCartSync } from "../hooks/useCartSync";
 import { AgeGate } from "../components/AgeGate";
 import { SpinWheel } from "../components/SpinWheel";
@@ -81,6 +82,10 @@ export const Route = createRootRoute({
       {
         rel: "stylesheet",
         href: sunriseCss,
+      },
+      {
+        rel: "stylesheet",
+        href: cartDrawerCss,
       },
       {
         rel: "stylesheet",

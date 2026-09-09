@@ -5,7 +5,6 @@
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/stores/cartStore";
 import { track } from "@/lib/track";
-import "./CartDrawer.css";
 
 export function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -88,7 +87,17 @@ export function CartDrawer() {
       </button>
 
       {isOpen && (
-        <div className="cart-overlay" onClick={() => setIsOpen(false)} aria-hidden="true" />
+        <div
+          className="cart-overlay"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(44, 24, 16, 0.45)",
+            zIndex: 9998,
+          }}
+        />
       )}
 
       {/* Drawer is always in the DOM so the slide-in/slide-out CSS transition
@@ -118,6 +127,7 @@ export function CartDrawer() {
           height: "100vh",
           transform: isOpen ? "translateX(0)" : "translateX(100%)",
           zIndex: 9999,
+          background: "#f7efe0",
         }}
       >
         <header className="cart-header">
@@ -150,8 +160,21 @@ export function CartDrawer() {
               {items.map((item) => (
                 <li key={item.variantId} className="cart-item">
                   {item.imageUrl && (
-                    <div className="cart-item-image">
-                      <img src={item.imageUrl} alt={item.productTitle} />
+                    <div
+                      className="cart-item-image"
+                      style={{
+                        width: 64,
+                        height: 64,
+                        flex: "0 0 64px",
+                        overflow: "hidden",
+                        borderRadius: 8,
+                      }}
+                    >
+                      <img
+                        src={item.imageUrl}
+                        alt={item.productTitle}
+                        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                      />
                     </div>
                   )}
                   <div className="cart-item-body">
