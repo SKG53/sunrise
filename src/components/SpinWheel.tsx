@@ -1,29 +1,31 @@
-// SPIN-TO-WIN — marketing popup. The 21+ age gate stays immediate and blocks
-// the page; once it's cleared, the wheel does NOT pop right away. It arms a set
-// of delayed triggers and appears on the first of: a 10s floor... (see GATING).
-// Free to spin; the discount code is masked until the visitor submits an email.
+// SPIN & SAVE — two-pool, two-spin, pick-one marketing popup.
 //
-// FLOW: idle → spinning (4s) → won (prize shown, code masked, email form)
-//       → revealed (code + copy button + shop link).
+// WHAT THE CUSTOMER SEES: one wheel. They spin once (a deal drops into the
+// bottom-LEFT saved slot), press "Spin Again" once (a second deal drops into
+// the bottom-RIGHT slot), then click under whichever of the two they want to
+// keep. That choice runs the same email→code flow as before and reveals only
+// the chosen code; the other is discarded, never shown.
 //
-// PERSISTENCE: per-session, same as AgeGate (sessionStorage). Abuse control
-// lives in Shopify — each code is limited to one use per customer — so a new
-// browsing session re-showing the wheel costs nothing.
+// INVISIBLE MATH (two pools): spin 1 draws only from the BIG-CART pool, spin 2
+// only from the SMALL-CART pool. Each pool is an independent weighted draw whose
+// weights sum to 100 on their own. The customer never sees pool labels — it's
+// just organization + odds on our side. The single wheel shows all five deals;
+// each spin's weighted pick is restricted to its pool's segments, and the
+// rotation lands that segment. As before, the prize is decided BEFORE the
+// animation — the spin never decides the outcome.
 //
-// GATING: never shows until age is verified (AgeGate dispatches
-// `sunrise:age-verified`; we also check the flag on mount for returning-in-
-// session visitors). Once eligible we ARM triggers and reveal on whichever
-// fires first: scrolling through ~70% of the Simple Ingredients cards
-// (.s03-card-grid) — which fires on its own, no time gate — a 10s time
-// fallback, or desktop exit-intent (guarded for the first 2s). Nothing can
-// fire while the age gate is up, since we only arm after age-verification.
+// PRESERVED FROM THE ORIGINAL (unchanged behavior): age-gated arming
+// (`sunrise:age-verified` + `AGE_KEY`, ~70% scroll of `.s03-card-grid`, 10s
+// fallback, desktop exit-intent w/ 2s guard), STORAGE_KEY (per-session dismiss)
+// + SUPPRESS_KEY (persistent, set on ?ref=srbev), email-gates-reveal via the
+// Supabase `POST /api/public/newsletter` (source "spin-wheel"), non-blocking
+// HubSpot dual-write w/ readUtms(), wordmark render, reduced-motion path,
+// ESC/backdrop/X dismiss, body-scroll-lock. The email gate now fires AFTER the
+// customer picks their deal.
 //
-// OUTCOME: chosen up front from PRIZES via weighted random, then the final
-// rotation is computed to land that segment under the pointer. The animation
-// never decides the prize.
-//
-// DISMISSABLE: unlike the age gate this is marketing, not compliance — X
-// button, ESC and backdrop click all close it.
+// DISCOUNT CODES: NEWCUST* are the new campaign codes; the two flats reuse the
+// existing SRSPINWIN15OFF / SRSPINWIN20OFF (20-pack-or-fewer). All are
+// "one use per customer" in Shopify.
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
@@ -32,71 +34,147 @@ import "./SpinWheel.css";
 
 const STORAGE_KEY = "sunrise:spin-wheel-seen";
 const AGE_KEY = "sunrise:age-verified";
-// Persistent (localStorage) suppression for visitors who arrive from the
-// srbev.com lander after spinning there (URL carries ?ref=srbev). Unlike
-// STORAGE_KEY (per-session dismissal), this survives future sessions so a
-// visitor who already spun on the lander is never re-prompted here. Direct
-// visitors never get this key set, so they see the popup normally.
+// Persistent suppression for visitors arriving from the srbev.com lander after
+// spinning there (?ref=srbev). Survives sessions so they're never re-prompted.
 const SUPPRESS_KEY = "sunrise:spin-suppressed";
 
-// ── PRIZE TABLE ─────────────────────────────────────────────────────────
-// Ten wheel segments. The wheel is split across five prizes:
-// 5% (2 segments), 10% (2), 15% (2), 20% (2), and Free Shipping (2).
-// The same prize always uses the same color, and no identical prize is ever
-// adjacent. `weight` controls likelihood of THAT SEGMENT; the true odds are
-// the sum of that prize's segment weights over the total.
-//
-// Current odds: Free Shipping 20%, 5% 35%, 10% 25%, 15% 11%, 20% 9%.
-//
-// Recommended Shopify setup per code: "Limit to one use per customer" +
-// require customer email at checkout.
-export type Prize = {
-  label: string;
-  sub: string;
+// ── DEALS ───────────────────────────────────────────────────────────────
+// Five deals across two hidden pools. `pool` decides which spin can land it;
+// `weight` is that deal's odds WITHIN ITS POOL (each pool sums to 100).
+// `hook` is the attention grab (the % or "FREE") shown large; `rest` is the
+// small qualifier. `title` + `terms` show on the saved cards / reveal.
+export type Pool = "big" | "small";
+export type Deal = {
+  key: string;
+  pool: Pool;
+  hook: string;   // large emphasis on wheel + cards
+  sub: string;    // small line on the wheel segment
+  rest: string;   // small qualifier on the saved card
+  title: string;  // full human-readable deal
+  terms: string;  // per-deal fine print
   code: string;
   color: string;
-  weight: number;
+  weight: number; // within-pool odds
 };
 
-// The five colors are brand-adjacent: the four hero tier colors plus plum
-// for the 5% slice. `weight` is per segment; multiply by segment count
-// to get each prize's contribution to the total. Adjust any numbers freely.
-export const PRIZES: Prize[] = [
-  { label: "5%", sub: "OFF", code: "SRSPINWIN5OFF", color: "#822665", weight: 15 },
-  { label: "10%", sub: "OFF", code: "SRSPINWIN10OFF", color: "#DC7F27", weight: 20 },
-  { label: "15%", sub: "OFF", code: "SRSPINWIN15OFF", color: "#CC1F39", weight: 35 },
-  { label: "FREE", sub: "SHIPPING", code: "SRSPINFREESHIP", color: "#2E1E3D", weight: 20 },
-  { label: "20%", sub: "OFF", code: "SRSPINWIN20OFF", color: "#0A6034", weight: 10 },
-  { label: "5%", sub: "OFF", code: "SRSPINWIN5OFF", color: "#822665", weight: 15 },
-  { label: "10%", sub: "OFF", code: "SRSPINWIN10OFF", color: "#DC7F27", weight: 20 },
-  { label: "15%", sub: "OFF", code: "SRSPINWIN15OFF", color: "#CC1F39", weight: 35 },
-  { label: "FREE", sub: "SHIPPING", code: "SRSPINFREESHIP", color: "#2E1E3D", weight: 20 },
-  { label: "20%", sub: "OFF", code: "SRSPINWIN20OFF", color: "#0A6034", weight: 10 },
+export const DEALS: Deal[] = [
+  // — SMALL-CART pool (spin 2 → bottom-right) —
+  {
+    key: "2pk25",
+    pool: "small",
+    hook: "25%",
+    sub: "OFF",
+    rest: "OFF · 2-PACK",
+    title: "Any 2-pack, 25% off",
+    terms: "Any 2-pack. 25% off. $9.99 shipping.",
+    code: "NEWCUST2P25",
+    color: "#CC1F39",
+    weight: 50,
+  },
+  // — BIG-CART pool (spin 1 → bottom-left) —
+  {
+    key: "buy4free",
+    pool: "big",
+    hook: "FREE",
+    sub: "4-PACK",
+    rest: "10MG 4-PACK FREE",
+    title: "Buy four 4-packs, get a 10mg 4-pack FREE",
+    terms: "Buy any four 4-packs, get a 10mg 4-pack free.",
+    code: "NEWCUST4P10MG",
+    color: "#2E1E3D",
+    weight: 55,
+  },
+  // — SMALL-CART —
+  {
+    key: "flat15",
+    pool: "small",
+    hook: "15%",
+    sub: "OFF",
+    rest: "OFF",
+    title: "Flat 15% off",
+    terms: "15% off. 20-pack or fewer.",
+    code: "SRSPINWIN15OFF",
+    color: "#DC7F27",
+    weight: 30,
+  },
+  // — BIG-CART —
+  {
+    key: "buy5-30",
+    pool: "big",
+    hook: "30%",
+    sub: "OFF",
+    rest: "OFF · BUY 5",
+    title: "Buy five 4-packs, 30% off",
+    terms: "Buy any five 4-packs, 30% off.",
+    code: "NEWCUST5P30",
+    color: "#0A6034",
+    weight: 45,
+  },
+  // — SMALL-CART —
+  {
+    key: "flat20",
+    pool: "small",
+    hook: "20%",
+    sub: "OFF",
+    rest: "OFF",
+    title: "Flat 20% off",
+    terms: "20% off. 20-pack or fewer.",
+    code: "SRSPINWIN20OFF",
+    color: "#822665",
+    weight: 20,
+  },
 ];
 
-const SEG = 360 / PRIZES.length;
+const SEG = 360 / DEALS.length; // 72° per segment (5 deals)
 const SPIN_MS = 4200;
 const TURNS = 6;
+const GENERIC_TERMS =
+  "One use per customer. Enter code at checkout. Exclusions, terms, and conditions apply.";
 
-type Phase = "hidden" | "idle" | "spinning" | "won" | "revealed";
+type Phase =
+  | "hidden"
+  | "idle"
+  | "spinning1"
+  | "landed1"
+  | "spinning2"
+  | "choose"
+  | "email"
+  | "revealed";
 
-// Weighted pick over PRIZES; returns the winning segment INDEX.
-function pickIndex(): number {
-  const total = PRIZES.reduce((s, p) => s + p.weight, 0);
+// Weighted pick restricted to a single pool; returns the DEALS index.
+function pickIndexInPool(pool: Pool): number {
+  const entries = DEALS.map((d, i) => ({ d, i })).filter((e) => e.d.pool === pool);
+  const total = entries.reduce((s, e) => s + e.d.weight, 0);
   let r = Math.random() * total;
-  for (let i = 0; i < PRIZES.length; i++) {
-    r -= PRIZES[i].weight;
-    if (r <= 0) return i;
+  for (const e of entries) {
+    r -= e.d.weight;
+    if (r <= 0) return e.i;
   }
-  return 0;
+  return entries[0].i;
 }
 
-// Polar → cartesian with 0° at 12 o'clock, angles increasing clockwise.
+// Final wheel orientation (deg) that centers segment `idx` under the 12 o'clock
+// pointer, normalized to [0,360).
+function finalOrientation(idx: number): number {
+  const raw = -(idx * SEG + SEG / 2);
+  return ((raw % 360) + 360) % 360;
+}
+
+// Next cumulative rotation: from `current`, spin TURNS full turns forward and
+// land segment `idx` centered under the pointer. Works for both spins.
+function nextRotation(current: number, idx: number): number {
+  const targetMod = finalOrientation(idx);
+  const currentMod = ((current % 360) + 360) % 360;
+  let delta = targetMod - currentMod;
+  if (delta < 0) delta += 360;
+  return current + TURNS * 360 + delta;
+}
+
+// Polar → cartesian, 0° at 12 o'clock, increasing clockwise.
 function pt(cx: number, cy: number, r: number, deg: number) {
   const a = ((deg - 90) * Math.PI) / 180;
   return [cx + r * Math.cos(a), cy + r * Math.sin(a)] as const;
 }
-
 function segmentPath(i: number) {
   const a0 = i * SEG;
   const a1 = a0 + SEG;
@@ -105,35 +183,61 @@ function segmentPath(i: number) {
   return `M 100 100 L ${x0.toFixed(2)} ${y0.toFixed(2)} A 94 94 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`;
 }
 
-function PrizeWithFireworks({ prize }: { prize: Prize }) {
+// Small fireworks burst reused for a freshly-landed deal card.
+function Fireworks() {
   const bursts = [
-    { top: "40%", left: "24%", color: "var(--tier-5)", delay: "0s" },
-    { top: "34%", left: "70%", color: "var(--tier-10)", delay: "0.12s" },
-    { top: "64%", left: "52%", color: "var(--tier-30)", delay: "0.28s" },
-    { top: "48%", left: "46%", color: "var(--tier-60)", delay: "0.08s" },
+    { top: "34%", left: "22%", color: "var(--tier-5)", delay: "0s" },
+    { top: "28%", left: "72%", color: "var(--tier-10)", delay: "0.12s" },
+    { top: "60%", left: "54%", color: "var(--tier-30)", delay: "0.26s" },
+    { top: "44%", left: "44%", color: "var(--tier-60)", delay: "0.08s" },
   ];
   return (
-    <div className="spin-prize-wrap">
-      <div className="spin-fireworks" aria-hidden="true">
-        {bursts.map((b, i) => (
-          <span
-            key={i}
-            className="spin-burst"
-            style={{ top: b.top, left: b.left, color: b.color, animationDelay: b.delay }}
-          >
-            {Array.from({ length: 12 }).map((_, j) => (
-              <span
-                key={j}
-                className="spin-particle"
-                style={{ "--rotate": `${j * 30}deg` } as CSSProperties}
-              />
-            ))}
-          </span>
-        ))}
+    <div className="spin-fireworks" aria-hidden="true">
+      {bursts.map((b, i) => (
+        <span
+          key={i}
+          className="spin-burst"
+          style={{ top: b.top, left: b.left, color: b.color, animationDelay: b.delay }}
+        >
+          {Array.from({ length: 12 }).map((_, j) => (
+            <span
+              key={j}
+              className="spin-particle"
+              style={{ "--rotate": `${j * 30}deg` } as CSSProperties}
+            />
+          ))}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+// A saved-deal card: hook (large, deal-colored) + rest + title. `fresh` plays a
+// one-time fireworks burst. `onKeep` (choose phase) renders the keep button.
+function DealCard({
+  deal,
+  fresh,
+  onKeep,
+}: {
+  deal: Deal;
+  fresh?: boolean;
+  onKeep?: () => void;
+}) {
+  return (
+    <div className="spin-saved-slot">
+      {fresh && <Fireworks />}
+      <div className="spin-saved-inner">
+        <span className="spin-saved-hook" style={{ color: deal.color }}>
+          {deal.hook}
+        </span>
+        <span className="spin-saved-rest">{deal.rest}</span>
+        <span className="spin-saved-title">{deal.title}</span>
       </div>
-      <p className="spin-prize">
-        {prize.label} {prize.sub}
-      </p>
+      {onKeep && (
+        <button type="button" className="spin-btn spin-btn-primary spin-keep-btn" onClick={onKeep}>
+          Keep This Deal
+        </button>
+      )}
     </div>
   );
 }
@@ -142,7 +246,9 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function SpinWheel() {
   const [phase, setPhase] = useState<Phase>("hidden");
-  const [winner, setWinner] = useState<number | null>(null);
+  const [deal1, setDeal1] = useState<number | null>(null); // big pool (left)
+  const [deal2, setDeal2] = useState<number | null>(null); // small pool (right)
+  const [chosen, setChosen] = useState<number | null>(null);
   const [rotation, setRotation] = useState(0);
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -161,18 +267,13 @@ export function SpinWheel() {
   }, []);
 
   // Age gate stays immediate; the wheel arms delayed triggers once eligible and
-  // reveals on the first of: 10s floor, scroll past 70% of the Simple Ingredients
-  // cards, 15s fallback, or desktop exit-intent. The floor counts from arming
-  // (i.e. from age-verification), so nothing fires while the gate is still up.
+  // reveals on the first of: ~70% scroll of the Simple Ingredients cards, a 10s
+  // fallback, or desktop exit-intent. Unchanged from the original.
   useEffect(() => {
     reduced.current =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Cross-domain hand-off (Option B): if this visitor arrived from the
-    // srbev.com lander AFTER spinning there, the lander appended ?ref=srbev to
-    // the link. Persistently suppress the main-site Spin & Save so they're never
-    // re-prompted. The param is left in the URL intact for analytics/attribution.
     try {
       if (new URLSearchParams(window.location.search).get("ref") === "srbev") {
         localStorage.setItem(SUPPRESS_KEY, "true");
@@ -181,8 +282,8 @@ export function SpinWheel() {
       /* URL or localStorage unavailable — fall through to normal behavior */
     }
 
-    const FALLBACK_MS = 10000; // time-based fallback if they neither scroll nor exit
-    const EXIT_GUARD_MS = 2000; // don't count exit-intent in the first moment
+    const FALLBACK_MS = 10000;
+    const EXIT_GUARD_MS = 2000;
     let armed = false;
     let done = false;
     let armedAt = 0;
@@ -199,20 +300,15 @@ export function SpinWheel() {
       return true;
     };
     const onScroll = () => {
-      // Fires on its own — NOT gated by the time fallback — so scrolling through
-      // the Simple Ingredients cards can trigger the wheel before the 10s mark.
       const el = document.querySelector(".s03-card-grid");
       if (!el) return;
       const r = el.getBoundingClientRect();
-      // Fire once the 70%-height point of the cards passes above the vertical
-      // middle of the viewport — i.e. the visitor has scrolled through ~70% of
-      // the cards while they're still on screen.
       if (r.top + r.height * 0.7 <= window.innerHeight / 2) reveal();
     };
     const onMouseOut = (e: MouseEvent) => {
       if (Date.now() - armedAt < EXIT_GUARD_MS) return;
-      if (e.relatedTarget) return; // moved to another element, not out of window
-      if ((e.clientY ?? 1) <= 0) reveal(); // left via the top edge (exit-intent)
+      if (e.relatedTarget) return;
+      if ((e.clientY ?? 1) <= 0) reveal();
     };
     const cleanup = () => {
       window.removeEventListener("scroll", onScroll);
@@ -232,10 +328,10 @@ export function SpinWheel() {
       window.addEventListener("scroll", onScroll, { passive: true });
       document.addEventListener("mouseout", onMouseOut);
       timers.push(window.setTimeout(reveal, FALLBACK_MS));
-      onScroll(); // in case the visitor is already past the cards on arm
+      onScroll();
     };
 
-    arm(); // returning-in-session (already age-verified) arms right away
+    arm();
     window.addEventListener("sunrise:age-verified", arm);
     return () => {
       cleanup();
@@ -262,7 +358,11 @@ export function SpinWheel() {
   useEffect(() => {
     if (phase === "hidden") return;
     const paint = () => {
-      if (wmRef.current) wmRef.current.innerHTML = renderWordmark(getBasePx() * (window.matchMedia("(max-width: 768px)").matches ? 0.95 : 0.8), "gradient");
+      if (wmRef.current)
+        wmRef.current.innerHTML = renderWordmark(
+          getBasePx() * (window.matchMedia("(max-width: 768px)").matches ? 0.95 : 0.8),
+          "gradient"
+        );
     };
     paint();
     if (document.fonts) document.fonts.ready.then(paint);
@@ -270,23 +370,43 @@ export function SpinWheel() {
     return () => window.removeEventListener("resize", paint);
   }, [phase]);
 
-  const spin = () => {
+  // Spin 1 — BIG-CART pool → bottom-left slot.
+  const spin1 = () => {
     if (phase !== "idle") return;
-    const idx = pickIndex();
-    setWinner(idx);
-    // Land the centre of segment `idx` under the pointer at 12 o'clock.
-    const target = TURNS * 360 - (idx * SEG + SEG / 2);
+    const idx = pickIndexInPool("big");
+    setDeal1(idx);
     if (reduced.current) {
-      setRotation(-(idx * SEG + SEG / 2));
-      setPhase("won");
+      setRotation(finalOrientation(idx));
+      setPhase("landed1");
       return;
     }
-    setRotation(target);
-    setPhase("spinning");
-    window.setTimeout(() => setPhase("won"), SPIN_MS);
+    setRotation((cur) => nextRotation(cur, idx));
+    setPhase("spinning1");
+    window.setTimeout(() => setPhase("landed1"), SPIN_MS);
   };
 
-  const prize = winner === null ? null : PRIZES[winner];
+  // Spin 2 — SMALL-CART pool → bottom-right slot. The one added button press.
+  const spin2 = () => {
+    if (phase !== "landed1") return;
+    const idx = pickIndexInPool("small");
+    setDeal2(idx);
+    if (reduced.current) {
+      setRotation((cur) => nextRotation(cur, idx));
+      setPhase("choose");
+      return;
+    }
+    setRotation((cur) => nextRotation(cur, idx));
+    setPhase("spinning2");
+    window.setTimeout(() => setPhase("choose"), SPIN_MS);
+  };
+
+  const pick = (idx: number) => {
+    setChosen(idx);
+    setError(null);
+    setPhase("email");
+  };
+
+  const chosenDeal = chosen === null ? null : DEALS[chosen];
 
   const submitEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -308,17 +428,15 @@ export function SpinWheel() {
         setError(data.error || "Something went wrong. Please try again.");
         return;
       }
-      // Non-blocking dual-write to HubSpot (spec v2). Fired in parallel and
-      // deliberately NOT awaited — the reward reveal below must never wait on
-      // (or fail because of) HubSpot. The Supabase write above remains the sole
-      // reward gate. A rejected fetch is swallowed so it can't surface an error.
+      // Non-blocking dual-write to HubSpot — fired in parallel, deliberately NOT
+      // awaited; the reveal must never wait on or fail because of HubSpot. The
+      // Supabase write above is the sole reward gate.
       fetch("/api/public/spin-wheel-hubspot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: value, ...readUtms() }),
       }).catch(() => {});
       setPhase("revealed");
-
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -327,9 +445,9 @@ export function SpinWheel() {
   };
 
   const copyCode = async () => {
-    if (!prize) return;
+    if (!chosenDeal) return;
     try {
-      await navigator.clipboard.writeText(prize.code);
+      await navigator.clipboard.writeText(chosenDeal.code);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -338,6 +456,16 @@ export function SpinWheel() {
   };
 
   if (phase === "hidden") return null;
+
+  const showWheel =
+    phase === "idle" ||
+    phase === "spinning1" ||
+    phase === "landed1" ||
+    phase === "spinning2" ||
+    phase === "choose";
+  const showSaved =
+    phase === "landed1" || phase === "spinning2" || phase === "choose";
+  const spinning = phase === "spinning1" || phase === "spinning2";
 
   return (
     <div className="spin" role="dialog" aria-modal="true" aria-labelledby="spin-heading">
@@ -352,64 +480,111 @@ export function SpinWheel() {
           Spin &amp; Save
         </h2>
 
-        <div className="spin-wheel-wrap">
-          <div className="spin-pointer" aria-hidden="true" />
-          <svg
-            className="spin-wheel"
-            viewBox="0 0 200 200"
-            role="img"
-            aria-label="Prize wheel with 10 discount segments"
-            style={{
-              transform: `rotate(${rotation}deg)`,
-              transition:
-                phase === "spinning"
+        {showWheel && (
+          <div className="spin-wheel-wrap">
+            <div className="spin-pointer" aria-hidden="true" />
+            <svg
+              className="spin-wheel"
+              viewBox="0 0 200 200"
+              role="img"
+              aria-label="Prize wheel with five deal segments"
+              style={{
+                transform: `rotate(${rotation}deg)`,
+                transition: spinning
                   ? `transform ${SPIN_MS}ms cubic-bezier(0.16, 1, 0.3, 1)`
                   : "none",
-            }}
-          >
-            {PRIZES.map((p, i) => (
-              <path key={`seg-${i}`} d={segmentPath(i)} fill={p.color} />
-            ))}
-            {PRIZES.map((p, i) => (
-              <g key={`txt-${i}`} transform={`rotate(${i * SEG + SEG / 2} 100 100)`}>
-                <text x="100" y="34" className="spin-seg-label" textAnchor="middle">
-                  {p.label}
-                </text>
-                <text
-                  x="100"
-                  y="48"
-                  className={`spin-seg-sub${p.sub.length > 4 ? " spin-seg-sub-long" : ""}`}
-                  textAnchor="middle"
-                >
-                  {p.sub}
-                </text>
-              </g>
-            ))}
-            <circle cx="100" cy="100" r="94" className="spin-rim" />
-            <circle cx="100" cy="100" r="15" className="spin-hub" />
-          </svg>
-        </div>
+              }}
+            >
+              {DEALS.map((d, i) => (
+                <path key={`seg-${i}`} d={segmentPath(i)} fill={d.color} />
+              ))}
+              {DEALS.map((d, i) => (
+                <g key={`txt-${i}`} transform={`rotate(${i * SEG + SEG / 2} 100 100)`}>
+                  <text x="100" y="40" className="spin-seg-label" textAnchor="middle">
+                    {d.hook}
+                  </text>
+                  <text x="100" y="54" className="spin-seg-sub" textAnchor="middle">
+                    {d.sub}
+                  </text>
+                </g>
+              ))}
+              <circle cx="100" cy="100" r="94" className="spin-rim" />
+              <circle cx="100" cy="100" r="15" className="spin-hub" />
+            </svg>
+          </div>
+        )}
 
         {phase === "idle" && (
           <>
-            <button type="button" className="spin-btn spin-btn-primary" onClick={spin} autoFocus>
+            <button type="button" className="spin-btn spin-btn-primary" onClick={spin1} autoFocus>
               Spin the Wheel
             </button>
             <p className="spin-fine">
-              Spin the wheel and save on your first order. Applicable on any
-              20 packs or fewer. Exclusions, terms, and conditions apply.
+              Spin twice, keep the deal you like best. {GENERIC_TERMS}
             </p>
           </>
         )}
 
-        {phase === "spinning" && <p className="spin-body">Good luck&hellip;</p>}
+        {phase === "spinning1" && <p className="spin-body">Good luck&hellip;</p>}
 
-        {phase === "won" && prize && (
+        {/* Saved slots: left = spin 1 (big cart), right = spin 2 (small cart). */}
+        {showSaved && (
           <>
-            <PrizeWithFireworks prize={prize} />
+            {phase === "choose" && (
+              <p className="spin-choose-heading">Two deals landed — keep the one you want.</p>
+            )}
+            <div className="spin-saved-row">
+              <div className="spin-saved-col">
+                {deal1 !== null && (
+                  <DealCard
+                    deal={DEALS[deal1]}
+                    fresh={phase === "landed1"}
+                    onKeep={phase === "choose" ? () => pick(deal1) : undefined}
+                  />
+                )}
+              </div>
+              <div className="spin-saved-col">
+                {deal2 !== null ? (
+                  <DealCard
+                    deal={DEALS[deal2]}
+                    fresh={phase === "choose"}
+                    onKeep={phase === "choose" ? () => pick(deal2) : undefined}
+                  />
+                ) : (
+                  <div className="spin-saved-slot is-pending" aria-hidden="true">
+                    <div className="spin-saved-inner">
+                      <span className="spin-saved-hook spin-saved-hook-pending">?</span>
+                      <span className="spin-saved-rest">SPIN AGAIN</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
+        {phase === "landed1" && (
+          <>
+            <button type="button" className="spin-btn spin-btn-primary" onClick={spin2} autoFocus>
+              Spin Again
+            </button>
+            <p className="spin-fine">One more spin, then keep your favorite of the two.</p>
+          </>
+        )}
+
+        {phase === "spinning2" && <p className="spin-body">One more&hellip;</p>}
+
+        {phase === "email" && chosenDeal && (
+          <>
+            <div className="spin-chosen">
+              <span className="spin-chosen-hook" style={{ color: chosenDeal.color }}>
+                {chosenDeal.hook}
+              </span>
+              <span className="spin-chosen-title">{chosenDeal.title}</span>
+            </div>
             <form className="spin-form" onSubmit={submitEmail}>
               <label className="spin-label" htmlFor="spin-email">
-                Enter your email and unlock your savings!
+                Enter your email to unlock this code
               </label>
               <input
                 id="spin-email"
@@ -426,14 +601,23 @@ export function SpinWheel() {
                 {submitting ? "Unlocking\u2026" : "Unlock My Code"}
               </button>
             </form>
+            <p className="spin-fine">
+              {chosenDeal.terms} {GENERIC_TERMS}
+            </p>
           </>
         )}
 
-        {phase === "revealed" && prize && (
+        {phase === "revealed" && chosenDeal && (
           <>
-            <PrizeWithFireworks prize={prize} />
+            <div className="spin-chosen">
+              <Fireworks />
+              <span className="spin-chosen-hook" style={{ color: chosenDeal.color }}>
+                {chosenDeal.hook}
+              </span>
+              <span className="spin-chosen-title">{chosenDeal.title}</span>
+            </div>
             <button type="button" className="spin-code" onClick={copyCode} title="Copy code">
-              <span className="spin-code-text">{prize.code}</span>
+              <span className="spin-code-text">{chosenDeal.code}</span>
               <span className="spin-code-copy">
                 <svg viewBox="0 0 24 24" aria-hidden="true" className="spin-copy-icon">
                   <rect x="8" y="8" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
@@ -446,8 +630,7 @@ export function SpinWheel() {
               Shop Now
             </a>
             <p className="spin-fine">
-              One use per customer, enter code at checkout. Applicable on any
-              20 packs or fewer. Exclusions, terms, and conditions apply.
+              {chosenDeal.terms} {GENERIC_TERMS}
             </p>
           </>
         )}
