@@ -32,7 +32,7 @@
   flex-direction: column;
   align-items: center;
   max-height: 94vh;
-  overflow-y: auto;
+  overflow: hidden auto;
 }
 
 .spin-close {
@@ -426,6 +426,7 @@
   background: #fff;
   border: 2px solid rgba(26, 26, 26, 0.12);
   border-radius: calc(var(--base) * 0.14);
+  overflow: hidden;
 }
 .spin-saved-slot.is-pending {
   background: transparent;
@@ -436,9 +437,11 @@
 .spin-saved-inner {
   position: relative;
   z-index: 2;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: calc(var(--base) * 0.05);
   text-align: center;
 }
@@ -456,7 +459,7 @@
   font-size: calc(var(--base) * 0.2);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(26, 26, 26, 0.6);
+  color: rgba(26, 26, 26, 0.82);
 }
 .spin-saved-title {
   font-family: 'Montserrat', sans-serif;
@@ -491,8 +494,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(var(--base) * 0.04);
-  margin: 0 0 calc(var(--base) * 0.35);
+  gap: calc(var(--base) * 0.06);
+  margin: 0 auto calc(var(--base) * 0.4);
+  padding: calc(var(--base) * 0.42) calc(var(--base) * 0.6);
+  min-width: calc(var(--base) * 4.6);
+  max-width: calc(var(--base) * 6.4);
+  background: #fff;
+  border: 2px solid rgba(26, 26, 26, 0.14);
+  border-radius: calc(var(--base) * 0.16);
+  box-shadow: 0 calc(var(--base) * 0.05) calc(var(--base) * 0.2) rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 .spin-chosen-hook {
   position: relative;
@@ -501,6 +512,16 @@
   font-weight: 900;
   font-size: calc(var(--base) * 0.9);
   line-height: 1;
+}
+.spin-chosen-rest {
+  position: relative;
+  z-index: 2;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--base) * 0.26);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.82);
 }
 .spin-chosen-title {
   position: relative;
@@ -519,5 +540,6 @@
   .spin-card .spin-keep-btn { font-size: 12px; letter-spacing: 0.04em; }
   .spin-card .spin-choose-heading { font-size: 14px; }
   .spin-card .spin-chosen-hook { font-size: 40px; }
+  .spin-card .spin-chosen-rest { font-size: 13px; }
   .spin-card .spin-chosen-title { font-size: 14px; }
 }
