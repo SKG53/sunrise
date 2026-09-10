@@ -414,7 +414,7 @@
   max-width: calc(var(--base) * 7);
   margin: 0 auto calc(var(--base) * 0.2);
 }
-.spin-saved-col { display: flex; }
+.spin-saved-col { display: flex; min-width: 0; }
 .spin-saved-slot {
   position: relative;
   flex: 1;
@@ -427,6 +427,7 @@
   border: 2px solid rgba(26, 26, 26, 0.12);
   border-radius: calc(var(--base) * 0.14);
   overflow: hidden;
+  min-width: 0;
 }
 .spin-saved-slot.is-pending {
   background: transparent;
@@ -477,6 +478,7 @@
   padding: calc(var(--base) * 0.24) calc(var(--base) * 0.3);
   font-size: calc(var(--base) * 0.22);
   letter-spacing: 0.06em;
+  white-space: normal; /* allow wrap so the button never forces the card wider */
 }
 .spin-keep-btn::after { content: none; } /* no trailing arrow on these compact CTAs */
 .spin-choose-heading {
@@ -542,4 +544,34 @@
   .spin-card .spin-chosen-hook { font-size: 40px; }
   .spin-card .spin-chosen-rest { font-size: 13px; }
   .spin-card .spin-chosen-title { font-size: 14px; }
+}
+
+
+/* ── SCREEN TRANSITIONS ──────────────────────────────────────────────────
+   Each phase's content fades + rises in on mount so moving between screens
+   (spin → deals → email → code) is a soft cross-fade rather than a hard cut.
+   The wheel persists across phases and is intentionally not animated here. */
+@keyframes spin-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.spin-body,
+.spin-saved-slot,
+.spin-chosen,
+.spin-form,
+.spin-code,
+.spin-fine,
+.spin-card > .spin-btn-primary {
+  animation: spin-fade-in 220ms ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spin-body,
+  .spin-saved-slot,
+  .spin-chosen,
+  .spin-form,
+  .spin-code,
+  .spin-fine,
+  .spin-card > .spin-btn-primary {
+    animation: none;
+  }
 }
