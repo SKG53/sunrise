@@ -1,29 +1,12 @@
 // Public contact form endpoint — accepts unauthenticated submissions from
-// the /contact page. Validates input, records the submission as a pending
-// log entry, and enqueues TWO emails through the Lovable email queue:
+// the /contact page. Validates input and sends TWO emails through Lovable's
+// managed email delivery:
 //   1. Confirmation to the submitter
 //   2. Notification to hello@savorsunrise.com
-//
-// We bypass the auth-gated /lovable/email/transactional/send route because
-// the submitter is not logged in, and we replicate its enqueue logic here
-// using the service role key (admin client). Suppression check still runs.
-import * as React from 'react'
-import { render } from '@react-email/components'
 import { createFileRoute } from '@tanstack/react-router'
 import { supabaseAdmin } from '@/integrations/supabase/client.server'
+import { sendTemplateEmail } from '@/lib/email-templates/send-email'
 import { TEMPLATES } from '@/lib/email-templates/registry'
-
-const SITE_NAME = 'SUNRISE'
-const SENDER_DOMAIN = 'notify.www.savorsunrise.com'
-const FROM_DOMAIN = 'notify.www.savorsunrise.com'
-
-function generateToken(): string {
-  const bytes = new Uint8Array(32)
-  crypto.getRandomValues(bytes)
-  return Array.from(bytes)
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('')
-}
 
 function redactEmail(email: string): string {
   const [local, domain] = email.split('@')
@@ -41,7 +24,28 @@ interface ContactBody {
   topic?: unknown
 }
 
-async function enqueueOne(opts: {
+async function logSend(opts: {
+  templateName: string
+  recipientEmail: string
+  status: 'sent' | 'suppressed' | 'failed'
+  errorMessage?: string
+}) {
+  const { error } = await supabaseAdmin.from('email_send_log' as any).insert({
+    template_name: opts.templateName,
+    recipient_email: opts.recipientEmail,
+    status: opts.status,
+    error_message: opts.errorMessage ?? null,
+  })
+  if (error) {
+    console.error('Failed to write email_send_log', {
+      status: opts.status,
+      template_name: opts.templateName,
+      error: { code: (error as any).code, message: error.message },
+    })
+  }
+}
+
+async function sendOne(opts: {
   templateName: string
   recipientEmail: string
   templateData: Record<string, any>
@@ -53,100 +57,39 @@ async function enqueueOne(opts: {
     return { ok: false, error: `Unknown template ${templateName}` }
   }
 
-  // Resolve effective recipient (template `to` wins for fixed-recipient templates)
   const effectiveRecipient = (template.to || recipientEmail).toLowerCase()
-  const messageId = crypto.randomUUID()
 
-  // Suppression check
-  const { data: suppressed, error: suppressionError } = await supabaseAdmin
-    .from('suppressed_emails' as any)
-    .select('id')
-    .eq('email', effectiveRecipient)
-    .maybeSingle()
-  if (suppressionError) {
-    return { ok: false, error: 'suppression_check_failed' }
-  }
-  if (suppressed) {
-    await supabaseAdmin.from('email_send_log' as any).insert({
-      message_id: messageId,
-      template_name: templateName,
-      recipient_email: effectiveRecipient,
-      status: 'suppressed',
+  try {
+    const result = await sendTemplateEmail(templateName, effectiveRecipient, {
+      templateData,
+      idempotencyKey,
     })
-    return { ok: true, suppressed: true }
-  }
 
-  // Get or create unsubscribe token
-  let unsubscribeToken: string
-  const { data: existingToken } = await supabaseAdmin
-    .from('email_unsubscribe_tokens' as any)
-    .select('token, used_at')
-    .eq('email', effectiveRecipient)
-    .maybeSingle()
-  if (existingToken && !(existingToken as any).used_at) {
-    unsubscribeToken = (existingToken as any).token
-  } else {
-    unsubscribeToken = generateToken()
-    await supabaseAdmin
-      .from('email_unsubscribe_tokens' as any)
-      .upsert(
-        { token: unsubscribeToken, email: effectiveRecipient },
-        { onConflict: 'email', ignoreDuplicates: true }
-      )
-    const { data: stored } = await supabaseAdmin
-      .from('email_unsubscribe_tokens' as any)
-      .select('token')
-      .eq('email', effectiveRecipient)
-      .maybeSingle()
-    if (stored) unsubscribeToken = (stored as any).token
-  }
+    if (!result.sent) {
+      await logSend({
+        templateName,
+        recipientEmail: effectiveRecipient,
+        status: 'suppressed',
+      })
+      return { ok: true, suppressed: true }
+    }
 
-  // Render
-  const element = React.createElement(template.component, templateData)
-  const html = await render(element)
-  const text = await render(element, { plainText: true })
-  const subject =
-    typeof template.subject === 'function'
-      ? template.subject(templateData)
-      : template.subject
-
-  // Pending log
-  await supabaseAdmin.from('email_send_log' as any).insert({
-    message_id: messageId,
-    template_name: templateName,
-    recipient_email: effectiveRecipient,
-    status: 'pending',
-  })
-
-  const { error: enqueueError } = await supabaseAdmin.rpc('enqueue_email' as any, {
-    queue_name: 'transactional_emails',
-    payload: {
-      message_id: messageId,
-      to: effectiveRecipient,
-      from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-      sender_domain: SENDER_DOMAIN,
-      subject,
-      html,
-      text,
-      purpose: 'transactional',
-      label: templateName,
-      idempotency_key: idempotencyKey,
-      unsubscribe_token: unsubscribeToken,
-      queued_at: new Date().toISOString(),
-    },
-  })
-
-  if (enqueueError) {
-    await supabaseAdmin.from('email_send_log' as any).insert({
-      message_id: messageId,
-      template_name: templateName,
-      recipient_email: effectiveRecipient,
+    await logSend({
+      templateName,
+      recipientEmail: effectiveRecipient,
+      status: 'sent',
+    })
+    return { ok: true }
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error)
+    await logSend({
+      templateName,
+      recipientEmail: effectiveRecipient,
       status: 'failed',
-      error_message: 'Failed to enqueue email',
+      errorMessage: errorMsg.slice(0, 1000),
     })
-    return { ok: false, error: 'enqueue_failed' }
+    return { ok: false, error: 'send_failed' }
   }
-  return { ok: true, messageId }
 }
 
 export const Route = createFileRoute('/api/public/contact')({
@@ -184,13 +127,13 @@ export const Route = createFileRoute('/api/public/contact')({
 
         // Fire both emails. Notification first (most important — internal alert),
         // then confirmation. Both are independent; if one fails, log and continue.
-        const notify = await enqueueOne({
+        const notify = await sendOne({
           templateName: 'contact-notification',
           recipientEmail: 'hello@savorsunrise.com',
           templateData,
           idempotencyKey: `contact-notify-${submissionId}`,
         })
-        const confirm = await enqueueOne({
+        const confirm = await sendOne({
           templateName: 'contact-confirmation',
           recipientEmail: email,
           templateData,
@@ -198,7 +141,7 @@ export const Route = createFileRoute('/api/public/contact')({
         })
 
         if (!notify.ok && !confirm.ok) {
-          console.error('Both contact emails failed to enqueue', {
+          console.error('Both contact emails failed to send', {
             recipient_redacted: redactEmail(email),
             notify,
             confirm,
