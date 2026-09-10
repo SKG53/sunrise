@@ -60,8 +60,8 @@ export type Deal = {
   code: string;
   color: string;
   weight: number; // within-pool odds (organic / default audience)
-  weightAd?: number; // within-pool odds for ad visitors (falls back to weight)
-  adEligible?: boolean; // when false, excluded from an ad visitor's candidate set
+  weightAd?: number; // within-pool odds for ad visitors (falls back to weight);
+                     // 0 = stays IN the pool/set but is never selected (0% odds)
 };
 
 export const DEALS: Deal[] = [
@@ -148,7 +148,7 @@ export const DEALS: Deal[] = [
     code: "NEWCUST5P30",
     color: "#0A6034",
     weight: 25,
-    adEligible: false, // ad visitors must never be served the deeper 30% deal
+    weightAd: 0, // ad visitors: deal stays in the set but is never served (0% odds)
   },
   // — SMALL-CART —
   {
@@ -183,20 +183,24 @@ type Phase =
 
 // Weighted pick restricted to a single pool; returns the DEALS index.
 function pickIndexInPool(pool: Pool, isAd: boolean): number {
-  // Ad visitors get a filtered candidate set (adEligible === false deals are
-  // EXCLUDED entirely — not zero-weighted — so no rounding/race can surface
-  // them) and their weightAd where present.
-  const entries = DEALS.map((d, i) => ({ d, i })).filter(
-    (e) => e.d.pool === pool && (!isAd || e.d.adEligible !== false)
-  );
+  // The candidate set is the WHOLE pool for everyone — deals are never removed,
+  // so the pool looks identical regardless of audience. Audience-specific odds
+  // come from weightAd (falls back to weight). A weight of 0 keeps the deal in
+  // the set but can never be selected: the loop skips non-positive weights, so
+  // no rounding/race can surface a 0-weight deal (e.g. buy5-30 for ad visitors).
+  const entries = DEALS.map((d, i) => ({ d, i })).filter((e) => e.d.pool === pool);
   const w = (d: Deal) => (isAd ? d.weightAd ?? d.weight : d.weight);
   const total = entries.reduce((s, e) => s + w(e.d), 0);
   let r = Math.random() * total;
+  let last = -1;
   for (const e of entries) {
-    r -= w(e.d);
+    const ew = w(e.d);
+    if (ew <= 0) continue; // in the set, but never selectable at 0 odds
+    last = e.i;
+    r -= ew;
     if (r <= 0) return e.i;
   }
-  return entries[0].i;
+  return last >= 0 ? last : entries[0].i; // fallback: last positive-weight deal
 }
 
 // Final wheel orientation (deg) that centers segment `idx` under the 12 o'clock
