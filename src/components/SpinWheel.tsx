@@ -9,7 +9,7 @@
 // INVISIBLE MATH (two pools): spin 1 draws only from the BIG-CART pool, spin 2
 // only from the SMALL-CART pool. Each pool is an independent weighted draw whose
 // weights sum to 100 on their own. The customer never sees pool labels — it's
-// just organization + odds on our side. The single wheel shows all six deals;
+// just organization + odds on our side. The single wheel shows all seven deals;
 // each spin's weighted pick is restricted to its pool's segments, and the
 // rotation lands that segment. As before, the prize is decided BEFORE the
 // animation — the spin never decides the outcome.
@@ -30,7 +30,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
-import { readUtms } from "../lib/utms";
+import { readUtms, isAdVisitor } from "../lib/utms";
 import "./SpinWheel.css";
 
 const STORAGE_KEY = "sunrise:spin-wheel-seen";
@@ -59,11 +59,13 @@ export type Deal = {
   terms: string;  // per-deal fine print
   code: string;
   color: string;
-  weight: number; // within-pool odds
+  weight: number; // within-pool odds (organic / default audience)
+  weightAd?: number; // within-pool odds for ad visitors (falls back to weight)
+  adEligible?: boolean; // when false, excluded from an ad visitor's candidate set
 };
 
 export const DEALS: Deal[] = [
-  // Wheel/segment order below is also the visual order (6 segments). Colors and
+  // Wheel/segment order below is also the visual order (7 segments). Colors and
   // the two FREE deals are arranged so no two similar colors — and neither FREE
   // — sit adjacent. Each spin's weighted pick is restricted to its pool.
 
@@ -91,7 +93,8 @@ export const DEALS: Deal[] = [
     terms: "Buy any four 4-packs, get any 4-pack FREE.",
     code: "NEWCUST4P1FR",
     color: "#2E1E3D",
-    weight: 65,
+    weight: 60,
+    weightAd: 70,
   },
   // — SMALL-CART —
   {
@@ -105,6 +108,20 @@ export const DEALS: Deal[] = [
     code: "SRSPINWIN15OFF",
     color: "#DC7F27",
     weight: 10,
+  },
+  // — BIG-CART — (Buy 5, 25% off — the ad-visitor alternative to the 30% deal) —
+  {
+    key: "buy5-25",
+    pool: "big",
+    hook: "25%",
+    sub: "OFF",
+    rest: "OFF",
+    title: "Mix and match any (5) 4-packs and take 25% off",
+    terms: "Mix and match any (5) 4-packs and take 25% off.",
+    code: "NEWCUST5P25",
+    color: "#2C3E73",
+    weight: 15,
+    weightAd: 30,
   },
   // — SMALL-CART — (new: buy 2, get a 10mg 4-pack free) —
   {
@@ -130,7 +147,8 @@ export const DEALS: Deal[] = [
     terms: "Mix and match any (5) 4-packs and take 30% off.",
     code: "NEWCUST5P30",
     color: "#0A6034",
-    weight: 35,
+    weight: 25,
+    adEligible: false, // ad visitors must never be served the deeper 30% deal
   },
   // — SMALL-CART —
   {
@@ -147,7 +165,7 @@ export const DEALS: Deal[] = [
   },
 ];
 
-const SEG = 360 / DEALS.length; // 72° per segment (5 deals)
+const SEG = 360 / DEALS.length; // per-segment angle; self-adjusts (7 deals)
 const SPIN_MS = 4200;
 const TURNS = 6;
 const GENERIC_TERMS =
@@ -164,12 +182,18 @@ type Phase =
   | "revealed";
 
 // Weighted pick restricted to a single pool; returns the DEALS index.
-function pickIndexInPool(pool: Pool): number {
-  const entries = DEALS.map((d, i) => ({ d, i })).filter((e) => e.d.pool === pool);
-  const total = entries.reduce((s, e) => s + e.d.weight, 0);
+function pickIndexInPool(pool: Pool, isAd: boolean): number {
+  // Ad visitors get a filtered candidate set (adEligible === false deals are
+  // EXCLUDED entirely — not zero-weighted — so no rounding/race can surface
+  // them) and their weightAd where present.
+  const entries = DEALS.map((d, i) => ({ d, i })).filter(
+    (e) => e.d.pool === pool && (!isAd || e.d.adEligible !== false)
+  );
+  const w = (d: Deal) => (isAd ? d.weightAd ?? d.weight : d.weight);
+  const total = entries.reduce((s, e) => s + w(e.d), 0);
   let r = Math.random() * total;
   for (const e of entries) {
-    r -= e.d.weight;
+    r -= w(e.d);
     if (r <= 0) return e.i;
   }
   return entries[0].i;
@@ -399,7 +423,7 @@ export function SpinWheel() {
   // Spin 1 — BIG-CART pool → bottom-left slot.
   const spin1 = () => {
     if (phase !== "idle") return;
-    const idx = pickIndexInPool("big");
+    const idx = pickIndexInPool("big", isAdVisitor());
     setDeal1(idx);
     if (reduced.current) {
       setRotation(finalOrientation(idx));
@@ -414,7 +438,7 @@ export function SpinWheel() {
   // Spin 2 — SMALL-CART pool → bottom-right slot. The one added button press.
   const spin2 = () => {
     if (phase !== "landed1") return;
-    const idx = pickIndexInPool("small");
+    const idx = pickIndexInPool("small", isAdVisitor());
     setDeal2(idx);
     if (reduced.current) {
       setRotation((cur) => nextRotation(cur, idx));
@@ -513,7 +537,7 @@ export function SpinWheel() {
               className="spin-wheel"
               viewBox="0 0 200 200"
               role="img"
-              aria-label="Prize wheel with six deal segments"
+              aria-label="Prize wheel with seven deal segments"
               style={{
                 transform: `rotate(${rotation}deg)`,
                 transition: spinning
