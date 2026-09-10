@@ -17,7 +17,8 @@
 // PRESERVED FROM THE ORIGINAL (unchanged behavior): age-gated arming
 // (`sunrise:age-verified` + `AGE_KEY`, ~70% scroll of `.s03-card-grid`, 10s
 // fallback, desktop exit-intent w/ 2s guard), STORAGE_KEY (per-session dismiss)
-// + SUPPRESS_KEY (persistent, set on ?ref=srbev), email-gates-reveal via the
+// + SUPPRESS_KEY (cross-domain suppression — now DISABLED, see note below),
+// email-gates-reveal via the
 // Supabase `POST /api/public/newsletter` (source "spin-wheel"), non-blocking
 // HubSpot dual-write w/ readUtms(), wordmark render, reduced-motion path,
 // ESC/backdrop/X dismiss, body-scroll-lock. The email gate now fires AFTER the
@@ -34,9 +35,13 @@ import "./SpinWheel.css";
 
 const STORAGE_KEY = "sunrise:spin-wheel-seen";
 const AGE_KEY = "sunrise:age-verified";
-// Persistent suppression for visitors arriving from the srbev.com lander after
-// spinning there (?ref=srbev). Survives sessions so they're never re-prompted.
-const SUPPRESS_KEY = "sunrise:spin-suppressed";
+// DISABLED (2026-09-10): cross-domain Spin & Save suppression. This existed for
+// when the srbev.com lander had its OWN spin wheel — a visitor who spun there
+// arrived with ?ref=srbev and we permanently suppressed the main-site wheel so
+// they weren't re-prompted. The lander no longer has its own wheel (live funnel
+// is age-gate-only), so a ?ref=srbev visitor has NOT spun and SHOULD see Spin &
+// Save here. Kept commented for reference in case the lander wheel ever returns.
+// const SUPPRESS_KEY = "sunrise:spin-suppressed";
 
 // ── DEALS ───────────────────────────────────────────────────────────────
 // Five deals across two hidden pools. `pool` decides which spin can land it;
@@ -291,13 +296,16 @@ export function SpinWheel() {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    try {
-      if (new URLSearchParams(window.location.search).get("ref") === "srbev") {
-        localStorage.setItem(SUPPRESS_KEY, "true");
-      }
-    } catch {
-      /* URL or localStorage unavailable — fall through to normal behavior */
-    }
+    // DISABLED (2026-09-10) — cross-domain suppression, see SUPPRESS_KEY note
+    // above. Was: on ?ref=srbev, persistently suppress the main-site wheel for
+    // visitors who had already spun on the lander.
+    // try {
+    //   if (new URLSearchParams(window.location.search).get("ref") === "srbev") {
+    //     localStorage.setItem(SUPPRESS_KEY, "true");
+    //   }
+    // } catch {
+    //   /* URL or localStorage unavailable — fall through to normal behavior */
+    // }
 
     const FALLBACK_MS = 10000;
     const EXIT_GUARD_MS = 2000;
@@ -308,7 +316,8 @@ export function SpinWheel() {
 
     const eligible = () => {
       try {
-        if (localStorage.getItem(SUPPRESS_KEY) === "true") return false;
+        // DISABLED (2026-09-10) — cross-domain suppression removed; see note above.
+        // if (localStorage.getItem(SUPPRESS_KEY) === "true") return false;
         if (sessionStorage.getItem(STORAGE_KEY) === "true") return false;
         if (sessionStorage.getItem(AGE_KEY) !== "true") return false;
       } catch {
