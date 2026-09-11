@@ -15,7 +15,8 @@
 // animation — the spin never decides the outcome.
 //
 // PRESERVED FROM THE ORIGINAL (unchanged behavior): age-gated arming
-// (`sunrise:age-verified` + `AGE_KEY`, ~70% scroll of `.s03-card-grid`, 10s
+// (`sunrise:age-verified` + `AGE_KEY`; page-aware scroll trigger — home: ~70%
+// of `.s03-card-grid` + 10s; /products: 50% of `#tier-10mg` + 6s; plus 10s
 // fallback, desktop exit-intent w/ 2s guard), STORAGE_KEY (per-session dismiss)
 // + SUPPRESS_KEY (cross-domain suppression — now DISABLED, see note below),
 // email-gates-reveal via the
@@ -346,7 +347,14 @@ export function SpinWheel() {
     //   /* URL or localStorage unavailable — fall through to normal behavior */
     // }
 
-    const FALLBACK_MS = 10000;
+    // Arming rules are page-specific. The srbev lander drops paid visitors on
+    // the /products listing (not home), so there the wheel arms on 50% scroll of
+    // the 10mg card panel (#tier-10mg, the default-active tier) or a 6s fallback.
+    // Everywhere else (home) keeps the Simple-Ingredients grid at ~70% + 10s.
+    const onProducts = /^\/products\/?$/.test(window.location.pathname);
+    const FALLBACK_MS = onProducts ? 6000 : 10000;
+    const SCROLL_SELECTOR = onProducts ? "#tier-10mg" : ".s03-card-grid";
+    const SCROLL_PCT = onProducts ? 0.5 : 0.7;
     const EXIT_GUARD_MS = 2000;
     let armed = false;
     let done = false;
@@ -365,10 +373,10 @@ export function SpinWheel() {
       return true;
     };
     const onScroll = () => {
-      const el = document.querySelector(".s03-card-grid");
+      const el = document.querySelector(SCROLL_SELECTOR);
       if (!el) return;
       const r = el.getBoundingClientRect();
-      if (r.top + r.height * 0.7 <= window.innerHeight / 2) reveal();
+      if (r.top + r.height * SCROLL_PCT <= window.innerHeight / 2) reveal();
     };
     const onMouseOut = (e: MouseEvent) => {
       if (Date.now() - armedAt < EXIT_GUARD_MS) return;
