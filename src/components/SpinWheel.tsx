@@ -45,7 +45,7 @@ const AGE_KEY = "sunrise:age-verified";
 // const SUPPRESS_KEY = "sunrise:spin-suppressed";
 
 // ── DEALS ───────────────────────────────────────────────────────────────
-// Five deals across two hidden pools. `pool` decides which spin can land it;
+// Seven deals across two hidden pools. `pool` decides which spin can land it;
 // `weight` is that deal's odds WITHIN ITS POOL (each pool sums to 100).
 // `hook` is the attention grab (the % or "FREE") shown large; `rest` is the
 // small qualifier. `title` + `terms` show on the saved cards / reveal.
@@ -171,6 +171,59 @@ const SPIN_MS = 4200;
 const TURNS = 6;
 const GENERIC_TERMS =
   "One use per customer. Enter code at checkout. Exclusions, terms, and conditions apply.";
+
+// ── DEAL-SPECIFIC AD DEALS ──────────────────────────────────────────────
+// Visitors from a deal-specific Meta ad were PROMISED one exact offer, so they
+// skip the wheel entirely and get that deal (deal card -> email -> gated code).
+// These are NOT part of the wheel pool — never spun. Meta-specific codes,
+// distinct from the wheel's, so redemptions slice Meta-vs-organic in Shopify
+// (the codes already exist in Shopify; we only deliver the string). Colors match
+// the equivalent wheel deals for visual consistency.
+export const AD_DEALS: Record<"b2g1f" | "25off5", Deal> = {
+  // ad2 -> "Buy 2, get 1 FREE"
+  b2g1f: {
+    key: "ad-b2g1f",
+    pool: "big",
+    hook: "FREE",
+    sub: "4-PACK",
+    rest: "ANY 4-PACK",
+    title: "Buy any (2) 4-packs, get a 4-pack FREE",
+    terms: GENERIC_TERMS,
+    code: "FREE4PACK",
+    color: "#2E1E3D",
+    weight: 0,
+  },
+  // ad1 -> "Buy 5, get 25% OFF"
+  "25off5": {
+    key: "ad-25off5",
+    pool: "big",
+    hook: "25%",
+    sub: "OFF",
+    rest: "OFF",
+    title: "Mix & match any (5) 4-packs and take 25% off",
+    terms: GENERIC_TERMS,
+    code: "25OFF5",
+    color: "#2C3E73",
+    weight: 0,
+  },
+};
+
+// ROUTER: map the utm_term ad token -> an ad deal (or null = normal wheel).
+// utm_term values look like `ac5_austin_ad2` / `ac4_nj_ad1`, so we match ONLY the
+// trailing `adN` TOKEN — every geo (Austin, Belton, NJ, ...) with the same adN
+// routes to the same deal; geo (utm_content) never affects which deal shows.
+//   ad1 -> 25% off 5   ·   ad2 -> buy-2-get-1-free
+//   ad3, any other adN, and missing / "(not set)" utm_term -> null (wheel).
+// utm_term is the lossiest UTM through Meta's in-app browser; when it doesn't
+// carry, the visitor simply gets the wheel — an accepted, graceful fallback.
+function resolveAdDeal(): Deal | null {
+  const term = (readUtms().utm_term || "").toLowerCase();
+  const m = /(?:^|_)ad(\d+)$/.exec(term);
+  if (!m) return null;
+  if (m[1] === "1") return AD_DEALS["25off5"];
+  if (m[1] === "2") return AD_DEALS["b2g1f"];
+  return null;
+}
 
 type Phase =
   | "hidden"
@@ -311,6 +364,9 @@ export function SpinWheel() {
   const [deal1, setDeal1] = useState<number | null>(null); // big pool (left)
   const [deal2, setDeal2] = useState<number | null>(null); // small pool (right)
   const [chosen, setChosen] = useState<number | null>(null);
+  // Set at arm time for deal-specific ad visitors (ad1/ad2). Non-null routes the
+  // popup down the deal-card -> email -> gated-code path and bypasses the wheel.
+  const [adDeal, setAdDeal] = useState<Deal | null>(null);
   const [rotation, setRotation] = useState(0);
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -393,7 +449,12 @@ export function SpinWheel() {
       if (done) return;
       done = true;
       cleanup();
-      setPhase((p) => (p === "hidden" ? "idle" : p));
+      // ROUTER (runs before any wheel/pool logic): deal-specific ad visitors skip
+      // the wheel and open straight to their promised deal; everyone else gets the
+      // wheel exactly as before.
+      const ad = resolveAdDeal();
+      if (ad) setAdDeal(ad);
+      setPhase((p) => (p === "hidden" ? (ad ? "email" : "idle") : p));
     };
     const arm = () => {
       if (armed || done || !eligible()) return;
@@ -486,7 +547,7 @@ export function SpinWheel() {
     setPhase("email");
   };
 
-  const chosenDeal = chosen === null ? null : DEALS[chosen];
+  const chosenDeal = adDeal ?? (chosen === null ? null : DEALS[chosen]);
 
   const submitEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -501,7 +562,10 @@ export function SpinWheel() {
       const res = await fetch("/api/public/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: value, source: "spin-wheel" }),
+        body: JSON.stringify({
+          email: value,
+          source: adDeal ? "ad-popup" : "spin-wheel",
+        }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
