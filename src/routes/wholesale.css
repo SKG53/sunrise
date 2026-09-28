@@ -1,0 +1,708 @@
+/* ==========================================================================
+   SUNRISE — contact.css
+   Scoped .w-* styles for the Contact route. Inherits fonts and tokens from
+   sunrise-shell.css.
+   ========================================================================== */
+
+/* ── EYEBROW (reusable across sections) ─────────────────────────────────── */
+.w-eyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.24);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: calc(var(--base) * 0.45);
+}
+
+/* ── 01 · PAGE HERO ─────────────────────────────────────────────────────── */
+/* Giant color-flood page title. Tier-60 deep purple — quieter register  */
+/* for the sign-off/reach-us page; completes the tier color cycle across */
+/* the four subpage heroes (tier-5 → tier-10 → tier-30 → tier-60).       */
+.w-pagehero {
+  background: var(--tier-60);
+  /* 75% of original vertical size — min-height 50vh→37.5vh + padding-block
+     2×base→1.5×base. Flex centering preserves text position; banner copy
+     remains visually centered inside the now-shorter element.          */
+  min-height: min(37.5vh, 520px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 1.5) calc(var(--base) * 1);
+}
+.w-pagehero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 1.5), 9vw, calc(var(--base) * 4.2));
+  letter-spacing: 0.015em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  margin: 0;
+}
+.w-pagehero-title span {
+  opacity: 0;
+  animation: pagehero-char-in 0.05s ease-out forwards;
+}
+.w-pagehero-title span:nth-child(1) { animation-delay: 0.20s; }
+.w-pagehero-title span:nth-child(2) { animation-delay: 0.25s; }
+.w-pagehero-title span:nth-child(3) { animation-delay: 0.30s; }
+.w-pagehero-title span:nth-child(4) { animation-delay: 0.35s; }
+.w-pagehero-title span:nth-child(5) { animation-delay: 0.40s; }
+.w-pagehero-title span:nth-child(6) { animation-delay: 0.45s; }
+.w-pagehero-title span:nth-child(7) { animation-delay: 0.50s; }
+.w-pagehero-title span:nth-child(8) { animation-delay: 0.55s; }
+.w-pagehero-title span:nth-child(9) { animation-delay: 0.60s; }
+@keyframes pagehero-char-in {
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .w-pagehero-title span { opacity: 1; animation: none; }
+}
+
+/* ── 02 · HERO ──────────────────────────────────────────────────────────── */
+.w-hero {
+  padding: calc(var(--base) * 2.2) 0 calc(var(--base) * 1.6);
+}
+.w-hero-inner {
+  text-align: center;
+}
+.w-hero-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.5);
+  letter-spacing: 0.005em;
+  line-height: 0.98;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin: 0 auto calc(var(--base) * 0.55);
+  max-width: 18ch;
+}
+/* Voice Guide v5: accent line "Give us a buzz" — italic, bold, matches S01 bg */
+.w-hero-headline .accent-italic {
+  font-style: italic;
+  font-weight: 900;
+  color: var(--tier-60);
+  font-size: 1em;
+}
+.w-hero-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.42);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-body);
+  max-width: 44ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── 03 · FORM ──────────────────────────────────────────────────────────── */
+.w-form-section {
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
+}
+.w-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: calc(var(--base) * 1.2);
+  align-items: start;
+}
+.w-form-side {
+  padding-top: calc(var(--base) * 0.2);
+  position: sticky;
+  top: calc(var(--base) * 2.0);
+}
+.w-form-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.0);
+  letter-spacing: 0.005em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin-bottom: calc(var(--base) * 0.5);
+  max-width: 14ch;
+}
+.w-form-headline .accent { color: var(--tier-60); }
+.w-form-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.36);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-body);
+  max-width: 38ch;
+}
+.w-form-card {
+  background: #FAF6D6;
+  border: 1px solid var(--warm-gray-faint);
+  border-radius: 8px;
+  padding: calc(var(--base) * 0.9) calc(var(--base) * 0.9);
+}
+.w-form { display: flex; flex-direction: column; gap: calc(var(--base) * 0.55); }
+.w-form-row { display: block; }
+.w-form-row-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--base) * 0.45);
+}
+.w-field {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.16);
+}
+.w-field-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.w-input,
+.w-select,
+.w-textarea {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.34);
+  font-weight: 500;
+  color: var(--near-black);
+  background: var(--cream);
+  border: 1.5px solid var(--near-black);
+  border-radius: 6px;
+  padding: calc(var(--base) * 0.28) calc(var(--base) * 0.36);
+  line-height: 1.3;
+  outline: none;
+  transition: border-color 180ms ease-out, box-shadow 180ms ease-out;
+  width: 100%;
+  min-width: 0;
+}
+.w-textarea {
+  resize: vertical;
+  min-height: calc(var(--base) * 3.8);
+  font-family: 'Montserrat', sans-serif;
+}
+.w-input:focus,
+.w-select:focus,
+.w-textarea:focus {
+  border-color: var(--tier-10);
+  box-shadow: 0 0 0 3px rgba(204, 31, 57, 0.15);
+}
+/* Error state — matches brand red (tier-10) and voice-guide-compliant inline copy */
+.w-input-error {
+  border-color: var(--tier-10);
+  box-shadow: 0 0 0 3px rgba(204, 31, 57, 0.12);
+}
+.w-field-error {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--tier-10);
+  margin-top: calc(var(--base) * 0.04);
+  line-height: 1.3;
+}
+.w-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: calc(var(--base) * 0.9);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%231A1A1A' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right calc(var(--base) * 0.36) center;
+  background-color: var(--cream);
+}
+.w-form-submit {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--base) * 0.45);
+  margin-top: calc(var(--base) * 0.3);
+  flex-wrap: wrap;
+}
+.w-form-note {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+}
+
+/* ── SUCCESS STATE ──────────────────────────────────────────────────────── */
+.w-success {
+  padding: calc(var(--base) * 0.4) 0;
+  min-height: calc(var(--base) * 7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.w-success-eyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.24);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--green-accent);
+  margin-bottom: calc(var(--base) * 0.3);
+}
+.w-success-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.9);
+  font-weight: 900;
+  letter-spacing: 0.005em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin-bottom: calc(var(--base) * 0.4);
+}
+.w-success-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.38);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-body);
+  margin-bottom: calc(var(--base) * 0.7);
+  max-width: 40ch;
+}
+.w-success-ctas {
+  display: flex;
+  gap: calc(var(--base) * 0.3);
+  flex-wrap: wrap;
+}
+
+/* ── 04 · DIRECT CHANNELS ───────────────────────────────────────────────── */
+/* Restructured: section now collapses to a single horizontal band — the   */
+/* headline lives in the first grid column; the two channel cards (email +  */
+/* phone) occupy columns 2–3. Top vertical padding reduced to match. The   */
+/* old standalone .w-direct-head wrapper still exists (semantic anchor for  */
+/* the headline) but loses its bottom margin since it no longer sits above  */
+/* the grid.                                                                */
+.w-direct {
+  padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 1.4);
+}
+.w-direct-head {
+  max-width: 100%;
+  margin-bottom: 0;
+}
+.w-direct-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.0);
+  letter-spacing: 0.005em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--near-black);
+}
+.w-direct-headline .accent { color: var(--tier-60); }
+.w-direct-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: calc(var(--base) * 0.6);
+  align-items: start;
+}
+.w-direct-card {
+  background: var(--cream);
+  border-top: 2px solid var(--gold);
+  padding: calc(var(--base) * 0.7) 0 0;
+}
+.w-direct-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: calc(var(--base) * 0.28);
+}
+.w-direct-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.44);
+  font-weight: 800;
+  letter-spacing: 0.005em;
+  color: var(--near-black);
+  line-height: 1.25;
+  margin-bottom: calc(var(--base) * 0.32);
+  word-break: break-word;
+}
+.w-direct-value-block {
+  font-weight: 600;
+  font-size: calc(var(--base) * 0.38);
+  line-height: 1.45;
+  text-transform: none;
+}
+.w-direct-value a { color: var(--near-black); border-bottom: 1.5px solid var(--near-black); }
+.w-direct-value a:hover { color: var(--tier-10); border-bottom-color: var(--tier-10); }
+.w-direct-note {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.32);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-body);
+}
+.w-direct-note strong { font-weight: 700; color: var(--near-black); }
+
+/* ── 05 · FOLLOW ALONG (tier-60 flood) ──────────────────────────────────── */
+/* Matches the site-wide closer-color-flood pattern but uses tier-60 to    */
+/* bookend the page to its S01 pagehero (also tier-60). Other pages use   */
+/* their own tier flood: products → tier-10, about → tier-5, find →      */
+/* tier-30 fallback. Same structural family as .a-ptp / .f-fallback /    */
+/* .s08-near-you. Three-tile horizontal layout for parallel social        */
+/* channels; on a color flood the tiles drop any card background and rely */
+/* on a cream top-rule + cream text hierarchy for readability. Icons      */
+/* render in cream via currentColor. */
+.w-social {
+  background: var(--tier-60);
+  color: var(--cream);
+  padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
+}
+.w-social-head {
+  margin-bottom: calc(var(--base) * 1.0);
+}
+.w-social-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.4);
+  letter-spacing: 0.01em;
+  line-height: 1.0;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin: 0;
+}
+.w-social-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(var(--base) * 0.6);
+}
+.w-social-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: calc(var(--base) * 0.32);
+  color: var(--cream);
+}
+.w-social-icon {
+  width: calc(var(--base) * 0.7);
+  height: calc(var(--base) * 0.7);
+  color: var(--cream);
+  flex-shrink: 0;
+  display: block;
+}
+.w-social-handle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.44);
+  font-weight: 800;
+  letter-spacing: 0.005em;
+  color: var(--cream);
+  line-height: 1.25;
+  border-bottom: 1.5px solid var(--cream);
+  padding-bottom: 2px;
+  text-decoration: none;
+  display: inline-block;
+  transition: color 160ms, border-color 160ms;
+}
+.w-social-handle:hover {
+  color: #F2D480; /* Heartland cream-gold — same on-color accent used elsewhere */
+  border-bottom-color: #F2D480;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .w-form-grid { grid-template-columns: 1fr; }
+  .w-form-side { position: static; top: auto; }
+  /* Direct grid collapses to: headline full-width row, then 2 cards split  */
+  /* the row below. Old :last-child rule no longer applies — there are now  */
+  /* only 2 cards plus the headline cell.                                   */
+  .w-direct-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .w-direct-grid .w-direct-head {
+    grid-column: 1 / -1;
+  }
+  .w-social-grid { grid-template-columns: 1fr 1fr; }
+  .w-social-grid .w-social-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 768px) {
+  .w-hero-headline { font-size: calc(var(--base) * 1.35); }
+  .w-form-headline { font-size: calc(var(--base) * 1.0); }
+  .w-direct-headline { font-size: calc(var(--base) * 1.0); }
+  .w-social-headline { font-size: calc(var(--base) * 1.0); }
+  .w-form-row-split { grid-template-columns: 1fr; }
+  .w-direct-grid { grid-template-columns: 1fr; }
+  .w-direct-grid .w-direct-head {
+    grid-column: auto;
+  }
+  .w-social-grid { grid-template-columns: 1fr; }
+  .w-social-grid .w-social-card:last-child {
+    grid-column: auto;
+  }
+  .w-form-card {
+    padding: calc(var(--base) * 0.7) calc(var(--base) * 0.65);
+  }
+  .w-success-headline { font-size: calc(var(--base) * 0.8); }
+}
+@media (max-width: 520px) {
+  .w-form-submit { flex-direction: column; align-items: flex-start; gap: calc(var(--base) * 0.25); }
+  .w-form-submit .btn { width: 100%; text-align: center; }
+  .w-success-ctas { flex-direction: column; }
+  .w-success-ctas .btn { width: 100%; text-align: center; }
+}
+
+/* ==========================================================================
+   EVENT SIGNUP (.es-*) — page-specific additions for /event-signup
+   ========================================================================== */
+
+/* Top heading: "LEARN MORE ABOUT" + SUNRISE wordmark on its own line */
+.es-top-heading {
+  text-align: center;
+  margin: calc(var(--base) * 1.2) 0 calc(var(--base) * 1) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.3);
+}
+.es-top-heading-line1 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 0.9), 4.5vw, calc(var(--base) * 1.6));
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--near-black, #1A1A1A);
+  line-height: 1;
+}
+.es-top-heading-wordmark {
+  display: inline-block;
+  line-height: 0;
+}
+
+/* Secondary heading above product grid */
+.es-products-heading {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(calc(var(--base) * 1.35), 6.75vw, calc(var(--base) * 2.4));
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--near-black, #1A1A1A);
+  line-height: 1;
+  margin: calc(var(--base) * 2) 0 calc(var(--base) * 1.2) 0;
+}
+
+/* Centered success state for /event-signup */
+.es-success {
+  align-items: center;
+  text-align: center;
+}
+.es-success-headline {
+  margin-bottom: calc(var(--base) * 0.5);
+}
+.es-success-cta {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.42);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--near-black);
+}
+.es-success-actions {
+  display: flex;
+  gap: calc(var(--base) * 0.6);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: calc(var(--base) * 0.9);
+}
+
+/* Products container */
+.es-products {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 1.5);
+  margin-bottom: calc(var(--base) * 2);
+}
+
+/* Each tier row: lockup left, 6-card grid right */
+.es-tier-row {
+  display: grid;
+  grid-template-columns: minmax(0, 8rem) 1fr;
+  gap: calc(var(--base) * 1);
+  align-items: start;
+}
+.es-tier-lockup-col {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  /* Push lockup down so its visual top edge aligns with the top of the
+     adjacent card grid. With transform-origin: center center and rotate(-90),
+     the rotated visual extends roughly (text_width − text_height)/2 above its
+     layout box top; padding-top by that delta brings the visual top to 0. */
+  padding-top: calc(var(--base) * 3.5);
+  min-height: calc(var(--base) * 8);
+}
+.es-tier-lockup {
+  display: inline-block;
+  line-height: 0;
+  transform: rotate(-90deg);
+  transform-origin: center center;
+  white-space: nowrap;
+}
+
+/* Card grid — 3-up desktop, 2-up tablet, 1-up mobile */
+.es-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: calc(var(--base) * 0.4);
+}
+@media (max-width: 900px) {
+  .es-tier-row { grid-template-columns: 1fr; }
+  .es-tier-lockup-col { padding-top: 0; min-height: 0; }
+  .es-tier-lockup { transform: none; }
+  .es-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .es-card-grid { grid-template-columns: 1fr; }
+}
+
+/* Card — mirrors .s03-card visual pattern */
+.es-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  border: 2px solid var(--warm-gray-faint);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out;
+}
+.es-card-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+.es-card-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
+}
+.es-card-can {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 0.3);
+  overflow: hidden;
+}
+.es-card-can img {
+  width: 75%;
+  height: 75%;
+  object-fit: contain;
+  object-position: center;
+  transform: translateY(calc(var(--base) * 0.18));
+}
+.es-card-tier {
+  position: absolute;
+  top: calc(var(--base) * 0.24);
+  left: calc(var(--base) * 0.32);
+  display: inline-block;
+  pointer-events: none;
+  z-index: 2;
+}
+.es-card-cannabinoid {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--base) * 0.15);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.es-card-cannabinoid > * {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: inline-block;
+  transform: rotate(-90deg);
+  transform-origin: 0 100%;
+  white-space: nowrap;
+}
+.es-card-meta {
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.32) calc(var(--base) * 0.4);
+  background: var(--cream);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--base) * 0.3);
+}
+.es-card-meta-text {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.08);
+  min-width: 0;
+}
+.es-card-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.33);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.2;
+}
+.es-card-descriptor {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Shop CTA — flavor-color pill in the card meta row (right of name/descriptor) */
+.es-card-shop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.26);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream, #FEFBE0);
+  padding: calc(var(--base) * 0.22) calc(var(--base) * 0.55);
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.es-card-link:hover .es-card-shop {
+  filter: brightness(1.08);
+}
+
+/* Coming Soon — outlined pill in its own row between can and meta */
+.es-coming-soon-row {
+  background: var(--cream);
+  display: flex;
+  justify-content: center;
+  padding: calc(var(--base) * 0.3) calc(var(--base) * 0.32) 0;
+}
+.es-coming-soon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 0.26);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: 1.5px solid currentColor;
+  padding: calc(var(--base) * 0.18) calc(var(--base) * 0.55);
+  border-radius: 999px;
+  background: transparent;
+  white-space: nowrap;
+}
+.es-card-coming-soon { cursor: default; }
+
+@media (max-width: 768px) {
+  /* Broad section-gap standardization (mobile) — see home.css. c-hero (S02) is
+     excluded. c-form-section keeps top:0 for a base*1.6 S02->S03 gap. */
+  .w-form-section { padding-top: 0; padding-bottom: calc(var(--base) * 0.8); }
+  .w-direct,
+  .w-social { padding-block: calc(var(--base) * 0.8); }
+}
