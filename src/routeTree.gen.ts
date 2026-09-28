@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WholesaleRouteImport } from './routes/wholesale'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as SocialRouteImport } from './routes/social'
 import { Route as SmsMarketingPolicyRouteImport } from './routes/sms-marketing-policy'
@@ -38,6 +39,11 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 
+const WholesaleRoute = WholesaleRouteImport.update({
+  id: '/wholesale',
+  path: '/wholesale',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
   path: '/terms-of-service',
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/wholesale': typeof WholesaleRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
@@ -230,6 +237,7 @@ export interface FileRoutesByTo {
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/wholesale': typeof WholesaleRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
@@ -261,6 +269,7 @@ export interface FileRoutesById {
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/social': typeof SocialRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/wholesale': typeof WholesaleRoute
   '/products_/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
@@ -293,6 +302,7 @@ export interface FileRouteTypes {
     | '/sms-marketing-policy'
     | '/social'
     | '/terms-of-service'
+    | '/wholesale'
     | '/products/$slug'
     | '/api/public/contact'
     | '/api/public/contact-hubspot'
@@ -323,6 +333,7 @@ export interface FileRouteTypes {
     | '/sms-marketing-policy'
     | '/social'
     | '/terms-of-service'
+    | '/wholesale'
     | '/products/$slug'
     | '/api/public/contact'
     | '/api/public/contact-hubspot'
@@ -353,6 +364,7 @@ export interface FileRouteTypes {
     | '/sms-marketing-policy'
     | '/social'
     | '/terms-of-service'
+    | '/wholesale'
     | '/products_/$slug'
     | '/api/public/contact'
     | '/api/public/contact-hubspot'
@@ -384,6 +396,7 @@ export interface RootRouteChildren {
   SmsMarketingPolicyRoute: typeof SmsMarketingPolicyRoute
   SocialRoute: typeof SocialRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
+  WholesaleRoute: typeof WholesaleRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicContactHubspotRoute: typeof ApiPublicContactHubspotRoute
@@ -399,6 +412,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wholesale': {
+      id: '/wholesale'
+      path: '/wholesale'
+      fullPath: '/wholesale'
+      preLoaderRoute: typeof WholesaleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms-of-service': {
       id: '/terms-of-service'
       path: '/terms-of-service'
@@ -616,6 +636,7 @@ const rootRouteChildren: RootRouteChildren = {
   SmsMarketingPolicyRoute: SmsMarketingPolicyRoute,
   SocialRoute: SocialRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
+  WholesaleRoute: WholesaleRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicContactHubspotRoute: ApiPublicContactHubspotRoute,
