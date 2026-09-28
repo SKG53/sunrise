@@ -1,0 +1,407 @@
+// Utility page — the page itself is the CTA (no PtP band). Reason dropdown
+// pre-fills from ?topic= URL param so Find CTAs land on the right category.
+
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { SiteHeader } from "../components/SiteHeader";
+import { SiteFooter } from "../components/SiteFooter";
+import { readUtms } from "../lib/utms";
+import "./wholesale.css";
+
+// Accepted topic values for the URL param routing layer. Keep in sync with
+// Find page hrefs: /contact?topic=wholesale, /contact?topic=retailer-request.
+const TOPIC_MAP: Record<string, string> = {
+  "wholesale": "Wholesale / Retail Partnership",
+  "retailer-request": "Request a Retailer",
+  "press": "Media / Press",
+  "general": "General Inquiry",
+  "support": "Product Support",
+};
+
+const REASONS = [
+  "General Inquiry",
+  "Wholesale / Retail Partnership",
+  "Request a Retailer",
+  "Media / Press",
+  "Product Support",
+  "Other",
+];
+
+export const Route = createFileRoute("/wholesale")({
+  component: WholesalePage,
+  head: () => ({
+    meta: [
+      { title: "Wholesale · SUNRISE" },
+      {
+        name: "description",
+        content:
+          "Questions, wholesale inquiries, press, or just saying hi - reach the SUNRISE team by form or email.",
+      },
+    ],
+    links: [
+      { rel: "canonical", href: "https://www.savorsunrise.com/wholesale" },
+    ],
+  }),
+});
+
+// ── COMPONENT ────────────────────────────────────────────────────────────
+function WholesalePage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [reason, setReason] = useState(REASONS[0]);
+  const [message, setMessage] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Pre-select reason from ?topic= URL param on mount. Browser-only.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const topic = params.get("topic");
+    if (topic && TOPIC_MAP[topic]) {
+      setReason(TOPIC_MAP[topic]);
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Validate required fields in React state since the form uses noValidate to
+    // suppress native browser bubbles in favor of brand-aligned inline errors.
+    const next: { name?: string; email?: string; message?: string } = {};
+    if (!name.trim()) next.name = "Name needed.";
+    if (!email.trim()) next.email = "Email needed.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = "Email looks off.";
+    if (!message.trim()) next.message = "Message needed.";
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
+
+    // POST to public server route which enqueues two emails:
+    //   1. Confirmation to the submitter
+    //   2. Notification to hello@savorsunrise.com
+    setSubmitError(null);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/public/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          reason,
+          message: message.trim(),
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || `Request failed (${res.status})`);
+      }
+      // Non-blocking dual-write to HubSpot — mirrors the spin-wheel pattern.
+      // Fired in parallel and deliberately NOT awaited: the success message and
+      // the two emails (owned by /api/public/contact above) must never wait on,
+      // or fail because of, HubSpot. A rejected fetch is swallowed so it can't
+      // surface an error to the user.
+      fetch("/api/public/contact-hubspot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), email: email.trim(), ...readUtms() }),
+      }).catch(() => {});
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please email hello@savorsunrise.com."
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      <SiteHeader activeNav="wholesale" />
+
+      <main>
+        {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
+        <section className="w-pagehero">
+          <p className="w-pagehero-title" aria-label="Wholesale">
+            {"Wholesale".split("").map((ch, i) => (
+              <span key={i} aria-hidden="true">{ch === " " ? "\u00A0" : ch}</span>
+            ))}
+          </p>
+        </section>
+
+        {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
+        <section className="w-hero">
+          <div className="container">
+            <div className="w-hero-inner">
+              <h1 className="w-hero-headline">
+                Say hello &amp;<br />
+                Give us a <em className="accent-italic">buzz</em>
+              </h1>
+              <p className="w-hero-body">
+                Wholesale, press, product questions, or anything else - we
+                read every note. Use the form below or drop us an email.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 03 · FORM ─────────────────────────────────────────────────── */}
+        <section className="w-form-section">
+          <div className="container">
+            <div className="w-form-grid">
+              <div className="w-form-side">
+                <div className="w-eyebrow">General Inquiry</div>
+                <h2 className="w-form-headline">
+                  Tell us what's on your <span className="accent">mind</span>
+                </h2>
+                <p className="w-form-sub">
+                  We respond to most messages within two business days. Please
+                  don't include sensitive personal or health information.
+                </p>
+              </div>
+
+              <div className="w-form-card">
+                {submitted ? (
+                  <div className="w-success" role="status" aria-live="polite">
+                    <div className="w-success-eyebrow">Message Sent</div>
+                    <div className="w-success-headline">Thanks for reaching out</div>
+                    <p className="w-success-body">
+                      We've got your note and will be in touch soon. In the
+                      meantime, feel free to explore the lineup.
+                    </p>
+                    <div className="w-success-ctas">
+                      <a href="/products" className="btn btn-primary">
+                        See the Lineup
+                      </a>
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => {
+                          setSubmitted(false);
+                          setName("");
+                          setEmail("");
+                          setMessage("");
+                          setErrors({});
+                        }}
+                      >
+                        Send Another
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <form className="w-form" onSubmit={handleSubmit} noValidate>
+                    <div className="w-form-row w-form-row-split">
+                      <label className="w-field">
+                        <span className="w-field-label">Name</span>
+                        <input
+                          type="text"
+                          className={`w-input${errors.name ? " w-input-error" : ""}`}
+                          value={name}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                            if (errors.name) setErrors({ ...errors, name: undefined });
+                          }}
+                          required
+                          autoComplete="name"
+                          aria-invalid={errors.name ? true : undefined}
+                        />
+                        {errors.name && <span className="w-field-error">{errors.name}</span>}
+                      </label>
+                      <label className="w-field">
+                        <span className="w-field-label">Email</span>
+                        <input
+                          type="email"
+                          className={`w-input${errors.email ? " w-input-error" : ""}`}
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (errors.email) setErrors({ ...errors, email: undefined });
+                          }}
+                          required
+                          autoComplete="email"
+                          aria-invalid={errors.email ? true : undefined}
+                        />
+                        {errors.email && <span className="w-field-error">{errors.email}</span>}
+                      </label>
+                    </div>
+
+                    <div className="w-form-row">
+                      <label className="w-field">
+                        <span className="w-field-label">Reason for Reaching Out</span>
+                        <select
+                          className="w-select"
+                          value={reason}
+                          onChange={(e) => setReason(e.target.value)}
+                        >
+                          {REASONS.map((r) => (
+                            <option key={r} value={r}>
+                              {r}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    </div>
+
+                    <div className="w-form-row">
+                      <label className="w-field">
+                        <span className="w-field-label">Message</span>
+                        <textarea
+                          className={`w-textarea${errors.message ? " w-input-error" : ""}`}
+                          rows={6}
+                          value={message}
+                          onChange={(e) => {
+                            setMessage(e.target.value);
+                            if (errors.message) setErrors({ ...errors, message: undefined });
+                          }}
+                          required
+                          aria-invalid={errors.message ? true : undefined}
+                        />
+                        {errors.message && <span className="w-field-error">{errors.message}</span>}
+                      </label>
+                    </div>
+
+                    <div className="w-form-submit">
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={submitting}
+                      >
+                        {submitting ? "Sending…" : "Send Message"}
+                      </button>
+                      <span className="w-form-note">
+                        We'll never share your information.
+                      </span>
+                      {submitError && (
+                        <span className="w-field-error" role="alert" style={{ display: "block", marginTop: "0.5rem" }}>
+                          {submitError}
+                        </span>
+                      )}
+                    </div>
+                  </form>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 04 · DIRECT CHANNELS ──────────────────────────────────────── */}
+        {/* Restructured: headline shares the row with the two channel cards */}
+        {/* (3-col grid: headline | email | phone) so the section collapses */}
+        {/* vertically. Web card removed entirely. Mail (postal address)    */}
+        {/* card replaced with Phone — (877) 674-7459 — same card chrome.   */}
+        <section className="w-direct">
+          <div className="container">
+            <div className="w-direct-grid">
+              <div className="w-direct-head">
+                <h2 className="w-direct-headline">
+                  Contact us <span className="accent">directly</span>
+                </h2>
+              </div>
+
+              <div className="w-direct-card">
+                <div className="w-direct-label">Email</div>
+                <div className="w-direct-value">
+                  <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>
+                </div>
+                <div className="w-direct-note">
+                  Quickest way to reach us. Mention <strong>wholesale</strong>,{" "}
+                  <strong>press</strong>, or <strong>retail</strong> in the
+                  subject so we route it fast.
+                </div>
+              </div>
+
+              <div className="w-direct-card">
+                <div className="w-direct-label">Phone</div>
+                <div className="w-direct-value">
+                  <a href="tel:+18776747459">(877) 674-7459</a>
+                </div>
+                <div className="w-direct-note">
+                  Mon–Fri, 9am–5pm Central. Leave a message and we'll be in
+                  touch as soon as we can.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 05 · FOLLOW ALONG (tier-10 flood) ─────────────────────────── */}
+        <section className="w-social">
+          <div className="container">
+            <div className="w-social-head">
+              <h2 className="w-social-headline">Follow along</h2>
+            </div>
+            <div className="w-social-grid">
+              <div className="w-social-card">
+                <svg
+                  className="w-social-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="0.9" fill="currentColor" stroke="none" />
+                </svg>
+                <a
+                  href="https://www.instagram.com/savorsunrise"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-social-handle"
+                  aria-label="SUNRISE on Instagram"
+                >
+                  @savorsunrise
+                </a>
+              </div>
+
+              <div className="w-social-card">
+                <svg
+                  className="w-social-icon"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M16.5 3.5c.3 2.2 1.6 4 3.5 4.8v3.1c-1.5-.1-2.9-.6-4.1-1.5v6.8c0 3.5-2.9 6.3-6.4 6.3-3.5 0-6.3-2.8-6.3-6.3s2.8-6.3 6.3-6.3c.3 0 .6 0 .9.1v3.2c-.3-.1-.6-.1-.9-.1-1.8 0-3.2 1.4-3.2 3.1s1.4 3.2 3.2 3.2 3.2-1.4 3.2-3.2V3.5h3.8z" />
+                </svg>
+                <a
+                  href="#"
+                  className="w-social-handle"
+                  aria-label="SUNRISE on TikTok"
+                >
+                  @savorsunrise
+                </a>
+              </div>
+
+              <div className="w-social-card">
+                <svg
+                  className="w-social-icon"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M4.5 3.5C4.5 4.6 3.6 5.5 2.5 5.5S.5 4.6.5 3.5 1.4 1.5 2.5 1.5 4.5 2.4 4.5 3.5zM.8 7.5h3.4v15.5H.8V7.5zm6.4 0h3.2v2.1h.1c.5-.9 1.7-1.9 3.6-1.9 3.8 0 4.5 2.5 4.5 5.8V23h-3.4v-7.8c0-1.9 0-4.3-2.6-4.3s-3 2-3 4.2V23H7.2V7.5z" />
+                </svg>
+                <a
+                  aria-disabled="true"
+                  className="w-social-handle"
+                  aria-label="SUNRISE on LinkedIn"
+                >
+                  SUNRISE Beverage
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <SiteFooter />
+    </>
+  );
+}

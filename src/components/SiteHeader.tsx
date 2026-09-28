@@ -8,15 +8,15 @@ import { useEffect, useRef, useState } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 import { CartDrawer } from "./CartDrawer";
 
-type NavKey = "home" | "products" | "about" | "find" | "faq" | "contact";
+type NavKey = "home" | "products" | "about" | "find" | "faq" | "wholesale" | "contact";
 
 const NAV_LINKS: { key: NavKey; href: string; label: string }[] = [
-  { key: "home",     href: "/",         label: "Home" },
-  { key: "products", href: "/products", label: "Products" },
-  { key: "about",    href: "/about",    label: "About" },
-  { key: "find",     href: "/find",     label: "Find" },
-  { key: "faq",      href: "/faq",      label: "FAQ" },
-  { key: "contact",  href: "/contact",  label: "Contact" },
+  { key: "home",      href: "/",          label: "Home" },
+  { key: "products",  href: "/products",  label: "Products" },
+  { key: "about",     href: "/about",     label: "About" },
+  { key: "find",      href: "/find",      label: "Find" },
+  { key: "wholesale", href: "/wholesale", label: "Wholesale" },
+  { key: "contact",   href: "/contact",   label: "Contact" },
 ];
 
 export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
