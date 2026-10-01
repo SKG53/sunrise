@@ -6,6 +6,7 @@
 // No deal fields, no capture_page, no Claimed Deal event (brief item 3).
 import { createFileRoute } from '@tanstack/react-router'
 import { klaviyoClaim } from '@/lib/klaviyo.server'
+import { fetchHubspotFirstTouch } from '@/lib/hubspot.server'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -36,16 +37,23 @@ export const Route = createFileRoute('/api/public/newsletter-klaviyo')({
           return Response.json({ error: 'Valid email is required' }, { status: 400 })
         }
 
+        // HubSpot is the system of record for first-touch fields; mirror an
+        // existing contact's values so the two systems agree (e.g. a Contact-form-
+        // first visitor keeps web_signup_source = "Contact Form" in Klaviyo too).
+        // Non-blocking: null on 404/failure → fall back to defaults.
+        const hs = await fetchHubspotFirstTouch(email)
+
         await klaviyoClaim({
           email,
-          web_signup_source: 'Newsletter',
-          contact_type: 'DTC Customer',
-          contact_source: 'Website',
-          utm_source: asStr(body.utm_source),
-          utm_medium: asStr(body.utm_medium),
-          utm_campaign: asStr(body.utm_campaign),
-          utm_content: asStr(body.utm_content),
-          utm_term: asStr(body.utm_term),
+          web_signup_source: hs?.web_signup_source || 'Newsletter',
+          contact_type: hs?.contact_type || 'DTC Customer',
+          contact_source: hs?.contact_source || 'Website',
+          capture_page: hs?.capture_page,
+          utm_source: hs?.utm_source || asStr(body.utm_source),
+          utm_medium: hs?.utm_medium || asStr(body.utm_medium),
+          utm_campaign: hs?.utm_campaign || asStr(body.utm_campaign),
+          utm_content: hs?.utm_content || asStr(body.utm_content),
+          utm_term: hs?.utm_term || asStr(body.utm_term),
           logEvent: false,
         })
 
