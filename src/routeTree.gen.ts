@@ -29,10 +29,13 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsSlugRouteImport } from './routes/products_.$slug'
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
+import { Route as ApiPublicSpinWheelKlaviyoRouteImport } from './routes/api/public/spin-wheel-klaviyo'
 import { Route as ApiPublicSpinWheelHubspotRouteImport } from './routes/api/public/spin-wheel-hubspot'
+import { Route as ApiPublicNewsletterKlaviyoRouteImport } from './routes/api/public/newsletter-klaviyo'
 import { Route as ApiPublicNewsletterHubspotRouteImport } from './routes/api/public/newsletter-hubspot'
 import { Route as ApiPublicNewsletterRouteImport } from './routes/api/public/newsletter'
 import { Route as ApiPublicEventSignupRouteImport } from './routes/api/public/event-signup'
+import { Route as ApiPublicDealClaimRouteImport } from './routes/api/public/deal-claim'
 import { Route as ApiPublicContactHubspotRouteImport } from './routes/api/public/contact-hubspot'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -139,10 +142,22 @@ const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
   path: '/lovable/email/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSpinWheelKlaviyoRoute =
+  ApiPublicSpinWheelKlaviyoRouteImport.update({
+    id: '/api/public/spin-wheel-klaviyo',
+    path: '/api/public/spin-wheel-klaviyo',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicSpinWheelHubspotRoute =
   ApiPublicSpinWheelHubspotRouteImport.update({
     id: '/api/public/spin-wheel-hubspot',
     path: '/api/public/spin-wheel-hubspot',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicNewsletterKlaviyoRoute =
+  ApiPublicNewsletterKlaviyoRouteImport.update({
+    id: '/api/public/newsletter-klaviyo',
+    path: '/api/public/newsletter-klaviyo',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicNewsletterHubspotRoute =
@@ -159,6 +174,11 @@ const ApiPublicNewsletterRoute = ApiPublicNewsletterRouteImport.update({
 const ApiPublicEventSignupRoute = ApiPublicEventSignupRouteImport.update({
   id: '/api/public/event-signup',
   path: '/api/public/event-signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicDealClaimRoute = ApiPublicDealClaimRouteImport.update({
+  id: '/api/public/deal-claim',
+  path: '/api/public/deal-claim',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicContactHubspotRoute = ApiPublicContactHubspotRouteImport.update({
@@ -210,10 +230,13 @@ export interface FileRoutesByFullPath {
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
+  '/api/public/deal-claim': typeof ApiPublicDealClaimRoute
   '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/newsletter-hubspot': typeof ApiPublicNewsletterHubspotRoute
+  '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
+  '/api/public/spin-wheel-klaviyo': typeof ApiPublicSpinWheelKlaviyoRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -241,10 +264,13 @@ export interface FileRoutesByTo {
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
+  '/api/public/deal-claim': typeof ApiPublicDealClaimRoute
   '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/newsletter-hubspot': typeof ApiPublicNewsletterHubspotRoute
+  '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
+  '/api/public/spin-wheel-klaviyo': typeof ApiPublicSpinWheelKlaviyoRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -273,10 +299,13 @@ export interface FileRoutesById {
   '/products_/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
+  '/api/public/deal-claim': typeof ApiPublicDealClaimRoute
   '/api/public/event-signup': typeof ApiPublicEventSignupRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/newsletter-hubspot': typeof ApiPublicNewsletterHubspotRoute
+  '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
+  '/api/public/spin-wheel-klaviyo': typeof ApiPublicSpinWheelKlaviyoRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -306,10 +335,13 @@ export interface FileRouteTypes {
     | '/products/$slug'
     | '/api/public/contact'
     | '/api/public/contact-hubspot'
+    | '/api/public/deal-claim'
     | '/api/public/event-signup'
     | '/api/public/newsletter'
     | '/api/public/newsletter-hubspot'
+    | '/api/public/newsletter-klaviyo'
     | '/api/public/spin-wheel-hubspot'
+    | '/api/public/spin-wheel-klaviyo'
     | '/lovable/email/events'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -337,10 +369,13 @@ export interface FileRouteTypes {
     | '/products/$slug'
     | '/api/public/contact'
     | '/api/public/contact-hubspot'
+    | '/api/public/deal-claim'
     | '/api/public/event-signup'
     | '/api/public/newsletter'
     | '/api/public/newsletter-hubspot'
+    | '/api/public/newsletter-klaviyo'
     | '/api/public/spin-wheel-hubspot'
+    | '/api/public/spin-wheel-klaviyo'
     | '/lovable/email/events'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -368,10 +403,13 @@ export interface FileRouteTypes {
     | '/products_/$slug'
     | '/api/public/contact'
     | '/api/public/contact-hubspot'
+    | '/api/public/deal-claim'
     | '/api/public/event-signup'
     | '/api/public/newsletter'
     | '/api/public/newsletter-hubspot'
+    | '/api/public/newsletter-klaviyo'
     | '/api/public/spin-wheel-hubspot'
+    | '/api/public/spin-wheel-klaviyo'
     | '/lovable/email/events'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -400,10 +438,13 @@ export interface RootRouteChildren {
   ProductsSlugRoute: typeof ProductsSlugRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicContactHubspotRoute: typeof ApiPublicContactHubspotRoute
+  ApiPublicDealClaimRoute: typeof ApiPublicDealClaimRoute
   ApiPublicEventSignupRoute: typeof ApiPublicEventSignupRoute
   ApiPublicNewsletterRoute: typeof ApiPublicNewsletterRoute
   ApiPublicNewsletterHubspotRoute: typeof ApiPublicNewsletterHubspotRoute
+  ApiPublicNewsletterKlaviyoRoute: typeof ApiPublicNewsletterKlaviyoRoute
   ApiPublicSpinWheelHubspotRoute: typeof ApiPublicSpinWheelHubspotRoute
+  ApiPublicSpinWheelKlaviyoRoute: typeof ApiPublicSpinWheelKlaviyoRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -552,11 +593,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/spin-wheel-klaviyo': {
+      id: '/api/public/spin-wheel-klaviyo'
+      path: '/api/public/spin-wheel-klaviyo'
+      fullPath: '/api/public/spin-wheel-klaviyo'
+      preLoaderRoute: typeof ApiPublicSpinWheelKlaviyoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/spin-wheel-hubspot': {
       id: '/api/public/spin-wheel-hubspot'
       path: '/api/public/spin-wheel-hubspot'
       fullPath: '/api/public/spin-wheel-hubspot'
       preLoaderRoute: typeof ApiPublicSpinWheelHubspotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/newsletter-klaviyo': {
+      id: '/api/public/newsletter-klaviyo'
+      path: '/api/public/newsletter-klaviyo'
+      fullPath: '/api/public/newsletter-klaviyo'
+      preLoaderRoute: typeof ApiPublicNewsletterKlaviyoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/newsletter-hubspot': {
@@ -578,6 +633,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/event-signup'
       fullPath: '/api/public/event-signup'
       preLoaderRoute: typeof ApiPublicEventSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/deal-claim': {
+      id: '/api/public/deal-claim'
+      path: '/api/public/deal-claim'
+      fullPath: '/api/public/deal-claim'
+      preLoaderRoute: typeof ApiPublicDealClaimRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/contact-hubspot': {
@@ -640,10 +702,13 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsSlugRoute: ProductsSlugRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicContactHubspotRoute: ApiPublicContactHubspotRoute,
+  ApiPublicDealClaimRoute: ApiPublicDealClaimRoute,
   ApiPublicEventSignupRoute: ApiPublicEventSignupRoute,
   ApiPublicNewsletterRoute: ApiPublicNewsletterRoute,
   ApiPublicNewsletterHubspotRoute: ApiPublicNewsletterHubspotRoute,
+  ApiPublicNewsletterKlaviyoRoute: ApiPublicNewsletterKlaviyoRoute,
   ApiPublicSpinWheelHubspotRoute: ApiPublicSpinWheelHubspotRoute,
+  ApiPublicSpinWheelKlaviyoRoute: ApiPublicSpinWheelKlaviyoRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
