@@ -29,6 +29,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsSlugRouteImport } from './routes/products_.$slug'
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
+import { Route as ApiPublicWholesaleHubspotRouteImport } from './routes/api/public/wholesale-hubspot'
 import { Route as ApiPublicSpinWheelKlaviyoRouteImport } from './routes/api/public/spin-wheel-klaviyo'
 import { Route as ApiPublicSpinWheelHubspotRouteImport } from './routes/api/public/spin-wheel-hubspot'
 import { Route as ApiPublicNewsletterKlaviyoRouteImport } from './routes/api/public/newsletter-klaviyo'
@@ -142,6 +143,12 @@ const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
   path: '/lovable/email/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWholesaleHubspotRoute =
+  ApiPublicWholesaleHubspotRouteImport.update({
+    id: '/api/public/wholesale-hubspot',
+    path: '/api/public/wholesale-hubspot',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicSpinWheelKlaviyoRoute =
   ApiPublicSpinWheelKlaviyoRouteImport.update({
     id: '/api/public/spin-wheel-klaviyo',
@@ -237,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/api/public/spin-wheel-klaviyo': typeof ApiPublicSpinWheelKlaviyoRoute
+  '/api/public/wholesale-hubspot': typeof ApiPublicWholesaleHubspotRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -271,6 +279,7 @@ export interface FileRoutesByTo {
   '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/api/public/spin-wheel-klaviyo': typeof ApiPublicSpinWheelKlaviyoRoute
+  '/api/public/wholesale-hubspot': typeof ApiPublicWholesaleHubspotRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -306,6 +315,7 @@ export interface FileRoutesById {
   '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/api/public/spin-wheel-klaviyo': typeof ApiPublicSpinWheelKlaviyoRoute
+  '/api/public/wholesale-hubspot': typeof ApiPublicWholesaleHubspotRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -342,6 +352,7 @@ export interface FileRouteTypes {
     | '/api/public/newsletter-klaviyo'
     | '/api/public/spin-wheel-hubspot'
     | '/api/public/spin-wheel-klaviyo'
+    | '/api/public/wholesale-hubspot'
     | '/lovable/email/events'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -376,6 +387,7 @@ export interface FileRouteTypes {
     | '/api/public/newsletter-klaviyo'
     | '/api/public/spin-wheel-hubspot'
     | '/api/public/spin-wheel-klaviyo'
+    | '/api/public/wholesale-hubspot'
     | '/lovable/email/events'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -410,6 +422,7 @@ export interface FileRouteTypes {
     | '/api/public/newsletter-klaviyo'
     | '/api/public/spin-wheel-hubspot'
     | '/api/public/spin-wheel-klaviyo'
+    | '/api/public/wholesale-hubspot'
     | '/lovable/email/events'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -445,6 +458,7 @@ export interface RootRouteChildren {
   ApiPublicNewsletterKlaviyoRoute: typeof ApiPublicNewsletterKlaviyoRoute
   ApiPublicSpinWheelHubspotRoute: typeof ApiPublicSpinWheelHubspotRoute
   ApiPublicSpinWheelKlaviyoRoute: typeof ApiPublicSpinWheelKlaviyoRoute
+  ApiPublicWholesaleHubspotRoute: typeof ApiPublicWholesaleHubspotRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -593,6 +607,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/wholesale-hubspot': {
+      id: '/api/public/wholesale-hubspot'
+      path: '/api/public/wholesale-hubspot'
+      fullPath: '/api/public/wholesale-hubspot'
+      preLoaderRoute: typeof ApiPublicWholesaleHubspotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/spin-wheel-klaviyo': {
       id: '/api/public/spin-wheel-klaviyo'
       path: '/api/public/spin-wheel-klaviyo'
@@ -709,6 +730,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicNewsletterKlaviyoRoute: ApiPublicNewsletterKlaviyoRoute,
   ApiPublicSpinWheelHubspotRoute: ApiPublicSpinWheelHubspotRoute,
   ApiPublicSpinWheelKlaviyoRoute: ApiPublicSpinWheelKlaviyoRoute,
+  ApiPublicWholesaleHubspotRoute: ApiPublicWholesaleHubspotRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,

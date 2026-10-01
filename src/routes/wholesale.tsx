@@ -1,85 +1,92 @@
-// Utility page — the page itself is the CTA (no PtP band). Reason dropdown
-// pre-fills from ?topic= URL param so Find CTAs land on the right category.
+// Wholesale intake page — the page itself is the CTA (no PtP band). The form is
+// a direct wholesale inquiry: identity + business + one business address + note.
+// Dual-write on submit: /api/public/contact (confirmation + hello@ notification
+// emails, business + address folded into the message body) and the non-blocking
+// /api/public/wholesale-hubspot (structured contact: contact_type = Wholesale
+// Retail Customer, company, address fields, web_signup_source = Wholesale
+// Contact Form). The reward/email path is the gate; HubSpot never blocks it.
 
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { readUtms } from "../lib/utms";
 import "./wholesale.css";
 
-// Accepted topic values for the URL param routing layer. Keep in sync with
-// Find page hrefs: /contact?topic=wholesale, /contact?topic=retailer-request.
-const TOPIC_MAP: Record<string, string> = {
-  "wholesale": "Wholesale / Retail Partnership",
-  "retailer-request": "Request a Retailer",
-  "press": "Media / Press",
-  "general": "General Inquiry",
-  "support": "Product Support",
-};
-
-const REASONS = [
-  "General Inquiry",
-  "Wholesale / Retail Partnership",
-  "Request a Retailer",
-  "Media / Press",
-  "Product Support",
-  "Other",
-];
-
-export const Route = createFileRoute("/wholesale")({
-  component: WholesalePage,
-  head: () => ({
-    meta: [
-      { title: "Wholesale · SUNRISE" },
-      {
-        name: "description",
-        content:
-          "Questions, wholesale inquiries, press, or just saying hi - reach the SUNRISE team by form or email.",
-      },
-    ],
-    links: [
-      { rel: "canonical", href: "https://www.savorsunrise.com/wholesale" },
-    ],
-  }),
-});
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // ── COMPONENT ────────────────────────────────────────────────────────────
 function WholesalePage() {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [reason, setReason] = useState(REASONS[0]);
+  const [businessName, setBusinessName] = useState("");
+  const [line1, setLine1] = useState("");
+  const [line2, setLine2] = useState("");
+  const [city, setCity] = useState("");
+  const [stateField, setStateField] = useState("");
+  const [zip, setZip] = useState("");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Pre-select reason from ?topic= URL param on mount. Browser-only.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    const topic = params.get("topic");
-    if (topic && TOPIC_MAP[topic]) {
-      setReason(TOPIC_MAP[topic]);
-    }
-  }, []);
+  const clearErr = (k: string) =>
+    setErrors((prev) => {
+      if (!prev[k]) return prev;
+      const n = { ...prev };
+      delete n[k];
+      return n;
+    });
+
+  const reset = () => {
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setBusinessName("");
+    setLine1("");
+    setLine2("");
+    setCity("");
+    setStateField("");
+    setZip("");
+    setMessage("");
+    setErrors({});
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Validate required fields in React state since the form uses noValidate to
     // suppress native browser bubbles in favor of brand-aligned inline errors.
-    const next: { name?: string; email?: string; message?: string } = {};
-    if (!name.trim()) next.name = "Name needed.";
+    // Required: first/last name, email, business name, city, state, zip,
+    // message. Address Line 1 and Line 2 are optional.
+    const next: Record<string, string> = {};
+    if (!firstName.trim()) next.firstName = "First name needed.";
+    if (!lastName.trim()) next.lastName = "Last name needed.";
     if (!email.trim()) next.email = "Email needed.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = "Email looks off.";
+    else if (!EMAIL_RE.test(email.trim())) next.email = "Email looks off.";
+    if (!businessName.trim()) next.businessName = "Business name needed.";
+    if (!city.trim()) next.city = "City needed.";
+    if (!stateField.trim()) next.state = "State needed.";
+    if (!zip.trim()) next.zip = "Zip needed.";
+    else if (!/^\d{5}$/.test(zip.trim())) next.zip = "Enter a 5-digit ZIP.";
     if (!message.trim()) next.message = "Message needed.";
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
-    // POST to public server route which enqueues two emails:
-    //   1. Confirmation to the submitter
-    //   2. Notification to hello@savorsunrise.com
+    // Fold the street lines + city/state/zip into one readable address string.
+    const street = [line1.trim(), line2.trim()].filter(Boolean).join(", ");
+    const cityStateZip = `${city.trim()}, ${stateField.trim()} ${zip.trim()}`.trim();
+    const fullAddress = [street, cityStateZip].filter(Boolean).join(", ");
+
+    // Compose the email body so the hello@ notification + the submitter's
+    // confirmation show business + address (those templates render only
+    // name/email/reason/message, so the detail rides inside message).
+    const composedMessage =
+      `Business Name: ${businessName.trim()}\n` +
+      `Business Address: ${fullAddress}\n\n` +
+      message.trim();
+
     setSubmitError(null);
     setSubmitting(true);
     try {
@@ -87,25 +94,35 @@ function WholesalePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: name.trim(),
+          name: `${firstName.trim()} ${lastName.trim()}`,
           email: email.trim(),
-          reason,
-          message: message.trim(),
+          reason: "Wholesale / Retail Partnership",
+          message: composedMessage,
         }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.error || `Request failed (${res.status})`);
       }
-      // Non-blocking dual-write to HubSpot — mirrors the spin-wheel pattern.
-      // Fired in parallel and deliberately NOT awaited: the success message and
-      // the two emails (owned by /api/public/contact above) must never wait on,
-      // or fail because of, HubSpot. A rejected fetch is swallowed so it can't
-      // surface an error to the user.
-      fetch("/api/public/contact-hubspot", {
+      // Non-blocking structured dual-write to HubSpot — fired in parallel and
+      // deliberately NOT awaited: the success message and the two emails (owned
+      // by /api/public/contact above) must never wait on, or fail because of,
+      // HubSpot. A rejected fetch is swallowed so it can't surface to the user.
+      fetch("/api/public/wholesale-hubspot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), email: email.trim(), ...readUtms() }),
+        body: JSON.stringify({
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim(),
+          businessName: businessName.trim(),
+          address: street,
+          city: city.trim(),
+          state: stateField.trim(),
+          zip: zip.trim(),
+          message: message.trim(),
+          ...readUtms(),
+        }),
       }).catch(() => {});
       setSubmitted(true);
     } catch (err) {
@@ -138,12 +155,13 @@ function WholesalePage() {
           <div className="container">
             <div className="w-hero-inner">
               <h1 className="w-hero-headline">
-                Say hello &amp;<br />
-                Give us a <em className="accent-italic">buzz</em>
+                Put SUNRISE on<br />
+                your <em className="accent-italic">shelves</em>
               </h1>
               <p className="w-hero-body">
-                Wholesale, press, product questions, or anything else - we
-                read every note. Use the form below or drop us an email.
+                Interested in carrying SUNRISE? Share your business details
+                below and our team will follow up with wholesale pricing,
+                availability, and next steps.
               </p>
             </div>
           </div>
@@ -154,24 +172,26 @@ function WholesalePage() {
           <div className="container">
             <div className="w-form-grid">
               <div className="w-form-side">
-                <div className="w-eyebrow">General Inquiry</div>
+                <div className="w-eyebrow">Wholesale Inquiry</div>
                 <h2 className="w-form-headline">
-                  Tell us what's on your <span className="accent">mind</span>
+                  Let's talk <span className="accent">wholesale</span>
                 </h2>
                 <p className="w-form-sub">
-                  We respond to most messages within two business days. Please
-                  don't include sensitive personal or health information.
+                  Tell us about your business and we'll be in touch within two
+                  business days. Please don't include sensitive personal or
+                  health information.
                 </p>
               </div>
 
               <div className="w-form-card">
                 {submitted ? (
                   <div className="w-success" role="status" aria-live="polite">
-                    <div className="w-success-eyebrow">Message Sent</div>
+                    <div className="w-success-eyebrow">Inquiry Sent</div>
                     <div className="w-success-headline">Thanks for reaching out</div>
                     <p className="w-success-body">
-                      We've got your note and will be in touch soon. In the
-                      meantime, feel free to explore the lineup.
+                      We've got your wholesale inquiry and our team will follow
+                      up within two business days. In the meantime, explore the
+                      lineup.
                     </p>
                     <div className="w-success-ctas">
                       <a href="/products" className="btn btn-primary">
@@ -182,10 +202,7 @@ function WholesalePage() {
                         className="btn btn-secondary"
                         onClick={() => {
                           setSubmitted(false);
-                          setName("");
-                          setEmail("");
-                          setMessage("");
-                          setErrors({});
+                          reset();
                         }}
                       >
                         Send Another
@@ -196,21 +213,40 @@ function WholesalePage() {
                   <form className="w-form" onSubmit={handleSubmit} noValidate>
                     <div className="w-form-row w-form-row-split">
                       <label className="w-field">
-                        <span className="w-field-label">Name</span>
+                        <span className="w-field-label">First Name</span>
                         <input
                           type="text"
-                          className={`w-input${errors.name ? " w-input-error" : ""}`}
-                          value={name}
+                          className={`w-input${errors.firstName ? " w-input-error" : ""}`}
+                          value={firstName}
                           onChange={(e) => {
-                            setName(e.target.value);
-                            if (errors.name) setErrors({ ...errors, name: undefined });
+                            setFirstName(e.target.value);
+                            clearErr("firstName");
                           }}
                           required
-                          autoComplete="name"
-                          aria-invalid={errors.name ? true : undefined}
+                          autoComplete="given-name"
+                          aria-invalid={errors.firstName ? true : undefined}
                         />
-                        {errors.name && <span className="w-field-error">{errors.name}</span>}
+                        {errors.firstName && <span className="w-field-error">{errors.firstName}</span>}
                       </label>
+                      <label className="w-field">
+                        <span className="w-field-label">Last Name</span>
+                        <input
+                          type="text"
+                          className={`w-input${errors.lastName ? " w-input-error" : ""}`}
+                          value={lastName}
+                          onChange={(e) => {
+                            setLastName(e.target.value);
+                            clearErr("lastName");
+                          }}
+                          required
+                          autoComplete="family-name"
+                          aria-invalid={errors.lastName ? true : undefined}
+                        />
+                        {errors.lastName && <span className="w-field-error">{errors.lastName}</span>}
+                      </label>
+                    </div>
+
+                    <div className="w-form-row w-form-row-split">
                       <label className="w-field">
                         <span className="w-field-label">Email</span>
                         <input
@@ -219,7 +255,7 @@ function WholesalePage() {
                           value={email}
                           onChange={(e) => {
                             setEmail(e.target.value);
-                            if (errors.email) setErrors({ ...errors, email: undefined });
+                            clearErr("email");
                           }}
                           required
                           autoComplete="email"
@@ -227,22 +263,100 @@ function WholesalePage() {
                         />
                         {errors.email && <span className="w-field-error">{errors.email}</span>}
                       </label>
+                      <label className="w-field">
+                        <span className="w-field-label">Business Name</span>
+                        <input
+                          type="text"
+                          className={`w-input${errors.businessName ? " w-input-error" : ""}`}
+                          value={businessName}
+                          onChange={(e) => {
+                            setBusinessName(e.target.value);
+                            clearErr("businessName");
+                          }}
+                          required
+                          autoComplete="organization"
+                          aria-invalid={errors.businessName ? true : undefined}
+                        />
+                        {errors.businessName && <span className="w-field-error">{errors.businessName}</span>}
+                      </label>
                     </div>
 
                     <div className="w-form-row">
                       <label className="w-field">
-                        <span className="w-field-label">Reason for Reaching Out</span>
-                        <select
-                          className="w-select"
-                          value={reason}
-                          onChange={(e) => setReason(e.target.value)}
-                        >
-                          {REASONS.map((r) => (
-                            <option key={r} value={r}>
-                              {r}
-                            </option>
-                          ))}
-                        </select>
+                        <span className="w-field-label">Address Line 1 (Optional)</span>
+                        <input
+                          type="text"
+                          className="w-input"
+                          value={line1}
+                          onChange={(e) => setLine1(e.target.value)}
+                          autoComplete="address-line1"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="w-form-row">
+                      <label className="w-field">
+                        <span className="w-field-label">Address Line 2 (Optional)</span>
+                        <input
+                          type="text"
+                          className="w-input"
+                          value={line2}
+                          onChange={(e) => setLine2(e.target.value)}
+                          autoComplete="address-line2"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="w-form-row w-form-row-triple">
+                      <label className="w-field">
+                        <span className="w-field-label">City</span>
+                        <input
+                          type="text"
+                          className={`w-input${errors.city ? " w-input-error" : ""}`}
+                          value={city}
+                          onChange={(e) => {
+                            setCity(e.target.value);
+                            clearErr("city");
+                          }}
+                          required
+                          autoComplete="address-level2"
+                          aria-invalid={errors.city ? true : undefined}
+                        />
+                        {errors.city && <span className="w-field-error">{errors.city}</span>}
+                      </label>
+                      <label className="w-field">
+                        <span className="w-field-label">State</span>
+                        <input
+                          type="text"
+                          className={`w-input${errors.state ? " w-input-error" : ""}`}
+                          value={stateField}
+                          onChange={(e) => {
+                            setStateField(e.target.value);
+                            clearErr("state");
+                          }}
+                          required
+                          autoComplete="address-level1"
+                          aria-invalid={errors.state ? true : undefined}
+                        />
+                        {errors.state && <span className="w-field-error">{errors.state}</span>}
+                      </label>
+                      <label className="w-field">
+                        <span className="w-field-label">Zip</span>
+                        <input
+                          type="text"
+                          className={`w-input${errors.zip ? " w-input-error" : ""}`}
+                          value={zip}
+                          onChange={(e) => {
+                            setZip(e.target.value.replace(/\D/g, "").slice(0, 5));
+                            clearErr("zip");
+                          }}
+                          required
+                          autoComplete="postal-code"
+                          inputMode="numeric"
+                          maxLength={5}
+                          aria-invalid={errors.zip ? true : undefined}
+                        />
+                        {errors.zip && <span className="w-field-error">{errors.zip}</span>}
                       </label>
                     </div>
 
@@ -255,7 +369,7 @@ function WholesalePage() {
                           value={message}
                           onChange={(e) => {
                             setMessage(e.target.value);
-                            if (errors.message) setErrors({ ...errors, message: undefined });
+                            clearErr("message");
                           }}
                           required
                           aria-invalid={errors.message ? true : undefined}
@@ -288,11 +402,7 @@ function WholesalePage() {
           </div>
         </section>
 
-        {/* ── 04 · DIRECT CHANNELS ──────────────────────────────────────── */}
-        {/* Restructured: headline shares the row with the two channel cards */}
-        {/* (3-col grid: headline | email | phone) so the section collapses */}
-        {/* vertically. Web card removed entirely. Mail (postal address)    */}
-        {/* card replaced with Phone — (877) 674-7459 — same card chrome.   */}
+        {/* ── 04 · DIRECT CHANNELS (email only) ──────────────────────────── */}
         <section className="w-direct">
           <div className="container">
             <div className="w-direct-grid">
@@ -308,20 +418,8 @@ function WholesalePage() {
                   <a href="mailto:hello@savorsunrise.com">hello@savorsunrise.com</a>
                 </div>
                 <div className="w-direct-note">
-                  Quickest way to reach us. Mention <strong>wholesale</strong>,{" "}
-                  <strong>press</strong>, or <strong>retail</strong> in the
-                  subject so we route it fast.
-                </div>
-              </div>
-
-              <div className="w-direct-card">
-                <div className="w-direct-label">Phone</div>
-                <div className="w-direct-value">
-                  <a href="tel:+18776747459">(877) 674-7459</a>
-                </div>
-                <div className="w-direct-note">
-                  Mon–Fri, 9am–5pm Central. Leave a message and we'll be in
-                  touch as soon as we can.
+                  Quickest way to reach us. Mention <strong>wholesale</strong> or{" "}
+                  <strong>retail</strong> in the subject so we route it fast.
                 </div>
               </div>
             </div>
@@ -405,3 +503,20 @@ function WholesalePage() {
     </>
   );
 }
+
+export const Route = createFileRoute("/wholesale")({
+  component: WholesalePage,
+  head: () => ({
+    meta: [
+      { title: "Wholesale · SUNRISE" },
+      {
+        name: "description",
+        content:
+          "Carry SUNRISE in your store. Request wholesale pricing and availability from the SUNRISE team.",
+      },
+    ],
+    links: [
+      { rel: "canonical", href: "https://www.savorsunrise.com/wholesale" },
+    ],
+  }),
+});
