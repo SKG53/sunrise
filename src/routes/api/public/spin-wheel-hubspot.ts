@@ -131,15 +131,16 @@ export const Route = createFileRoute('/api/public/spin-wheel-hubspot')({
           )
 
           const updateProperties: Record<string, string> = {}
-          // Overwrite fields are always safe to write and do not depend on the
-          // lookup, so stamp them even if the lookup failed.
-          addUtms(updateProperties)
+          // Deal fields are latest-claim (overwrite) and don't depend on the
+          // lookup, so stamp them even if the lookup failed. UTMs are NOT here —
+          // they are first-touch (see below) and must never overwrite a returning
+          // contact's attribution.
           addOverwriteDeal(updateProperties)
 
           if (!lookupRes.ok) {
             // Can't confirm what's blank or read the current deals_won — write
-            // only the overwrite fields rather than risk clobbering a source or
-            // corrupting the running deals_won list.
+            // only the overwrite deal fields rather than risk clobbering a
+            // source, the UTMs, or the running deals_won list.
             const text = await lookupRes.text()
             console.error('spin-wheel HubSpot lookup failed', lookupRes.status, text)
           } else {
@@ -154,7 +155,13 @@ export const Route = createFileRoute('/api/public/spin-wheel-hubspot')({
             const props = existing.properties ?? {}
             // Fill-if-blank (never relabel/clobber a first-touch value).
             if (!props.contact_type) updateProperties.contact_type = 'DTC Customer'
-            if (!props.web_signup_source) updateProperties.web_signup_source = 'Website Pop-up'
+            // First-touch: stamp the source AND the UTMs together, only on the
+            // first web signup (when no source is set yet). Never overwrite a
+            // returning contact's UTMs — unchanged from pre-popup behavior.
+            if (!props.web_signup_source) {
+              updateProperties.web_signup_source = 'Website Pop-up'
+              addUtms(updateProperties)
+            }
             if (!props.capture_page && capture_page) updateProperties.capture_page = capture_page
             // deals_won read-modify-write: append this code if absent.
             if (deal_code) {

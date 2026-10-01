@@ -606,7 +606,7 @@ export function SpinWheel() {
         popup_type: adDeal ? "ad_deal" : POPUP_TYPE,
         capture_page:
           typeof location !== "undefined"
-            ? `${location.host}${location.pathname}`
+            ? `${location.host.replace(/^www\./, "")}${location.pathname}`
             : "",
         deal_code: chosenDeal?.code ?? "",
         deals_offered: offered,
