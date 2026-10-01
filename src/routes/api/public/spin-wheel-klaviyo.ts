@@ -6,6 +6,7 @@
 // `Claimed Deal` event. Any failure is logged and never surfaces to the user.
 import { createFileRoute } from '@tanstack/react-router'
 import { klaviyoClaim } from '@/lib/klaviyo.server'
+import { fetchHubspotFirstTouch } from '@/lib/hubspot.server'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -44,23 +45,29 @@ export const Route = createFileRoute('/api/public/spin-wheel-klaviyo')({
 
         const deal_code = asStr(body.deal_code, 64)
 
+        // HubSpot is the system of record for first-touch fields. If the contact
+        // already exists there, mirror its values so the two systems agree (e.g. a
+        // Contact-form-first visitor keeps web_signup_source = "Contact Form" in
+        // Klaviyo too). Non-blocking: null on 404/failure → fall back to defaults.
+        const hs = await fetchHubspotFirstTouch(email)
+
         await klaviyoClaim({
           email,
-          web_signup_source: 'Website Pop-up',
-          contact_type: 'DTC Customer',
-          contact_source: 'Website',
-          capture_page: asStr(body.capture_page),
+          web_signup_source: hs?.web_signup_source || 'Website Pop-up',
+          contact_type: hs?.contact_type || 'DTC Customer',
+          contact_source: hs?.contact_source || 'Website',
+          capture_page: hs?.capture_page || asStr(body.capture_page),
           popup_type: asStr(body.popup_type, 32),
           deal_code,
           deals_offered: asStr(body.deals_offered, 256),
           deal_date: asStr(body.deal_date, 32),
           ad_variant: asStr(body.ad_variant, 16),
           deal_won_code: deal_code,
-          utm_source: asStr(body.utm_source),
-          utm_medium: asStr(body.utm_medium),
-          utm_campaign: asStr(body.utm_campaign),
-          utm_content: asStr(body.utm_content),
-          utm_term: asStr(body.utm_term),
+          utm_source: hs?.utm_source || asStr(body.utm_source),
+          utm_medium: hs?.utm_medium || asStr(body.utm_medium),
+          utm_campaign: hs?.utm_campaign || asStr(body.utm_campaign),
+          utm_content: hs?.utm_content || asStr(body.utm_content),
+          utm_term: hs?.utm_term || asStr(body.utm_term),
           logEvent: true,
         })
 
