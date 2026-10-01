@@ -380,7 +380,11 @@ main { flex: 1; width: 100%; }
   top: calc(var(--base) * 1.05);
   z-index: 50;
 }
-.site-header .wordmark-slot { line-height: 0; flex-shrink: 0; }
+.site-header .wordmark-slot { line-height: 0; flex-shrink: 0; white-space: nowrap; }
+/* Logo lockup must NEVER wrap or shrink — the wordmark + ™ stay on one line no
+   matter how crowded the nav gets. Protecting the logo shifts any tight-fit
+   pressure onto the nav instead of splitting the mark across two lines. */
+.site-header > a { flex-shrink: 0; white-space: nowrap; }
 .site-header .site-nav { display: flex; gap: calc(var(--base) * 0.7); margin-left: auto; }
 .site-header .nav-right { display: flex; gap: calc(var(--base) * 0.2); align-items: center; flex-shrink: 0; }
 .site-nav a {
@@ -829,7 +833,7 @@ main { flex: 1; width: 100%; }
 }
 @media (max-width: 768px) {
   /* Header collapses to: [wordmark] ... [Cart] [Hamburger]. Desktop nav  */
-  /* and the COAs/Shop CTAs hide; both reappear inside the mobile drawer. */
+  /* and the COAs CTA hides; it reappears inside the mobile drawer. */
   /* .nav-right gets margin-left:auto since .site-nav (which previously   */
   /* held that auto margin) is now display:none and contributes no flex. */
   .site-header {
