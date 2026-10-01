@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      deal_claims: {
+        Row: {
+          ad_variant: string | null
+          capture_page: string | null
+          created_at: string
+          deal_code: string | null
+          deals_offered: string | null
+          email: string
+          id: string
+          popup_type: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+        }
+        Insert: {
+          ad_variant?: string | null
+          capture_page?: string | null
+          created_at?: string
+          deal_code?: string | null
+          deals_offered?: string | null
+          email: string
+          id?: string
+          popup_type?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Update: {
+          ad_variant?: string | null
+          capture_page?: string | null
+          created_at?: string
+          deal_code?: string | null
+          deals_offered?: string | null
+          email?: string
+          id?: string
+          popup_type?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
