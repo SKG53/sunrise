@@ -31,7 +31,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
-import { readUtms, isAdVisitor } from "../lib/utms";
+import { readUtms, readSessionUtms, isAdVisitor } from "../lib/utms";
 import "./SpinWheel.css";
 
 const STORAGE_KEY = "sunrise:spin-wheel-seen";
@@ -170,7 +170,7 @@ const SEG = 360 / DEALS.length; // per-segment angle; self-adjusts (7 deals)
 const SPIN_MS = 4200;
 const TURNS = 6;
 const GENERIC_TERMS =
-  "One use per customer. Enter code at checkout. Exclusions, terms, and conditions apply.";
+  "Each deal can be used once per customer. Enter code at checkout. Exclusions, terms, and conditions apply.";
 
 // ── DEAL-SPECIFIC AD DEALS ──────────────────────────────────────────────
 // Visitors from a deal-specific Meta ad were PROMISED one exact offer, so they
@@ -208,21 +208,34 @@ export const AD_DEALS: Record<"b2g1f" | "25off5", Deal> = {
   },
 };
 
-// ROUTER: map the utm_term ad token -> an ad deal (or null = normal wheel).
-// utm_term values look like `ac5_austin_ad2` / `ac4_nj_ad1`, so we match ONLY the
-// trailing `adN` TOKEN — every geo (Austin, Belton, NJ, ...) with the same adN
-// routes to the same deal; geo (utm_content) never affects which deal shows.
-//   ad1 -> 25% off 5   ·   ad2 -> buy-2-get-1-free
-//   ad3, any other adN, and missing / "(not set)" utm_term -> null (wheel).
-// utm_term is the lossiest UTM through Meta's in-app browser; when it doesn't
-// carry, the visitor simply gets the wheel — an accepted, graceful fallback.
-function resolveAdDeal(): Deal | null {
-  const term = (readUtms().utm_term || "").toLowerCase();
+// Popup version constant — written to popup_type on every HubSpot/Klaviyo write,
+// the Claimed Deal event, and the deal_claims row. Bump to wheel_v3 etc. ONLY
+// when the deal set or mechanic changes, never for copy or color (update the
+// version log when you do). The ad path reports "ad_deal" instead.
+const POPUP_TYPE = "wheel_v2";
+
+// ROUTER: map (campaign, adN token) -> an ad deal, reading the CURRENT visit's
+// UTMs (sr_session_utms) rather than the sticky first-touch cookie — so a visitor
+// who arrived organically earlier is still routed to the ad they just clicked.
+// The first-touch cookie is untouched and still feeds the stored utm_* fields.
+// utm_term values look like `ac5_austin_ad2` / `ac4_nj_ad1`; we key on
+// utm_campaign + the trailing `adN` token. Explicit entries only: no campaign
+// match -> null -> normal wheel. A new campaign = new rows, no code change.
+// ad_variant (ad1/ad2) is captured for attribution.
+const AD_DEAL_TABLE: Record<string, { deal: Deal; variant: string }> = {
+  "ac4|ad1": { deal: AD_DEALS["25off5"], variant: "ad1" },
+  "ac4|ad2": { deal: AD_DEALS["b2g1f"], variant: "ad2" },
+  "ac5|ad1": { deal: AD_DEALS["25off5"], variant: "ad1" },
+  "ac5|ad2": { deal: AD_DEALS["b2g1f"], variant: "ad2" },
+};
+
+function resolveAdDeal(): { deal: Deal; variant: string } | null {
+  const u = readSessionUtms();
+  const campaign = (u.utm_campaign || "").toLowerCase().trim();
+  const term = (u.utm_term || "").toLowerCase();
   const m = /(?:^|_)ad(\d+)$/.exec(term);
-  if (!m) return null;
-  if (m[1] === "1") return AD_DEALS["25off5"];
-  if (m[1] === "2") return AD_DEALS["b2g1f"];
-  return null;
+  if (!campaign || !m) return null;
+  return AD_DEAL_TABLE[`${campaign}|ad${m[1]}`] ?? null;
 }
 
 type Phase =
@@ -367,6 +380,8 @@ export function SpinWheel() {
   // Set at arm time for deal-specific ad visitors (ad1/ad2). Non-null routes the
   // popup down the deal-card -> email -> gated-code path and bypasses the wheel.
   const [adDeal, setAdDeal] = useState<Deal | null>(null);
+  // Which ad variant (ad1/ad2) routed an ad visitor here — for ad_variant.
+  const [adVariant, setAdVariant] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -453,7 +468,10 @@ export function SpinWheel() {
       // the wheel and open straight to their promised deal; everyone else gets the
       // wheel exactly as before.
       const ad = resolveAdDeal();
-      if (ad) setAdDeal(ad);
+      if (ad) {
+        setAdDeal(ad.deal);
+        setAdVariant(ad.variant);
+      }
       setPhase((p) => (p === "hidden" ? (ad ? "email" : "idle") : p));
     };
     const arm = () => {
@@ -572,14 +590,39 @@ export function SpinWheel() {
         setError(data.error || "Something went wrong. Please try again.");
         return;
       }
-      // Non-blocking dual-write to HubSpot — fired in parallel, deliberately NOT
-      // awaited; the reveal must never wait on or fail because of HubSpot. The
-      // Supabase write above is the sole reward gate.
-      fetch("/api/public/spin-wheel-hubspot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: value, ...readUtms() }),
-      }).catch(() => {});
+      // The chosen deal + offer context, captured at submit for HubSpot, Klaviyo
+      // and the Supabase deal_claims log. All three fire in parallel and are NOT
+      // awaited: the reveal is gated only on the Supabase write above, so none of
+      // these may block or fail the reward. Stored utm_* use first-touch
+      // (readUtms); the ad ROUTING above used the current-visit session UTMs.
+      const offered = adDeal
+        ? chosenDeal?.code ?? ""
+        : [deal1, deal2]
+            .map((i) => (i !== null ? DEALS[i].code : ""))
+            .filter(Boolean)
+            .join(", ");
+      const claim = {
+        email: value,
+        popup_type: adDeal ? "ad_deal" : POPUP_TYPE,
+        capture_page:
+          typeof location !== "undefined"
+            ? `${location.host}${location.pathname}`
+            : "",
+        deal_code: chosenDeal?.code ?? "",
+        deals_offered: offered,
+        deal_date: new Date().toISOString().slice(0, 10),
+        ...(adDeal && adVariant ? { ad_variant: adVariant } : {}),
+        ...readUtms(),
+      };
+      const fire = (url: string) =>
+        fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(claim),
+        }).catch(() => {});
+      fire("/api/public/spin-wheel-hubspot");
+      fire("/api/public/spin-wheel-klaviyo");
+      fire("/api/public/deal-claim");
       setPhase("revealed");
     } catch {
       setError("Something went wrong. Please try again.");

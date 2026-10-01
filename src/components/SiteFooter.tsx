@@ -42,6 +42,13 @@ export function SiteFooter() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, ...readUtms() }),
       }).catch(() => {});
+      // ADDITIVE — Klaviyo subscribe (web_signup_source = Newsletter, no deal
+      // fields, no event). Also not awaited; never blocks the footer success.
+      fetch("/api/public/newsletter-klaviyo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, ...readUtms() }),
+      }).catch(() => {});
       setStatus("success");
       setStatusMsg("Cheers! You’re on the list. ☀️");
       setEmail("");
