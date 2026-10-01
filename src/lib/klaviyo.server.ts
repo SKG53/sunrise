@@ -24,6 +24,8 @@ const OVERWRITE_KEYS = ['popup_type', 'deal_code', 'deals_offered', 'deal_date',
 export interface KlaviyoClaimInput {
   email: string
   web_signup_source: string // "Website Pop-up" or "Newsletter"
+  contact_type?: string // mirror of HubSpot contact_type (e.g. "DTC Customer"); filled only when blank
+  contact_source?: string // mirror of HubSpot contact_source (e.g. "Website"); filled only when blank
   capture_page?: string
   popup_type?: string
   deal_code?: string
@@ -55,16 +57,27 @@ function buildProps(
   cur: Record<string, unknown>,
 ): Record<string, unknown> {
   const props: Record<string, unknown> = {}
+  // Classification — mirror of the HubSpot handlers. Both are filled only when
+  // blank (never relabel/clobber). contact_source is fill-when-blank rather than
+  // new-profile-only on purpose: Shopify creates Klaviyo profiles at checkout, so
+  // a person can already exist in Klaviyo while being brand-new to HubSpot — with
+  // new-profile-only they'd get "Website" in HubSpot but blank in Klaviyo.
+  if (input.contact_type && !cur.contact_type) props.contact_type = input.contact_type
+  if (input.contact_source && !cur.contact_source) props.contact_source = input.contact_source
   // first-capture — set only if currently blank
   if (!cur.web_signup_source && input.web_signup_source) props.web_signup_source = input.web_signup_source
   if (!cur.capture_page && input.capture_page) props.capture_page = input.capture_page
+  // utm_* — FIRST-TOUCH: written only alongside the first web signup (when no
+  // source is set yet), never overwritten on a returning profile. Mirrors the
+  // unchanged HubSpot UTM behavior.
+  if (!cur.web_signup_source) {
+    for (const k of UTM_KEYS) {
+      const v = input[k]
+      if (v) props[k] = v
+    }
+  }
   // latest-claim — overwrite
   for (const k of OVERWRITE_KEYS) {
-    const v = input[k]
-    if (v) props[k] = v
-  }
-  // utm_* — set from payload
-  for (const k of UTM_KEYS) {
     const v = input[k]
     if (v) props[k] = v
   }

@@ -47,6 +47,8 @@ export const Route = createFileRoute('/api/public/spin-wheel-klaviyo')({
         await klaviyoClaim({
           email,
           web_signup_source: 'Website Pop-up',
+          contact_type: 'DTC Customer',
+          contact_source: 'Website',
           capture_page: asStr(body.capture_page),
           popup_type: asStr(body.popup_type, 32),
           deal_code,

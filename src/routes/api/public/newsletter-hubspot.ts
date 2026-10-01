@@ -101,15 +101,11 @@ export const Route = createFileRoute('/api/public/newsletter-hubspot')({
           )
 
           const updateProperties: Record<string, string> = {}
-          if (utm_source) updateProperties.utm_source = utm_source
-          if (utm_medium) updateProperties.utm_medium = utm_medium
-          if (utm_campaign) updateProperties.utm_campaign = utm_campaign
-          if (utm_content) updateProperties.utm_content = utm_content
-          if (utm_term) updateProperties.utm_term = utm_term
 
           if (!lookupRes.ok) {
-            // Can't confirm what's blank — write only the UTMs rather than risk
-            // clobbering a first-touch source or an existing contact_type.
+            // Can't confirm what's blank — skip the write rather than risk
+            // clobbering a first-touch source, the UTMs, or an existing
+            // contact_type.
             const text = await lookupRes.text()
             console.error('newsletter HubSpot lookup failed', lookupRes.status, text)
           } else {
@@ -118,7 +114,17 @@ export const Route = createFileRoute('/api/public/newsletter-hubspot')({
             }
             const props = existing.properties ?? {}
             if (!props.contact_type) updateProperties.contact_type = 'DTC Customer'
-            if (!props.web_signup_source) updateProperties.web_signup_source = 'Newsletter'
+            // First-touch: stamp the source AND the UTMs together, only on the
+            // first web signup (when no source is set yet). Never overwrite a
+            // returning contact's UTMs — unchanged from pre-popup behavior.
+            if (!props.web_signup_source) {
+              updateProperties.web_signup_source = 'Newsletter'
+              if (utm_source) updateProperties.utm_source = utm_source
+              if (utm_medium) updateProperties.utm_medium = utm_medium
+              if (utm_campaign) updateProperties.utm_campaign = utm_campaign
+              if (utm_content) updateProperties.utm_content = utm_content
+              if (utm_term) updateProperties.utm_term = utm_term
+            }
           }
 
           if (Object.keys(updateProperties).length === 0) {

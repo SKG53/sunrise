@@ -39,6 +39,8 @@ export const Route = createFileRoute('/api/public/newsletter-klaviyo')({
         await klaviyoClaim({
           email,
           web_signup_source: 'Newsletter',
+          contact_type: 'DTC Customer',
+          contact_source: 'Website',
           utm_source: asStr(body.utm_source),
           utm_medium: asStr(body.utm_medium),
           utm_campaign: asStr(body.utm_campaign),
