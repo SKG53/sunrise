@@ -87,3 +87,42 @@ export function isAdVisitor(): boolean {
     return false
   }
 }
+
+
+// ── CURRENT-VISIT UTM CAPTURE (ad-deal routing) ───────────────────────────
+// The first-touch sr_utms cookie above is deliberately sticky, so it cannot tell
+// the ad-deal router which ad THIS visit came from. captureSessionUtms() stores
+// the current landing's UTM params in sessionStorage (per tab/session),
+// OVERWRITING on each landing that carries UTMs so the router always sees the
+// latest. The first-touch cookie is left untouched and still feeds the stored
+// utm_* fields in HubSpot and Klaviyo. SSR- and private-mode-guarded:
+// sessionStorage is undefined on the server and can throw in private browsing;
+// on any failure these are silent no-ops.
+const SESSION_UTMS = 'sr_session_utms'
+
+export function captureSessionUtms(): void {
+  if (typeof window === 'undefined') return
+  try {
+    const q = new URLSearchParams(location.search)
+    const found: Record<string, string> = {}
+    for (const k of KEYS) { const v = q.get(k); if (v) found[k] = v }
+    if (Object.keys(found).length === 0) return // no UTMs on this landing — keep any existing session value
+    sessionStorage.setItem(SESSION_UTMS, JSON.stringify(found))
+  } catch { /* SSR or private mode — no-op */ }
+}
+
+export function readSessionUtms(): Record<string, string> {
+  if (typeof window === 'undefined') return {}
+  try {
+    const raw = sessionStorage.getItem(SESSION_UTMS)
+    if (raw) return JSON.parse(raw)
+  } catch { /* SSR or private mode — fall through to live URL */ }
+  try {
+    const q = new URLSearchParams(location.search)
+    const found: Record<string, string> = {}
+    for (const k of KEYS) { const v = q.get(k); if (v) found[k] = v }
+    return found
+  } catch {
+    return {}
+  }
+}

@@ -88,39 +88,43 @@ export const Route = createFileRoute('/api/public/newsletter-hubspot')({
         }
 
         // UPDATE path (409 = contact already exists, deduped on email).
-        // Do NOT touch lifecyclestage, contact_type, or contact_source — never
-        // relabel or regress an existing contact (spec §5.2 / §5.3). Only stamp
-        // the web signup source.
+        // Do NOT touch lifecyclestage or contact_source — never relabel or
+        // regress an existing contact. contact_type and web_signup_source are
+        // filled ONLY when blank (brief item 2: back-fill untyped contacts, e.g.
+        // ones the Contact form created with no type, without ever overwriting
+        // an existing Distributor / Wholesale / Commercial / Internal label).
         if (createRes.status === 409) {
-          // First-touch: preserve the original acquisition source. Read the
-          // existing contact and only stamp web_signup_source when it is empty —
-          // never overwrite a source set by an earlier signup. If the lookup
-          // can't confirm it's empty (non-OK response), skip the write rather
-          // than risk a clobber; the create path already attributes brand-new
-          // contacts, so a handler-created contact always keeps its first source.
+          // One widened lookup feeds both only-if-blank decisions.
           const lookupRes = await fetch(
-            `${GATEWAY_URL}/crm/v3/objects/contacts/${encodeURIComponent(email)}?idProperty=email&properties=web_signup_source`,
+            `${GATEWAY_URL}/crm/v3/objects/contacts/${encodeURIComponent(email)}?idProperty=email&properties=contact_type,web_signup_source`,
             { headers },
           )
-          if (!lookupRes.ok) {
-            const text = await lookupRes.text()
-            console.error('newsletter HubSpot lookup failed', lookupRes.status, text)
-            return Response.json({ success: true, updated: false, preserved: true })
-          }
-          const existing = (await lookupRes.json().catch(() => ({}))) as {
-            properties?: { web_signup_source?: string }
-          }
-          if (existing.properties?.web_signup_source) {
-            return Response.json({ success: true, updated: false, preserved: true })
-          }
-          const updateProperties: Record<string, string> = {
-            web_signup_source: 'Newsletter',
-          }
+
+          const updateProperties: Record<string, string> = {}
           if (utm_source) updateProperties.utm_source = utm_source
           if (utm_medium) updateProperties.utm_medium = utm_medium
           if (utm_campaign) updateProperties.utm_campaign = utm_campaign
           if (utm_content) updateProperties.utm_content = utm_content
           if (utm_term) updateProperties.utm_term = utm_term
+
+          if (!lookupRes.ok) {
+            // Can't confirm what's blank — write only the UTMs rather than risk
+            // clobbering a first-touch source or an existing contact_type.
+            const text = await lookupRes.text()
+            console.error('newsletter HubSpot lookup failed', lookupRes.status, text)
+          } else {
+            const existing = (await lookupRes.json().catch(() => ({}))) as {
+              properties?: { contact_type?: string; web_signup_source?: string }
+            }
+            const props = existing.properties ?? {}
+            if (!props.contact_type) updateProperties.contact_type = 'DTC Customer'
+            if (!props.web_signup_source) updateProperties.web_signup_source = 'Newsletter'
+          }
+
+          if (Object.keys(updateProperties).length === 0) {
+            return Response.json({ success: true, updated: false, preserved: true })
+          }
+
           const updateRes = await fetch(
             `${GATEWAY_URL}/crm/v3/objects/contacts/${encodeURIComponent(email)}?idProperty=email`,
             {
