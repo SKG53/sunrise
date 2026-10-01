@@ -80,9 +80,8 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
             href="https://marketing8710.wixstudio.com/beverage-manufacture/blank"
             target="_blank"
             rel="noopener noreferrer"
-            className="nav-cta outline"
+            className="nav-cta solid"
           ><span className="no-transform">COAs</span></a>
-          <a href="/products" className="nav-cta solid">Shop</a>
           <CartDrawer />
           <button
             type="button"
@@ -145,14 +144,9 @@ export function SiteHeader({ activeNav }: { activeNav?: NavKey }) {
               href="https://marketing8710.wixstudio.com/beverage-manufacture/blank"
               target="_blank"
               rel="noopener noreferrer"
-              className="mobile-menu-cta outline"
-              onClick={closeMenu}
-            >COAs</a>
-            <a
-              href="/products"
               className="mobile-menu-cta solid"
               onClick={closeMenu}
-            >Shop</a>
+            >COAs</a>
           </div>
         </div>
       </div>
