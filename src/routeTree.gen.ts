@@ -15,6 +15,7 @@ import { Route as SocialRouteImport } from './routes/social'
 import { Route as SmsMarketingPolicyRouteImport } from './routes/sms-marketing-policy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
+import { Route as ReviewsubmitRouteImport } from './routes/reviewsubmit'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
@@ -32,6 +33,7 @@ import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/e
 import { Route as ApiPublicWholesaleHubspotRouteImport } from './routes/api/public/wholesale-hubspot'
 import { Route as ApiPublicSpinWheelKlaviyoRouteImport } from './routes/api/public/spin-wheel-klaviyo'
 import { Route as ApiPublicSpinWheelHubspotRouteImport } from './routes/api/public/spin-wheel-hubspot'
+import { Route as ApiPublicReviewRouteImport } from './routes/api/public/review'
 import { Route as ApiPublicNewsletterKlaviyoRouteImport } from './routes/api/public/newsletter-klaviyo'
 import { Route as ApiPublicNewsletterHubspotRouteImport } from './routes/api/public/newsletter-hubspot'
 import { Route as ApiPublicNewsletterRouteImport } from './routes/api/public/newsletter'
@@ -71,6 +73,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ShippingPolicyRoute = ShippingPolicyRouteImport.update({
   id: '/shipping-policy',
   path: '/shipping-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsubmitRoute = ReviewsubmitRouteImport.update({
+  id: '/reviewsubmit',
+  path: '/reviewsubmit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RefundPolicyRoute = RefundPolicyRouteImport.update({
@@ -161,6 +168,11 @@ const ApiPublicSpinWheelHubspotRoute =
     path: '/api/public/spin-wheel-hubspot',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicReviewRoute = ApiPublicReviewRouteImport.update({
+  id: '/api/public/review',
+  path: '/api/public/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNewsletterKlaviyoRoute =
   ApiPublicNewsletterKlaviyoRouteImport.update({
     id: '/api/public/newsletter-klaviyo',
@@ -228,6 +240,7 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/reviewsubmit': typeof ReviewsubmitRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
@@ -242,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/newsletter-hubspot': typeof ApiPublicNewsletterHubspotRoute
   '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
+  '/api/public/review': typeof ApiPublicReviewRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/api/public/spin-wheel-klaviyo': typeof ApiPublicSpinWheelKlaviyoRoute
   '/api/public/wholesale-hubspot': typeof ApiPublicWholesaleHubspotRoute
@@ -263,6 +277,7 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/reviewsubmit': typeof ReviewsubmitRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
@@ -277,6 +292,7 @@ export interface FileRoutesByTo {
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/newsletter-hubspot': typeof ApiPublicNewsletterHubspotRoute
   '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
+  '/api/public/review': typeof ApiPublicReviewRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/api/public/spin-wheel-klaviyo': typeof ApiPublicSpinWheelKlaviyoRoute
   '/api/public/wholesale-hubspot': typeof ApiPublicWholesaleHubspotRoute
@@ -299,6 +315,7 @@ export interface FileRoutesById {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/refund-policy': typeof RefundPolicyRoute
+  '/reviewsubmit': typeof ReviewsubmitRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
@@ -313,6 +330,7 @@ export interface FileRoutesById {
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/newsletter-hubspot': typeof ApiPublicNewsletterHubspotRoute
   '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
+  '/api/public/review': typeof ApiPublicReviewRoute
   '/api/public/spin-wheel-hubspot': typeof ApiPublicSpinWheelHubspotRoute
   '/api/public/spin-wheel-klaviyo': typeof ApiPublicSpinWheelKlaviyoRoute
   '/api/public/wholesale-hubspot': typeof ApiPublicWholesaleHubspotRoute
@@ -336,6 +354,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
+    | '/reviewsubmit'
     | '/shipping-policy'
     | '/sitemap.xml'
     | '/sms-marketing-policy'
@@ -350,6 +369,7 @@ export interface FileRouteTypes {
     | '/api/public/newsletter'
     | '/api/public/newsletter-hubspot'
     | '/api/public/newsletter-klaviyo'
+    | '/api/public/review'
     | '/api/public/spin-wheel-hubspot'
     | '/api/public/spin-wheel-klaviyo'
     | '/api/public/wholesale-hubspot'
@@ -371,6 +391,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
+    | '/reviewsubmit'
     | '/shipping-policy'
     | '/sitemap.xml'
     | '/sms-marketing-policy'
@@ -385,6 +406,7 @@ export interface FileRouteTypes {
     | '/api/public/newsletter'
     | '/api/public/newsletter-hubspot'
     | '/api/public/newsletter-klaviyo'
+    | '/api/public/review'
     | '/api/public/spin-wheel-hubspot'
     | '/api/public/spin-wheel-klaviyo'
     | '/api/public/wholesale-hubspot'
@@ -406,6 +428,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/products'
     | '/refund-policy'
+    | '/reviewsubmit'
     | '/shipping-policy'
     | '/sitemap.xml'
     | '/sms-marketing-policy'
@@ -420,6 +443,7 @@ export interface FileRouteTypes {
     | '/api/public/newsletter'
     | '/api/public/newsletter-hubspot'
     | '/api/public/newsletter-klaviyo'
+    | '/api/public/review'
     | '/api/public/spin-wheel-hubspot'
     | '/api/public/spin-wheel-klaviyo'
     | '/api/public/wholesale-hubspot'
@@ -442,6 +466,7 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
+  ReviewsubmitRoute: typeof ReviewsubmitRoute
   ShippingPolicyRoute: typeof ShippingPolicyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SmsMarketingPolicyRoute: typeof SmsMarketingPolicyRoute
@@ -456,6 +481,7 @@ export interface RootRouteChildren {
   ApiPublicNewsletterRoute: typeof ApiPublicNewsletterRoute
   ApiPublicNewsletterHubspotRoute: typeof ApiPublicNewsletterHubspotRoute
   ApiPublicNewsletterKlaviyoRoute: typeof ApiPublicNewsletterKlaviyoRoute
+  ApiPublicReviewRoute: typeof ApiPublicReviewRoute
   ApiPublicSpinWheelHubspotRoute: typeof ApiPublicSpinWheelHubspotRoute
   ApiPublicSpinWheelKlaviyoRoute: typeof ApiPublicSpinWheelKlaviyoRoute
   ApiPublicWholesaleHubspotRoute: typeof ApiPublicWholesaleHubspotRoute
@@ -507,6 +533,13 @@ declare module '@tanstack/react-router' {
       path: '/shipping-policy'
       fullPath: '/shipping-policy'
       preLoaderRoute: typeof ShippingPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviewsubmit': {
+      id: '/reviewsubmit'
+      path: '/reviewsubmit'
+      fullPath: '/reviewsubmit'
+      preLoaderRoute: typeof ReviewsubmitRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/refund-policy': {
@@ -628,6 +661,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSpinWheelHubspotRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/review': {
+      id: '/api/public/review'
+      path: '/api/public/review'
+      fullPath: '/api/public/review'
+      preLoaderRoute: typeof ApiPublicReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/newsletter-klaviyo': {
       id: '/api/public/newsletter-klaviyo'
       path: '/api/public/newsletter-klaviyo'
@@ -714,6 +754,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
   RefundPolicyRoute: RefundPolicyRoute,
+  ReviewsubmitRoute: ReviewsubmitRoute,
   ShippingPolicyRoute: ShippingPolicyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SmsMarketingPolicyRoute: SmsMarketingPolicyRoute,
@@ -728,6 +769,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicNewsletterRoute: ApiPublicNewsletterRoute,
   ApiPublicNewsletterHubspotRoute: ApiPublicNewsletterHubspotRoute,
   ApiPublicNewsletterKlaviyoRoute: ApiPublicNewsletterKlaviyoRoute,
+  ApiPublicReviewRoute: ApiPublicReviewRoute,
   ApiPublicSpinWheelHubspotRoute: ApiPublicSpinWheelHubspotRoute,
   ApiPublicSpinWheelKlaviyoRoute: ApiPublicSpinWheelKlaviyoRoute,
   ApiPublicWholesaleHubspotRoute: ApiPublicWholesaleHubspotRoute,
