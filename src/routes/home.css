@@ -125,7 +125,7 @@
 /* ── SECTION 02 · BRAND STATEMENT ───────────────────────────────────────── */
 .s02-brand-statement {
   background: var(--cream);
-  padding: calc(var(--base) * 2.8) 0 calc(var(--base) * 2.6);
+  padding: calc(var(--base) * 2.1) 0 calc(var(--base) * 1.95); /* desktop rhythm −25% (was 2.8 / 2.6) */
 }
 .s02-brand-statement .container {
   display: flex;
@@ -184,7 +184,7 @@
 /* the flood as a top-left corner badge.                                   */
 .s03-product-intro {
   background: var(--cream);
-  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
+  padding: calc(var(--base) * 1.5) 0 calc(var(--base) * 1.65); /* desktop rhythm −25% (was 2.0 / 2.2) */
 }
 .s03-product-intro .container {
   display: flex;
@@ -432,7 +432,7 @@
 /* single column with the can between the two ingredient groups.           */
 .s04-whats-inside {
   background: var(--cream);
-  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
+  padding: calc(var(--base) * 1.5) 0 calc(var(--base) * 1.65); /* desktop rhythm −25% (was 2.0 / 2.2) */
 }
 .s04-whats-inside .container {
   display: flex;
@@ -510,7 +510,7 @@
 /* ── SECTION 06 · FOUR TIERS ────────────────────────────────────────────── */
 .s06-tiers {
   background: var(--cream);
-  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
+  padding: calc(var(--base) * 1.35) 0 calc(var(--base) * 1.5); /* desktop rhythm −25% (was 1.8 / 2.0) */
 }
 .s06-tiers .container {
   display: flex;
@@ -915,7 +915,7 @@
 /* existing s09-reviews block above.                                        */
 .s10-faq {
   background: var(--cream);
-  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
+  padding: calc(var(--base) * 1.5) 0 calc(var(--base) * 1.65); /* desktop rhythm −25% (was 2.0 / 2.2) */
 }
 .s10-faq-head {
   margin-bottom: calc(var(--base) * 1.0);

@@ -6,7 +6,7 @@
 /* on any page. If S03 or .spin-code change, update these to match.        */
 .fs-free-samples {
   background: var(--cream);
-  padding: calc(var(--base) * 2.0) 0 calc(var(--base) * 2.2);
+  padding: calc(var(--base) * 1.5) 0 calc(var(--base) * 1.65); /* desktop rhythm −25% (was 2.0 / 2.2), matches home */
 }
 .fs-free-samples .container {
   display: flex;
