@@ -1,4 +1,4 @@
-// Public review submission — POST from /reviewsubmit.
+// Public review submission — POST from /submitreview.
 //
 // HubSpot is the system of record (no Supabase table):
 //   A. contact: create, or link to the existing one (fill only blanks)
@@ -17,8 +17,8 @@ import { klaviyoHasPlacedOrder, logReviewSubmitted } from '@/lib/klaviyo.server'
 const GATEWAY_URL = 'https://connector-gateway.lovable.dev/hubspot'
 const EMAIL_RE = /^[^\s@"]+@[^\s@"]+\.[^\s@"]+$/
 const VARIANTS = new Set(['rr1', 'rr2', 'rr3'])
-const SOURCE_PAGE = '/reviewsubmit'
-const CAPTURE_PAGE = 'savorsunrise.com/reviewsubmit'
+const SOURCE_PAGE = '/submitreview'
+const CAPTURE_PAGE = 'savorsunrise.com/submitreview'
 
 // HubSpot IDs — Product Reviews pipeline.
 const PIPELINE_ID = '0'

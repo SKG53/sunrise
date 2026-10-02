@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WholesaleRouteImport } from './routes/wholesale'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as SubmitreviewRouteImport } from './routes/submitreview'
 import { Route as SocialRouteImport } from './routes/social'
 import { Route as SmsMarketingPolicyRouteImport } from './routes/sms-marketing-policy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -53,6 +54,11 @@ const WholesaleRoute = WholesaleRouteImport.update({
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
   path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubmitreviewRoute = SubmitreviewRouteImport.update({
+  id: '/submitreview',
+  path: '/submitreview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SocialRoute = SocialRouteImport.update({
@@ -245,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/social': typeof SocialRoute
+  '/submitreview': typeof SubmitreviewRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/wholesale': typeof WholesaleRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -282,6 +289,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/social': typeof SocialRoute
+  '/submitreview': typeof SubmitreviewRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/wholesale': typeof WholesaleRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -320,6 +328,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sms-marketing-policy': typeof SmsMarketingPolicyRoute
   '/social': typeof SocialRoute
+  '/submitreview': typeof SubmitreviewRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/wholesale': typeof WholesaleRoute
   '/products_/$slug': typeof ProductsSlugRoute
@@ -359,6 +368,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sms-marketing-policy'
     | '/social'
+    | '/submitreview'
     | '/terms-of-service'
     | '/wholesale'
     | '/products/$slug'
@@ -396,6 +406,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sms-marketing-policy'
     | '/social'
+    | '/submitreview'
     | '/terms-of-service'
     | '/wholesale'
     | '/products/$slug'
@@ -433,6 +444,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sms-marketing-policy'
     | '/social'
+    | '/submitreview'
     | '/terms-of-service'
     | '/wholesale'
     | '/products_/$slug'
@@ -471,6 +483,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SmsMarketingPolicyRoute: typeof SmsMarketingPolicyRoute
   SocialRoute: typeof SocialRoute
+  SubmitreviewRoute: typeof SubmitreviewRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   WholesaleRoute: typeof WholesaleRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
@@ -505,6 +518,13 @@ declare module '@tanstack/react-router' {
       path: '/terms-of-service'
       fullPath: '/terms-of-service'
       preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/submitreview': {
+      id: '/submitreview'
+      path: '/submitreview'
+      fullPath: '/submitreview'
+      preLoaderRoute: typeof SubmitreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/social': {
@@ -759,6 +779,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SmsMarketingPolicyRoute: SmsMarketingPolicyRoute,
   SocialRoute: SocialRoute,
+  SubmitreviewRoute: SubmitreviewRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   WholesaleRoute: WholesaleRoute,
   ProductsSlugRoute: ProductsSlugRoute,

@@ -439,7 +439,7 @@ export function SpinWheel() {
     // Form pages the wheel must never cover. Checked when arming (eligible) AND
     // at reveal: routes are code-split and a visitor can client-side navigate
     // onto one while the fallback timer is pending.
-    const onNoWheelPath = () => /^\/reviewsubmit\/?$/.test(window.location.pathname);
+    const onNoWheelPath = () => /^\/(submitreview|reviewsubmit)\/?$/.test(window.location.pathname);
     const eligible = () => {
       if (onNoWheelPath()) return false;
       try {

@@ -1,4 +1,4 @@
-// Flavor catalog for the review form (/reviewsubmit) and its API route
+// Flavor catalog for the review form (/submitreview) and its API route
 // (/api/public/review). Shared so the page's dropdown labels and the HubSpot
 // ticket text always match. Which flavors appear is decided ONLY by
 // LIVE_SLUGS in ./liveProducts — no separate list here. Slugs are site slugs
