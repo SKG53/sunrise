@@ -31,7 +31,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
-import { readUtms, readSessionUtms, isAdVisitor } from "../lib/utms";
+import { readUtms, readSessionUtms, isAdVisitor, isEmailVisitor } from "../lib/utms";
 import "./SpinWheel.css";
 
 const STORAGE_KEY = "sunrise:spin-wheel-seen";
@@ -176,9 +176,12 @@ const GENERIC_TERMS =
 // Visitors from a deal-specific Meta ad were PROMISED one exact offer, so they
 // skip the wheel entirely and get that deal (deal card -> email -> gated code).
 // These are NOT part of the wheel pool — never spun. Meta-specific codes,
-// distinct from the wheel's, so redemptions slice Meta-vs-organic in Shopify
-// (the codes already exist in Shopify; we only deliver the string). Colors match
-// the equivalent wheel deals for visual consistency.
+// distinct from the wheel's, so redemptions slice Meta-vs-organic in Shopify.
+// NOTE (2026-10-02): FREE4PACK / 25OFF5 do NOT currently exist in Shopify and
+// their campaigns (ac4/ac5) are not running. Create the codes (and a Klaviyo
+// flow branch, if they should email) BEFORE these ads run again, or ad1/ad2
+// visitors get a code that fails at checkout. Colors match the equivalent
+// wheel deals for visual consistency.
 export const AD_DEALS: Record<"b2g1f" | "25off5", Deal> = {
   // ad2 -> "Buy 2, get 1 FREE"
   b2g1f: {
@@ -439,6 +442,10 @@ export function SpinWheel() {
         // if (localStorage.getItem(SUPPRESS_KEY) === "true") return false;
         if (sessionStorage.getItem(STORAGE_KEY) === "true") return false;
         if (sessionStorage.getItem(AGE_KEY) !== "true") return false;
+        // Klaviyo email visitors are already subscribed: no wheel for THIS visit
+        // (session-scoped; see isEmailVisitor). A deal-specific ad route still
+        // wins so an ad's promised deal always shows.
+        if (isEmailVisitor() && !resolveAdDeal()) return false;
       } catch {
         return false;
       }
