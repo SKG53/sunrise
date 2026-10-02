@@ -126,3 +126,43 @@ export function readSessionUtms(): Record<string, string> {
     return {}
   }
 }
+
+
+// ── EMAIL-VISITOR DETECTION (Spin & Save suppression) ─────────────────────
+// A visitor arriving from a Klaviyo email is already on the list, so the Spin &
+// Save wheel stays hidden for THAT visit only. Signals (case-insensitive):
+//   1. _kx in the URL — Klaviyo appends it to every tracked link, even if UTM
+//      tracking is ever turned off (the load-bearing catch-all).
+//   2. utm_medium=email or utm_source=klaviyo.
+// Stored in sessionStorage (this visit only, by design): every spin deal can be
+// claimed once per customer, so the wheel returns on later non-email visits.
+// isEmailVisitor() ALSO checks the live URL, because React runs SpinWheel's
+// (child) effects before __root's (parent) capture effect — the wheel's
+// eligibility check can run before captureEmailVisitor() has written the flag.
+const EMAIL_KEY = 'sunrise:email-visitor'
+
+function hasEmailSignal(): boolean {
+  if (typeof location === 'undefined') return false
+  try {
+    const q = new URLSearchParams(location.search)
+    if (q.has('_kx')) return true
+    if ((q.get('utm_medium') || '').toLowerCase() === 'email') return true
+    if ((q.get('utm_source') || '').toLowerCase() === 'klaviyo') return true
+  } catch { /* malformed URL — treat as no signal */ }
+  return false
+}
+
+// Call once on load (alongside captureUtms/captureAdVisitor). No-op when no
+// email signal is present; never clears an existing flag within the session.
+export function captureEmailVisitor(): void {
+  if (typeof window === 'undefined') return
+  if (!hasEmailSignal()) return
+  try { sessionStorage.setItem(EMAIL_KEY, '1') } catch { /* private mode */ }
+}
+
+// Read at decision time (the wheel's eligibility check).
+export function isEmailVisitor(): boolean {
+  if (typeof window === 'undefined') return false
+  try { if (sessionStorage.getItem(EMAIL_KEY) === '1') return true } catch { /* private mode — fall through to live URL */ }
+  return hasEmailSignal()
+}
