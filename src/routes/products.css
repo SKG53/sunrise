@@ -65,7 +65,7 @@
 /* dense content section. Padding tuned to ABOUT's values (2.4 / 2.0) —     */
 /* the Effects grid below has the visual weight of About's Origin section. */
 .p-hero {
-  padding: calc(var(--base) * 2.4) 0 calc(var(--base) * 0.8);
+  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 0.6); /* desktop rhythm −25% (was 2.4 / 0.8) */
 }
 .p-hero-inner {
   text-align: center;
@@ -96,7 +96,7 @@
 /* ── FIND YOUR EFFECT (4-card: Core + CBG/CBN/THCV) ─────────────────────── */
 .p-effects {
   background: var(--cream);
-  padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 2.2);
+  padding: calc(var(--base) * 0.9) 0 calc(var(--base) * 1.65); /* desktop rhythm −25% (was 1.2 / 2.2) */
 }
 .p-effects .container {
   display: flex;
@@ -203,7 +203,7 @@
 /* ── SWITCHER ───────────────────────────────────────────────────────────── */
 .p-switcher {
   background: var(--cream);
-  padding: calc(var(--base) * 0.4) 0 calc(var(--base) * 2.2);
+  padding: calc(var(--base) * 0.3) 0 calc(var(--base) * 1.65); /* desktop rhythm −25% (was 0.4 / 2.2) */
 }
 .p-switcher .container {
   display: flex;
@@ -572,7 +572,7 @@
 /* ── WHAT'S INSIDE (ported from about.css) ──────────────────────────────── */
 .p-inside {
   background: var(--cream);
-  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.0);
+  padding: calc(var(--base) * 1.35) 0 calc(var(--base) * 1.5); /* desktop rhythm −25% (was 1.8 / 2.0) */
 }
 .p-inside-head {
   margin-bottom: calc(var(--base) * 1.2);
@@ -637,7 +637,7 @@
 /* ── TRANSPARENCY (unchanged) ───────────────────────────────────────────── */
 .p-transparency {
   background: var(--cream);
-  padding: calc(var(--base) * 1.6) 0 calc(var(--base) * 1.8);
+  padding: calc(var(--base) * 1.2) 0 calc(var(--base) * 1.35); /* desktop rhythm −25% (was 1.6 / 1.8) */
 }
 .p-transparency-inner {
   display: grid;
@@ -731,7 +731,7 @@
 /* ── FAQ (new: accordion) ───────────────────────────────────────────────── */
 .p-faq {
   background: var(--cream);
-  padding: calc(var(--base) * 1.8) 0 calc(var(--base) * 2.2);
+  padding: calc(var(--base) * 1.35) 0 calc(var(--base) * 1.65); /* desktop rhythm −25% (was 1.8 / 2.2) */
 }
 .p-faq .container {
   display: flex;
