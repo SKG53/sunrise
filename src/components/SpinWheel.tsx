@@ -176,12 +176,12 @@ const GENERIC_TERMS =
 // Visitors from a deal-specific Meta ad were PROMISED one exact offer, so they
 // skip the wheel entirely and get that deal (deal card -> email -> gated code).
 // These are NOT part of the wheel pool — never spun. Meta-specific codes,
-// distinct from the wheel's, so redemptions slice Meta-vs-organic in Shopify.
-// NOTE (2026-10-02): FREE4PACK / 25OFF5 do NOT currently exist in Shopify and
-// their campaigns (ac4/ac5) are not running. Create the codes (and a Klaviyo
-// flow branch, if they should email) BEFORE these ads run again, or ad1/ad2
-// visitors get a code that fails at checkout. Colors match the equivalent
-// wheel deals for visual consistency.
+// distinct from the wheel's, so redemptions slice Meta-vs-organic in Shopify
+// (both codes exist in Shopify: active, one use per customer — verified
+// 2026-10-02; we only deliver the string). The ac4/ac5 campaigns are not
+// currently running. The Klaviyo Spin & Save flow has no branch for these two
+// codes, so ad claims get no email — add branches before relaunching if they
+// should. Colors match the equivalent wheel deals for visual consistency.
 export const AD_DEALS: Record<"b2g1f" | "25off5", Deal> = {
   // ad2 -> "Buy 2, get 1 FREE"
   b2g1f: {
