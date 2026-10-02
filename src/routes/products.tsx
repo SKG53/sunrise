@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { FreeSampleSection } from "../components/FreeSampleSection";
 import {
   render5mgLockup,
   render10mgLockup,
@@ -669,6 +670,10 @@ function ProductsPage() {
             </div>
           </div>
         </section>
+
+        {/* ── 04b · FREE SAMPLES ────────────────────────────────────────── */}
+        {/* Reusable WEBFREECAN section (components/FreeSampleSection.tsx). */}
+        <FreeSampleSection />
 
         {/* ── 05 · WHAT'S INSIDE ────────────────────────────────────────── */}
         <section className="p-inside">
