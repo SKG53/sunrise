@@ -136,7 +136,7 @@ export function SiteFooter() {
               <li><a href="/contact">Contact</a></li>
               <li><a href="/contact?topic=wholesale">Wholesale</a></li>
               <li><a href="https://marketing8710.wixstudio.com/beverage-manufacture/blank" target="_blank" rel="noopener noreferrer">COAs</a></li>
-              <li><a href="/hbe">Hemp Beverage Expo</a></li>
+              <li><a href="/reviewsubmit">Submit Review</a></li>
             </ul>
           </div>
 
