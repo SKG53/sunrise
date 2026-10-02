@@ -1,0 +1,227 @@
+/* ==========================================================================
+   SUNRISE — review.css
+   Scoped .rv-* styles for /reviewsubmit. Builds on contact.css (.c-*)
+   for the form shell; inherits fonts and tokens from sunrise-shell.css.
+   ========================================================================== */
+
+/* ── PAGE HERO — tier-30 green flood (contact uses tier-60) ───────────────
+   Compound selectors outrank contact.css's .c-pagehero / .accent rules
+   regardless of stylesheet load order. */
+.c-pagehero.rv-pagehero { background: var(--tier-30); }
+.c-form-headline .accent.rv-accent { color: var(--tier-30); }
+.rv-page .c-form-sub strong { font-weight: 800; color: var(--near-black); }
+
+/* ── STAR RATING ────────────────────────────────────────────────────────── */
+.rv-rating-field {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.16);
+}
+.rv-stars {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--base) * 0.08);
+}
+.rv-star {
+  position: relative;
+  cursor: pointer;
+  line-height: 0;
+}
+.rv-star-input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.rv-star-icon {
+  width: calc(var(--base) * 0.85);
+  height: calc(var(--base) * 0.85);
+  fill: transparent;
+  stroke: var(--near-black);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  transition: fill 120ms ease-out, transform 120ms ease-out;
+}
+.rv-star-on .rv-star-icon {
+  fill: var(--tier-5);
+  stroke: var(--tier-5);
+}
+.rv-star:hover .rv-star-icon { transform: scale(1.08); }
+.rv-star-input:focus-visible + .rv-star-icon {
+  outline: 2px solid var(--tier-10);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.rv-rating-word {
+  margin-left: calc(var(--base) * 0.25);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: max(11px, calc(var(--base) * 0.24));
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ── FIELD HELPERS ──────────────────────────────────────────────────────── */
+.rv-optional {
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--text-faint);
+}
+
+/* ── FLAVOR MULTI-SELECT ────────────────────────────────────────────────── */
+.rv-ms { position: relative; }
+.rv-ms-trigger {
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rv-ms-trigger.rv-ms-empty { color: var(--text-secondary); }
+.rv-ms-panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: min(60vh, calc(var(--base) * 9));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--cream);
+  border: 1.5px solid var(--near-black);
+  border-radius: 6px;
+  box-shadow: 0 10px 28px rgba(26, 26, 26, 0.16);
+  padding: calc(var(--base) * 0.2) 0;
+}
+.rv-ms-group + .rv-ms-group {
+  border-top: 1px solid rgba(26, 26, 26, 0.1);
+  margin-top: calc(var(--base) * 0.12);
+  padding-top: calc(var(--base) * 0.12);
+}
+.rv-ms-group-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: max(11px, calc(var(--base) * 0.22));
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: calc(var(--base) * 0.12) calc(var(--base) * 0.36);
+}
+.rv-ms-option {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--base) * 0.22);
+  min-height: 44px;
+  padding: 0 calc(var(--base) * 0.36);
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: max(15px, calc(var(--base) * 0.32));
+  font-weight: 500;
+  color: var(--near-black);
+}
+.rv-ms-option:hover { background: rgba(26, 26, 26, 0.05); }
+.rv-ms-option input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--tier-30);
+  cursor: pointer;
+}
+
+/* Per-flavor short review — indented under the picker with a tier-30 rule. */
+.rv-flavor-note {
+  padding-left: calc(var(--base) * 0.3);
+  border-left: 3px solid var(--tier-30);
+}
+.rv-flavor-textarea { min-height: calc(var(--base) * 1.9); }
+
+/* Honeypot — kept off-screen (not display:none, which some bots skip). */
+.rv-hp {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.rv-disclosure {
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  max-width: 60ch;
+  font-size: max(12px, calc(var(--base) * 0.22));
+}
+
+/* ── SUCCESS: REWARD CODE — mirrors the Spin & Save code box ─────────────
+   (sunrise/src/components/SpinWheel.css .spin-code*): white field, dashed
+   gold border, code left, stacked copy icon + label right. */
+.rv-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--base) * 0.3);
+  width: 100%;
+  max-width: calc(var(--base) * 6.4);
+  margin: 0 0 calc(var(--base) * 0.25);
+  padding: calc(var(--base) * 0.26) calc(var(--base) * 0.36);
+  background: #fff;
+  border: 2px dashed var(--gold);
+  border-radius: calc(var(--base) * 0.12);
+  cursor: pointer;
+}
+.rv-code-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.34);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: var(--near-black);
+}
+.rv-code-copy {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.06);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.rv-copy-icon {
+  width: calc(var(--base) * 0.55);
+  height: calc(var(--base) * 0.55);
+  color: var(--gold);
+}
+.rv-fine {
+  font-family: 'Montserrat', sans-serif;
+  font-size: max(11px, calc(var(--base) * 0.2));
+  font-weight: 500;
+  line-height: 1.5;
+  color: rgba(26, 26, 26, 0.6);
+  margin: 0 0 calc(var(--base) * 0.6);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Same fixed-px code sizes the wheel uses on phones (base floors at 32px). */
+  .rv-code { max-width: 100%; }
+  .rv-code-text { font-size: 17px; letter-spacing: 0.06em; }
+  .rv-code-copy { font-size: 10px; flex-shrink: 0; }
+  /* Fields render ~11px on phones (base floors at 32px) and iOS zooms in on
+     focus below 16px. Scoped to this page so contact.css stays untouched. */
+  .rv-page .c-input,
+  .rv-page .c-textarea,
+  .rv-page .rv-ms-trigger { font-size: 16px; }
+  .rv-page .c-field-label,
+  .rv-page .c-field-error { font-size: 12px; }
+}
+@media (max-width: 520px) {
+  .rv-star-icon { width: calc(var(--base) * 0.95); height: calc(var(--base) * 0.95); }
+  .rv-star { padding: 6px 4px; margin: -6px 0; } /* larger tap target, no vertical layout shift */
+}
