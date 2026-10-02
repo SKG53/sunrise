@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { S07Map } from "../components/S07Map";
+import { FreeSampleSection } from "../components/FreeSampleSection";
 import {
   renderWordmark,
   render5mgLockup,
@@ -458,6 +459,10 @@ function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* ── 03b · FREE SAMPLES ────────────────────────────────────────── */}
+        {/* Reusable WEBFREECAN section (components/FreeSampleSection.tsx). */}
+        <FreeSampleSection />
 
         {/* ── 04 · FOUR TIERS ───────────────────────────────────────────── */}
         <section className="s06-tiers">
