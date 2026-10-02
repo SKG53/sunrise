@@ -536,7 +536,9 @@ function ProductDetailPage() {
   // Per-pack savings map keyed by pack option name (e.g. "12 PACK"). For
   // each variant we extract a pack count from the variant's "Pack" option
   // value via /(\d+)/ — so any value that includes a parseable integer
-  // works ("4 PACK", "12 PACK", "Case of 24", etc.). The variant with the
+  // works ("4 PACK", "12 PACK", "Case of 24", etc.). A value containing the
+  // word "single" (e.g. "SINGLE CAN") counts as 1 unit, so the single can is
+  // the savings baseline when it exists. The variant with the
   // smallest pack count is the baseline; its per-unit price is the
   // comparison anchor. For every other variant, savings is the percentage
   // reduction in per-unit price vs the baseline, rounded to a whole
@@ -555,9 +557,10 @@ function ProductDetailPage() {
       .map((e) => {
         const packOpt = e.node.selectedOptions.find((o) => o.name === "Pack");
         if (!packOpt) return null;
+        const isSingle = /\bsingle\b/i.test(packOpt.value);
         const match = packOpt.value.match(/\d+/);
-        if (!match) return null;
-        const count = parseInt(match[0], 10);
+        if (!isSingle && !match) return null;
+        const count = isSingle ? 1 : parseInt(match ? match[0] : "", 10);
         const price = parseFloat(e.node.price.amount);
         if (!Number.isFinite(count) || count <= 0 || !Number.isFinite(price)) {
           return null;
@@ -566,7 +569,7 @@ function ProductDetailPage() {
       })
       .filter((r): r is { packName: string; count: number; price: number } => r !== null);
 
-    const map = new Map<string, { savingsPct: number; isBaseline: boolean }>();
+    const map = new Map<string, { savingsPct: number; isBaseline: boolean; count: number }>();
     if (rows.length < 2) return map;
 
     const baseline = rows.reduce((min, r) => (r.count < min.count ? r : min), rows[0]);
@@ -577,7 +580,7 @@ function ProductDetailPage() {
       const savingsPct = isBaseline
         ? 0
         : Math.round((1 - unitPrice / baselineUnitPrice) * 100);
-      map.set(r.packName, { savingsPct, isBaseline });
+      map.set(r.packName, { savingsPct, isBaseline, count: r.count });
     }
     return map;
   }, [shopifyProduct]);
@@ -585,8 +588,9 @@ function ProductDetailPage() {
   // Effective selection — derived (not stored) so the initial render
   // already resolves to a real variant. The useState seed is
   // `defaultPackOption` from the slug map ("Single Can" for every SKU),
-  // which is a historical placeholder that doesn't correspond to any
-  // actual Shopify variant — so on first load `selectedPack` matches
+  // which is a historical placeholder that doesn't match any actual
+  // Shopify variant (Shopify's value is "SINGLE CAN"; the match is
+  // case-sensitive) — so on first load `selectedPack` matches
   // nothing in `packOptions` and the row would render with no button
   // visually selected. Resolving through a memo instead of a useEffect
   // avoids the one-frame flash a post-commit effect would produce: the
@@ -595,11 +599,20 @@ function ProductDetailPage() {
   //
   // Priority: (1) if the user's stored selection matches a real variant,
   // honor it — this is the steady state after a click. (2) else fall
-  // back to the smallest pack (the savings baseline). (3) else fall
-  // back to whatever's first in packOptions, then the raw stored value
-  // — these last two are safety nets for malformed variant data.
+  // back to the smallest MULTI-pack (count > 1) — the 4-pack today — so the
+  // page keeps opening on the 4-pack even though the single can is now the
+  // savings baseline. (3) else the savings baseline. (4) else whatever's
+  // first in packOptions, then the raw stored value — these last two are
+  // safety nets for malformed variant data.
   const effectiveSelectedPack = useMemo(() => {
     if (packOptions.includes(selectedPack)) return selectedPack;
+    let multi: { name: string; count: number } | null = null;
+    for (const [name, info] of savingsByPack.entries()) {
+      if (info.count > 1 && (multi === null || info.count < multi.count)) {
+        multi = { name, count: info.count };
+      }
+    }
+    if (multi) return multi.name;
     for (const [name, info] of savingsByPack.entries()) {
       if (info.isBaseline) return name;
     }
