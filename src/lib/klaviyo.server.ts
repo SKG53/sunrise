@@ -257,3 +257,78 @@ export async function klaviyoClaim(input: KlaviyoClaimInput): Promise<void> {
     console.error('klaviyoClaim error', (e as Error)?.message)
   }
 }
+
+// ── Reviews (/api/public/review) ─────────────────────────────────────────
+// Both helpers are best-effort and never throw. A review is NOT marketing
+// consent: nothing here subscribes, changes consent, or writes profile
+// properties.
+
+const PLACED_ORDER_METRIC_ID = 'Rtyn8R' // Shopify "Placed Order"
+const LOOKUP_TIMEOUT_MS = 4000
+
+// Logs the "Review Submitted" event (no properties). Used to stop Review
+// Request emails for people who have already reviewed. Klaviyo creates a
+// bare profile if none exists — still no consent change.
+export async function logReviewSubmitted(email: string): Promise<void> {
+  const key = process.env.KLAVIYO_API_KEY
+  if (!key) {
+    console.error('KLAVIYO_API_KEY is not configured')
+    return
+  }
+  try {
+    const res = await fetch(`${BASE}/events/`, {
+      method: 'POST',
+      headers: authHeaders(key),
+      body: JSON.stringify({
+        data: {
+          type: 'event',
+          attributes: {
+            metric: { data: { type: 'metric', attributes: { name: 'Review Submitted' } } },
+            properties: {},
+            profile: { data: { type: 'profile', attributes: { email } } },
+          },
+        },
+      }),
+    })
+    if (!res.ok) console.error('klaviyo logReviewSubmitted failed', res.status, await res.text().catch(() => ''))
+  } catch (e) {
+    console.error('klaviyo logReviewSubmitted error', (e as Error)?.message)
+  }
+}
+
+// True if the profile with this email has at least one Placed Order event.
+// Any miss — no key, no profile, missing read scope, timeout, error — is false.
+export async function klaviyoHasPlacedOrder(email: string): Promise<boolean> {
+  const key = process.env.KLAVIYO_API_KEY
+  if (!key || email.includes('"')) return false
+  try {
+    const profileFilter = encodeURIComponent(`equals(email,"${email}")`)
+    const pRes = await fetch(`${BASE}/profiles/?filter=${profileFilter}&fields[profile]=email`, {
+      headers: authHeaders(key),
+      signal: AbortSignal.timeout(LOOKUP_TIMEOUT_MS),
+    })
+    if (!pRes.ok) {
+      console.error('klaviyo profile lookup failed', pRes.status)
+      return false
+    }
+    const pJson = (await pRes.json().catch(() => null)) as { data?: Array<{ id?: string }> } | null
+    const id = pJson?.data?.[0]?.id
+    if (!id) return false
+    const eventFilter = encodeURIComponent(
+      `and(equals(metric_id,"${PLACED_ORDER_METRIC_ID}"),equals(profile_id,"${id}"))`,
+    )
+    const eRes = await fetch(`${BASE}/events/?filter=${eventFilter}&fields[event]=datetime`, {
+      headers: authHeaders(key),
+      signal: AbortSignal.timeout(LOOKUP_TIMEOUT_MS),
+    })
+    if (!eRes.ok) {
+      console.error('klaviyo order lookup failed', eRes.status)
+      return false
+    }
+    const eJson = (await eRes.json().catch(() => null)) as { data?: unknown[] } | null
+    return Array.isArray(eJson?.data) && eJson!.data!.length > 0
+  } catch (e) {
+    console.error('klaviyo hasPlacedOrder error', (e as Error)?.message)
+    return false
+  }
+}

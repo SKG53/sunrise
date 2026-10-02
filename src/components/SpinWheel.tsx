@@ -436,7 +436,12 @@ export function SpinWheel() {
     let armedAt = 0;
     const timers: number[] = [];
 
+    // Form pages the wheel must never cover. Checked when arming (eligible) AND
+    // at reveal: routes are code-split and a visitor can client-side navigate
+    // onto one while the fallback timer is pending.
+    const onNoWheelPath = () => /^\/reviewsubmit\/?$/.test(window.location.pathname);
     const eligible = () => {
+      if (onNoWheelPath()) return false;
       try {
         // DISABLED (2026-09-10) — cross-domain suppression removed; see note above.
         // if (localStorage.getItem(SUPPRESS_KEY) === "true") return false;
@@ -469,6 +474,7 @@ export function SpinWheel() {
     };
     const reveal = () => {
       if (done) return;
+      if (onNoWheelPath()) return; // navigated onto a no-wheel page — stay hidden
       done = true;
       cleanup();
       // ROUTER (runs before any wheel/pool logic): deal-specific ad visitors skip
