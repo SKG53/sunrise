@@ -460,10 +460,6 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── 03b · FREE SAMPLES ────────────────────────────────────────── */}
-        {/* Reusable WEBFREECAN section (components/FreeSampleSection.tsx). */}
-        <FreeSampleSection />
-
         {/* ── 04 · FOUR TIERS ───────────────────────────────────────────── */}
         <section className="s06-tiers">
           <div className="container">
@@ -554,6 +550,10 @@ function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* ── 04b · FREE SAMPLES ────────────────────────────────────────── */}
+        {/* Reusable WEBFREECAN section (components/FreeSampleSection.tsx). */}
+        <FreeSampleSection />
 
         {/* ── 05 · WHAT'S INSIDE ────────────────────────────────────────── */}
         <section id="whats-inside" className="s04-whats-inside">
