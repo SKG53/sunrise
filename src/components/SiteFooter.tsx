@@ -43,11 +43,18 @@ export function SiteFooter() {
         body: JSON.stringify({ email, ...readUtms() }),
       }).catch(() => {});
       // ADDITIVE — Klaviyo subscribe (web_signup_source = Newsletter, no deal
-      // fields, no event). Also not awaited; never blocks the footer success.
+      // fields, logs Newsletter Signup event). Also not awaited; never blocks the
+      // footer success.
       fetch("/api/public/newsletter-klaviyo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, ...readUtms() }),
+        body: JSON.stringify({
+          email,
+          ...readUtms(),
+          page: typeof location !== "undefined"
+            ? `${location.host.replace(/^www\./, "")}${location.pathname}`
+            : undefined,
+        }),
       }).catch(() => {});
       setStatus("success");
       setStatusMsg("Cheers! You’re on the list. ☀️");

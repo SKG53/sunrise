@@ -3,7 +3,8 @@
 // on the Supabase write (/api/public/newsletter); the front end calls THIS
 // endpoint in parallel, without awaiting it. Subscribes the email to SUNRISE
 // Subscribers with marketing consent and stamps web_signup_source = Newsletter.
-// No deal fields, no capture_page, no Claimed Deal event (brief item 3).
+// No deal fields, no capture_page, no Claimed Deal event; logs a Newsletter
+// Signup event (Welcome flow trigger).
 import { createFileRoute } from '@tanstack/react-router'
 import { klaviyoClaim } from '@/lib/klaviyo.server'
 import { fetchHubspotFirstTouch } from '@/lib/hubspot.server'
@@ -17,6 +18,7 @@ interface Body {
   utm_campaign?: unknown
   utm_content?: unknown
   utm_term?: unknown
+  page?: unknown
 }
 
 const asStr = (v: unknown, max = 512) => (typeof v === 'string' && v.length <= max ? v : '')
@@ -55,6 +57,8 @@ export const Route = createFileRoute('/api/public/newsletter-klaviyo')({
           utm_content: hs?.utm_content || asStr(body.utm_content),
           utm_term: hs?.utm_term || asStr(body.utm_term),
           logEvent: false,
+          // Submitting page → event only; profile capture_page stays hs-mirrored.
+          newsletterEvent: { form: 'footer', capture_page: asStr(body.page) || undefined },
         })
 
         return Response.json({ success: true })

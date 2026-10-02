@@ -39,6 +39,10 @@ export interface KlaviyoClaimInput {
   utm_content?: string
   utm_term?: string
   logEvent?: boolean // fire the "Claimed Deal" event (spin/ad claims only)
+  // Footer only: logs the "Newsletter Signup" event (Welcome flow trigger).
+  // capture_page here is the submitting page and goes ONLY into the event,
+  // never into the profile's capture_page field.
+  newsletterEvent?: { form: string; capture_page?: string }
 }
 
 function authHeaders(key: string) {
@@ -173,8 +177,41 @@ async function logClaimedDeal(key: string, input: KlaviyoClaimInput): Promise<vo
   if (!res.ok) console.error('klaviyo logClaimedDeal failed', res.status, await res.text().catch(() => ''))
 }
 
+// Footer-only "Newsletter Signup" event — the Welcome flow trigger. Logs and
+// swallows every failure (HTTP or network); never throws.
+async function logNewsletterSignup(key: string, input: KlaviyoClaimInput): Promise<void> {
+  const ev = input.newsletterEvent
+  if (!ev) return
+  try {
+    const properties: Record<string, unknown> = { form: ev.form }
+    if (ev.capture_page) properties.capture_page = ev.capture_page
+    for (const k of UTM_KEYS) {
+      const v = input[k]
+      if (v) properties[k] = v
+    }
+    const res = await fetch(`${BASE}/events/`, {
+      method: 'POST',
+      headers: authHeaders(key),
+      body: JSON.stringify({
+        data: {
+          type: 'event',
+          attributes: {
+            metric: { data: { type: 'metric', attributes: { name: 'Newsletter Signup' } } },
+            properties,
+            profile: { data: { type: 'profile', attributes: { email: input.email } } },
+          },
+        },
+      }),
+    })
+    if (!res.ok) console.error('klaviyo logNewsletterSignup failed', res.status, await res.text().catch(() => ''))
+  } catch (e) {
+    console.error('klaviyo logNewsletterSignup error', (e as Error)?.message)
+  }
+}
+
 // Upsert the profile (synchronously, race-free), set consent + list, and — for
-// deal claims — log the Claimed Deal event. Never throws.
+// deal claims — log the Claimed Deal event; for footer signups, the Newsletter
+// Signup event. Never throws.
 export async function klaviyoClaim(input: KlaviyoClaimInput): Promise<void> {
   const key = process.env.KLAVIYO_API_KEY
   if (!key) {
@@ -214,6 +251,8 @@ export async function klaviyoClaim(input: KlaviyoClaimInput): Promise<void> {
     await subscribe(key, email)
     // 3. Claimed Deal event (spin/ad claims only; footer signups skip it).
     if (input.logEvent && input.deal_code) await logClaimedDeal(key, input)
+    // 3b. Newsletter Signup event (footer only) — triggers the Welcome flow.
+    if (input.newsletterEvent) await logNewsletterSignup(key, input)
   } catch (e) {
     console.error('klaviyoClaim error', (e as Error)?.message)
   }
