@@ -124,22 +124,12 @@
   padding: calc(var(--base) * 0.3);
   overflow: hidden;
 }
-/* Can sits lower/smaller than FreeSampleSection's (75% / +0.18 base) so the
-   2× potency lockup across the top never covers the can art. */
 .tfc-card-can img {
   width: 75%;
-  height: 66%;
+  height: 75%;
   object-fit: contain;
   object-position: center;
-  transform: translateY(calc(var(--base) * 0.55));
-}
-.tfc-card-tier {
-  position: absolute;
-  top: calc(var(--base) * 0.24);
-  left: calc(var(--base) * 0.32);
-  display: inline-block;
-  pointer-events: none;
-  z-index: 2;
+  transform: translateY(calc(var(--base) * 0.18));
 }
 .tfc-card-cannabinoid {
   position: absolute;
@@ -159,13 +149,11 @@
   transform-origin: 0 100%;
   white-space: nowrap;
 }
-/* Check badge — cream disc, ink check (fysInk: near-black on light flavors).
-   Bottom-left of the can field: the 2× potency lockup spans the top edge and
-   the cannabinoid strip runs up the right edge. */
+/* Check badge — cream disc, ink check (fysInk: near-black on light flavors). */
 .tfc-card-check {
   position: absolute;
-  bottom: calc(var(--base) * 0.22);
-  left: calc(var(--base) * 0.22);
+  top: calc(var(--base) * 0.22);
+  right: calc(var(--base) * 0.22);
   width: calc(var(--base) * 0.62);
   height: calc(var(--base) * 0.62);
   border-radius: 50%;
@@ -481,7 +469,7 @@
   .tfc-reveal .tfc-code-text { font-size: 17px; letter-spacing: 0.06em; }
   .tfc-reveal .tfc-code-copy { font-size: 10px; flex-shrink: 0; }
   .tfc-reveal .tfc-code-note { max-width: 320px; }
-  .tfc-card-check { width: 24px; height: 24px; bottom: 8px; left: 8px; }
+  .tfc-card-check { width: 24px; height: 24px; top: 8px; right: 8px; }
 }
 
 /* Constant slight nudge on the CTA arrow on touch (no hover to trigger the

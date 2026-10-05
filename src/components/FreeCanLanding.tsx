@@ -13,8 +13,9 @@
 // Layout: site header → "Want a Taste? / Just Cover Shipping" → strength-
 // grouped grid (3-up desktop, 2-up phones). Tapping a card opens the "Your
 // pick" claim panel directly beneath that card's row. Founder decisions: never
-// show the shipping dollar amount ("you just cover the shipping fee"); potency
-// lockups 2× the FreeSampleSection size.
+// show the shipping dollar amount ("you just cover the shipping fee"); the
+// strength-group heading lockups are 2× the FreeSampleSection size; cards have
+// no potency lockup (the can art shows the strength).
 //
 // Claim → same contract as FreeSampleSection's email gate: awaits the Supabase
 // gate (/api/public/newsletter, source "free-can"), then fires free-can-hubspot
@@ -153,7 +154,6 @@ export type FreeCanCode = "TRYFREECAN" | "WEBFREECAN" | "FREECAN";
 
 export function FreeCanLanding({ code }: { code: FreeCanCode }) {
   const STORAGE_KEY = `sunrise:freecan-landing:${code}`;
-  const lockupRefs = useRef<Record<string, HTMLSpanElement | null>>({});
   const cbRefs = useRef<Record<string, HTMLSpanElement | null>>({});
   const tierHeadRefs = useRef<Record<number, HTMLSpanElement | null>>({});
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -191,26 +191,16 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
     }
   }, [STORAGE_KEY]);
 
-  // Paint the card lockups, cannabinoid strips and tier headings. Potency
-  // lockups are 2× the FreeSampleSection size (founder, Oct 5): cards 88 desktop
-  // / 72 tablet / 56 phones, tier headings 80 / 60 — each card lockup capped so it never
-  // runs past its card (2-up phones are tight). Re-paints on resize /
-  // fonts-ready, and when the visible set changes.
+  // Paint the cannabinoid strips and the strength-group headings. The group
+  // heading potency lockups are 2× the FreeSampleSection size (80 desktop / 60
+  // phones). Cards carry NO potency lockup (founder, Oct 5) — the can art
+  // already shows the strength. Re-paints on resize / fonts-ready, and when the
+  // visible set changes.
   useEffect(() => {
     const paint = () => {
       const base = getBasePx();
       const mobile = window.innerWidth <= 768;
-      const vw = window.innerWidth;
-      const target = vw <= 520 ? 56 : vw <= 768 ? 72 : 88; // 2-up tablets: a touch smaller
       CANS.forEach((c) => {
-        const l = lockupRefs.current[c.slug];
-        if (l) {
-          const field = l.parentElement as HTMLElement | null;
-          // Lockup width ≈ 2.5 × its base; leave the left inset on both sides.
-          const room = field ? field.clientWidth - 2 * base * 0.32 : Infinity;
-          const fit = Math.max(24, Math.min(target, Math.floor(room / 2.5)));
-          l.innerHTML = tierLockup(c.tier, fit, "#FEFBE0");
-        }
         const cb = cbRefs.current[c.slug];
         if (cb && c.cannabinoid) cb.innerHTML = cbLockup(c.cannabinoid, base * 0.91, "#FEFBE0");
       });
@@ -426,7 +416,6 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
       <>
         <div className="tfc-card-can" style={{ background: c.color }}>
           <img src={`/images/cans/${c.slug}.webp`} alt={`SUNRISE ${c.flavor} hemp-infused seltzer can`} width={960} height={1920} loading="lazy" decoding="async" />
-          <span className="tfc-card-tier" aria-hidden="true" ref={(el) => { lockupRefs.current[c.slug] = el; }} />
           {c.cannabinoid && (
             <span className="tfc-card-cannabinoid" aria-hidden="true" ref={(el) => { cbRefs.current[c.slug] = el; }} />
           )}
