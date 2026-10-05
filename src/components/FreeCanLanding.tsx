@@ -27,6 +27,14 @@
 // (sessionStorage, per code). The Spin & Save wheel never opens on these
 // routes (SpinWheel.tsx onNoWheelPath).
 //
+// No second email ask (link-fix brief, Oct 5): if the visitor is a Klaviyo
+// email visitor (isEmailVisitor) or already unlocked a code in the "Want a
+// Taste?" section this visit (sunrise:freecan-revealed), the claim panel shows
+// this page's code + "Continue to Checkout" instead of the email form — no
+// newsletter/HubSpot/Klaviyo writes, no Claimed Free Can event, no fireworks.
+// Checkout prefills the email from sunrise:freecan-email when present (set by
+// the section and by this page's own claim, so it survives back-from-checkout).
+//
 // Peach Mango uses the corrected brand color #E59177 (products_.$slug.tsx still
 // renders #E89B5B — fixing that is separate work). Card geometry mirrors
 // FreeSampleSection (.fs-*) under the .tfc-* namespace (FreeCanLanding.css).
@@ -35,7 +43,7 @@ import { Fragment, useEffect, useLayoutEffect, useRef, useState, type CSSPropert
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { storefrontApiRequest } from "../lib/shopify";
-import { readUtms, isAdVisitor } from "../lib/utms";
+import { readUtms, isAdVisitor, isEmailVisitor } from "../lib/utms";
 import {
   render10mgLockup,
   render30mgLockup,
@@ -48,6 +56,8 @@ import {
 import "./FreeCanLanding.css";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_KEY = "sunrise:freecan-email"; // claimed email, for checkout prefill
+const REVEALED_KEY = "sunrise:freecan-revealed"; // set by FreeSampleSection on unlock
 const MOBILE_MQ = "(max-width: 768px)"; // grid is 2-up at/below this, 3-up above
 
 type Tier = 10 | 30 | 60;
@@ -174,6 +184,10 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
   const [copied, setCopied] = useState(false);
   const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
+  // Skip the email step (already claimed this visit, or a Klaviyo email
+  // visitor). Resolved on mount; the server renders the default flow.
+  const [skipEmail, setSkipEmail] = useState(false);
+  const [savedEmail, setSavedEmail] = useState(""); // checkout prefill only
 
   const current = bySlug(selected);
 
@@ -190,6 +204,15 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
       setSelected(saved.slug);
       setClaimed(true); // no fireworks on restore — they play once, on the claim
     }
+    let revealedThisVisit = false;
+    try {
+      revealedThisVisit = !!sessionStorage.getItem(REVEALED_KEY);
+      const stored = sessionStorage.getItem(EMAIL_KEY) || "";
+      if (EMAIL_RE.test(stored) && stored.length <= 320) setSavedEmail(stored);
+    } catch {
+      /* private mode — default flow */
+    }
+    if (isEmailVisitor() || revealedThisVisit) setSkipEmail(true);
   }, [STORAGE_KEY]);
 
   // Paint the cannabinoid strips and the strength-group headings. The group
@@ -345,6 +368,12 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
         keepalive: true,
       }).catch(() => {});
       setEmail(value);
+      try {
+        sessionStorage.setItem(EMAIL_KEY, value); // survives back-from-checkout
+      } catch {
+        /* private mode */
+      }
+      setSavedEmail(value);
       showReveal();
     } catch {
       setEmailError("Something went wrong. Please try again.");
@@ -365,6 +394,7 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
 
   const goToCheckout = async () => {
     if (!current || checkoutBusy) return;
+    const prefill = EMAIL_RE.test(email) ? email : savedEmail;
     setCheckoutBusy(true);
     setCheckoutError("");
     type CartCreateData = {
@@ -386,7 +416,7 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
             lines: [{ merchandiseId: current.variantId, quantity: 1 }],
             discountCodes: [code],
             // Prefill checkout with the claimed email (production only).
-            ...(EMAIL_RE.test(email) ? { buyerIdentity: { email } } : {}),
+            ...(EMAIL_RE.test(prefill) ? { buyerIdentity: { email: prefill } } : {}),
           },
         },
       );
@@ -489,54 +519,84 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
         <span className="tfc-claim-lockup" aria-hidden="true" ref={panelLockupRef} />
         <span className="tfc-claim-flavor" aria-hidden="true" style={{ color: current.color }}>{current.flavor}</span>
       </h2>
-      <form
-        className="tfc-form"
-        noValidate
-        onSubmit={(e) => {
-          e.preventDefault();
-          onClaim();
-        }}
-      >
-        {/* Honeypot — invisible to people; if filled, nothing is written. */}
-        <div className="tfc-hp" aria-hidden="true">
-          <label>
-            Company
-            <input
-              type="text"
-              name="company"
-              tabIndex={-1}
-              autoComplete="off"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-            />
-          </label>
+      {skipEmail ? (
+        /* Already claimed / email visitor: this page's code + checkout, no email. */
+        <div className="tfc-skip">
+          <button type="button" className="tfc-code" onClick={copyCode} title="Copy code">
+            <span className="tfc-code-text">{code}</span>
+            <span className="tfc-code-copy">
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="tfc-copy-icon">
+                <rect x="8" y="8" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                <rect x="3" y="3" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+              </svg>
+              {copied ? "Copied!" : "Copy"}
+            </span>
+          </button>
+          <p className="tfc-fine tfc-code-note">
+            The code is applied for you at checkout. If it isn&rsquo;t, paste it in the discount field.
+          </p>
+          <button
+            type="button"
+            className="btn btn-primary tfc-checkout-btn"
+            onClick={goToCheckout}
+            disabled={checkoutBusy}
+            aria-busy={checkoutBusy}
+          >
+            {checkoutBusy ? "Opening Checkout" : "Continue to Checkout"}
+          </button>
+          {checkoutError && <p className="tfc-error" role="alert">{checkoutError}</p>}
+          <p className="tfc-fine">One free can per order. You just cover the shipping fee.</p>
         </div>
-        <label htmlFor="tfc-email" className="tfc-label">Email address</label>
-        <input
-          ref={emailRef}
-          id="tfc-email"
-          type="email"
-          inputMode="email"
-          autoComplete="email"
-          className="tfc-input"
-          placeholder="you@email.com"
-          value={email}
-          disabled={submitting}
-          aria-invalid={!!emailError}
-          aria-describedby={emailError ? "tfc-email-error" : undefined}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (emailError) setEmailError("");
+      ) : (
+        <form
+          className="tfc-form"
+          noValidate
+          onSubmit={(e) => {
+            e.preventDefault();
+            onClaim();
           }}
-        />
-        {emailError && <p id="tfc-email-error" className="tfc-error">{emailError}</p>}
-        <button type="submit" className="btn btn-primary tfc-claim-btn" disabled={submitting} aria-busy={submitting}>
-          {submitting ? "Claiming" : "Claim My Free Can"}
-        </button>
-        <p className="tfc-fine">
-          By entering your email, you agree to receive marketing emails from SUNRISE. Unsubscribe anytime.
-        </p>
-      </form>
+        >
+          {/* Honeypot — invisible to people; if filled, nothing is written. */}
+          <div className="tfc-hp" aria-hidden="true">
+            <label>
+              Company
+              <input
+                type="text"
+                name="company"
+                tabIndex={-1}
+                autoComplete="off"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+              />
+            </label>
+          </div>
+          <label htmlFor="tfc-email" className="tfc-label">Email address</label>
+          <input
+            ref={emailRef}
+            id="tfc-email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            className="tfc-input"
+            placeholder="you@email.com"
+            value={email}
+            disabled={submitting}
+            aria-invalid={!!emailError}
+            aria-describedby={emailError ? "tfc-email-error" : undefined}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError("");
+            }}
+          />
+          {emailError && <p id="tfc-email-error" className="tfc-error">{emailError}</p>}
+          <button type="submit" className="btn btn-primary tfc-claim-btn" disabled={submitting} aria-busy={submitting}>
+            {submitting ? "Claiming" : "Claim My Free Can"}
+          </button>
+          <p className="tfc-fine">
+            By entering your email, you agree to receive marketing emails from SUNRISE. Unsubscribe anytime.
+          </p>
+        </form>
+      )}
     </div>
   );
 

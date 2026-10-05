@@ -379,6 +379,16 @@
 .tfc-reveal .tfc-code-note { margin: calc(var(--base) * 0.16) 0 calc(var(--base) * 0.45); max-width: calc(var(--base) * 6.4); }
 .tfc-checkout-btn[disabled] { opacity: 0.6; cursor: default; }
 .tfc-reveal .tfc-checkout-btn + .tfc-error { margin-top: calc(var(--base) * 0.2); }
+/* Claim panel, email step skipped: this page's code + Continue to Checkout. */
+.tfc-skip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: calc(var(--base) * 6.4);
+}
+.tfc-panel .tfc-code-note { margin: calc(var(--base) * 0.16) 0 calc(var(--base) * 0.35); }
+.tfc-panel .tfc-checkout-btn + .tfc-error { margin-top: calc(var(--base) * 0.2); }
 
 /* Fireworks (mirrors main .spin-fireworks / .spin-burst / .spin-particle). */
 .tfc-fireworks {
@@ -476,6 +486,24 @@
   .tfc-reveal .tfc-code-copy { font-size: 10px; flex-shrink: 0; }
   .tfc-reveal .tfc-code-note { max-width: 320px; }
   .tfc-card-check { width: 24px; height: 24px; top: 8px; right: 8px; }
+  /* Skip-email panel: same mobile sizes as the reveal's code + checkout. */
+  .tfc-panel .tfc-skip { max-width: 320px; }
+  .tfc-panel .tfc-checkout-btn {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    padding: 14px 20px;
+    max-width: 100%;      /* never overflow the panel (its padding leaves ~207px at 320) */
+    white-space: normal;  /* last resort on the narrowest phones: wrap, don't overflow */
+  }
+  .tfc-panel .tfc-checkout-btn:not([disabled])::after { animation: tfc-arrow-nudge 1.1s ease-in-out infinite; }
+  .tfc-panel .tfc-code { max-width: 320px; }
+  .tfc-panel .tfc-code-text { font-size: 17px; letter-spacing: 0.06em; }
+  .tfc-panel .tfc-code-copy { font-size: 10px; flex-shrink: 0; }
+}
+
+/* Small phones (360-class): tighten the skip-panel CTA so it stays one line. */
+@media (max-width: 374px) {
+  .tfc-panel .tfc-checkout-btn { font-size: 12px; letter-spacing: 0.04em; }
 }
 
 /* Constant slight nudge on the CTA arrow on touch (no hover to trigger the
@@ -491,4 +519,7 @@
   .tfc-reveal .tfc-checkout-btn::after { animation: none; }
   .tfc-panel { animation: none; }
   .tfc-card, .tfc-card-check { transition: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tfc-panel .tfc-checkout-btn::after { animation: none; }
 }

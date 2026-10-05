@@ -45,12 +45,14 @@ const REVEALED_KEY = "sunrise:freecan-revealed"; // value = the revealed code
 const SPIN_SEEN_KEY = "sunrise:spin-wheel-seen"; // suppresses Spin & Save
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// "Claim Your Can" button target per revealed code. Switch to the landing
-// pages when they ship (/webfreecan, /freecan); nothing else here changes.
+// "Claim Your Can" button target per revealed code: the matching free-can
+// landing page (each page applies its own code at checkout).
 const CLAIM_HREF: Record<string, string> = {
-  WEBFREECAN: "/products",
-  FREECAN: "/products",
+  WEBFREECAN: "/webfreecan",
+  FREECAN: "/freecan",
 };
+// Claimed email, read by the landing page for checkout prefill (real submits only).
+const EMAIL_KEY = "sunrise:freecan-email";
 
 const SUBHEAD_GATED =
   "Enter your email to unlock your code. Add a single can of any flavor or strength to your cart, then use the code at checkout. You just cover shipping. Limit one per order. Cannot be combined with other offers.";
@@ -210,6 +212,11 @@ export function FreeSampleSection({ code = DEFAULT_CODE, source = "organic" }: F
               : undefined,
         }),
       }).catch(() => {});
+      try {
+        sessionStorage.setItem(EMAIL_KEY, value);
+      } catch {
+        /* private mode */
+      }
       reveal();
     } catch {
       setError("Something went wrong. Please try again.");
