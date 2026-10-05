@@ -156,6 +156,7 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
   const STORAGE_KEY = `sunrise:freecan-landing:${code}`;
   const cbRefs = useRef<Record<string, HTMLSpanElement | null>>({});
   const tierHeadRefs = useRef<Record<number, HTMLSpanElement | null>>({});
+  const panelLockupRef = useRef<HTMLSpanElement | null>(null);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const panelRef = useRef<HTMLDivElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -208,6 +209,12 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
         const el = tierHeadRefs.current[t.tier];
         if (el) el.innerHTML = tierLockup(t.tier, mobile ? 60 : 80, t.color);
       });
+      // Claim panel: the selected can's potency lockup in its tier color.
+      const sel = CANS.find((c) => c.slug === selected);
+      const tierColor = sel ? TIERS.find((t) => t.tier === sel.tier)?.color : undefined;
+      if (panelLockupRef.current && sel && tierColor) {
+        panelLockupRef.current.innerHTML = tierLockup(sel.tier, mobile ? 34 : 44, tierColor);
+      }
     };
     paint();
     if (document.fonts) document.fonts.ready.then(paint);
@@ -475,8 +482,12 @@ export function FreeCanLanding({ code }: { code: FreeCanCode }) {
       role="region"
     >
       <span className="tfc-panel-caret" aria-hidden="true" />
-      <h2 id="tfc-claim-title" className="tfc-claim-title">
-        Your pick: <span style={{ color: inkFor(current.color) }}>{current.flavor}</span>
+      {/* Three lines (founder, Oct 5): "Your Pick" → potency lockup in its tier
+          color → flavor name, always in the flavor color. */}
+      <h2 id="tfc-claim-title" className="tfc-claim-title" aria-label={`Your pick: ${current.flavor}, ${current.tier} MG`}>
+        <span className="tfc-claim-eyebrow" aria-hidden="true">Your Pick</span>
+        <span className="tfc-claim-lockup" aria-hidden="true" ref={panelLockupRef} />
+        <span className="tfc-claim-flavor" aria-hidden="true" style={{ color: current.color }}>{current.flavor}</span>
       </h2>
       <form
         className="tfc-form"
