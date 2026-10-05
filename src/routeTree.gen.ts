@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WholesaleRouteImport } from './routes/wholesale'
+import { Route as WebfreecanRouteImport } from './routes/webfreecan'
+import { Route as TryfreecanRouteImport } from './routes/tryfreecan'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as SubmitreviewRouteImport } from './routes/submitreview'
 import { Route as SocialRouteImport } from './routes/social'
@@ -21,6 +23,7 @@ import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as HbeRouteImport } from './routes/hbe'
+import { Route as FreecanRouteImport } from './routes/freecan'
 import { Route as FindRouteImport } from './routes/find'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EventSignupRouteImport } from './routes/event-signup'
@@ -51,6 +54,16 @@ import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/em
 const WholesaleRoute = WholesaleRouteImport.update({
   id: '/wholesale',
   path: '/wholesale',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebfreecanRoute = WebfreecanRouteImport.update({
+  id: '/webfreecan',
+  path: '/webfreecan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TryfreecanRoute = TryfreecanRouteImport.update({
+  id: '/tryfreecan',
+  path: '/tryfreecan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
@@ -106,6 +119,11 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
 const HbeRoute = HbeRouteImport.update({
   id: '/hbe',
   path: '/hbe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreecanRoute = FreecanRouteImport.update({
+  id: '/freecan',
+  path: '/freecan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FindRoute = FindRouteImport.update({
@@ -254,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
+  '/freecan': typeof FreecanRoute
   '/hbe': typeof HbeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
@@ -265,6 +284,8 @@ export interface FileRoutesByFullPath {
   '/social': typeof SocialRoute
   '/submitreview': typeof SubmitreviewRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/tryfreecan': typeof TryfreecanRoute
+  '/webfreecan': typeof WebfreecanRoute
   '/wholesale': typeof WholesaleRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
@@ -294,6 +315,7 @@ export interface FileRoutesByTo {
   '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
+  '/freecan': typeof FreecanRoute
   '/hbe': typeof HbeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
@@ -305,6 +327,8 @@ export interface FileRoutesByTo {
   '/social': typeof SocialRoute
   '/submitreview': typeof SubmitreviewRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/tryfreecan': typeof TryfreecanRoute
+  '/webfreecan': typeof WebfreecanRoute
   '/wholesale': typeof WholesaleRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
@@ -335,6 +359,7 @@ export interface FileRoutesById {
   '/event-signup': typeof EventSignupRoute
   '/faq': typeof FaqRoute
   '/find': typeof FindRoute
+  '/freecan': typeof FreecanRoute
   '/hbe': typeof HbeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
@@ -346,6 +371,8 @@ export interface FileRoutesById {
   '/social': typeof SocialRoute
   '/submitreview': typeof SubmitreviewRoute
   '/terms-of-service': typeof TermsOfServiceRoute
+  '/tryfreecan': typeof TryfreecanRoute
+  '/webfreecan': typeof WebfreecanRoute
   '/wholesale': typeof WholesaleRoute
   '/products_/$slug': typeof ProductsSlugRoute
   '/api/public/contact': typeof ApiPublicContactRoute
@@ -377,6 +404,7 @@ export interface FileRouteTypes {
     | '/event-signup'
     | '/faq'
     | '/find'
+    | '/freecan'
     | '/hbe'
     | '/privacy-policy'
     | '/products'
@@ -388,6 +416,8 @@ export interface FileRouteTypes {
     | '/social'
     | '/submitreview'
     | '/terms-of-service'
+    | '/tryfreecan'
+    | '/webfreecan'
     | '/wholesale'
     | '/products/$slug'
     | '/api/public/contact'
@@ -417,6 +447,7 @@ export interface FileRouteTypes {
     | '/event-signup'
     | '/faq'
     | '/find'
+    | '/freecan'
     | '/hbe'
     | '/privacy-policy'
     | '/products'
@@ -428,6 +459,8 @@ export interface FileRouteTypes {
     | '/social'
     | '/submitreview'
     | '/terms-of-service'
+    | '/tryfreecan'
+    | '/webfreecan'
     | '/wholesale'
     | '/products/$slug'
     | '/api/public/contact'
@@ -457,6 +490,7 @@ export interface FileRouteTypes {
     | '/event-signup'
     | '/faq'
     | '/find'
+    | '/freecan'
     | '/hbe'
     | '/privacy-policy'
     | '/products'
@@ -468,6 +502,8 @@ export interface FileRouteTypes {
     | '/social'
     | '/submitreview'
     | '/terms-of-service'
+    | '/tryfreecan'
+    | '/webfreecan'
     | '/wholesale'
     | '/products_/$slug'
     | '/api/public/contact'
@@ -498,6 +534,7 @@ export interface RootRouteChildren {
   EventSignupRoute: typeof EventSignupRoute
   FaqRoute: typeof FaqRoute
   FindRoute: typeof FindRoute
+  FreecanRoute: typeof FreecanRoute
   HbeRoute: typeof HbeRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
@@ -509,6 +546,8 @@ export interface RootRouteChildren {
   SocialRoute: typeof SocialRoute
   SubmitreviewRoute: typeof SubmitreviewRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
+  TryfreecanRoute: typeof TryfreecanRoute
+  WebfreecanRoute: typeof WebfreecanRoute
   WholesaleRoute: typeof WholesaleRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
@@ -537,6 +576,20 @@ declare module '@tanstack/react-router' {
       path: '/wholesale'
       fullPath: '/wholesale'
       preLoaderRoute: typeof WholesaleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/webfreecan': {
+      id: '/webfreecan'
+      path: '/webfreecan'
+      fullPath: '/webfreecan'
+      preLoaderRoute: typeof WebfreecanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tryfreecan': {
+      id: '/tryfreecan'
+      path: '/tryfreecan'
+      fullPath: '/tryfreecan'
+      preLoaderRoute: typeof TryfreecanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms-of-service': {
@@ -614,6 +667,13 @@ declare module '@tanstack/react-router' {
       path: '/hbe'
       fullPath: '/hbe'
       preLoaderRoute: typeof HbeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/freecan': {
+      id: '/freecan'
+      path: '/freecan'
+      fullPath: '/freecan'
+      preLoaderRoute: typeof FreecanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/find': {
@@ -810,6 +870,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventSignupRoute: EventSignupRoute,
   FaqRoute: FaqRoute,
   FindRoute: FindRoute,
+  FreecanRoute: FreecanRoute,
   HbeRoute: HbeRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
@@ -821,6 +882,8 @@ const rootRouteChildren: RootRouteChildren = {
   SocialRoute: SocialRoute,
   SubmitreviewRoute: SubmitreviewRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
+  TryfreecanRoute: TryfreecanRoute,
+  WebfreecanRoute: WebfreecanRoute,
   WholesaleRoute: WholesaleRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
