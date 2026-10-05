@@ -22,6 +22,7 @@
 //   - A reveal is remembered for the visit (sessionStorage) so the visitor
 //     isn't asked again on another page.
 //   - Honeypot filled -> client-side reveal, no API calls.
+//   - Every revealed state shows a "Claim Your Can" link (CLAIM_HREF).
 // State is resolved in useEffect (the server always renders the gated form)
 // and the gate/code area has a fixed min-height so swaps never move the cards.
 import { Link } from "@tanstack/react-router";
@@ -43,6 +44,13 @@ const EMAIL_CODE = "FREECAN"; // Klaviyo email visitors (ungated)
 const REVEALED_KEY = "sunrise:freecan-revealed"; // value = the revealed code
 const SPIN_SEEN_KEY = "sunrise:spin-wheel-seen"; // suppresses Spin & Save
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// "Claim Your Can" button target per revealed code. Switch to the landing
+// pages when they ship (/webfreecan, /freecan); nothing else here changes.
+const CLAIM_HREF: Record<string, string> = {
+  WEBFREECAN: "/products",
+  FREECAN: "/products",
+};
 
 const SUBHEAD_GATED =
   "Enter your email to unlock your code. Add a single can of any flavor or strength to your cart, then use the code at checkout. You just cover shipping. Limit one per order. Cannot be combined with other offers.";
@@ -267,20 +275,26 @@ export function FreeSampleSection({ code = DEFAULT_CODE, source = "organic" }: F
             {SUBHEAD_REVEALED}
           </p>
         </div>
-        <div className="fs-gate" aria-live="polite">
+        <div className={`fs-gate${revealed ? " is-revealed" : ""}`} aria-live="polite">
           {revealed ? (
-            <div className="fs-code-wrap">
-              {fresh && <Fireworks />}
-              <button type="button" className="fs-code" onClick={copyCode} title="Copy code">
-                <span className="fs-code-text">{shownCode}</span>
-                <span className="fs-code-copy">
-                  <svg viewBox="0 0 24 24" aria-hidden="true" className="fs-copy-icon">
-                    <rect x="8" y="8" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
-                    <rect x="3" y="3" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
-                  </svg>
-                  {copied ? "Copied!" : "Copy"}
-                </span>
-              </button>
+            <div className="fs-revealed">
+              <div className="fs-code-wrap">
+                {fresh && <Fireworks />}
+                <button type="button" className="fs-code" onClick={copyCode} title="Copy code">
+                  <span className="fs-code-text">{shownCode}</span>
+                  <span className="fs-code-copy">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" className="fs-copy-icon">
+                      <rect x="8" y="8" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                      <rect x="3" y="3" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                    {copied ? "Copied!" : "Copy"}
+                  </span>
+                </button>
+              </div>
+              {/* Plain same-tab link; fires no events. Target via CLAIM_HREF. */}
+              <a href={CLAIM_HREF[shownCode] ?? "/products"} className="fs-btn fs-claim">
+                Claim Your Can
+              </a>
             </div>
           ) : (
             <form className="fs-form" onSubmit={handleSubmit} noValidate>
