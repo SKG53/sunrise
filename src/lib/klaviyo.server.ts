@@ -43,6 +43,9 @@ export interface KlaviyoClaimInput {
   // capture_page here is the submitting page and goes ONLY into the event,
   // never into the profile's capture_page field.
   newsletterEvent?: { form: string; capture_page?: string }
+  // Free can gate only: logs "Claimed Free Can" (Free Can flow trigger).
+  // capture_page here is the submitting page and goes ONLY into the event.
+  freeCanEvent?: { code: string; source: string; capture_page?: string }
 }
 
 function authHeaders(key: string) {
@@ -209,9 +212,41 @@ async function logNewsletterSignup(key: string, input: KlaviyoClaimInput): Promi
   }
 }
 
+// Free can gate "Claimed Free Can" event — the Free Can flow trigger. Logs and
+// swallows every failure (HTTP or network); never throws.
+async function logFreeCanClaim(key: string, input: KlaviyoClaimInput): Promise<void> {
+  const ev = input.freeCanEvent
+  if (!ev) return
+  try {
+    const properties: Record<string, unknown> = { code: ev.code, source: ev.source }
+    if (ev.capture_page) properties.capture_page = ev.capture_page
+    for (const k of UTM_KEYS) {
+      const v = input[k]
+      if (v) properties[k] = v
+    }
+    const res = await fetch(`${BASE}/events/`, {
+      method: 'POST',
+      headers: authHeaders(key),
+      body: JSON.stringify({
+        data: {
+          type: 'event',
+          attributes: {
+            metric: { data: { type: 'metric', attributes: { name: 'Claimed Free Can' } } },
+            properties,
+            profile: { data: { type: 'profile', attributes: { email: input.email } } },
+          },
+        },
+      }),
+    })
+    if (!res.ok) console.error('klaviyo logFreeCanClaim failed', res.status, await res.text().catch(() => ''))
+  } catch (e) {
+    console.error('klaviyo logFreeCanClaim error', (e as Error)?.message)
+  }
+}
+
 // Upsert the profile (synchronously, race-free), set consent + list, and — for
 // deal claims — log the Claimed Deal event; for footer signups, the Newsletter
-// Signup event. Never throws.
+// Signup event; for free can claims, the Claimed Free Can event. Never throws.
 export async function klaviyoClaim(input: KlaviyoClaimInput): Promise<void> {
   const key = process.env.KLAVIYO_API_KEY
   if (!key) {
@@ -253,6 +288,8 @@ export async function klaviyoClaim(input: KlaviyoClaimInput): Promise<void> {
     if (input.logEvent && input.deal_code) await logClaimedDeal(key, input)
     // 3b. Newsletter Signup event (footer only) — triggers the Welcome flow.
     if (input.newsletterEvent) await logNewsletterSignup(key, input)
+    // 3c. Claimed Free Can event (free can gate only) — triggers the Free Can flow.
+    if (input.freeCanEvent) await logFreeCanClaim(key, input)
   } catch (e) {
     console.error('klaviyoClaim error', (e as Error)?.message)
   }

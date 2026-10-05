@@ -38,6 +38,8 @@ import { Route as ApiPublicReviewRouteImport } from './routes/api/public/review'
 import { Route as ApiPublicNewsletterKlaviyoRouteImport } from './routes/api/public/newsletter-klaviyo'
 import { Route as ApiPublicNewsletterHubspotRouteImport } from './routes/api/public/newsletter-hubspot'
 import { Route as ApiPublicNewsletterRouteImport } from './routes/api/public/newsletter'
+import { Route as ApiPublicFreeCanKlaviyoRouteImport } from './routes/api/public/free-can-klaviyo'
+import { Route as ApiPublicFreeCanHubspotRouteImport } from './routes/api/public/free-can-hubspot'
 import { Route as ApiPublicEventSignupRouteImport } from './routes/api/public/event-signup'
 import { Route as ApiPublicDealClaimRouteImport } from './routes/api/public/deal-claim'
 import { Route as ApiPublicContactHubspotRouteImport } from './routes/api/public/contact-hubspot'
@@ -196,6 +198,16 @@ const ApiPublicNewsletterRoute = ApiPublicNewsletterRouteImport.update({
   path: '/api/public/newsletter',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicFreeCanKlaviyoRoute = ApiPublicFreeCanKlaviyoRouteImport.update({
+  id: '/api/public/free-can-klaviyo',
+  path: '/api/public/free-can-klaviyo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicFreeCanHubspotRoute = ApiPublicFreeCanHubspotRouteImport.update({
+  id: '/api/public/free-can-hubspot',
+  path: '/api/public/free-can-hubspot',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicEventSignupRoute = ApiPublicEventSignupRouteImport.update({
   id: '/api/public/event-signup',
   path: '/api/public/event-signup',
@@ -259,6 +271,8 @@ export interface FileRoutesByFullPath {
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
   '/api/public/deal-claim': typeof ApiPublicDealClaimRoute
   '/api/public/event-signup': typeof ApiPublicEventSignupRoute
+  '/api/public/free-can-hubspot': typeof ApiPublicFreeCanHubspotRoute
+  '/api/public/free-can-klaviyo': typeof ApiPublicFreeCanKlaviyoRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/newsletter-hubspot': typeof ApiPublicNewsletterHubspotRoute
   '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
@@ -297,6 +311,8 @@ export interface FileRoutesByTo {
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
   '/api/public/deal-claim': typeof ApiPublicDealClaimRoute
   '/api/public/event-signup': typeof ApiPublicEventSignupRoute
+  '/api/public/free-can-hubspot': typeof ApiPublicFreeCanHubspotRoute
+  '/api/public/free-can-klaviyo': typeof ApiPublicFreeCanKlaviyoRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/newsletter-hubspot': typeof ApiPublicNewsletterHubspotRoute
   '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
@@ -336,6 +352,8 @@ export interface FileRoutesById {
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
   '/api/public/deal-claim': typeof ApiPublicDealClaimRoute
   '/api/public/event-signup': typeof ApiPublicEventSignupRoute
+  '/api/public/free-can-hubspot': typeof ApiPublicFreeCanHubspotRoute
+  '/api/public/free-can-klaviyo': typeof ApiPublicFreeCanKlaviyoRoute
   '/api/public/newsletter': typeof ApiPublicNewsletterRoute
   '/api/public/newsletter-hubspot': typeof ApiPublicNewsletterHubspotRoute
   '/api/public/newsletter-klaviyo': typeof ApiPublicNewsletterKlaviyoRoute
@@ -376,6 +394,8 @@ export interface FileRouteTypes {
     | '/api/public/contact-hubspot'
     | '/api/public/deal-claim'
     | '/api/public/event-signup'
+    | '/api/public/free-can-hubspot'
+    | '/api/public/free-can-klaviyo'
     | '/api/public/newsletter'
     | '/api/public/newsletter-hubspot'
     | '/api/public/newsletter-klaviyo'
@@ -414,6 +434,8 @@ export interface FileRouteTypes {
     | '/api/public/contact-hubspot'
     | '/api/public/deal-claim'
     | '/api/public/event-signup'
+    | '/api/public/free-can-hubspot'
+    | '/api/public/free-can-klaviyo'
     | '/api/public/newsletter'
     | '/api/public/newsletter-hubspot'
     | '/api/public/newsletter-klaviyo'
@@ -452,6 +474,8 @@ export interface FileRouteTypes {
     | '/api/public/contact-hubspot'
     | '/api/public/deal-claim'
     | '/api/public/event-signup'
+    | '/api/public/free-can-hubspot'
+    | '/api/public/free-can-klaviyo'
     | '/api/public/newsletter'
     | '/api/public/newsletter-hubspot'
     | '/api/public/newsletter-klaviyo'
@@ -491,6 +515,8 @@ export interface RootRouteChildren {
   ApiPublicContactHubspotRoute: typeof ApiPublicContactHubspotRoute
   ApiPublicDealClaimRoute: typeof ApiPublicDealClaimRoute
   ApiPublicEventSignupRoute: typeof ApiPublicEventSignupRoute
+  ApiPublicFreeCanHubspotRoute: typeof ApiPublicFreeCanHubspotRoute
+  ApiPublicFreeCanKlaviyoRoute: typeof ApiPublicFreeCanKlaviyoRoute
   ApiPublicNewsletterRoute: typeof ApiPublicNewsletterRoute
   ApiPublicNewsletterHubspotRoute: typeof ApiPublicNewsletterHubspotRoute
   ApiPublicNewsletterKlaviyoRoute: typeof ApiPublicNewsletterKlaviyoRoute
@@ -709,6 +735,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNewsletterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/free-can-klaviyo': {
+      id: '/api/public/free-can-klaviyo'
+      path: '/api/public/free-can-klaviyo'
+      fullPath: '/api/public/free-can-klaviyo'
+      preLoaderRoute: typeof ApiPublicFreeCanKlaviyoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/free-can-hubspot': {
+      id: '/api/public/free-can-hubspot'
+      path: '/api/public/free-can-hubspot'
+      fullPath: '/api/public/free-can-hubspot'
+      preLoaderRoute: typeof ApiPublicFreeCanHubspotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/event-signup': {
       id: '/api/public/event-signup'
       path: '/api/public/event-signup'
@@ -787,6 +827,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicContactHubspotRoute: ApiPublicContactHubspotRoute,
   ApiPublicDealClaimRoute: ApiPublicDealClaimRoute,
   ApiPublicEventSignupRoute: ApiPublicEventSignupRoute,
+  ApiPublicFreeCanHubspotRoute: ApiPublicFreeCanHubspotRoute,
+  ApiPublicFreeCanKlaviyoRoute: ApiPublicFreeCanKlaviyoRoute,
   ApiPublicNewsletterRoute: ApiPublicNewsletterRoute,
   ApiPublicNewsletterHubspotRoute: ApiPublicNewsletterHubspotRoute,
   ApiPublicNewsletterKlaviyoRoute: ApiPublicNewsletterKlaviyoRoute,

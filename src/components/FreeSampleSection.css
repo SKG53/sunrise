@@ -36,8 +36,140 @@
   text-wrap: pretty; /* avoid a one-word last line ("order.") on phones */
 }
 
+/* ── SUBHEAD STACK (email gate) ────────────────────────────────────────── */
+/* Gated + revealed subheads share one grid cell; the inactive one is hidden */
+/* but still sizes the cell, so the copy swap never changes the height.    */
+.fs-subhead-stack {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+}
+.fs-subhead-stack > .fs-subhead { grid-area: 1 / 1; }
+.fs-subhead.is-hidden { visibility: hidden; }
+
+/* ── GATE AREA (form <-> code box) ─────────────────────────────────────── */
+/* Fixed min-height = the taller (form) state, so the reveal, the email-    */
+/* visitor swap and the remembered reveal never move the card grid.         */
+.fs-gate {
+  width: 100%;
+  max-width: calc(var(--base) * 6.4);
+  min-height: calc(var(--base) * 3.2 + 4px); /* measured form: 3.18–3.27 × base (769–1920px) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── EMAIL FORM (mirrors the Spin & Save email step) ──────────────────── */
+.fs-form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.22);
+  width: 100%;
+}
+.fs-input {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.28);
+  padding: calc(var(--base) * 0.28) calc(var(--base) * 0.35);
+  border: 2px solid rgba(26, 26, 26, 0.25);
+  border-radius: calc(var(--base) * 0.12);
+  background: #fff;
+  color: var(--near-black);
+  width: 100%;
+}
+.fs-input:focus {
+  outline: none;
+  border-color: var(--near-black);
+}
+.fs-error {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 600;
+  color: var(--tier-10);
+  margin: 0;
+}
+.fs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--base) * 0.25);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--base) * 0.27);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.85);
+  border-radius: 9999px;
+  cursor: pointer;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  outline: none;
+  transition: color 200ms ease-out, border-color 200ms ease-out;
+  background: var(--tier-10);
+  color: var(--cream);
+  border: 2px solid var(--tier-10);
+  min-width: calc(var(--base) * 4.6);
+  --btn-wipe-fill: var(--cream);
+  --btn-hover-text: var(--tier-10);
+}
+.fs-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--btn-wipe-fill, transparent);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 400ms ease-out;
+  z-index: -1;
+}
+.fs-btn::after {
+  content: "→";
+  display: inline-block;
+  font-size: 1.35em;
+  line-height: 1;
+  position: relative;
+  top: calc(var(--base) * -0.055);
+  transition: color 200ms ease-out;
+}
+.fs-btn:hover { color: var(--btn-hover-text, currentColor); }
+.fs-btn:hover::before { clip-path: inset(0 0 0 0); }
+.fs-btn:hover::after { animation: btn-arrow-dance 400ms ease-out; }
+.fs-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.fs-fine {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 500;
+  line-height: 1.5;
+  color: rgba(26, 26, 26, 0.6);
+  margin: 0;
+}
+/* Honeypot — off-screen, same pattern as /submitreview (.rv-hp). */
+.fs-hp {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* ── CODE BOX (mirrors .spin-code) ─────────────────────────────────────── */
+/* Positioned parent for the fireworks burst; the code box sits above it.   */
+.fs-code-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 .fs-code {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -75,6 +207,73 @@
   width: calc(var(--base) * 0.55);
   height: calc(var(--base) * 0.55);
   color: var(--gold);
+}
+
+/* ── FIREWORKS (copied from SpinWheel.css .spin-fireworks; fresh reveal) ── */
+.fs-fireworks {
+  position: absolute;
+  inset: -40% -28%;
+  z-index: 0;
+  pointer-events: none;
+}
+.fs-burst {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  animation: fs-burst-pop 1.5s ease-out forwards;
+}
+.fs-burst::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--base) * -0.25);
+  left: calc(var(--base) * -0.25);
+  width: calc(var(--base) * 0.5);
+  height: calc(var(--base) * 0.5);
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  box-shadow: 0 0 calc(var(--base) * 0.35) calc(var(--base) * 0.15) currentColor;
+  animation: fs-burst-flash 0.7s ease-out forwards;
+}
+.fs-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--base) * 0.14);
+  height: calc(var(--base) * 0.7);
+  margin-left: calc(var(--base) * -0.07);
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 calc(var(--base) * 0.3) calc(var(--base) * 0.06) currentColor;
+  transform-origin: top center;
+  opacity: 0;
+  animation: fs-particle-fly 1.5s ease-out forwards;
+}
+@keyframes fs-burst-pop {
+  0% { opacity: 0; transform: scale(0); }
+  15% { opacity: 1; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+@keyframes fs-burst-flash {
+  0% { opacity: 0.9; transform: scale(0); }
+  40% { opacity: 0.7; transform: scale(1.8); }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+@keyframes fs-particle-fly {
+  0% {
+    transform: rotate(var(--rotate)) translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% { opacity: 0.95; }
+  100% {
+    transform: rotate(var(--rotate)) translateY(calc(var(--base) * 2.6)) scale(0.1);
+    opacity: 0;
+  }
+}
+/* Backstop for the JS reduced-motion gate (the source CSS has no rule). */
+@media (prefers-reduced-motion: reduce) {
+  .fs-fireworks { display: none; }
 }
 
 /* ── 4-CARD GRID (mirrors .s03-card-*) ─────────────────────────────────── */
@@ -199,4 +398,20 @@
   .fs-code { max-width: 320px; }
   .fs-code-text { font-size: 17px; letter-spacing: 0.06em; }
   .fs-code-copy { font-size: 10px; flex-shrink: 0; }
+  /* Email gate — the Spin & Save email step's mobile sizes (--base floors at
+     32px; scoped under the section to beat the global mobile p rule). */
+  .fs-free-samples .fs-gate { max-width: 320px; min-height: 152px; }   /* measured form: 151.5px @390 */
+  .fs-free-samples .fs-btn { font-size: 13px; letter-spacing: 0.06em; }
+  .fs-free-samples .fs-btn::after { animation: fs-arrow-nudge 1.1s ease-in-out infinite; }
+  .fs-free-samples .fs-input { font-size: 16px; }   /* 16px prevents iOS zoom-on-focus */
+  .fs-free-samples .fs-error { font-size: 13px; line-height: 1.4; }
+  .fs-free-samples .fs-fine { font-size: 11px; line-height: 1.5; }
+}
+/* Constant slight left-right nudge on the CTA arrow on mobile (no hover). */
+@keyframes fs-arrow-nudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fs-free-samples .fs-btn::after { animation: none; }
 }
