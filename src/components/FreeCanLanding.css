@@ -1,0 +1,500 @@
+/* ── FREE CAN LANDING (components/FreeCanLanding.tsx) ────────────────────── */
+/* Shared by /tryfreecan, /webfreecan, /freecan. Production port of the     */
+/* srbev.com/neverpull/tryfreecan prototype.                                */
+/* .tfc-* namespace. Headline/subhead/card geometry mirror main's            */
+/* FreeSampleSection (.fs-*); the email step mirrors main's Spin & Save       */
+/* (.spin-input / .spin-error / .spin-fine); the code box mirrors .spin-code; */
+/* fireworks mirror .spin-burst / .spin-particle. Values are duplicated so    */
+/* the page depends on nothing but sunrise-shell.css tokens + .btn.           */
+
+.tfc-page { background: var(--cream); }
+/* Scroll targets clear the sticky announcement bar + header. */
+.tfc-panel,
+.tfc-reveal { scroll-margin-top: calc(var(--base) * 2.6); scroll-margin-bottom: calc(var(--base) * 0.6); }
+
+
+/* ── HERO ──────────────────────────────────────────────────────────────── */
+.tfc-hero {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.5) 0 calc(var(--base) * 0.6);
+}
+.tfc-hero .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: calc(var(--base) * 0.5);
+}
+.tfc-headline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.5);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.0;
+  margin: 0;
+}
+.tfc-headline .accent { color: var(--green-accent); }
+.tfc-hero .tfc-subhead {
+  font-size: calc(var(--base) * 0.4);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-body);
+  max-width: 46ch;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* ── PICK: strength groups + 3-up grid ─────────────────────────────────── */
+.tfc-pick {
+  background: var(--cream);
+  padding: calc(var(--base) * 0.4) 0 calc(var(--base) * 1.2);
+}
+.tfc-groups {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 1.0);
+  width: 100%;
+  max-width: calc(var(--base) * 16.5);
+  margin: 0 auto;
+}
+.tfc-group-head {
+  display: flex;
+  justify-content: center;
+  margin-bottom: calc(var(--base) * 0.4);
+}
+.tfc-group-lockup { display: inline-block; line-height: 0; }
+.tfc-grid {
+  --tfc-gap: calc(var(--base) * 0.4);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* centers the orphan card on 2-up mobile */
+  gap: var(--tfc-gap);
+}
+.tfc-grid > .tfc-card { width: calc((100% - 2 * var(--tfc-gap)) / 3); }
+
+/* ── CARD (mirrors .fs-card-*; selectable, not a link) ─────────────────── */
+.tfc-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  border: 2px solid var(--card-flavor-color, var(--warm-gray-faint));
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out, opacity 180ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) {
+  .tfc-card:not(.tfc-card--static):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
+  }
+}
+/* Selected: 3px flavor ring with a cream gap (outline-offset shows the page). */
+.tfc-card.is-selected {
+  outline: 3px solid var(--card-flavor-color);
+  outline-offset: 3px;
+}
+/* Once a can is chosen, the others step back. */
+.tfc-groups.has-selection .tfc-card:not(.is-selected) { opacity: 0.55; }
+@media (hover: hover) {
+  .tfc-groups.has-selection .tfc-card:not(.is-selected):hover { opacity: 0.85; }
+}
+/* Keyboard focus — near-black ring; on the selected card an outer halo so the
+   flavor ring stays visible. */
+.tfc-card:focus-visible {
+  outline: 3px solid var(--near-black);
+  outline-offset: 3px;
+  opacity: 1 !important;
+}
+.tfc-card.is-selected:focus-visible {
+  outline-color: var(--card-flavor-color);
+  box-shadow: 0 0 0 9px rgba(26, 26, 26, 0.85);
+}
+.tfc-card-can {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--base) * 0.3);
+  overflow: hidden;
+}
+/* Can sits lower/smaller than FreeSampleSection's (75% / +0.18 base) so the
+   2× potency lockup across the top never covers the can art. */
+.tfc-card-can img {
+  width: 75%;
+  height: 66%;
+  object-fit: contain;
+  object-position: center;
+  transform: translateY(calc(var(--base) * 0.55));
+}
+.tfc-card-tier {
+  position: absolute;
+  top: calc(var(--base) * 0.24);
+  left: calc(var(--base) * 0.32);
+  display: inline-block;
+  pointer-events: none;
+  z-index: 2;
+}
+.tfc-card-cannabinoid {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--base) * 0.15);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.tfc-card-cannabinoid > * {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: inline-block;
+  transform: rotate(-90deg);
+  transform-origin: 0 100%;
+  white-space: nowrap;
+}
+/* Check badge — cream disc, ink check (fysInk: near-black on light flavors).
+   Bottom-left of the can field: the 2× potency lockup spans the top edge and
+   the cannabinoid strip runs up the right edge. */
+.tfc-card-check {
+  position: absolute;
+  bottom: calc(var(--base) * 0.22);
+  left: calc(var(--base) * 0.22);
+  width: calc(var(--base) * 0.62);
+  height: calc(var(--base) * 0.62);
+  border-radius: 50%;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 160ms ease-out, transform 160ms ease-out;
+  box-shadow: 0 2px 6px rgba(26, 26, 26, 0.18);
+}
+.tfc-card-check svg { width: 64%; height: 64%; }
+.tfc-card.is-selected .tfc-card-check { opacity: 1; transform: scale(1); }
+.tfc-card-meta {
+  padding: calc(var(--base) * 0.32) calc(var(--base) * 0.32) calc(var(--base) * 0.36);
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.1);
+  text-align: center;
+}
+.tfc-card-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.33);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.2;
+  min-height: calc(1.2em * 2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.tfc-card-descriptor {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--card-ink, var(--card-flavor-color));
+}
+
+/* ── CLAIM PANEL — opens beneath the tapped card's row (full-width flex item
+   inside .tfc-grid, so it always takes its own line). Caret points at the
+   selected card via --caret-x (measured in JS). Form mirrors the Spin & Save
+   email step. ────────────────────────────────────────────────────────────── */
+.tfc-grid > .tfc-panel { width: 100%; }
+.tfc-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: calc(var(--base) * 0.12);
+  padding: calc(var(--base) * 0.6) calc(var(--base) * 0.5) calc(var(--base) * 0.55);
+  background: #fff;
+  border: 2px solid var(--card-flavor-color);
+  border-radius: 6px;
+  animation: tfc-panel-in 200ms ease-out both;
+}
+.tfc-panel-caret {
+  position: absolute;
+  top: -11px;
+  left: var(--caret-x, 50%);
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  background: #fff;
+  border-top: 2px solid var(--card-flavor-color);
+  border-left: 2px solid var(--card-flavor-color);
+  transform: rotate(45deg);
+}
+@keyframes tfc-panel-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tfc-reveal .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.tfc-claim-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.62);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.1;
+  margin: 0 0 calc(var(--base) * 0.35);
+}
+.tfc-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: calc(var(--base) * 0.22);
+  width: 100%;
+  max-width: calc(var(--base) * 6.4);
+  text-align: left;
+}
+.tfc-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.24);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-body);
+}
+.tfc-input {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.28);
+  padding: calc(var(--base) * 0.28) calc(var(--base) * 0.35);
+  border: 2px solid rgba(26, 26, 26, 0.25);
+  border-radius: calc(var(--base) * 0.12);
+  background: #fff;
+  color: var(--near-black);
+  width: 100%;
+}
+.tfc-input:focus { outline: none; border-color: var(--near-black); }
+.tfc-input[aria-invalid="true"] { border-color: var(--tier-10); }
+.tfc-panel .tfc-error,
+.tfc-reveal .tfc-error {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 600;
+  color: var(--tier-10);
+  margin: 0;
+}
+.tfc-claim-btn { align-self: center; margin-top: calc(var(--base) * 0.12); }
+.tfc-claim-btn[disabled] { opacity: 0.6; cursor: default; }
+/* Honeypot — off-screen for people, still in the DOM for bots. */
+.tfc-hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.tfc-panel .tfc-fine,
+.tfc-reveal .tfc-fine {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 500;
+  line-height: 1.5;
+  color: rgba(26, 26, 26, 0.6);
+  margin: calc(var(--base) * 0.2) 0 0;
+  text-align: center;
+}
+
+/* ── REVEAL ─────────────────────────────────────────────────────────────── */
+.tfc-reveal {
+  background: var(--cream);
+  padding: calc(var(--base) * 0.4) 0 calc(var(--base) * 1.65);
+  overflow: hidden; /* fireworks inset extends past the wrapper */
+}
+.tfc-reveal-burst {
+  position: relative;
+  padding: calc(var(--base) * 0.3) 0;
+  margin-bottom: calc(var(--base) * 0.3);
+}
+.tfc-reveal-title {
+  position: relative;
+  z-index: 1;
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.9);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1.05;
+  margin: 0;
+}
+.tfc-reveal-card {
+  width: 100%;
+  max-width: calc(var(--base) * 4.6);
+  margin-bottom: calc(var(--base) * 0.5);
+}
+.tfc-card--static { cursor: default; }
+.tfc-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--base) * 0.3);
+  width: 100%;
+  max-width: calc(var(--base) * 6.4);
+  margin: 0 auto;
+  padding: calc(var(--base) * 0.26) calc(var(--base) * 0.36);
+  background: #fff;
+  border: 2px dashed var(--gold);
+  border-radius: calc(var(--base) * 0.12);
+  cursor: pointer;
+  font: inherit;
+}
+.tfc-code-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.34);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: var(--near-black);
+}
+.tfc-code-copy {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.06);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.tfc-copy-icon { width: calc(var(--base) * 0.55); height: calc(var(--base) * 0.55); color: var(--gold); }
+.tfc-reveal .tfc-code-note { margin: calc(var(--base) * 0.16) 0 calc(var(--base) * 0.45); max-width: calc(var(--base) * 6.4); }
+.tfc-checkout-btn[disabled] { opacity: 0.6; cursor: default; }
+.tfc-reveal .tfc-checkout-btn + .tfc-error { margin-top: calc(var(--base) * 0.2); }
+
+/* Fireworks (mirrors main .spin-fireworks / .spin-burst / .spin-particle). */
+.tfc-fireworks {
+  position: absolute;
+  inset: -40% -28%;
+  z-index: 0;
+  pointer-events: none;
+}
+.tfc-burst {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  animation: tfc-burst-pop 1.5s ease-out forwards;
+}
+.tfc-burst::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--base) * -0.25);
+  left: calc(var(--base) * -0.25);
+  width: calc(var(--base) * 0.5);
+  height: calc(var(--base) * 0.5);
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  box-shadow: 0 0 calc(var(--base) * 0.35) calc(var(--base) * 0.15) currentColor;
+  animation: tfc-burst-flash 0.7s ease-out forwards;
+}
+.tfc-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--base) * 0.14);
+  height: calc(var(--base) * 0.7);
+  margin-left: calc(var(--base) * -0.07);
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 calc(var(--base) * 0.3) calc(var(--base) * 0.06) currentColor;
+  transform-origin: top center;
+  opacity: 0;
+  animation: tfc-particle-fly 1.5s ease-out forwards;
+}
+@keyframes tfc-burst-pop {
+  0% { opacity: 0; transform: scale(0); }
+  15% { opacity: 1; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+@keyframes tfc-burst-flash {
+  0% { opacity: 0.9; transform: scale(0); }
+  40% { opacity: 0.7; transform: scale(1.8); }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+@keyframes tfc-particle-fly {
+  0% { transform: rotate(var(--rotate)) translateY(0) scale(1); opacity: 1; }
+  50% { opacity: 0.95; }
+  100% { transform: rotate(var(--rotate)) translateY(calc(var(--base) * 2.6)) scale(0.1); opacity: 0; }
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .tfc-hero { padding: calc(var(--base) * 0.8) 0 calc(var(--base) * 0.4); }
+  .tfc-headline { font-size: calc(var(--base) * 1.25); }
+  .tfc-pick { padding: calc(var(--base) * 0.3) 0 calc(var(--base) * 0.8); }
+  .tfc-groups { gap: calc(var(--base) * 0.8); }
+  .tfc-grid { --tfc-gap: 12px; }
+  .tfc-grid > .tfc-card { width: calc((100% - var(--tfc-gap)) / 2); }
+  .tfc-panel { padding: 20px 16px 18px; }
+  .tfc-panel .tfc-form { max-width: 100%; }
+  .tfc-reveal { padding: calc(var(--base) * 0.3) 0 calc(var(--base) * 1.2); }
+  /* --base floors at 32px on phones; restore the Spin & Save mobile sizes.
+     Scoped two-class selectors out-specify the global mobile p{16px} rule. */
+  .tfc-panel .tfc-claim-title { font-size: 20px; }
+  .tfc-reveal .tfc-reveal-title { font-size: 28px; }
+  .tfc-panel .tfc-label { font-size: 13px; }
+  .tfc-panel .tfc-input { font-size: 16px; }          /* 16px prevents iOS zoom-on-focus */
+  .tfc-panel .tfc-error,
+  .tfc-reveal .tfc-error { font-size: 13px; }
+  .tfc-panel .tfc-fine,
+  .tfc-reveal .tfc-fine { font-size: 11px; line-height: 1.5; }
+  .tfc-hero .tfc-subhead { font-size: 16px; line-height: 1.55; }
+  .tfc-panel,
+  .tfc-reveal { scroll-margin-top: 124px; }
+  /* Primary CTAs: --base floors at 32px, so .btn would render ~9px. Use the
+     Spin & Save mobile button spec (13px / 0.06em) with a 44px-class target. */
+  .tfc-panel .tfc-claim-btn,
+  .tfc-reveal .tfc-checkout-btn {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    padding: 14px 28px;
+  }
+  .tfc-panel .tfc-claim-btn::after,
+  .tfc-reveal .tfc-checkout-btn:not([disabled])::after { animation: tfc-arrow-nudge 1.1s ease-in-out infinite; }
+  .tfc-reveal .tfc-code { max-width: 320px; }
+  .tfc-reveal .tfc-code-text { font-size: 17px; letter-spacing: 0.06em; }
+  .tfc-reveal .tfc-code-copy { font-size: 10px; flex-shrink: 0; }
+  .tfc-reveal .tfc-code-note { max-width: 320px; }
+  .tfc-card-check { width: 24px; height: 24px; bottom: 8px; left: 8px; }
+}
+
+/* Constant slight nudge on the CTA arrow on touch (no hover to trigger the
+   dance) — same as main's Spin & Save. */
+@keyframes tfc-arrow-nudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tfc-fireworks { display: none; }
+  .tfc-panel .tfc-claim-btn::after,
+  .tfc-reveal .tfc-checkout-btn::after { animation: none; }
+  .tfc-panel { animation: none; }
+  .tfc-card, .tfc-card-check { transition: none; }
+}

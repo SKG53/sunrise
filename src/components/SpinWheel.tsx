@@ -436,10 +436,11 @@ export function SpinWheel() {
     let armedAt = 0;
     const timers: number[] = [];
 
-    // Form pages the wheel must never cover. Checked when arming (eligible) AND
+    // Form pages the wheel must never cover (review pages + the three free-can
+    // landing pages, which have their own email ask). Checked when arming (eligible) AND
     // at reveal: routes are code-split and a visitor can client-side navigate
     // onto one while the fallback timer is pending.
-    const onNoWheelPath = () => /^\/(submitreview|reviewsubmit)\/?$/.test(window.location.pathname);
+    const onNoWheelPath = () => /^\/(submitreview|reviewsubmit|tryfreecan|webfreecan|freecan)\/?$/.test(window.location.pathname);
     const eligible = () => {
       if (onNoWheelPath()) return false;
       try {
