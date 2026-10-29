@@ -33,6 +33,7 @@ import { Route as AccessibilityStatementRouteImport } from './routes/accessibili
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsSlugRouteImport } from './routes/products_.$slug'
+import { Route as BoxDealRouteImport } from './routes/box.$deal'
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
 import { Route as ApiPublicWholesaleHubspotRouteImport } from './routes/api/public/wholesale-hubspot'
 import { Route as ApiPublicSpinWheelKlaviyoRouteImport } from './routes/api/public/spin-wheel-klaviyo'
@@ -47,6 +48,7 @@ import { Route as ApiPublicEventSignupRouteImport } from './routes/api/public/ev
 import { Route as ApiPublicDealClaimRouteImport } from './routes/api/public/deal-claim'
 import { Route as ApiPublicContactHubspotRouteImport } from './routes/api/public/contact-hubspot'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as ApiPublicCheckoutIdentifyRouteImport } from './routes/api/public/checkout-identify'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -171,6 +173,11 @@ const ProductsSlugRoute = ProductsSlugRouteImport.update({
   path: '/products/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BoxDealRoute = BoxDealRouteImport.update({
+  id: '/box/$deal',
+  path: '/box/$deal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
   id: '/lovable/email/events',
   path: '/lovable/email/events',
@@ -246,6 +253,12 @@ const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   path: '/api/public/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCheckoutIdentifyRoute =
+  ApiPublicCheckoutIdentifyRouteImport.update({
+    id: '/api/public/checkout-identify',
+    path: '/api/public/checkout-identify',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
@@ -287,7 +300,9 @@ export interface FileRoutesByFullPath {
   '/tryfreecan': typeof TryfreecanRoute
   '/webfreecan': typeof WebfreecanRoute
   '/wholesale': typeof WholesaleRoute
+  '/box/$deal': typeof BoxDealRoute
   '/products/$slug': typeof ProductsSlugRoute
+  '/api/public/checkout-identify': typeof ApiPublicCheckoutIdentifyRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
   '/api/public/deal-claim': typeof ApiPublicDealClaimRoute
@@ -330,7 +345,9 @@ export interface FileRoutesByTo {
   '/tryfreecan': typeof TryfreecanRoute
   '/webfreecan': typeof WebfreecanRoute
   '/wholesale': typeof WholesaleRoute
+  '/box/$deal': typeof BoxDealRoute
   '/products/$slug': typeof ProductsSlugRoute
+  '/api/public/checkout-identify': typeof ApiPublicCheckoutIdentifyRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
   '/api/public/deal-claim': typeof ApiPublicDealClaimRoute
@@ -374,7 +391,9 @@ export interface FileRoutesById {
   '/tryfreecan': typeof TryfreecanRoute
   '/webfreecan': typeof WebfreecanRoute
   '/wholesale': typeof WholesaleRoute
+  '/box/$deal': typeof BoxDealRoute
   '/products_/$slug': typeof ProductsSlugRoute
+  '/api/public/checkout-identify': typeof ApiPublicCheckoutIdentifyRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/contact-hubspot': typeof ApiPublicContactHubspotRoute
   '/api/public/deal-claim': typeof ApiPublicDealClaimRoute
@@ -419,7 +438,9 @@ export interface FileRouteTypes {
     | '/tryfreecan'
     | '/webfreecan'
     | '/wholesale'
+    | '/box/$deal'
     | '/products/$slug'
+    | '/api/public/checkout-identify'
     | '/api/public/contact'
     | '/api/public/contact-hubspot'
     | '/api/public/deal-claim'
@@ -462,7 +483,9 @@ export interface FileRouteTypes {
     | '/tryfreecan'
     | '/webfreecan'
     | '/wholesale'
+    | '/box/$deal'
     | '/products/$slug'
+    | '/api/public/checkout-identify'
     | '/api/public/contact'
     | '/api/public/contact-hubspot'
     | '/api/public/deal-claim'
@@ -505,7 +528,9 @@ export interface FileRouteTypes {
     | '/tryfreecan'
     | '/webfreecan'
     | '/wholesale'
+    | '/box/$deal'
     | '/products_/$slug'
+    | '/api/public/checkout-identify'
     | '/api/public/contact'
     | '/api/public/contact-hubspot'
     | '/api/public/deal-claim'
@@ -549,7 +574,9 @@ export interface RootRouteChildren {
   TryfreecanRoute: typeof TryfreecanRoute
   WebfreecanRoute: typeof WebfreecanRoute
   WholesaleRoute: typeof WholesaleRoute
+  BoxDealRoute: typeof BoxDealRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
+  ApiPublicCheckoutIdentifyRoute: typeof ApiPublicCheckoutIdentifyRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicContactHubspotRoute: typeof ApiPublicContactHubspotRoute
   ApiPublicDealClaimRoute: typeof ApiPublicDealClaimRoute
@@ -739,6 +766,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/box/$deal': {
+      id: '/box/$deal'
+      path: '/box/$deal'
+      fullPath: '/box/$deal'
+      preLoaderRoute: typeof BoxDealRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/events': {
       id: '/lovable/email/events'
       path: '/lovable/email/events'
@@ -837,6 +871,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/checkout-identify': {
+      id: '/api/public/checkout-identify'
+      path: '/api/public/checkout-identify'
+      fullPath: '/api/public/checkout-identify'
+      preLoaderRoute: typeof ApiPublicCheckoutIdentifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
@@ -885,7 +926,9 @@ const rootRouteChildren: RootRouteChildren = {
   TryfreecanRoute: TryfreecanRoute,
   WebfreecanRoute: WebfreecanRoute,
   WholesaleRoute: WholesaleRoute,
+  BoxDealRoute: BoxDealRoute,
   ProductsSlugRoute: ProductsSlugRoute,
+  ApiPublicCheckoutIdentifyRoute: ApiPublicCheckoutIdentifyRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicContactHubspotRoute: ApiPublicContactHubspotRoute,
   ApiPublicDealClaimRoute: ApiPublicDealClaimRoute,

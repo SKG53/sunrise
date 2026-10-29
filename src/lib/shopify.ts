@@ -278,3 +278,320 @@ export async function removeLineFromShopifyCart(
   }
   return { success: true };
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// FULL CART API (site pass 1, Oct 28 2026)
+// Every mutation below returns the whole cart (CART_FIELDS) so the store can
+// render Shopify's own numbers: real line totals, the applied code and
+// whether it is applicable, and the discount amount. The older helpers above
+// are kept for anything still importing them.
+// ═══════════════════════════════════════════════════════════════════════
+
+const CART_FIELDS = `
+  id
+  checkoutUrl
+  totalQuantity
+  buyerIdentity { email }
+  attributes { key value }
+  discountCodes { code applicable }
+  cost {
+    subtotalAmount { amount currencyCode }
+    totalAmount { amount currencyCode }
+  }
+  lines(first: 100) {
+    edges {
+      node {
+        id
+        quantity
+        attributes { key value }
+        cost {
+          subtotalAmount { amount }
+          totalAmount { amount }
+        }
+        discountAllocations { discountedAmount { amount } }
+        merchandise {
+          ... on ProductVariant {
+            id
+            title
+            availableForSale
+            price { amount currencyCode }
+            image { url }
+            selectedOptions { name value }
+            product { handle title featuredImage { url } }
+          }
+        }
+      }
+    }
+  }
+`;
+
+type RawLine = {
+  id: string;
+  quantity: number;
+  attributes: Array<{ key: string; value: string | null }>;
+  cost: { subtotalAmount: { amount: string }; totalAmount: { amount: string } };
+  discountAllocations: Array<{ discountedAmount: { amount: string } }>;
+  merchandise: {
+    id: string;
+    title: string;
+    availableForSale: boolean;
+    price: { amount: string; currencyCode: string };
+    image: { url: string } | null;
+    selectedOptions: Array<{ name: string; value: string }>;
+    product: { handle: string; title: string; featuredImage: { url: string } | null };
+  };
+};
+type RawCart = {
+  id: string;
+  checkoutUrl: string;
+  totalQuantity: number;
+  buyerIdentity: { email: string | null } | null;
+  attributes: Array<{ key: string; value: string | null }>;
+  discountCodes: Array<{ code: string; applicable: boolean }>;
+  cost: {
+    subtotalAmount: { amount: string; currencyCode: string };
+    totalAmount: { amount: string; currencyCode: string };
+  };
+  lines: { edges: Array<{ node: RawLine }> };
+};
+
+export type CartLineView = {
+  lineId: string;
+  variantId: string;
+  productHandle: string;
+  productTitle: string;
+  variantTitle: string;
+  imageUrl: string | null;
+  price: { amount: string; currencyCode: string };
+  quantity: number;
+  selectedOptions: Array<{ name: string; value: string }>;
+  /** What Shopify charges for this line after line-level discounts. */
+  lineTotal: number;
+  /** Line total before discounts. */
+  lineSubtotal: number;
+  lineDiscount: number;
+  attributes: Record<string, string>;
+};
+
+export type CartView = {
+  id: string;
+  checkoutUrl: string;
+  totalQuantity: number;
+  email: string | null;
+  attributes: Record<string, string>;
+  discountCodes: Array<{ code: string; applicable: boolean }>;
+  currency: string;
+  /** Sum of line prices before any discount. */
+  merchandiseBeforeDiscounts: number;
+  /** Sum of line totals after Shopify's line discounts (free-ship meter basis). */
+  merchandiseAfterDiscounts: number;
+  /** merchandiseBeforeDiscounts − merchandiseAfterDiscounts (what the code saved). */
+  savings: number;
+  lines: CartLineView[];
+};
+
+const num = (s: string | undefined | null) => {
+  const n = parseFloat(s ?? "");
+  return Number.isFinite(n) ? n : 0;
+};
+const round2 = (n: number) => Math.round(n * 100) / 100;
+const toMap = (a: Array<{ key: string; value: string | null }> | undefined) =>
+  Object.fromEntries((a ?? []).map((x) => [x.key, x.value ?? ""]));
+
+function normalizeCart(c: RawCart): CartView {
+  const lines: CartLineView[] = c.lines.edges.map(({ node: l }) => {
+    const lineSubtotal = round2(num(l.merchandise.price.amount) * l.quantity);
+    const alloc = l.discountAllocations.reduce((s, d) => s + num(d.discountedAmount.amount), 0);
+    // cost.totalAmount already nets line-level discounts; fall back to the
+    // allocations if Shopify ever returns it gross.
+    const total = num(l.cost.totalAmount.amount);
+    const lineTotal = round2(total < lineSubtotal - 0.005 ? total : Math.max(0, lineSubtotal - alloc));
+    return {
+      lineId: l.id,
+      variantId: l.merchandise.id,
+      productHandle: l.merchandise.product.handle,
+      productTitle: l.merchandise.product.title,
+      variantTitle: l.merchandise.title,
+      imageUrl: l.merchandise.image?.url ?? l.merchandise.product.featuredImage?.url ?? null,
+      price: l.merchandise.price,
+      quantity: l.quantity,
+      selectedOptions: l.merchandise.selectedOptions,
+      lineTotal,
+      lineSubtotal,
+      lineDiscount: round2(lineSubtotal - lineTotal),
+      attributes: toMap(l.attributes),
+    };
+  });
+  const before = round2(lines.reduce((s, l) => s + l.lineSubtotal, 0));
+  const after = round2(lines.reduce((s, l) => s + l.lineTotal, 0));
+  return {
+    id: c.id,
+    checkoutUrl: formatCheckoutUrl(c.checkoutUrl),
+    totalQuantity: c.totalQuantity,
+    email: c.buyerIdentity?.email ?? null,
+    attributes: toMap(c.attributes),
+    discountCodes: c.discountCodes,
+    currency: c.cost.subtotalAmount.currencyCode || "USD",
+    merchandiseBeforeDiscounts: before,
+    merchandiseAfterDiscounts: after,
+    savings: round2(before - after),
+    lines,
+  };
+}
+
+export type CartResult =
+  | { ok: true; cart: CartView; warnings: string[] }
+  | { ok: false; notFound: boolean; errors: string[] };
+
+type UserError = { field: string[] | null; message: string; code?: string | null };
+
+async function runCartMutation(
+  name: string,
+  mutation: string,
+  variables: Record<string, unknown>,
+): Promise<CartResult> {
+  type Data = Record<string, { cart: RawCart | null; userErrors: UserError[]; warnings?: Array<{ message: string }> }>;
+  const res = await storefrontApiRequest<Data>(mutation, variables);
+  const payload = res?.data?.[name];
+  const userErrors = payload?.userErrors ?? [];
+  if (isCartNotFoundError(userErrors)) return { ok: false, notFound: true, errors: userErrors.map((e) => e.message) };
+  if (!payload?.cart) {
+    return { ok: false, notFound: false, errors: userErrors.length ? userErrors.map((e) => e.message) : ["No cart returned"] };
+  }
+  if (userErrors.length) console.warn(`${name} userErrors`, userErrors);
+  return {
+    ok: true,
+    cart: normalizeCart(payload.cart),
+    warnings: [...userErrors.map((e) => e.message), ...(payload.warnings ?? []).map((w) => w.message)],
+  };
+}
+
+export type NewLine = {
+  merchandiseId: string;
+  quantity: number;
+  attributes?: Array<{ key: string; value: string }>;
+};
+
+export async function fetchCart(cartId: string): Promise<CartView | null> {
+  const res = await storefrontApiRequest<{ cart: RawCart | null }>(
+    `query cartFull($id: ID!) { cart(id: $id) { ${CART_FIELDS} } }`,
+    { id: cartId },
+  );
+  const c = res?.data?.cart;
+  return c ? normalizeCart(c) : null;
+}
+
+export function cartCreateFull(input: {
+  lines: NewLine[];
+  discountCodes?: string[];
+  email?: string | null;
+  attributes?: Array<{ key: string; value: string }>;
+}): Promise<CartResult> {
+  const cartInput: Record<string, unknown> = { lines: input.lines };
+  if (input.discountCodes?.length) cartInput.discountCodes = input.discountCodes;
+  if (input.email) cartInput.buyerIdentity = { email: input.email };
+  if (input.attributes?.length) cartInput.attributes = input.attributes;
+  return runCartMutation(
+    "cartCreate",
+    `mutation cartCreate($input: CartInput!) {
+      cartCreate(input: $input) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+    }`,
+    { input: cartInput },
+  );
+}
+
+export function cartLinesAddFull(cartId: string, lines: NewLine[]): Promise<CartResult> {
+  return runCartMutation(
+    "cartLinesAdd",
+    `mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+      cartLinesAdd(cartId: $cartId, lines: $lines) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+    }`,
+    { cartId, lines },
+  );
+}
+
+export function cartLinesUpdateFull(
+  cartId: string,
+  lines: Array<{ id: string; quantity: number; merchandiseId?: string; attributes?: Array<{ key: string; value: string }> }>,
+): Promise<CartResult> {
+  return runCartMutation(
+    "cartLinesUpdate",
+    `mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+      cartLinesUpdate(cartId: $cartId, lines: $lines) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+    }`,
+    { cartId, lines },
+  );
+}
+
+export function cartLinesRemoveFull(cartId: string, lineIds: string[]): Promise<CartResult> {
+  return runCartMutation(
+    "cartLinesRemove",
+    `mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+      cartLinesRemove(cartId: $cartId, lineIds: $lineIds) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+    }`,
+    { cartId, lineIds },
+  );
+}
+
+/** Replaces the cart's codes (Shopify codes here never combine: pass 0 or 1). */
+export function cartDiscountCodesUpdateFull(cartId: string, discountCodes: string[]): Promise<CartResult> {
+  return runCartMutation(
+    "cartDiscountCodesUpdate",
+    `mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!) {
+      cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+    }`,
+    { cartId, discountCodes },
+  );
+}
+
+/** Sets the checkout email so Shopify prefills it (no second entry). */
+export function cartBuyerIdentityUpdateFull(cartId: string, email: string): Promise<CartResult> {
+  return runCartMutation(
+    "cartBuyerIdentityUpdate",
+    `mutation cartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
+      cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+    }`,
+    { cartId, buyerIdentity: { email } },
+  );
+}
+
+/** Replaces the cart attributes (they land on the order as "additional details"). */
+export function cartAttributesUpdateFull(cartId: string, attributes: Array<{ key: string; value: string }>): Promise<CartResult> {
+  return runCartMutation(
+    "cartAttributesUpdate",
+    `mutation cartAttributesUpdate($cartId: ID!, $attributes: [AttributeInput!]!) {
+      cartAttributesUpdate(cartId: $cartId, attributes: $attributes) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+    }`,
+    { cartId, attributes },
+  );
+}
+
+/**
+ * NAME PREFILL — OFF until tested (founder: "we can test the names being
+ * carried through later"). Shopify documents that a delivery address added to
+ * the cart prefills checkout, but only "if the shop is using Shopify
+ * Extensions in Checkout"; unverified for this store. Adds a partial address
+ * (names + country only). Test on a staging cart before turning on
+ * PREFILL_NAMES_AT_CHECKOUT in cartStore.ts.
+ */
+export function cartDeliveryNamesAdd(
+  cartId: string,
+  names: { firstName?: string; lastName?: string },
+): Promise<CartResult> {
+  return runCartMutation(
+    "cartDeliveryAddressesAdd",
+    `mutation cartDeliveryAddressesAdd($cartId: ID!, $addresses: [CartSelectableAddressInput!]!) {
+      cartDeliveryAddressesAdd(cartId: $cartId, addresses: $addresses) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+    }`,
+    {
+      cartId,
+      addresses: [
+        {
+          selected: true,
+          oneTimeUse: false,
+          address: { deliveryAddress: { firstName: names.firstName ?? "", lastName: names.lastName ?? "", countryCode: "US" } },
+        },
+      ],
+    },
+  );
+}
