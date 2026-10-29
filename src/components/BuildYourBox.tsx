@@ -137,6 +137,11 @@ const cbLockup = (cb: Cannabinoid, base: number, color: string) =>
       : renderTHCVLockup(base, color);
 
 const money = (n: number) => `$${n.toFixed(2)}`;
+// Cart line → can art. Shopify handles drop the cannabinoid suffix the site
+// slugs carry (60mg-blackberry ↔ 60mg-blackberry-cbn). Null for non-4-pack
+// products (5 mg, retired flavors): those fall back to the Shopify image.
+const packForHandle = (handle: string): FourPack | null =>
+  LIVE_FOUR_PACKS.find((p) => p.slug === handle || p.slug.replace(/-(cbn|cbg|thcv)$/, "") === handle) ?? null;
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
 // Box record (sessionStorage). email is null for a browser known only by a
@@ -1049,6 +1054,11 @@ export function BuildYourBox({
         <div className="byb-cta">{continueBtn("byb-continue-hint-m")}</div>
       </div>
       {hint("byb-continue-hint-m")}
+      {percent && paidFull ? (
+        <p className="byb-pct-note is-collapsed">
+          <strong>{percent}% off your 4-packs</strong> · you save {money(pctSavings)}
+        </p>
+      ) : null}
     </div>
   );
 
@@ -1364,13 +1374,35 @@ export function BuildYourBox({
               ) : null}
               {otherItems.length > 0 && (
                 <div className="byb-also">
-                  <p className="byb-also-title">Also in your cart</p>
-                  <ul>
-                    {otherItems.map((i) => (
-                      <li key={i.lineId ?? i.variantId}>
-                        {i.quantity} × {i.productTitle} ({i.variantTitle.toLowerCase()})
-                      </li>
-                    ))}
+                  <p className="byb-also-title">Already in your cart</p>
+                  <ul className="byb-summary" aria-label="Already in your cart">
+                    {otherItems.map((i) => {
+                      const p = packForHandle(i.productHandle);
+                      const color = p?.color ?? "#C4922A";
+                      const src = p ? cardCanSrc(p.slug) : i.imageUrl;
+                      return (
+                        <li
+                          key={i.lineId ?? i.variantId}
+                          className={`byb-summary-row is-also${p ? "" : " is-photo"}`}
+                          style={{ "--slot-color": color } as CSSProperties}
+                        >
+                          <span className="byb-summary-swatch" aria-hidden="true">
+                            {src ? <img src={src} alt="" width={331} height={900} decoding="async" /> : null}
+                          </span>
+                          <span className="byb-summary-name">
+                            {p?.flavor ?? i.productTitle}
+                            {p ? (
+                              <Html className="byb-summary-tier" html={tierLockup(p.tier, 14, inkFor(p.color))} />
+                            ) : null}
+                            <span className="byb-also-pack">
+                              {i.variantTitle.toLowerCase()}
+                              {i.quantity > 1 ? ` × ${i.quantity}` : ""}
+                            </span>
+                          </span>
+                          <span className="byb-summary-price">{money(Number(i.price.amount) * i.quantity)}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                   <p className="byb-also-note">They stay in your cart. You'll see everything together before checkout.</p>
                 </div>
