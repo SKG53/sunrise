@@ -12,6 +12,7 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { LIVE_SLUGS } from "../lib/liveProducts";
 import { track } from "../lib/track";
+import { siteEvent } from "../lib/siteEvents";
 import {
   // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
   // render5mgLockup,
@@ -651,6 +652,23 @@ function ProductDetailPage() {
       content_name: shopifyProduct.node.title,
       product_handle: shopifyProduct.node.handle,
     });
+    // Klaviyo "Viewed Product" (identified browsers only; GA4 view_item above
+    // is unchanged). Property names follow Klaviyo's standard catalog shape so
+    // a browse-abandonment flow can use them later.
+    siteEvent(
+      "Viewed Product",
+      {
+        ProductName: shopifyProduct.node.title,
+        ProductID: selectedVariant.id,
+        ProductHandle: shopifyProduct.node.handle,
+        VariantTitle: selectedVariant.title,
+        Price: Number(selectedVariant.price.amount),
+        Tier: product.tier,
+        ImageURL: shopifyProduct.node.images.edges[0]?.node.url ?? null,
+        URL: `${window.location.origin}${window.location.pathname}`,
+      },
+      { dl: false, value: Number(selectedVariant.price.amount) },
+    );
   }, [shopifyProduct, selectedVariant, product.slug]);
 
   const handleAddToCart = async () => {

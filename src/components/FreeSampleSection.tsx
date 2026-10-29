@@ -37,6 +37,9 @@ import {
   getBasePx,
 } from "../lib/sunrise-components";
 import { readUtms, isEmailVisitor } from "../lib/utms";
+import { siteEvent } from "../lib/siteEvents";
+import { setIdentityEmail } from "../lib/identity";
+import { addToWallet } from "../lib/dealWallet";
 import "./FreeSampleSection.css";
 
 const DEFAULT_CODE = "WEBFREECAN"; // organic web code (gated)
@@ -54,10 +57,12 @@ const CLAIM_HREF: Record<string, string> = {
 // Claimed email, read by the landing page for checkout prefill (real submits only).
 const EMAIL_KEY = "sunrise:freecan-email";
 
+// Site pass 1: the code is saved to the deal wallet on claim and the cart
+// applies it automatically, so the copy no longer says "enter at checkout".
 const SUBHEAD_GATED =
-  "Enter your email to unlock your code. Add a single can of any flavor or strength to your cart, then use the code at checkout. You just cover shipping. Limit one per order. Cannot be combined with other offers.";
+  "Enter your email to unlock your code. Add a single can of any flavor or strength to your cart and the code applies automatically. You just cover shipping. Limit one per order. Cannot be combined with other offers.";
 const SUBHEAD_REVEALED =
-  "Add a single can of any flavor or strength to your cart, then enter this code at checkout to make it free (you just cover shipping). Limit one per order. Cannot be combined with other offers.";
+  "Add a single can of any flavor or strength to your cart. Your code is saved and makes it free automatically (you just cover shipping). Limit one per order. Cannot be combined with other offers.";
 
 type FreeSampleSectionProps = {
   code?: string; // default "WEBFREECAN"
@@ -217,6 +222,9 @@ export function FreeSampleSection({ code = DEFAULT_CODE, source = "organic" }: F
       } catch {
         /* private mode */
       }
+      // Remember the shopper + save the code for the cart to auto-apply.
+      setIdentityEmail(value);
+      addToWallet(code, "freecan");
       reveal();
     } catch {
       setError("Something went wrong. Please try again.");
@@ -257,6 +265,8 @@ export function FreeSampleSection({ code = DEFAULT_CODE, source = "organic" }: F
 
   const copyCode = async () => {
     try {
+      // Logged on the tap itself, even if the browser blocks the clipboard.
+      siteEvent("Code Copied", { code: shownCode, source: "free_can" });
       await navigator.clipboard.writeText(shownCode);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);

@@ -1,0 +1,1034 @@
+/* ── BUILD YOUR BOX (components/BuildYourBox.tsx · routes/box.$deal.tsx) ── */
+/* Ported from the lander prototype (sunrise-lander src/routes/buildbox.css   */
+/* @ b1e3421). .byb-* namespace. Grid cards, hero, email form, code box and   */
+/* fireworks reuse FreeCanLanding.css (.tfc-*); this file adds the sticky box,*/
+/* slots, free-flavor picker, free-shipping bar, card price/count and the     */
+/* reveal summary. Tokens: sunrise-shell.css.                                 */
+
+/* Only rule the main FreeCanLanding.css lacks (main groups show the lockup  */
+/* per tier; the box grid shows it per card). Copied from the lander.        */
+.tfc-card-tier {
+  position: absolute;
+  top: calc(var(--base) * 0.24);
+  left: calc(var(--base) * 0.32);
+  display: inline-block;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.byb-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.byb-hero {
+  padding-bottom: calc(var(--base) * 0.4);
+}
+
+/* ── THE BOX ──────────────────────────────────────────────────────────── */
+.byb-box {
+  position: relative;
+  z-index: 40;
+  background: var(--cream);
+  padding: calc(var(--base) * 0.2) 0 calc(var(--base) * 0.28);
+}
+/* While the free picker is open, lift the box (and the mobile sheet's
+   backdrop, which lives inside it) above the sticky header (50) and bar (51). */
+.byb-box.has-picker {
+  z-index: 52;
+}
+.byb-box.is-sticky {
+  position: sticky;
+  top: var(--byb-top, 0px);
+  border-bottom: 1px solid var(--warm-gray-faint);
+  box-shadow: 0 10px 18px -14px rgba(26, 26, 26, 0.35);
+}
+.byb-box-inner {
+  position: relative;
+  max-width: calc(var(--base) * 16.5);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.byb-box-title {
+  font-family: "Montserrat", sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1;
+}
+.byb-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 18px 24px;
+}
+.byb-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.byb-group-label {
+  font-family: "Montserrat", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+.byb-group-row {
+  display: flex;
+  gap: 10px;
+}
+/* The gifted section: one clearly bordered box. */
+.byb-group--free {
+  padding: 18px 10px 10px;
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  background: rgba(196, 146, 42, 0.07);
+}
+.byb-group-label--free {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 8px;
+  background: var(--cream);
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+/* Slot tiles */
+.byb-slot {
+  --slot-w: clamp(92px, 10.4vw, 124px);
+  position: relative;
+  width: var(--slot-w);
+  height: 118px;
+  border-radius: 8px;
+  font-family: "Montserrat", sans-serif;
+  overflow: hidden;
+}
+.byb-slot.is-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 2px dashed rgba(26, 26, 26, 0.3);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--near-black);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease-out,
+    background 160ms ease-out;
+}
+.byb-slot.is-empty.is-free {
+  border-color: rgba(196, 146, 42, 0.7);
+}
+@media (hover: hover) {
+  .byb-slot.is-empty:not([disabled]):hover {
+    border-color: var(--near-black);
+    background: #fff;
+  }
+}
+.byb-slot.is-empty.is-open {
+  border-style: solid;
+  border-color: var(--gold);
+  background: #fff;
+}
+.byb-slot-plus {
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  color: rgba(26, 26, 26, 0.55);
+}
+.byb-slot-cta {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  text-align: center;
+  padding: 0 6px;
+}
+.byb-slot.is-filled {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 2px solid var(--slot-color);
+}
+.byb-slot-art {
+  position: relative;
+  flex: 0 0 60px;
+  background: var(--slot-color);
+  overflow: hidden;
+}
+.byb-slot-art img {
+  position: absolute;
+  right: 8%;
+  top: 6px;
+  height: 108px;
+  width: auto;
+}
+.byb-slot-tier {
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  line-height: 0;
+  z-index: 1;
+}
+.byb-slot-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 6px 5px;
+  text-align: center;
+}
+.byb-slot-name {
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  color: var(--near-black);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.byb-slot-price {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-body);
+  line-height: 1;
+}
+.byb-slot-price s,
+.byb-pick-price s,
+.byb-summary-price s {
+  color: var(--text-faint);
+  font-weight: 600;
+}
+.byb-free-tag {
+  color: var(--tier-10);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+.byb-slot-x {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--cream);
+  color: var(--near-black);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(26, 26, 26, 0.25);
+}
+@media (hover: hover) {
+  .byb-slot-x:hover {
+    background: var(--near-black);
+    color: var(--cream);
+  }
+}
+.byb-slot.is-flash,
+.byb-mini.is-flash {
+  animation: byb-flash 900ms ease-out;
+}
+@keyframes byb-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(196, 146, 42, 0.9);
+    transform: scale(1);
+  }
+  30% {
+    box-shadow: 0 0 0 6px rgba(196, 146, 42, 0.55);
+    transform: scale(1.04);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(196, 146, 42, 0);
+    transform: scale(1);
+  }
+}
+
+/* Focus rings (same language as .tfc-card) */
+.byb-slot.is-empty:focus-visible,
+.byb-slot-x:focus-visible,
+.byb-pick:focus-visible,
+.byb-picker-close:focus-visible,
+.byb-collapsed-toggle:focus-visible,
+.byb-edit:focus-visible,
+.byb-continue:focus-visible {
+  outline: 3px solid var(--near-black);
+  outline-offset: 3px;
+}
+
+/* Free-shipping bar + Continue */
+.byb-foot {
+  width: 100%;
+  max-width: calc(var(--base) * 12);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.byb-foot-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.byb-box .byb-foot-main > .byb-full-note {
+  text-align: left;
+}
+.byb-progress {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.byb-bar {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(26, 26, 26, 0.1);
+  overflow: hidden;
+}
+.byb-bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: var(--gold);
+  transition:
+    width 320ms ease-out,
+    background 320ms ease-out;
+}
+.byb-bar-fill.is-done {
+  background: var(--green-accent);
+}
+.byb-box .byb-ship-text {
+  font-family: "Montserrat", sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text-body);
+  margin: 0;
+  line-height: 1.2;
+}
+.byb-box .byb-ship-text.is-done {
+  color: var(--green-accent);
+}
+.byb-cta {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.byb-box .byb-continue {
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  padding: 13px 26px;
+}
+.byb-continue.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.byb-continue.is-disabled::after {
+  animation: none !important;
+}
+.byb-box .byb-hint {
+  font-family: "Montserrat", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 4px 0 0;
+  line-height: 1.2;
+  text-align: center;
+}
+.byb-box .byb-hint.is-shown {
+  color: var(--tier-10);
+}
+.byb-box .byb-full-note,
+.byb-pick-section .byb-grid-note {
+  font-family: "Montserrat", sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--near-black);
+  margin: 0;
+  text-align: center;
+  line-height: 1.3;
+}
+.byb-box .byb-full-note.is-pulse {
+  color: var(--tier-10);
+  animation: byb-nudge 420ms ease-in-out;
+}
+@keyframes byb-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+.byb-pick-section .byb-grid-note {
+  margin-bottom: calc(var(--base) * 0.4);
+}
+
+/* ── FREE-FLAVOR PICKER ───────────────────────────────────────────────── */
+.byb-picker {
+  z-index: 60;
+  background: #fff;
+  border: 2px solid var(--gold);
+  box-shadow: 0 14px 34px rgba(26, 26, 26, 0.22);
+}
+.byb-picker--pop {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  max-width: 92vw;
+  border-radius: 10px;
+  padding: 14px;
+}
+.byb-picker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.byb-picker .byb-picker-title {
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  margin: 0;
+  line-height: 1.2;
+}
+.byb-picker-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--cream);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--near-black);
+}
+.byb-picker-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.byb-pick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 0 0 10px;
+  border: 2px solid var(--slot-color);
+  border-radius: 8px;
+  background: var(--cream);
+  font-family: "Montserrat", sans-serif;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    transform 160ms ease-out,
+    box-shadow 160ms ease-out;
+}
+@media (hover: hover) {
+  .byb-pick:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(26, 26, 26, 0.14);
+  }
+}
+.byb-pick-art {
+  position: relative;
+  width: 100%;
+  height: 92px;
+  background: var(--slot-color);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.byb-pick-art img {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  height: 150px;
+  width: auto;
+  transform: translateX(-50%);
+}
+.byb-pick-name {
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--near-black);
+  letter-spacing: 0.02em;
+}
+.byb-pick-desc {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--card-ink);
+}
+.byb-pick-price {
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* ── FLAVOR GRID additions (cards come from tryfreecan.css) ──────────── */
+.byb-card .byb-card-price {
+  font-family: "Montserrat", sans-serif;
+  font-size: calc(var(--base) * 0.26);
+  font-weight: 800;
+  color: var(--near-black);
+  margin-top: calc(var(--base) * 0.04);
+}
+.byb-card-unit {
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.byb-card-count {
+  position: absolute;
+  top: calc(var(--base) * 0.22);
+  right: calc(var(--base) * 0.22);
+  z-index: 3;
+  min-width: calc(var(--base) * 0.62);
+  height: calc(var(--base) * 0.62);
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Montserrat", sans-serif;
+  font-size: calc(var(--base) * 0.26);
+  font-weight: 900;
+  box-shadow: 0 2px 6px rgba(26, 26, 26, 0.18);
+}
+.byb-card.is-in-box {
+  outline: 3px solid var(--card-flavor-color);
+  outline-offset: 3px;
+}
+.byb-card.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.byb-card.is-disabled.is-in-box {
+  opacity: 0.75;
+}
+@media (hover: hover) {
+  .tfc-card.byb-card.is-disabled:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* ── EMAIL STEP ───────────────────────────────────────────────────────── */
+.byb-email {
+  background: var(--cream);
+  padding: calc(var(--base) * 0.3) 0 calc(var(--base) * 1.4);
+  scroll-margin-top: calc(var(--base) * 2.6);
+}
+.byb-email-card {
+  max-width: calc(var(--base) * 9);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: calc(var(--base) * 0.6) calc(var(--base) * 0.5) calc(var(--base) * 0.5);
+  background: #fff;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+}
+.byb-email-card .byb-email-title {
+  margin-bottom: calc(var(--base) * 0.15);
+}
+.byb-email-card .byb-email-line {
+  font-family: "Montserrat", sans-serif;
+  font-size: calc(var(--base) * 0.3);
+  color: var(--text-body);
+  margin: 0 0 calc(var(--base) * 0.35);
+  line-height: 1.45;
+}
+.byb-email-card .tfc-error {
+  font-family: "Montserrat", sans-serif;
+  font-size: calc(var(--base) * 0.22);
+  font-weight: 600;
+  color: var(--tier-10);
+  margin: 0;
+}
+.byb-email-card .tfc-fine {
+  font-family: "Montserrat", sans-serif;
+  font-size: calc(var(--base) * 0.2);
+  font-weight: 500;
+  line-height: 1.5;
+  color: rgba(26, 26, 26, 0.6);
+  margin: calc(var(--base) * 0.2) 0 0;
+  text-align: center;
+}
+.byb-edit {
+  margin-top: calc(var(--base) * 0.25);
+  background: none;
+  border: 0;
+  padding: 6px 4px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ── REVEAL SUMMARY ───────────────────────────────────────────────────── */
+.byb-reveal {
+  scroll-margin-top: calc(var(--base) * 2.6);
+}
+.byb-summary {
+  list-style: none;
+  margin: 0 0 calc(var(--base) * 0.45);
+  padding: 0;
+  width: 100%;
+  max-width: calc(var(--base) * 7.6);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.byb-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px 6px 6px;
+  background: #fff;
+  border: 2px solid var(--slot-color);
+  border-radius: 8px;
+  font-family: "Montserrat", sans-serif;
+  text-align: left;
+}
+.byb-summary-swatch {
+  position: relative;
+  flex: 0 0 44px;
+  height: 44px;
+  border-radius: 5px;
+  background: var(--slot-color);
+  overflow: hidden;
+}
+.byb-summary-swatch img {
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  height: 76px;
+  width: auto;
+  transform: translateX(-50%);
+}
+.byb-summary-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--near-black);
+  letter-spacing: 0.02em;
+}
+.byb-summary-tier {
+  line-height: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.byb-summary-price {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--near-black);
+  white-space: nowrap;
+}
+
+/* ── MOBILE (≤ 768px): collapsed sticky row, expandable overlay, sheet ── */
+.byb-collapsed {
+  display: none;
+}
+@media (max-width: 768px) {
+  .byb-box {
+    padding: 8px 0 8px;
+  }
+  .byb-box.is-mobile .container {
+    position: static;
+  }
+  .byb-collapsed {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .byb-collapsed-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    font-family: "Montserrat", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .byb-mini-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .byb-mini-group--free {
+    position: relative;
+    padding: 4px 5px;
+    border: 2px solid var(--gold);
+    border-radius: 7px;
+    background: rgba(196, 146, 42, 0.07);
+  }
+  .byb-mini-free-label {
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-right: 1px;
+  }
+  .byb-mini {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    border: 2px dashed rgba(26, 26, 26, 0.3);
+    background: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1;
+    color: rgba(26, 26, 26, 0.5);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .byb-mini.is-free {
+    border-color: rgba(196, 146, 42, 0.7);
+  }
+  .byb-mini.is-filled {
+    border: 0;
+    background: var(--slot-color);
+  }
+  .byb-mini img {
+    position: absolute;
+    left: 50%;
+    top: 3px;
+    height: 60px;
+    width: auto;
+    transform: translateX(-50%);
+  }
+  .byb-collapsed-count {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--near-black);
+  }
+  .byb-chevron {
+    width: 9px;
+    height: 9px;
+    border-right: 2.5px solid var(--near-black);
+    border-bottom: 2.5px solid var(--near-black);
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform 160ms ease-out;
+  }
+  .byb-chevron.is-up {
+    transform: rotate(-135deg) translate(-2px, 0);
+  }
+  .byb-collapsed-foot {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 40px;
+  }
+  .byb-collapsed-foot .byb-progress {
+    gap: 4px;
+  }
+  .byb-box .byb-collapsed .byb-ship-text {
+    font-size: 11.5px;
+  }
+  .byb-box .byb-collapsed .byb-continue {
+    font-size: 12px;
+    padding: 11px 16px;
+    min-width: 0; /* the global mobile .btn min-width (176px) starves the progress text */
+  }
+  .byb-slot-name {
+    font-size: 9.5px;
+    letter-spacing: 0;
+  }
+  .byb-box .byb-collapsed .byb-full-note.is-inline {
+    flex: 1;
+    font-size: 11.5px;
+    text-align: left;
+  }
+  .byb-box .byb-collapsed > .byb-hint {
+    margin: 0;
+    text-align: right;
+    font-size: 10.5px;
+  }
+  .byb-box .byb-collapsed > .byb-hint:not(.is-shown) {
+    display: none;
+  }
+
+  /* Expanded: overlays the grid (absolute), so the sticky row's height —
+     and the page beneath it — never jumps. */
+  .byb-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--cream);
+    padding: 14px var(--section-pad-x, 16px) 16px;
+    border-bottom: 1px solid var(--warm-gray-faint);
+    box-shadow: 0 14px 22px -12px rgba(26, 26, 26, 0.35);
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .byb-panel .byb-box-title,
+  .byb-panel .byb-foot {
+    display: none;
+  }
+  .byb-slots {
+    gap: 16px 14px;
+  }
+  .byb-group-row {
+    gap: 8px;
+  }
+  .byb-slot {
+    --slot-w: 98px;
+    height: 112px;
+  }
+  .byb-slot-art {
+    flex-basis: 56px;
+  }
+
+  /* Full box when not sticky (email step) */
+  .byb-box:not(.is-sticky) .byb-box-title {
+    font-size: 13px;
+  }
+
+  /* Bottom sheet */
+  .byb-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 59;
+    background: rgba(26, 26, 26, 0.45);
+  }
+  .byb-picker--sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-width: 2px 0 0;
+    border-radius: 14px 14px 0 0;
+    padding: 16px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+    animation: byb-sheet-in 220ms ease-out both;
+  }
+  @keyframes byb-sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  .byb-picker-options {
+    gap: 8px;
+  }
+  .byb-pick-art {
+    height: 84px;
+  }
+  .byb-pick-name {
+    font-size: 11px;
+  }
+  .byb-pick-desc {
+    font-size: 9px;
+  }
+
+  /* Grid card price on phones (--base floors at 32px) */
+  .byb-card .byb-card-price {
+    font-size: 13px;
+  }
+  .byb-card-count {
+    width: auto;
+    min-width: 26px;
+    height: 26px;
+    top: 8px;
+    right: 8px;
+    font-size: 12px;
+  }
+  .byb-pick-section .byb-grid-note {
+    font-size: 13px;
+  }
+
+  /* Email + reveal phone sizes (scoped two-class selectors beat the global p rule) */
+  .byb-email-card {
+    padding: 22px 16px 18px;
+  }
+  .byb-email-card .byb-email-line {
+    font-size: 15px;
+  }
+  .byb-email-card .tfc-label {
+    font-size: 13px;
+  }
+  .byb-email-card .tfc-input {
+    font-size: 16px;
+  }
+  .byb-email-card .tfc-error {
+    font-size: 13px;
+  }
+  .byb-email-card .tfc-fine {
+    font-size: 11px;
+  }
+  .byb-email-card .byb-email-title {
+    font-size: 22px;
+  }
+  .byb-email-card .byb-unlock-btn {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    padding: 14px 28px;
+  }
+  .byb-email,
+  .byb-reveal {
+    scroll-margin-top: 124px;
+  }
+  .byb-reveal .byb-summary {
+    max-width: 100%; /* calc(--base * 7.6) is only ~243px when --base floors at 32px */
+  }
+  .byb-summary-row {
+    gap: 10px;
+    padding-right: 10px;
+  }
+  .byb-summary-swatch {
+    flex-basis: 40px;
+    height: 40px;
+  }
+  .byb-summary-name {
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 12px;
+    gap: 4px;
+  }
+  .byb-summary-price {
+    font-size: 13px;
+  }
+}
+
+/* Mobile: free rows stack the struck price over FREE so long names never collide. */
+@media (max-width: 768px) {
+  .byb-summary-row.is-free .byb-summary-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+}
+
+/* Small phones (< 375px): shrink the collapsed row so every mini slot,
+   the free group and the chevron fit (320px leaves ~243px of content width). */
+@media (max-width: 374px) {
+  .byb-collapsed-toggle {
+    gap: 6px;
+  }
+  .byb-mini-group {
+    gap: 4px;
+  }
+  .byb-mini {
+    width: 26px;
+    height: 26px;
+    font-size: 15px;
+  }
+  .byb-mini img {
+    height: 46px;
+  }
+  .byb-mini-free-label {
+    font-size: 8px;
+  }
+  .byb-collapsed-count {
+    font-size: 0; /* keep only the chevron; the toggle's aria-label carries the count */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .byb-slot.is-flash,
+  .byb-mini.is-flash,
+  .byb-box .byb-full-note.is-pulse,
+  .byb-picker--sheet {
+    animation: none;
+  }
+  .byb-bar-fill,
+  .byb-pick,
+  .byb-chevron {
+    transition: none;
+  }
+}
+
+
+/* ── Main-site additions (site pass 1) ── */
+/* "Any 4-pack free" deals can offer up to 15 flavors in the picker. */
+.byb-picker-options {
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.byb-keep-shopping {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

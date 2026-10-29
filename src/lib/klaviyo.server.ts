@@ -369,3 +369,33 @@ export async function klaviyoHasPlacedOrder(email: string): Promise<boolean> {
     return false
   }
 }
+
+// Cart checkout email step (site pass 1): create/update the profile with the
+// shopper's names so flows can greet them, BEFORE Shopify hands the order
+// back. NO subscribe, NO consent change, no custom properties: marketing
+// consent stays with Shopify checkout's own "email me" box. Names are only
+// sent when present, so blanks never wipe an existing name.
+export async function klaviyoUpsertCheckoutProfile(input: {
+  email: string
+  first_name?: string
+  last_name?: string
+}): Promise<void> {
+  const key = process.env.KLAVIYO_API_KEY
+  if (!key) {
+    console.error('KLAVIYO_API_KEY is not configured')
+    return
+  }
+  const attributes: Record<string, string> = { email: input.email }
+  if (input.first_name) attributes.first_name = input.first_name
+  if (input.last_name) attributes.last_name = input.last_name
+  try {
+    const res = await fetch(`${BASE}/profile-import/`, {
+      method: 'POST',
+      headers: authHeaders(key),
+      body: JSON.stringify({ data: { type: 'profile', attributes } }),
+    })
+    if (!res.ok) console.error('klaviyo upsertCheckoutProfile failed', res.status, await res.text().catch(() => ''))
+  } catch (e) {
+    console.error('klaviyo upsertCheckoutProfile error', (e as Error)?.message)
+  }
+}

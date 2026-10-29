@@ -9,6 +9,9 @@ import { AgeGate } from "../components/AgeGate";
 import { SpinWheel } from "../components/SpinWheel";
 import { AnnouncementBar } from "../components/AnnouncementBar";
 import { captureUtms, captureAdVisitor, captureSessionUtms, captureEmailVisitor } from "../lib/utms";
+import { captureKxFromUrl } from "../lib/identity";
+import { initSiteEvents } from "../lib/siteEvents";
+import { captureDealFromUrl } from "../lib/dealWallet";
 
 const GTM_ID = "GTM-M7W7CDK2";
 const GTM_HEAD_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`;
@@ -132,7 +135,17 @@ function RootComponent() {
   // First-touch UTM capture. Runs client-side after hydration; the FB restore
   // script leaves utm_* on the URL, so they're still readable here. No-op after
   // the first visit (cookie already set) or when no utm_* params are present.
-  useEffect(() => { captureUtms(); captureSessionUtms(); captureAdVisitor(); captureEmailVisitor(); }, []);
+  useEffect(() => {
+    captureUtms(); captureSessionUtms(); captureAdVisitor(); captureEmailVisitor();
+    // Klaviyo email click → remember the browser (`_kx`), then wire site events
+    // (flushes anything queued before identification; "Active on Site" once
+    // per session).
+    captureKxFromUrl();
+    initSiteEvents();
+    // ?code=CODE / ?deal=CODE (email + ad links) → deal wallet → the cart
+    // applies it automatically. Unknown codes are ignored.
+    captureDealFromUrl();
+  }, []);
   return (
     <>
       <AnnouncementBar />

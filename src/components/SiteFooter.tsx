@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 import { readUtms } from "../lib/utms";
+import { setIdentityEmail } from "../lib/identity";
 
 // ── ACTIVE POTENCY CLEANUP FLAG ───────────────────────────────────────
 // 2026-05-08: When false, hides Shop column links to non-live tiers (5mg
@@ -56,6 +57,8 @@ export function SiteFooter() {
             : undefined,
         }),
       }).catch(() => {});
+      // Remember this browser for Klaviyo site events + the cart email step.
+      setIdentityEmail(email);
       setStatus("success");
       setStatusMsg("Cheers! You’re on the list. ☀️");
       setEmail("");

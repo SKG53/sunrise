@@ -32,6 +32,9 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { renderWordmark, getBasePx } from "../lib/sunrise-components";
 import { readUtms, readSessionUtms, isAdVisitor, isEmailVisitor } from "../lib/utms";
+import { siteEvent } from "../lib/siteEvents";
+import { setIdentityEmail } from "../lib/identity";
+import { addToWallet } from "../lib/dealWallet";
 import "./SpinWheel.css";
 
 const STORAGE_KEY = "sunrise:spin-wheel-seen";
@@ -169,8 +172,10 @@ export const DEALS: Deal[] = [
 const SEG = 360 / DEALS.length; // per-segment angle; self-adjusts (7 deals)
 const SPIN_MS = 4200;
 const TURNS = 6;
+// Site pass 1: claimed codes are saved to the browser's deal wallet and the
+// cart applies them automatically (lib/dealWallet.ts), so no "enter code".
 const GENERIC_TERMS =
-  "Each deal can be used once per customer. Enter code at checkout. Exclusions, terms, and conditions apply.";
+  "Each deal can be used once per customer. Your code is saved and applies automatically in your cart. Exclusions, terms, and conditions apply.";
 
 // ── DEAL-SPECIFIC AD DEALS ──────────────────────────────────────────────
 // Visitors from a deal-specific Meta ad were PROMISED one exact offer, so they
@@ -216,6 +221,14 @@ export const AD_DEALS: Record<"b2g1f" | "25off5", Deal> = {
 // when the deal set or mechanic changes, never for copy or color (update the
 // version log when you do). The ad path reports "ad_deal" instead.
 const POPUP_TYPE = "wheel_v2";
+
+// "Shop Now" after a claim: buy-X-get-Y deals open their Build Your Box page
+// (routes/box.$deal.tsx), which fills the cart for them; the rest go to Shop.
+const SHOP_HREF: Record<string, string> = {
+  NEWCUST4P1FR: "/box/buy4get1",
+  NEWCUST2P10MG: "/box/buy2get10mg",
+  FREE4PACK: "/box/buy2get1",
+};
 
 // ROUTER: map (campaign, adN token) -> an ad deal, reading the CURRENT visit's
 // UTMs (sr_session_utms) rather than the sticky first-touch cookie — so a visitor
@@ -393,7 +406,17 @@ export function SpinWheel() {
   const reduced = useRef(false);
   const wmRef = useRef<HTMLDivElement>(null);
 
-  const close = useCallback(() => {
+  // Latest phase for the Wheel Closed event (close() is a stable callback).
+  const phaseRef = useRef<Phase>("hidden");
+  phaseRef.current = phase;
+
+  // `reason` is a string only when called in code ("shop_now"); as an onClick
+  // handler it receives the click event and counts as a dismiss.
+  const close = useCallback((reason?: unknown) => {
+    const why = typeof reason === "string" ? reason : "dismiss";
+    if (phaseRef.current !== "hidden" && why !== "shop_now") {
+      siteEvent("Wheel Closed", { phase: phaseRef.current, reason: why });
+    }
     try {
       sessionStorage.setItem(STORAGE_KEY, "true");
     } catch {
@@ -440,7 +463,10 @@ export function SpinWheel() {
     // landing pages, which have their own email ask). Checked when arming (eligible) AND
     // at reveal: routes are code-split and a visitor can client-side navigate
     // onto one while the fallback timer is pending.
-    const onNoWheelPath = () => /^\/(submitreview|reviewsubmit|tryfreecan|webfreecan|freecan)\/?$/.test(window.location.pathname);
+    // + /box/* (Build Your Box deal pages ask for the email themselves).
+    const onNoWheelPath = () =>
+      /^\/(submitreview|reviewsubmit|tryfreecan|webfreecan|freecan)\/?$/.test(window.location.pathname) ||
+      /^\/box\//.test(window.location.pathname);
     const eligible = () => {
       if (onNoWheelPath()) return false;
       try {
@@ -486,6 +512,12 @@ export function SpinWheel() {
         setAdDeal(ad.deal);
         setAdVariant(ad.variant);
       }
+      // Queued until the visitor identifies (sent with its original time on claim).
+      siteEvent(
+        "Wheel Shown",
+        { mode: ad ? "ad_deal" : "wheel", ad_variant: ad?.variant ?? null, popup_type: ad ? "ad_deal" : POPUP_TYPE },
+        { queue: true },
+      );
       setPhase((p) => (p === "hidden" ? (ad ? "email" : "idle") : p));
     };
     const arm = () => {
@@ -512,7 +544,7 @@ export function SpinWheel() {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") close("escape");
     };
     window.addEventListener("keydown", onKey);
     return () => {
@@ -542,6 +574,7 @@ export function SpinWheel() {
     if (phase !== "idle") return;
     const idx = pickIndexInPool("big", isAdVisitor());
     setDeal1(idx);
+    siteEvent("Wheel Spun", { spin: 1, deal_code: DEALS[idx].code, popup_type: POPUP_TYPE }, { queue: true });
     if (reduced.current) {
       setRotation(finalOrientation(idx));
       setPhase("landed1");
@@ -563,6 +596,7 @@ export function SpinWheel() {
       firstWasFree ? ["FREE"] : []
     );
     setDeal2(idx);
+    siteEvent("Wheel Spun", { spin: 2, deal_code: DEALS[idx].code, popup_type: POPUP_TYPE }, { queue: true });
     if (reduced.current) {
       setRotation((cur) => nextRotation(cur, idx));
       setPhase("choose");
@@ -637,6 +671,10 @@ export function SpinWheel() {
       fire("/api/public/spin-wheel-hubspot");
       fire("/api/public/spin-wheel-klaviyo");
       fire("/api/public/deal-claim");
+      // Remember the shopper (flushes the queued Wheel Shown / Wheel Spun) and
+      // save the code so the cart applies it — no typing at checkout.
+      setIdentityEmail(value);
+      if (chosenDeal?.code) addToWallet(chosenDeal.code, adDeal ? "ad" : "wheel");
       setPhase("revealed");
     } catch {
       setError("Something went wrong. Please try again.");
@@ -648,6 +686,8 @@ export function SpinWheel() {
   const copyCode = async () => {
     if (!chosenDeal) return;
     try {
+      // Logged on the tap itself, even if the browser blocks the clipboard.
+      siteEvent("Code Copied", { code: chosenDeal.code, source: adDeal ? "ad_deal" : "wheel" });
       await navigator.clipboard.writeText(chosenDeal.code);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
@@ -827,7 +867,14 @@ export function SpinWheel() {
                 {copied ? "Copied!" : "Copy"}
               </span>
             </button>
-            <a className="spin-btn spin-btn-primary" href="/products" onClick={close}>
+            <a
+              className="spin-btn spin-btn-primary"
+              href={SHOP_HREF[chosenDeal.code] ?? "/products"}
+              onClick={() => {
+                siteEvent("Wheel Shop Now", { code: chosenDeal.code });
+                close("shop_now");
+              }}
+            >
               Shop Now
             </a>
             <p className="spin-fine">
