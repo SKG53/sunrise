@@ -824,6 +824,11 @@
   .byb-box .byb-collapsed > .byb-hint:not(.is-shown) {
     display: none;
   }
+  .byb-box .byb-collapsed > .byb-pct-note.is-collapsed {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.3;
+  }
 
   /* Expanded: overlays the grid (absolute), so the sticky row's height —
      and the page beneath it — never jumps. */
@@ -947,7 +952,8 @@
   .byb-reveal {
     scroll-margin-top: 124px;
   }
-  .byb-reveal .byb-summary {
+  .byb-reveal .byb-summary,
+  .byb-reveal .byb-also {
     max-width: 100%; /* calc(--base * 7.6) is only ~243px when --base floors at 32px */
   }
   .byb-summary-row {
@@ -1048,17 +1054,32 @@
 }
 .byb-pct-note strong,
 .byb-pct-reveal strong { color: var(--tier-10); }
+/* "Already in your cart": the same summary cards as the box, under a label. */
 .byb-also {
-  margin: 16px auto 0;
-  max-width: 460px;
-  padding: 12px 16px;
-  border: 1px dashed rgba(26, 26, 26, 0.3);
-  border-radius: 10px;
-  text-align: left;
-  font-size: 14px;
+  margin: 22px auto calc(var(--base) * 0.45);
+  width: 100%;
+  max-width: calc(var(--base) * 7.6);
+  text-align: center;
   color: var(--near-black);
 }
-.byb-also-title { margin: 0 0 6px; font-weight: 700; }
-.byb-also ul { margin: 0; padding-left: 18px; }
-.byb-also-note { margin: 6px 0 0; font-size: 13px; color: var(--text-secondary); }
+.byb-also-title {
+  margin: 0 0 8px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--near-black);
+}
+.byb-also .byb-summary { margin: 0; max-width: none; }
+.byb-also-pack {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.byb-summary-row.is-photo .byb-summary-swatch { background: #fff; }
+.byb-summary-row.is-photo .byb-summary-swatch img { top: 50%; height: 40px; transform: translate(-50%, -50%); }
+.byb-also-note { margin: 8px 0 0; font-size: 13px; color: var(--text-secondary); }
 .byb-in-cart { text-align: center; }
