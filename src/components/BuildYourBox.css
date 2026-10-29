@@ -374,6 +374,22 @@
 .byb-box .byb-hint.is-shown {
   color: var(--tier-10);
 }
+/* Free pick cleared because a lower-priced pack is now in the cart (Oct 29). */
+.byb-box .byb-cleared-note {
+  width: 100%;
+  max-width: calc(var(--base) * 12);
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  border: 1.5px solid var(--tier-10);
+  border-radius: 10px;
+  background: #fffaf0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--tier-10);
+  text-align: center;
+}
 .byb-box .byb-full-note,
 .byb-pick-section .byb-grid-note {
   font-family: "Montserrat", sans-serif;
@@ -851,8 +867,15 @@
   .byb-slots {
     gap: 16px 14px;
   }
+  /* Rows wrap instead of running off both edges (Oct 29: four 98px tiles
+     need 416px; a 390px phone has ~358px). 4-pack boxes show 3 + 1. */
+  .byb-group {
+    max-width: 100%;
+  }
   .byb-group-row {
     gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   .byb-slot {
     --slot-w: 98px;
