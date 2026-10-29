@@ -1,13 +1,22 @@
 // Sunrise-styled cart drawer + trigger button. Slides in from the right,
 // uses cream + flavor-color palette to match the rest of the site.
 // Wired to the Zustand cart store; checkout opens Shopify in a new tab.
+//
+// HOTFIX (Oct 29 2026): the overlay + drawer render in a portal on <body>.
+// They used to render inside SiteHeader, whose z-index (50) kept the drawer
+// under the sticky announcement bar (51): the bar covered the cart's title
+// and × button, so shoppers could only close the cart by tapping outside it.
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useCartStore } from "@/stores/cartStore";
 import { track } from "@/lib/track";
 
 export function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
+  // The portal target (document.body) only exists in the browser.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const items = useCartStore((s) => s.items);
   const isLoading = useCartStore((s) => s.isLoading);
   const isSyncing = useCartStore((s) => s.isSyncing);
@@ -86,6 +95,7 @@ export function CartDrawer() {
         {totalItems > 0 && <span className="cart-trigger-badge">{totalItems}</span>}
       </button>
 
+      {mounted && createPortal(<>
       {isOpen && (
         <div
           className="cart-overlay"
@@ -242,6 +252,7 @@ export function CartDrawer() {
           </footer>
         )}
       </aside>
+      </>, document.body)}
     </>
   );
 }
