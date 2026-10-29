@@ -11,7 +11,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { LIVE_SLUGS } from "../lib/liveProducts";
-import { track } from "../lib/track";
+import { trackEcommerce } from "../lib/track";
 import { siteEvent } from "../lib/siteEvents";
 import {
   // HIDDEN FOR ACTIVE POTENCY CLEANUP 2026-05-08 — DO NOT DELETE
@@ -629,15 +629,19 @@ function ProductDetailPage() {
   const displayPrice = selectedVariant?.price.amount;
   const isInStock = selectedVariant?.availableForSale ?? false;
 
-  // view_item — fire once per product view, after the live Shopify variant
-  // resolves (async). Keyed on shopifyProduct/selectedVariant, not the loader
-  // `product` (which has no price/title/variantId). useRef guards once-per-slug.
+  // view_item + Klaviyo "Viewed Product" — once per product view, after the
+  // live Shopify product for THIS route resolves. Site pass 2 (review 4.3b):
+  // moving between product pages doesn't remount the route and the hook keeps
+  // the previous product while loading, so fire only when the loaded product's
+  // handle matches this route's mapping, and key the guard on that handle.
   const viewItemFiredFor = useRef<string | null>(null);
   useEffect(() => {
     if (!shopifyProduct || !selectedVariant) return;
-    if (viewItemFiredFor.current === product.slug) return;
-    viewItemFiredFor.current = product.slug;
-    track("view_item", {
+    const expected = shopifyMapping?.handle;
+    if (!expected || shopifyProduct.node.handle !== expected) return;
+    if (viewItemFiredFor.current === expected) return;
+    viewItemFiredFor.current = expected;
+    trackEcommerce("view_item", {
       currency: selectedVariant.price.currencyCode,
       value: Number(selectedVariant.price.amount),
       items: [
@@ -652,14 +656,14 @@ function ProductDetailPage() {
       content_name: shopifyProduct.node.title,
       product_handle: shopifyProduct.node.handle,
     });
-    // Klaviyo "Viewed Product" (identified browsers only; GA4 view_item above
-    // is unchanged). Property names follow Klaviyo's standard catalog shape so
-    // a browse-abandonment flow can use them later.
+    // Klaviyo "Viewed Product" (identified browsers only). ProductID is the
+    // numeric product id (Klaviyo's Shopify catalog), VariantID the variant.
     siteEvent(
       "Viewed Product",
       {
         ProductName: shopifyProduct.node.title,
-        ProductID: selectedVariant.id,
+        ProductID: shopifyProduct.node.id.replace(/^gid:\/\/shopify\/Product\//, ""),
+        VariantID: selectedVariant.id,
         ProductHandle: shopifyProduct.node.handle,
         VariantTitle: selectedVariant.title,
         Price: Number(selectedVariant.price.amount),
@@ -667,9 +671,9 @@ function ProductDetailPage() {
         ImageURL: shopifyProduct.node.images.edges[0]?.node.url ?? null,
         URL: `${window.location.origin}${window.location.pathname}`,
       },
-      { dl: false, value: Number(selectedVariant.price.amount) },
+      { value: Number(selectedVariant.price.amount) },
     );
-  }, [shopifyProduct, selectedVariant, product.slug]);
+  }, [shopifyProduct, selectedVariant, shopifyMapping?.handle, product.tier]);
 
   const handleAddToCart = async () => {
     if (!shopifyProduct || !selectedVariant) return;

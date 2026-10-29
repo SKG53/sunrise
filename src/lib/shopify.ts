@@ -317,7 +317,7 @@ const CART_FIELDS = `
             price { amount currencyCode }
             image { url }
             selectedOptions { name value }
-            product { handle title featuredImage { url } }
+            product { id handle title featuredImage { url } }
           }
         }
       }
@@ -338,7 +338,7 @@ type RawLine = {
     price: { amount: string; currencyCode: string };
     image: { url: string } | null;
     selectedOptions: Array<{ name: string; value: string }>;
-    product: { handle: string; title: string; featuredImage: { url: string } | null };
+    product: { id: string; handle: string; title: string; featuredImage: { url: string } | null };
   };
 };
 type RawCart = {
@@ -358,6 +358,8 @@ type RawCart = {
 export type CartLineView = {
   lineId: string;
   variantId: string;
+  /** Numeric Shopify product id (Klaviyo catalog uses product ids). */
+  productId: string;
   productHandle: string;
   productTitle: string;
   variantTitle: string;
@@ -409,6 +411,7 @@ function normalizeCart(c: RawCart): CartView {
     return {
       lineId: l.id,
       variantId: l.merchandise.id,
+      productId: l.merchandise.product.id.replace(/^gid:\/\/shopify\/Product\//, ""),
       productHandle: l.merchandise.product.handle,
       productTitle: l.merchandise.product.title,
       variantTitle: l.merchandise.title,
@@ -439,9 +442,18 @@ function normalizeCart(c: RawCart): CartView {
   };
 }
 
+export type CartWarning = { code: string; message: string };
 export type CartResult =
-  | { ok: true; cart: CartView; warnings: string[] }
+  | { ok: true; cart: CartView; warnings: CartWarning[] }
   | { ok: false; notFound: boolean; errors: string[] };
+
+/** Shopify warning code for a once-per-customer code this email already used. */
+export const USED_CODE_WARNING = "DISCOUNT_CUSTOMER_USAGE_LIMIT_REACHED";
+/** Warning codes that mean merchandise couldn't be added in full. */
+export const STOCK_WARNINGS = ["MERCHANDISE_NOT_ENOUGH_STOCK", "MERCHANDISE_OUT_OF_STOCK", "PAYMENTS_GIFT_CARDS_UNAVAILABLE"];
+
+// "Invalid global id" (a malformed saved cartId) is treated like a missing cart.
+const NOT_FOUND_RE = /invalid global id|cart.*(not found|does not exist)|specified cart does not exist/i;
 
 type UserError = { field: string[] | null; message: string; code?: string | null };
 
@@ -450,11 +462,19 @@ async function runCartMutation(
   mutation: string,
   variables: Record<string, unknown>,
 ): Promise<CartResult> {
-  type Data = Record<string, { cart: RawCart | null; userErrors: UserError[]; warnings?: Array<{ message: string }> }>;
-  const res = await storefrontApiRequest<Data>(mutation, variables);
+  type Data = Record<string, { cart: RawCart | null; userErrors: UserError[]; warnings?: Array<{ code: string; message: string }> }>;
+  let res: Awaited<ReturnType<typeof storefrontApiRequest<Data>>>;
+  try {
+    res = await storefrontApiRequest<Data>(mutation, variables);
+  } catch (e) {
+    const msg = (e as Error)?.message ?? String(e);
+    return { ok: false, notFound: NOT_FOUND_RE.test(msg), errors: [msg] };
+  }
   const payload = res?.data?.[name];
   const userErrors = payload?.userErrors ?? [];
-  if (isCartNotFoundError(userErrors)) return { ok: false, notFound: true, errors: userErrors.map((e) => e.message) };
+  if (isCartNotFoundError(userErrors) || userErrors.some((e) => NOT_FOUND_RE.test(e.message))) {
+    return { ok: false, notFound: true, errors: userErrors.map((e) => e.message) };
+  }
   if (!payload?.cart) {
     return { ok: false, notFound: false, errors: userErrors.length ? userErrors.map((e) => e.message) : ["No cart returned"] };
   }
@@ -462,7 +482,10 @@ async function runCartMutation(
   return {
     ok: true,
     cart: normalizeCart(payload.cart),
-    warnings: [...userErrors.map((e) => e.message), ...(payload.warnings ?? []).map((w) => w.message)],
+    warnings: [
+      ...userErrors.map((e) => ({ code: e.code ?? "USER_ERROR", message: e.message })),
+      ...(payload.warnings ?? []).map((w) => ({ code: w.code, message: w.message })),
+    ],
   };
 }
 
@@ -472,13 +495,19 @@ export type NewLine = {
   attributes?: Array<{ key: string; value: string }>;
 };
 
+/** null = the cart is gone (completed, expired, or a malformed id). Throws only on network/server errors. */
 export async function fetchCart(cartId: string): Promise<CartView | null> {
-  const res = await storefrontApiRequest<{ cart: RawCart | null }>(
-    `query cartFull($id: ID!) { cart(id: $id) { ${CART_FIELDS} } }`,
-    { id: cartId },
-  );
-  const c = res?.data?.cart;
-  return c ? normalizeCart(c) : null;
+  try {
+    const res = await storefrontApiRequest<{ cart: RawCart | null }>(
+      `query cartFull($id: ID!) { cart(id: $id) { ${CART_FIELDS} } }`,
+      { id: cartId },
+    );
+    const c = res?.data?.cart;
+    return c ? normalizeCart(c) : null;
+  } catch (e) {
+    if (NOT_FOUND_RE.test((e as Error)?.message ?? "")) return null;
+    throw e;
+  }
 }
 
 export function cartCreateFull(input: {
@@ -494,7 +523,7 @@ export function cartCreateFull(input: {
   return runCartMutation(
     "cartCreate",
     `mutation cartCreate($input: CartInput!) {
-      cartCreate(input: $input) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+      cartCreate(input: $input) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { code message } }
     }`,
     { input: cartInput },
   );
@@ -504,7 +533,7 @@ export function cartLinesAddFull(cartId: string, lines: NewLine[]): Promise<Cart
   return runCartMutation(
     "cartLinesAdd",
     `mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-      cartLinesAdd(cartId: $cartId, lines: $lines) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+      cartLinesAdd(cartId: $cartId, lines: $lines) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { code message } }
     }`,
     { cartId, lines },
   );
@@ -517,7 +546,7 @@ export function cartLinesUpdateFull(
   return runCartMutation(
     "cartLinesUpdate",
     `mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
-      cartLinesUpdate(cartId: $cartId, lines: $lines) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+      cartLinesUpdate(cartId: $cartId, lines: $lines) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { code message } }
     }`,
     { cartId, lines },
   );
@@ -527,7 +556,7 @@ export function cartLinesRemoveFull(cartId: string, lineIds: string[]): Promise<
   return runCartMutation(
     "cartLinesRemove",
     `mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
-      cartLinesRemove(cartId: $cartId, lineIds: $lineIds) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+      cartLinesRemove(cartId: $cartId, lineIds: $lineIds) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { code message } }
     }`,
     { cartId, lineIds },
   );
@@ -538,7 +567,7 @@ export function cartDiscountCodesUpdateFull(cartId: string, discountCodes: strin
   return runCartMutation(
     "cartDiscountCodesUpdate",
     `mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!) {
-      cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+      cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { code message } }
     }`,
     { cartId, discountCodes },
   );
@@ -549,7 +578,7 @@ export function cartBuyerIdentityUpdateFull(cartId: string, email: string): Prom
   return runCartMutation(
     "cartBuyerIdentityUpdate",
     `mutation cartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
-      cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+      cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { code message } }
     }`,
     { cartId, buyerIdentity: { email } },
   );
@@ -560,38 +589,8 @@ export function cartAttributesUpdateFull(cartId: string, attributes: Array<{ key
   return runCartMutation(
     "cartAttributesUpdate",
     `mutation cartAttributesUpdate($cartId: ID!, $attributes: [AttributeInput!]!) {
-      cartAttributesUpdate(cartId: $cartId, attributes: $attributes) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
+      cartAttributesUpdate(cartId: $cartId, attributes: $attributes) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { code message } }
     }`,
     { cartId, attributes },
-  );
-}
-
-/**
- * NAME PREFILL — OFF until tested (founder: "we can test the names being
- * carried through later"). Shopify documents that a delivery address added to
- * the cart prefills checkout, but only "if the shop is using Shopify
- * Extensions in Checkout"; unverified for this store. Adds a partial address
- * (names + country only). Test on a staging cart before turning on
- * PREFILL_NAMES_AT_CHECKOUT in cartStore.ts.
- */
-export function cartDeliveryNamesAdd(
-  cartId: string,
-  names: { firstName?: string; lastName?: string },
-): Promise<CartResult> {
-  return runCartMutation(
-    "cartDeliveryAddressesAdd",
-    `mutation cartDeliveryAddressesAdd($cartId: ID!, $addresses: [CartSelectableAddressInput!]!) {
-      cartDeliveryAddressesAdd(cartId: $cartId, addresses: $addresses) { cart { ${CART_FIELDS} } userErrors { field message code } warnings { message } }
-    }`,
-    {
-      cartId,
-      addresses: [
-        {
-          selected: true,
-          oneTimeUse: false,
-          address: { deliveryAddress: { firstName: names.firstName ?? "", lastName: names.lastName ?? "", countryCode: "US" } },
-        },
-      ],
-    },
   );
 }

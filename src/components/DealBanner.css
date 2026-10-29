@@ -1,0 +1,28 @@
+/* /products deal banner — brand tokens from sunrise-shell.css. */
+.deal-banner {
+  background: var(--near-black);
+  color: var(--cream);
+  font-family: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+}
+.deal-banner-inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.deal-banner-text { font-weight: 600; font-size: 0.9375rem; letter-spacing: 0.01em; }
+.deal-banner-link {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 2px solid currentColor;
+}
+.deal-banner-link:hover { color: var(--cream); }

@@ -35,6 +35,7 @@ import { readUtms, readSessionUtms, isAdVisitor, isEmailVisitor } from "../lib/u
 import { siteEvent } from "../lib/siteEvents";
 import { setIdentityEmail } from "../lib/identity";
 import { addToWallet } from "../lib/dealWallet";
+import { dealByCode } from "../lib/deals";
 import "./SpinWheel.css";
 
 const STORAGE_KEY = "sunrise:spin-wheel-seen";
@@ -222,13 +223,10 @@ export const AD_DEALS: Record<"b2g1f" | "25off5", Deal> = {
 // version log when you do). The ad path reports "ad_deal" instead.
 const POPUP_TYPE = "wheel_v2";
 
-// "Shop Now" after a claim: buy-X-get-Y deals open their Build Your Box page
-// (routes/box.$deal.tsx), which fills the cart for them; the rest go to Shop.
-const SHOP_HREF: Record<string, string> = {
-  NEWCUST4P1FR: "/box/buy4get1",
-  NEWCUST2P10MG: "/box/buy2get10mg",
-  FREE4PACK: "/box/buy2get1",
-};
+// "Shop Now" after a claim opens the code's landing page from lib/deals.ts
+// (boxPath): buy-X-get-Y and "N or more" deals → their Build Your Box page;
+// "% off anything" codes → /products, where a banner confirms the deal.
+const shopHref = (code: string) => dealByCode(code)?.boxPath ?? "/products";
 
 // ROUTER: map (campaign, adN token) -> an ad deal, reading the CURRENT visit's
 // UTMs (sr_session_utms) rather than the sticky first-touch cookie — so a visitor
@@ -869,9 +867,9 @@ export function SpinWheel() {
             </button>
             <a
               className="spin-btn spin-btn-primary"
-              href={SHOP_HREF[chosenDeal.code] ?? "/products"}
+              href={shopHref(chosenDeal.code)}
               onClick={() => {
-                siteEvent("Wheel Shop Now", { code: chosenDeal.code });
+                siteEvent("Wheel Shop Now", { code: chosenDeal.code }, { sync: true });
                 close("shop_now");
               }}
             >

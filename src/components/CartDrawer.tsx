@@ -1,42 +1,57 @@
-// Sunrise cart drawer + trigger button (site pass 1, Oct 28 2026).
+// Sunrise cart drawer + trigger button (site pass 2, Oct 29 2026).
+//
+// One cart, many views: this drawer and every Build Your Box page show the
+// same cart (stores/cartStore.ts).
 //
 // Top to bottom:
-//   1. Free-shipping bar ($74.50 live threshold, copy says $75) with an
-//      unlocked state.
-//   2. Deal meter for the active code (lib/deals.ts): progress toward the
-//      requirement, "unlocked ✓" when done, and "add my free 4-pack" if the
-//      shopper removed the auto-added free item.
-//   3. Lines with Shopify's real totals. The auto-added free line shows FREE
-//      and a flavor picker instead of the quantity stepper.
-//   4. Totals: subtotal, "CODE applied · you save $X", total. Saved-code
-//      switcher when the wallet holds more than one code.
-//   5. Two buttons. "Continue Shopping" is the accent/primary (and focused)
-//      until the cart is at free shipping AND no deal is mid-way; then
-//      "Checkout" takes over. Checkout is always available.
-//   6. Checkout email step (only when we don't know the shopper yet): email +
-//      first/last name, then straight to Shopify with the email prefilled.
+//   0. Notices (no silent changes) and the "One deal per order. Which one?"
+//      chooser (lib/dealWallet.ts).
+//   1. Free-shipping bar: gold while in progress, green when unlocked
+//      ($74.50 live threshold after discounts; copy says $75).
+//   2. Deal block: the DEAL leads ("Buy 4, get 1 free"), the code is small and
+//      secondary. Progress meter while mid-way; one line once unlocked.
+//   3. Lines: "$28.95 × 4" plus the line total. "Includes 1 free" sits on
+//      whichever line Shopify actually discounted. The auto-added free pack
+//      has a flavor picker limited to packs Shopify will free (≤ the cheapest
+//      paid pack). Before a − or Remove would lose the free pack, the line asks.
+//   4. Totals, "Your deals" switcher, and a foreign-code offer.
+//   5. Buttons: "Continue Shopping" is primary (red, focused on open) until the
+//      cart is at free shipping AND no deal is mid-way; then "Checkout" leads.
+//      Checkout is always available. Under 480 px the secondary one is a link.
+//   6. Email step (unknown shoppers only): EMAIL ONLY (founder). Known shoppers
+//      see "Checking out as a…@… · Not you?".
 //
-// Open state lives in the cart store, so Add to Cart anywhere opens it.
-//
-// The overlay + drawer render in a portal on <body>. Before, they rendered
-// inside SiteHeader, whose z-index (50) capped the drawer below the sticky
-// announcement bar (51), hiding the drawer's title and close button.
+// Renders in a portal on <body> (z-index fix: SiteHeader's stacking context
+// used to put the drawer under the announcement bar). Focus is trapped while
+// open; the drawer is inert when closed; focus returns to the cart button.
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useCartStore, dealLines, isFreeDeclined, type CartItem } from "@/stores/cartStore";
-import { dealByCode, evaluateDeal, freeShipState, FREE_SHIP_LABEL } from "@/lib/deals";
-import { getActiveCode, listWallet, setActiveCode, WALLET_EVENT, type WalletEntry } from "@/lib/dealWallet";
-import { knownEmail, getIdentity } from "@/lib/identity";
+import { useCartStore, dealLines, isFreeDeclined, freePriceCap, type CartItem } from "@/stores/cartStore";
+import { dealByCode, evaluateDeal, freeShipState, wouldLoseFree, FREE_SHIP_LABEL } from "@/lib/deals";
+import {
+  dismissChoice,
+  getActiveCode,
+  getChoice,
+  listWallet,
+  setActiveCode,
+  takeNotices,
+  WALLET_EVENT,
+  type WalletChoice,
+  type WalletEntry,
+} from "@/lib/dealWallet";
+import { clearIdentityEmail, knownEmail, maskEmail, subscribeIdentity } from "@/lib/identity";
 import { FREE_10MG, LIVE_FOUR_PACKS, type FourPack } from "@/lib/liveFourPacks";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const money = (n: number) => `$${n.toFixed(2)}`;
 
-function useWallet(): { active: string | null; entries: WalletEntry[] } {
-  const [state, setState] = useState<{ active: string | null; entries: WalletEntry[] }>({ active: null, entries: [] });
+type WalletState = { active: string | null; entries: WalletEntry[]; choice: WalletChoice | null; notices: string[] };
+function useWallet(): WalletState {
+  const [state, setState] = useState<WalletState>({ active: null, entries: [], choice: null, notices: [] });
   useEffect(() => {
-    const sync = () => setState({ active: getActiveCode(), entries: listWallet() });
+    const sync = () =>
+      setState({ active: getActiveCode(), entries: listWallet(), choice: getChoice(), notices: takeNotices(false) });
     sync();
     window.addEventListener(WALLET_EVENT, sync);
     window.addEventListener("storage", sync);
@@ -48,7 +63,17 @@ function useWallet(): { active: string | null; entries: WalletEntry[] } {
   return state;
 }
 
+function useKnownEmail(): string | null {
+  const [email, setEmail] = useState<string | null>(null);
+  useEffect(() => {
+    setEmail(knownEmail());
+    return subscribeIdentity(() => setEmail(knownEmail()));
+  }, []);
+  return email;
+}
+
 const packLabel = (p: FourPack) => `${p.flavor} · ${p.tier}mg${p.cannabinoid ? ` +${p.cannabinoid}` : ""}`;
+const dealLabel = (code: string | null) => dealByCode(code)?.label ?? code ?? "";
 
 export function CartDrawer() {
   const isOpen = useCartStore((s) => s.isOpen);
@@ -60,23 +85,29 @@ export function CartDrawer() {
   const isSyncing = useCartStore((s) => s.isSyncing);
   const isCheckingOut = useCartStore((s) => s.isCheckingOut);
   const storeError = useCartStore((s) => s.error);
+  const foreignCode = useCartStore((s) => s.foreignCode);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const swapFreeItem = useCartStore((s) => s.swapFreeItem);
   const restoreFreeItem = useCartStore((s) => s.restoreFreeItem);
+  const useSavedDeal = useCartStore((s) => s.useSavedDeal);
   const syncCart = useCartStore((s) => s.syncCart);
   const checkout = useCartStore((s) => s.checkout);
-  const { active, entries } = useWallet();
+  const { active, entries, choice, notices } = useWallet();
+  const email = useKnownEmail();
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const [step, setStep] = useState<"cart" | "email">("cart");
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [emailInput, setEmailInput] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [confirm, setConfirm] = useState<{ lineId: string; qty: number } | null>(null);
+  const [picked, setPicked] = useState<string | null>(null);
+  const asideRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const primaryRef = useRef<HTMLButtonElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
+  const wasOpen = useRef(false);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const before = cart?.merchandiseBeforeDiscounts ?? items.reduce((s, i) => s + Number(i.price.amount) * i.quantity, 0);
@@ -85,108 +116,177 @@ export function CartDrawer() {
   const currency = cart?.currency ?? items[0]?.price.currencyCode ?? "USD";
 
   const rule = dealByCode(active);
-  const ev = useMemo(() => evaluateDeal(rule, dealLines(items), isFreeDeclined(active)), [rule, items, active]);
+  const lines = useMemo(() => dealLines(items), [items]);
+  const declined = isFreeDeclined(cart?.id ?? null, active);
+  const ev = useMemo(() => evaluateDeal(rule, lines, declined), [rule, lines, declined]);
   const ship = freeShipState(after);
   const appliedCode = cart?.discountCodes.find((d) => active && d.code.toUpperCase() === active.toUpperCase());
-  const checkoutPrimary = ship.unlocked && ev.status !== "progress";
+  const applies = !!appliedCode?.applicable && savings > 0;
+  const checkoutPrimary = ship.unlocked && !ev.blocking;
   const busy = isLoading || isSyncing;
+  const cap = freePriceCap(rule, items);
+  const freePool = (rule?.kind === "bxgy" && rule.getScope.tiers.length === 1 && rule.getScope.tiers[0] === 10 ? FREE_10MG : LIVE_FOUR_PACKS).filter(
+    (p) => p.fallbackPrice <= cap + 0.001,
+  );
+
+  // Where to show "Free": Shopify frees whole units of the cheapest qualifying
+  // price, but with identical prices it may put the discount on a PAID line of
+  // the same price instead of the one we marked. The money is identical, so
+  // free units are counted per unit price and shown on our marked line first,
+  // then on other lines of that price. Line totals follow, and still add up to
+  // Shopify's total exactly. Percent codes keep Shopify's own line totals.
+  const display = useMemo(() => {
+    const out = new Map<string, { freeUnits: number; total: number }>();
+    const byPrice = new Map<string, CartItem[]>();
+    items.forEach((i) => {
+      const k = Number(i.price.amount).toFixed(2);
+      byPrice.set(k, [...(byPrice.get(k) ?? []), i]);
+    });
+    byPrice.forEach((group, k) => {
+      const unit = Number(k);
+      const freeTotal =
+        unit > 0 ? group.reduce((n, i) => n + Math.floor(((i.lineDiscount ?? 0) + 0.005) / unit), 0) : 0;
+      let left = freeTotal;
+      const ordered = [...group].sort((a, b) => Number(!!b.freeFor) - Number(!!a.freeFor));
+      ordered.forEach((i) => {
+        const id = i.lineId ?? i.variantId;
+        const units = Math.min(left, i.quantity);
+        left -= units;
+        const residual = Math.max(0, (i.lineDiscount ?? 0) - Math.floor(((i.lineDiscount ?? 0) + 0.005) / (unit || 1)) * unit);
+        const total = freeTotal > 0 ? (i.quantity - units) * unit - residual : (i.lineTotal ?? unit * i.quantity);
+        out.set(id, { freeUnits: units, total: Math.max(0, Math.round(total * 100) / 100) });
+      });
+    });
+    return out;
+  }, [items]);
 
   useEffect(() => {
     if (!isOpen) return;
     syncCart();
     setStep("cart");
+    setConfirm(null);
   }, [isOpen, syncCart]);
 
-  // Body scroll lock + Escape while open.
+  useEffect(() => setPicked(choice?.preselect ?? null), [choice]);
+
+  const close = useCallback(() => {
+    takeNotices(true);
+    window.dispatchEvent(new CustomEvent(WALLET_EVENT));
+    closeCart();
+  }, [closeCart]);
+
+  // Open/close: scroll lock, Esc, focus trap, focus in on open, focus back on close.
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      if (wasOpen.current) triggerRef.current?.focus({ preventScroll: true });
+      wasOpen.current = false;
+      return;
+    }
+    const firstOpen = !wasOpen.current;
+    wasOpen.current = true;
     const orig = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeCart();
+      if (e.key === "Escape") close();
+      if (e.key !== "Tab" || !asideRef.current) return;
+      const f = Array.from(
+        asideRef.current.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input, select, [tabindex]:not([tabindex="-1"])'),
+      ).filter((el) => el.offsetParent !== null);
+      if (!f.length) return;
+      const first = f[0];
+      const last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
+    // Focus only when the drawer OPENS (not when lines change underneath).
+    const t = firstOpen
+      ? window.setTimeout(() => (primaryRef.current ?? asideRef.current)?.focus({ preventScroll: true }), 320)
+      : undefined;
     return () => {
       document.body.style.overflow = orig;
       window.removeEventListener("keydown", onKey);
+      if (t) window.clearTimeout(t);
     };
-  }, [isOpen, closeCart]);
-
-  // Focus the primary button when the drawer opens / the primary flips.
-  useEffect(() => {
-    if (isOpen && step === "cart" && items.length) {
-      const t = window.setTimeout(() => primaryRef.current?.focus({ preventScroll: true }), 320);
-      return () => window.clearTimeout(t);
-    }
-  }, [isOpen, step, checkoutPrimary, items.length]);
+  }, [isOpen, close]);
 
   const onCheckout = () => {
     if (knownEmail()) {
       checkout();
       return;
     }
-    const id = getIdentity();
-    setFirstName(id?.firstName ?? "");
-    setLastName(id?.lastName ?? "");
+    setStep("email");
+    window.setTimeout(() => emailRef.current?.focus(), 30);
+  };
+
+  const notYou = () => {
+    clearIdentityEmail();
+    setEmailInput("");
     setStep("email");
     window.setTimeout(() => emailRef.current?.focus(), 30);
   };
 
   const onEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const value = email.trim().toLowerCase();
+    const value = emailInput.trim().toLowerCase();
     if (!EMAIL_RE.test(value) || value.length > 320) {
       setEmailError("Please enter a valid email address.");
       emailRef.current?.focus();
       return;
     }
     setEmailError("");
-    // Profile upsert (names, no subscribe) — fire-and-forget, never blocks.
-    fetch("/api/public/checkout-identify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      keepalive: true,
-      body: JSON.stringify({
-        email: value,
-        first_name: firstName.trim(),
-        last_name: lastName.trim(),
-        capture_page: `${location.host.replace(/^www\./, "")}${location.pathname}`,
-      }),
-    }).catch(() => {});
-    checkout({ email: value, firstName, lastName });
+    checkout({ email: value });
   };
 
-  const freePool = rule?.kind === "bxgy" && rule.getScope.tiers.length === 1 && rule.getScope.tiers[0] === 10 ? FREE_10MG : LIVE_FOUR_PACKS;
+  // − / Remove that would cost the free pack: ask first (no silent changes).
+  const changeQty = (item: CartItem, qty: number) => {
+    if (!item.lineId) return;
+    if (wouldLoseFree(rule, lines, item.lineId, qty)) {
+      setConfirm({ lineId: item.lineId, qty });
+      return;
+    }
+    if (qty <= 0) removeItem(item.lineId);
+    else updateQuantity(item.lineId, qty);
+  };
 
   const renderItem = (item: CartItem) => {
-    const isFree = !!item.freeFor;
-    const lineSubtotal = Number(item.price.amount) * item.quantity;
-    // Lines show list price; the savings show once, in the totals. (Shopify
-    // may put a buy-X-get-Y discount on ANY matching line, e.g. the paid
-    // pack of the same flavor, so per-line discounts would confuse.) The
-    // free line reads FREE once Shopify confirms the code applies.
-    const freeNow = isFree && ev.status === "complete" && !!appliedCode?.applicable;
+    const unit = Number(item.price.amount);
+    const d = display.get(item.lineId ?? item.variantId);
+    const lineTotal = d?.total ?? item.lineTotal ?? unit * item.quantity;
+    const freeUnits = d?.freeUnits ?? 0;
+    const isOursFree = !!item.freeFor;
+    const asking = confirm && confirm.lineId === item.lineId;
     return (
-      <li key={item.lineId ?? item.variantId} className={`cart-item${isFree ? " is-free" : ""}`}>
-        <div className="cart-item-image">
-          {item.imageUrl && <img src={item.imageUrl} alt={item.productTitle} />}
-        </div>
+      <li key={item.lineId ?? item.variantId} className={`cart-item${isOursFree ? " is-free" : ""}`}>
+        <div className="cart-item-image">{item.imageUrl && <img src={item.imageUrl} alt={item.productTitle} />}</div>
         <div className="cart-item-body">
           <div className="cart-item-title">{item.productTitle}</div>
           <div className="cart-item-variant">{item.variantTitle}</div>
           <div className="cart-item-price">
-            {freeNow && <s className="cart-item-was">{money(lineSubtotal)}</s>}
-            <span>{freeNow ? "FREE" : money(lineSubtotal)}</span>
+            <span className="cart-item-unit">
+              {money(unit)} × {item.quantity}
+            </span>
+            {freeUnits > 0 && (
+              <span className="cart-free-badge">{freeUnits === item.quantity ? "Free" : `Includes ${freeUnits} free`}</span>
+            )}
           </div>
-          {isFree ? (
+          {isOursFree ? (
             <label className="cart-free-swap">
-              <span className="cart-free-badge">Free with {item.freeFor}</span>
+              <span className="cart-free-label">Your free 4-pack · pick a flavor</span>
               <select
                 value={item.variantId}
                 disabled={busy}
                 onChange={(e) => item.lineId && swapFreeItem(item.lineId, e.target.value)}
                 aria-label="Choose your free 4-pack"
               >
+                {freePool.some((p) => p.variantId === item.variantId) ? null : (
+                  <option value={item.variantId}>{item.productTitle}</option>
+                )}
                 {freePool.map((p) => (
                   <option key={p.variantId} value={p.variantId}>
                     {packLabel(p)}
@@ -196,44 +296,331 @@ export function CartDrawer() {
             </label>
           ) : (
             <div className="cart-item-qty">
-              <button
-                type="button"
-                className="cart-qty-btn"
-                onClick={() => item.lineId && updateQuantity(item.lineId, item.quantity - 1)}
-                aria-label="Decrease quantity"
-                disabled={busy}
-              >
+              <button type="button" className="cart-qty-btn" onClick={() => changeQty(item, item.quantity - 1)} aria-label="Decrease quantity" disabled={busy}>
                 −
               </button>
               <span className="cart-qty-value">{item.quantity}</span>
-              <button
-                type="button"
-                className="cart-qty-btn"
-                onClick={() => item.lineId && updateQuantity(item.lineId, item.quantity + 1)}
-                aria-label="Increase quantity"
-                disabled={busy}
-              >
+              <button type="button" className="cart-qty-btn" onClick={() => changeQty(item, item.quantity + 1)} aria-label="Increase quantity" disabled={busy}>
                 +
               </button>
             </div>
           )}
+          {asking && (
+            <div className="cart-confirm" role="alert">
+              <p>This also removes your free 4-pack. {confirm.qty <= 0 ? "Remove anyway?" : "Continue?"}</p>
+              <div>
+                <button
+                  type="button"
+                  className="cart-confirm-yes"
+                  onClick={() => {
+                    const c = confirm;
+                    setConfirm(null);
+                    if (c.qty <= 0) removeItem(c.lineId);
+                    else updateQuantity(c.lineId, c.qty);
+                  }}
+                >
+                  {confirm.qty <= 0 ? "Remove" : "Yes, update"}
+                </button>
+                <button type="button" className="cart-confirm-no" onClick={() => setConfirm(null)}>
+                  Keep my deal
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-        <button
-          type="button"
-          className="cart-item-remove"
-          onClick={() => item.lineId && removeItem(item.lineId)}
-          aria-label={isFree ? "Remove free item" : "Remove item"}
-          disabled={busy}
-        >
-          Remove
-        </button>
+        <div className="cart-item-side">
+          <span className="cart-item-total">{money(lineTotal)}</span>
+          <button
+            type="button"
+            className="cart-item-remove"
+            onClick={() => (isOursFree ? item.lineId && removeItem(item.lineId) : changeQty(item, 0))}
+            aria-label={isOursFree ? "Remove free item" : "Remove item"}
+            disabled={busy}
+          >
+            Remove
+          </button>
+        </div>
       </li>
     );
   };
 
+  const dealBlock =
+    rule && ev.status !== "none" ? (
+      ev.status === "complete" ? (
+        <p className="cart-deal is-complete">
+          <strong>{rule.label} ✓</strong> <span className="cart-deal-code">code {rule.code}</span>
+        </p>
+      ) : (
+        <div className={`cart-deal is-${ev.status}`}>
+          <p className="cart-deal-label">
+            <strong>{rule.label}</strong> <span className="cart-deal-code">code {rule.code}</span>
+          </p>
+          {ev.status === "progress" && ev.need > 1 && (
+            <div className="cart-meter is-deal" role="progressbar" aria-valuemin={0} aria-valuemax={ev.need} aria-valuenow={Math.min(ev.have, ev.need)} aria-label="Deal progress">
+              <span style={{ width: `${Math.round(Math.min(ev.have / ev.need, 1) * 100)}%` }} />
+            </div>
+          )}
+          <p className="cart-deal-msg">{ev.message}</p>
+          {ev.status === "progress" && declined && ev.qualifies && rule.kind === "bxgy" && (
+            <button type="button" className="cart-deal-add" onClick={restoreFreeItem} disabled={busy}>
+              Add my free 4-pack
+            </button>
+          )}
+        </div>
+      )
+    ) : null;
+
+  const drawer = (
+    <>
+      {isOpen && (
+        <div
+          className="cart-overlay"
+          onClick={close}
+          aria-hidden="true"
+          style={{ position: "fixed", inset: 0, background: "rgba(26, 26, 26, 0.45)", zIndex: 9998 }}
+        />
+      )}
+      <aside
+        ref={asideRef}
+        className={`cart-drawer ${isOpen ? "is-open" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Shopping cart"
+        aria-hidden={!isOpen}
+        inert={!isOpen}
+        tabIndex={-1}
+        style={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          width: "100%",
+          maxWidth: "420px",
+          height: "100dvh",
+          transform: isOpen ? "translateX(0)" : "translateX(100%)",
+          zIndex: 9999,
+          background: "#f7efe0",
+        }}
+      >
+        <header className="cart-header">
+          <h2 className="cart-title">Your Cart</h2>
+          <button type="button" className="cart-close" onClick={close} aria-label="Close cart">
+            ×
+          </button>
+        </header>
+
+        <div className="cart-scroll">
+          {(notices.length > 0 || choice) && (
+            <div className="cart-notices" aria-live="polite">
+              {notices.map((n) => (
+                <p key={n} className="cart-notice">
+                  {n}
+                </p>
+              ))}
+              {choice && (
+                <form
+                  className="cart-choice"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setActiveCode(picked ?? choice.preselect);
+                  }}
+                >
+                  <p className="cart-choice-title">One deal per order. Which one?</p>
+                  {choice.codes.map((c) => (
+                    <label key={c} className="cart-choice-opt">
+                      <input type="radio" name="cart-deal-choice" value={c} checked={(picked ?? choice.preselect) === c} onChange={() => setPicked(c)} />
+                      <span>{dealLabel(c)}</span>
+                    </label>
+                  ))}
+                  <div className="cart-choice-actions">
+                    <button type="submit" className="cart-btn is-primary cart-btn-sm">
+                      Use this deal
+                    </button>
+                    <button type="button" className="cart-email-back" onClick={dismissChoice}>
+                      Decide later
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+          {items.length > 0 && (
+            <div className="cart-meters" aria-live="polite">
+              <div className={`cart-ship${ship.unlocked ? " is-unlocked" : ""}`}>
+                <p className="cart-ship-text">
+                  {ship.unlocked ? (
+                    <strong>Free shipping unlocked ✓</strong>
+                  ) : (
+                    <>
+                      You're <strong>{money(ship.away)}</strong> away from free shipping
+                    </>
+                  )}
+                </p>
+                <div
+                  className="cart-meter"
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={FREE_SHIP_LABEL}
+                  aria-valuenow={Math.min(after, FREE_SHIP_LABEL)}
+                  aria-label="Progress to free shipping"
+                >
+                  <span style={{ width: `${Math.round(ship.fill * 100)}%` }} />
+                </div>
+              </div>
+              {dealBlock}
+            </div>
+          )}
+
+          <div className="cart-body">
+            {items.length === 0 ? (
+              <div className="cart-empty">
+                <p className="cart-empty-title">Your cart is empty</p>
+                <p className="cart-empty-sub">Pick a flavor - start with our seltzers.</p>
+                {rule && (
+                  <p className="cart-empty-sub">
+                    Your deal, <strong>{rule.label}</strong>, is saved and applies automatically.
+                  </p>
+                )}
+                <a href={rule?.boxPath ?? "/products"} className="cart-empty-cta" onClick={close}>
+                  {rule?.boxPath ? "Build Your Box" : "Browse Products"}
+                </a>
+              </div>
+            ) : (
+              <ul className="cart-items">{items.map(renderItem)}</ul>
+            )}
+          </div>
+
+          {items.length > 0 && step === "cart" && (
+            <footer className="cart-footer">
+              <div className="cart-row">
+                <span>Subtotal</span>
+                <span>{money(before)}</span>
+              </div>
+              {foreignCode && (
+                <div className="cart-row cart-code">
+                  <span>
+                    Code {foreignCode} is on your cart.
+                    {rule && (
+                      <>
+                        {" "}
+                        <button type="button" className="cart-code-remove" onClick={() => useSavedDeal()} disabled={busy}>
+                          Use your deal ({rule.label}) instead
+                        </button>
+                      </>
+                    )}
+                  </span>
+                </div>
+              )}
+              {!foreignCode && rule && (
+                <div className={`cart-row cart-code${applies ? " is-applied" : ""}`}>
+                  <span className="cart-code-text">
+                    {rule.label} <span className="cart-deal-code">· code {rule.code}</span>
+                    {!applies && <span className="cart-code-hint"> · applies when your cart qualifies</span>}
+                  </span>
+                  {applies && <span>−{money(savings)}</span>}
+                </div>
+              )}
+              {entries.length > 1 && (
+                <label className="cart-code-switch">
+                  <span>Your deals:</span>
+                  <select value={active ?? ""} onChange={(e) => setActiveCode(e.target.value || null)} disabled={busy}>
+                    {entries.map((en) => (
+                      <option key={en.code} value={en.code}>
+                        {dealLabel(en.code)}
+                      </option>
+                    ))}
+                    <option value="">No deal</option>
+                  </select>
+                </label>
+              )}
+              {entries.length === 1 && active && (
+                <button type="button" className="cart-code-remove" onClick={() => setActiveCode(null)} disabled={busy}>
+                  Remove deal
+                </button>
+              )}
+              {entries.length === 1 && !active && (
+                <button type="button" className="cart-code-remove" onClick={() => setActiveCode(entries[0].code)} disabled={busy}>
+                  Use my deal: {dealLabel(entries[0].code)}
+                </button>
+              )}
+              <div className="cart-total">
+                <span>Total</span>
+                <span className="cart-total-amount">
+                  {money(after)} {currency}
+                </span>
+              </div>
+
+              <div className={`cart-actions${checkoutPrimary ? " checkout-first" : ""}`}>
+                <button
+                  ref={checkoutPrimary ? undefined : primaryRef}
+                  type="button"
+                  className={`cart-btn ${checkoutPrimary ? "is-secondary" : "is-primary"}`}
+                  onClick={close}
+                >
+                  Continue Shopping
+                </button>
+                <button
+                  ref={checkoutPrimary ? primaryRef : undefined}
+                  type="button"
+                  className={`cart-btn ${checkoutPrimary ? "is-primary" : "is-secondary"}`}
+                  onClick={onCheckout}
+                  disabled={busy || isCheckingOut}
+                >
+                  {isCheckingOut ? "Opening checkout…" : busy ? "Updating…" : "Checkout"}
+                </button>
+              </div>
+              {email && (
+                <p className="cart-identity">
+                  Checking out as {maskEmail(email)} ·{" "}
+                  <button type="button" className="cart-code-remove" onClick={notYou}>
+                    Not you?
+                  </button>
+                </p>
+              )}
+              {storeError && <p className="cart-error">{storeError}</p>}
+              <p className="cart-footer-note">
+                {ship.unlocked ? "Free shipping · taxes calculated at checkout." : "Shipping & taxes calculated at checkout."}
+              </p>
+            </footer>
+          )}
+
+          {items.length > 0 && step === "email" && (
+            <footer className="cart-footer">
+              <form className="cart-email" onSubmit={onEmailSubmit} noValidate>
+                <label className="cart-field">
+                  <span className="cart-email-title">Your email for order updates</span>
+                  <input
+                    ref={emailRef}
+                    type="email"
+                    autoComplete="email"
+                    inputMode="email"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    placeholder="you@email.com"
+                    required
+                  />
+                </label>
+                {emailError && <p className="cart-error">{emailError}</p>}
+                {storeError && <p className="cart-error">{storeError}</p>}
+                <button type="submit" className="cart-btn is-primary" disabled={isCheckingOut || busy}>
+                  {isCheckingOut ? "Opening checkout…" : "Continue to Checkout"}
+                </button>
+                <button type="button" className="cart-email-back" onClick={() => setStep("cart")}>
+                  Back to cart
+                </button>
+                <p className="cart-footer-note">We'll fill this in at checkout so you don't type it twice.</p>
+              </form>
+            </footer>
+          )}
+        </div>
+      </aside>
+    </>
+  );
+
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         className="cart-trigger"
         onClick={openCart}
@@ -257,220 +644,7 @@ export function CartDrawer() {
         </svg>
         {totalItems > 0 && <span className="cart-trigger-badge">{totalItems}</span>}
       </button>
-
-      {mounted && createPortal(<>
-      {isOpen && (
-        <div
-          className="cart-overlay"
-          onClick={closeCart}
-          aria-hidden="true"
-          style={{ position: "fixed", inset: 0, background: "rgba(44, 24, 16, 0.45)", zIndex: 9998 }}
-        />
-      )}
-
-      {/* Always in the DOM so the slide transition runs both ways. Inline
-          style is the defensive baseline kept from the previous drawer (see
-          git history): position/translate even if the stylesheet is late. */}
-      <aside
-        className={`cart-drawer ${isOpen ? "is-open" : ""}`}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Shopping cart"
-        aria-hidden={!isOpen}
-        style={{
-          position: "fixed",
-          top: 0,
-          right: 0,
-          width: "100%",
-          maxWidth: "420px",
-          height: "100dvh",
-          transform: isOpen ? "translateX(0)" : "translateX(100%)",
-          zIndex: 9999,
-          background: "#f7efe0",
-        }}
-      >
-        <header className="cart-header">
-          <h2 className="cart-title">Your Cart</h2>
-          <button type="button" className="cart-close" onClick={closeCart} aria-label="Close cart">
-            ×
-          </button>
-        </header>
-
-        {items.length > 0 && (
-          <div className="cart-meters" aria-live="polite">
-            <div className={`cart-ship${ship.unlocked ? " is-unlocked" : ""}`}>
-              <p className="cart-ship-text">
-                {ship.unlocked ? (
-                  <>
-                    <span aria-hidden="true">🎉 </span>You unlocked <strong>free shipping</strong>
-                  </>
-                ) : (
-                  <>
-                    You're <strong>{money(ship.away)}</strong> away from free shipping
-                  </>
-                )}
-              </p>
-              <div className="cart-meter" role="progressbar" aria-valuemin={0} aria-valuemax={FREE_SHIP_LABEL} aria-valuenow={Math.min(after, FREE_SHIP_LABEL)} aria-label="Progress to free shipping">
-                <span style={{ width: `${Math.round(ship.fill * 100)}%` }} />
-              </div>
-            </div>
-
-            {rule && ev.status !== "none" && (
-              <div className={`cart-deal is-${ev.status}`}>
-                <p className="cart-deal-label">
-                  <span className="cart-deal-code">{rule.code}</span> {rule.label}
-                </p>
-                {ev.status === "progress" && ev.need > 1 && (
-                  <div className="cart-meter is-deal" role="progressbar" aria-valuemin={0} aria-valuemax={ev.need} aria-valuenow={Math.min(ev.have, ev.need)} aria-label="Deal progress">
-                    <span style={{ width: `${Math.round(Math.min(ev.have / ev.need, 1) * 100)}%` }} />
-                  </div>
-                )}
-                <p className="cart-deal-msg">{ev.message}</p>
-                {ev.status === "progress" && isFreeDeclined(active) && rule.kind === "bxgy" && (
-                  <button type="button" className="cart-deal-add" onClick={restoreFreeItem} disabled={busy}>
-                    Add my free 4-pack
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        <div className="cart-body">
-          {items.length === 0 ? (
-            <div className="cart-empty">
-              <p className="cart-empty-title">Your cart is empty</p>
-              <p className="cart-empty-sub">Pick a flavor - start with our seltzers.</p>
-              {active && rule && (
-                <p className="cart-empty-sub">
-                  Your code <strong>{rule.code}</strong> is saved and will apply automatically.
-                </p>
-              )}
-              <a href="/products" className="cart-empty-cta" onClick={closeCart}>
-                Browse Products
-              </a>
-            </div>
-          ) : (
-            <ul className="cart-items">{items.map(renderItem)}</ul>
-          )}
-        </div>
-
-        {items.length > 0 && step === "cart" && (
-          <footer className="cart-footer">
-            <div className="cart-row">
-              <span>Subtotal</span>
-              <span>{money(before)}</span>
-            </div>
-            {active && rule && (
-              <div className={`cart-row cart-code${appliedCode?.applicable ? " is-applied" : ""}`}>
-                <span>
-                  <strong>{rule.code}</strong>{" "}
-                  {appliedCode?.applicable && savings > 0 ? (
-                    <>applied · you save {money(savings)}</>
-                  ) : (
-                    <>saved · applies when your cart qualifies</>
-                  )}
-                </span>
-                {appliedCode?.applicable && savings > 0 && <span>−{money(savings)}</span>}
-              </div>
-            )}
-            {entries.length > 1 && (
-              <label className="cart-code-switch">
-                <span>Your codes:</span>
-                <select value={active ?? ""} onChange={(e) => setActiveCode(e.target.value || null)} disabled={busy}>
-                  {entries.map((en) => (
-                    <option key={en.code} value={en.code}>
-                      {en.code} · {dealByCode(en.code)?.label}
-                    </option>
-                  ))}
-                  <option value="">No code</option>
-                </select>
-              </label>
-            )}
-            {entries.length === 1 && active && (
-              <button type="button" className="cart-code-remove" onClick={() => setActiveCode(null)} disabled={busy}>
-                Remove code
-              </button>
-            )}
-            {entries.length === 1 && !active && (
-              <button type="button" className="cart-code-remove" onClick={() => setActiveCode(entries[0].code)} disabled={busy}>
-                Use my code {entries[0].code}
-              </button>
-            )}
-            <div className="cart-total">
-              <span>Total</span>
-              <span className="cart-total-amount">
-                {money(after)} {currency}
-              </span>
-            </div>
-
-            <div className={`cart-actions${checkoutPrimary ? " checkout-first" : ""}`}>
-              <button
-                ref={checkoutPrimary ? undefined : primaryRef}
-                type="button"
-                className={`cart-btn ${checkoutPrimary ? "is-secondary" : "is-primary"}`}
-                onClick={closeCart}
-              >
-                Continue Shopping
-              </button>
-              <button
-                ref={checkoutPrimary ? primaryRef : undefined}
-                type="button"
-                className={`cart-btn ${checkoutPrimary ? "is-primary" : "is-secondary"}`}
-                onClick={onCheckout}
-                disabled={busy || isCheckingOut}
-              >
-                {isCheckingOut ? "Opening checkout…" : busy ? "Updating…" : "Checkout"}
-              </button>
-            </div>
-            {(storeError) && <p className="cart-error">{storeError}</p>}
-            <p className="cart-footer-note">
-              {ship.unlocked ? "Free shipping · taxes calculated at checkout." : "Shipping & taxes calculated at checkout."}
-            </p>
-          </footer>
-        )}
-
-        {items.length > 0 && step === "email" && (
-          <footer className="cart-footer">
-            <form className="cart-email" onSubmit={onEmailSubmit} noValidate>
-              <p className="cart-email-title">Where should we send your order updates?</p>
-              <label className="cart-field">
-                <span>Email</span>
-                <input
-                  ref={emailRef}
-                  type="email"
-                  autoComplete="email"
-                  inputMode="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@email.com"
-                  required
-                />
-              </label>
-              <div className="cart-field-row">
-                <label className="cart-field">
-                  <span>First name</span>
-                  <input type="text" autoComplete="given-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-                </label>
-                <label className="cart-field">
-                  <span>Last name</span>
-                  <input type="text" autoComplete="family-name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-                </label>
-              </div>
-              {emailError && <p className="cart-error">{emailError}</p>}
-              {storeError && <p className="cart-error">{storeError}</p>}
-              <button type="submit" className="cart-btn is-primary" disabled={isCheckingOut || busy}>
-                {isCheckingOut ? "Opening checkout…" : "Continue to Checkout"}
-              </button>
-              <button type="button" className="cart-email-back" onClick={() => setStep("cart")}>
-                Back to cart
-              </button>
-              <p className="cart-footer-note">We'll fill this in at checkout so you don't type it twice.</p>
-            </form>
-          </footer>
-        )}
-      </aside>
-      </>, document.body)}
+      {mounted && createPortal(drawer, document.body)}
     </>
   );
 }

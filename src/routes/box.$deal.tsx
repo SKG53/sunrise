@@ -4,8 +4,14 @@
 // paid/owned-channel landers (ads, emails, the wheel), kept out of search.
 //
 // Add a deal: add a row with a REAL Shopify code that is also listed in
-// lib/deals.ts (so the cart can auto-apply it and show progress). Set
+// lib/deals.ts (so the cart can auto-apply it and show progress), and set the
+// code's `boxPath` there so Spin & Save "Shop Now" opens it. Set
 // `enabled: false` to park a page without deleting it (it 404s).
+//
+// Two kinds of box:
+//   - buy X, get Y: paid slots + free slots (freePool says which packs).
+//   - "% off N or more": paid slots = N, free slots = 0, `percent` set. The
+//     deal is N OR MORE: the shopper can add more packs in the cart.
 //
 // Links can carry the usual UTMs. The page claims the code itself, so a
 // ?code= param isn't needed here.
@@ -19,6 +25,7 @@ type BoxDeal = {
   paidSlots: number;
   freeSlots: number;
   freePool: "10mg" | "any";
+  percent?: number;
   headline: string;
   subline: string;
   title: string;
@@ -57,6 +64,40 @@ const BOX_DEALS: Record<string, BoxDeal> = {
     headline: "Buy 2. Get 1 Free.",
     subline: "Pick any two 4-packs. The third one is on us.",
     title: "Buy 2 Get 1 Free",
+  },
+  // Spin & Save "N or more" % deals (site pass 2). Copy says "or more".
+  "25off2": {
+    enabled: true,
+    code: "NEWCUST2P25",
+    paidSlots: 2,
+    freeSlots: 0,
+    freePool: "any",
+    percent: 25,
+    headline: "25% Off. 2 or More.",
+    subline: "Pick 2 or more 4-packs and take 25% off every one.",
+    title: "25% Off 2 or More 4-Packs",
+  },
+  "25off5": {
+    enabled: true,
+    code: "NEWCUST5P25",
+    paidSlots: 5,
+    freeSlots: 0,
+    freePool: "any",
+    percent: 25,
+    headline: "25% Off. 5 or More.",
+    subline: "Mix and match 5 or more 4-packs and take 25% off every one.",
+    title: "25% Off 5 or More 4-Packs",
+  },
+  "30off5": {
+    enabled: true,
+    code: "NEWCUST5P30",
+    paidSlots: 5,
+    freeSlots: 0,
+    freePool: "any",
+    percent: 30,
+    headline: "30% Off. 5 or More.",
+    subline: "Mix and match 5 or more 4-packs and take 30% off every one.",
+    title: "30% Off 5 or More 4-Packs",
   },
   // Lander prototypes (/neverpull/buy1get2, /neverpull/buy3get2). PARKED:
   // no Shopify codes exist yet (prototype used TEST_B1G2 / TEST_B3G2). Create
@@ -108,6 +149,7 @@ function BoxPage() {
       paidSlots={deal.paidSlots}
       freeSlots={deal.freeSlots}
       freePool={deal.freePool}
+      percent={deal.percent}
       headline={deal.headline}
       subline={deal.subline}
       code={deal.code}

@@ -1,32 +1,32 @@
 // Who is this browser? One localStorage record, `sunrise:kl-id`, shared by the
 // Klaviyo client events, the cart's checkout email step and the deal pages.
 //
-//   { email?, kx?, firstName?, lastName?, ts }
+//   { email?, kx?, ts }
 //
 // Set ONLY from places where the shopper gave us their email on purpose:
 //   - Spin & Save / ad-deal claim (SpinWheel)        → setIdentityEmail
 //   - Free-can claim (FreeSampleSection)             → setIdentityEmail
 //   - Footer newsletter signup (SiteFooter)          → setIdentityEmail
 //   - Build Your Box unlock (BuildYourBox)           → setIdentityEmail
-//   - Cart "where should we send your receipt" step  → setIdentityEmail (+ names)
+//   - Cart "email before checkout" step              → setIdentityEmail
 //   - Klaviyo email click (`_kx` in the URL, __root) → setIdentityKx
-// NOT the review page, contact form or wholesale form (not purchase intent).
+// NOT the review page, contact form or wholesale form.
 //
-// Every read/write is try/catch guarded (private mode, SSR) and never throws.
-// Listeners (subscribeIdentity) let siteEvents flush events that happened
-// before the visitor was known (e.g. Wheel Shown → Wheel Spun → claim).
+// Shared devices (review 4.3a): identity expires after 60 days; a DIFFERENT
+// `_kx` than the stored one means a different person clicked an email, so the
+// stored email is dropped; the cart shows "Checking out as … · Not you?"
+// (clearIdentityEmail). Names are not collected (founder: email only).
+//
+// Every read/write is try/catch guarded and never throws. Listeners
+// (subscribeIdentity) let siteEvents flush queued events and the cart attach
+// the email to the Shopify cart.
 
-export type Identity = {
-  email?: string;
-  kx?: string;
-  firstName?: string;
-  lastName?: string;
-  ts: number;
-};
+export type Identity = { email?: string; kx?: string; ts: number };
 
 const KEY = "sunrise:kl-id";
+const TTL_MS = 60 * 24 * 60 * 60 * 1000;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const listeners = new Set<(id: Identity) => void>();
+const listeners = new Set<(id: Identity | null) => void>();
 
 export function getIdentity(): Identity | null {
   if (typeof window === "undefined") return null;
@@ -34,14 +34,15 @@ export function getIdentity(): Identity | null {
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;
     const v = JSON.parse(raw) as Partial<Identity>;
-    if (!v || (typeof v.email !== "string" && typeof v.kx !== "string")) return null;
-    return {
-      email: typeof v.email === "string" ? v.email : undefined,
-      kx: typeof v.kx === "string" ? v.kx : undefined,
-      firstName: typeof v.firstName === "string" ? v.firstName : undefined,
-      lastName: typeof v.lastName === "string" ? v.lastName : undefined,
-      ts: typeof v.ts === "number" ? v.ts : Date.now(),
-    };
+    const ts = typeof v.ts === "number" ? v.ts : 0;
+    if (!ts || Date.now() - ts > TTL_MS) {
+      localStorage.removeItem(KEY);
+      return null;
+    }
+    const email = typeof v.email === "string" ? v.email : undefined;
+    const kx = typeof v.kx === "string" ? v.kx : undefined;
+    if (!email && !kx) return null;
+    return { email, kx, ts };
   } catch {
     return null;
   }
@@ -52,9 +53,15 @@ export function knownEmail(): string | null {
   return getIdentity()?.email ?? null;
 }
 
-function save(next: Identity) {
+/** Known at all (email OR Klaviyo click). Deal pages treat both as known. */
+export function isKnownBrowser(): boolean {
+  return !!getIdentity();
+}
+
+function save(next: Identity | null) {
   try {
-    localStorage.setItem(KEY, JSON.stringify(next));
+    if (next) localStorage.setItem(KEY, JSON.stringify(next));
+    else localStorage.removeItem(KEY);
   } catch {
     /* private mode — events simply stay anonymous */
   }
@@ -67,27 +74,12 @@ function save(next: Identity) {
   });
 }
 
-export function setIdentityEmail(
-  email: string,
-  names?: { firstName?: string; lastName?: string },
-): void {
+export function setIdentityEmail(email: string): void {
   if (typeof window === "undefined") return;
   const value = email.trim().toLowerCase();
   if (!EMAIL_RE.test(value) || value.length > 320) return;
   const cur = getIdentity();
-  const clean = (s?: string) => {
-    const t = (s ?? "").trim().slice(0, 80);
-    return t || undefined;
-  };
-  // A different email = a different person on this browser: drop old names.
-  const sameEmail = cur?.email === value;
-  save({
-    email: value,
-    kx: cur?.kx,
-    firstName: clean(names?.firstName) ?? (sameEmail ? cur?.firstName : undefined),
-    lastName: clean(names?.lastName) ?? (sameEmail ? cur?.lastName : undefined),
-    ts: Date.now(),
-  });
+  save({ email: value, kx: cur?.kx, ts: Date.now() });
 }
 
 export function setIdentityKx(kx: string): void {
@@ -95,22 +87,31 @@ export function setIdentityKx(kx: string): void {
   const value = kx.trim();
   if (!value || value.length > 512) return;
   const cur = getIdentity();
-  if (cur?.kx === value) return;
-  save({ ...(cur ?? { ts: Date.now() }), kx: value, ts: Date.now() });
-}
-
-/** Capture `_kx` from a Klaviyo email click. Call once on load (__root). */
-export function captureKxFromUrl(): void {
-  if (typeof window === "undefined") return;
-  try {
-    const kx = new URLSearchParams(window.location.search).get("_kx");
-    if (kx) setIdentityKx(kx);
-  } catch {
-    /* malformed URL — no-op */
+  if (cur?.kx === value) {
+    save({ ...cur, ts: Date.now() });
+    return;
   }
+  // A new or different Klaviyo click may be a different person on this
+  // device, so the stored email is never carried over. (Cost for the same
+  // person: they type their email once at checkout. Safer than prefilling
+  // someone else's.)
+  save({ kx: value, ts: Date.now() });
 }
 
-export function subscribeIdentity(fn: (id: Identity) => void): () => void {
+/** "Not you?" in the cart. */
+export function clearIdentityEmail(): void {
+  if (typeof window === "undefined") return;
+  save(null);
+}
+
+export function subscribeIdentity(fn: (id: Identity | null) => void): () => void {
   listeners.add(fn);
   return () => listeners.delete(fn);
+}
+
+/** a…@gmail.com */
+export function maskEmail(email: string): string {
+  const [user, domain] = email.split("@");
+  if (!domain) return email;
+  return `${user.slice(0, 1)}…@${domain}`;
 }
