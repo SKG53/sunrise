@@ -546,9 +546,14 @@ export function BuildYourBox({
   // Any-pack deals: a free pick priced above the (new) cheapest paid pack no
   // longer matches what Shopify will discount → empty that free slot.
   useEffect(() => {
-    if (freePool !== "any" || step !== "build") return;
+    // Runs on the build step AND the reveal (fix Oct 29 #2): a restored box
+    // can reach the reveal before the cart has loaded, so the check repeats
+    // when the cart's prices arrive. Skipped on the email step and while the
+    // box is being added.
+    if (freePool !== "any" || step === "email" || checkoutBusy) return;
     // Box already in this cart: Shopify decides what's free; leave it alone.
-    if (restoredCartRef.current && restoredCartRef.current === useCartStore.getState().cartId) return;
+    const cartNow = useCartStore.getState().cartId;
+    if (cartNow && (restoredCartRef.current === cartNow || addedTo === cartNow)) return;
     setFree((cur) => {
       const cleared: string[] = [];
       const next = cur.map((sl) => {
@@ -568,7 +573,7 @@ export function BuildYourBox({
       return next;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [freePool, minPaid]);
+  }, [freePool, minPaid, step]);
 
   // A reveal with an empty slot (e.g. a restored box whose free pick was just
   // cleared) goes back to the build step, where the note explains why.
