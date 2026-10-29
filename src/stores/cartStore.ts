@@ -43,6 +43,9 @@
 //   9. Events: Added to Cart (one per add action), Removed from Cart, Started
 //      Checkout (GA4 pushes cleared first), Deal Progress / Deal Unlocked /
 //      Reached Free Shipping (deduped per cart).
+//  10. Other tabs (fix Oct 29): a cart change in another tab is picked up only
+//      when lines, codes or email changed, never for a new checkout-link key
+//      alone (that made two open tabs re-sync each other ~4×/second).
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
@@ -116,7 +119,10 @@ export interface CartItem {
   freeFor?: string | null;
 }
 
-export type AddInput = Omit<CartItem, "lineId" | "lineTotal" | "lineDiscount" | "freeFor" | "productId">;
+export type AddInput = Omit<CartItem, "lineId" | "lineTotal" | "lineDiscount" | "freeFor" | "productId"> & {
+  /** Build Your Box free pick: the deal code it's free under (tagged `_sr_free`). */
+  freeFor?: string | null;
+};
 type AddOpts = { open?: boolean };
 
 interface CartStore {
@@ -685,15 +691,29 @@ export const useCartStore = create<CartStore>()(
           try {
             return await enqueue(async () => {
               await ensureSynced();
-              const lines: NewLine[] = add.map((i) => ({ merchandiseId: i.variantId, quantity: i.quantity }));
-              const before = new Map(get().items.filter((i) => !i.freeFor).map((i) => [i.variantId, i.quantity]));
+              const lines: NewLine[] = add.map((i) => ({
+                merchandiseId: i.variantId,
+                quantity: i.quantity,
+                ...(i.freeFor ? { attributes: [{ key: FREE_ATTR, value: i.freeFor }] } : {}),
+              }));
+              // Units per variant + free tag, before and after (a paid and a
+              // free line of the same flavor are separate lines).
+              const unitsBy = (list: Array<{ variantId: string; freeFor?: string | null; quantity: number }>) => {
+                const m = new Map<string, number>();
+                list.forEach((i) => {
+                  const k = `${i.variantId}|${i.freeFor ? 1 : 0}`;
+                  m.set(k, (m.get(k) ?? 0) + i.quantity);
+                });
+                return m;
+              };
+              const before = unitsBy(get().items);
               const res = await mutate((id) => cartLinesAddFull(id, lines), lines);
               if (!res?.ok) return false;
               // Out of stock: Shopify adds less (or nothing) and warns.
-              const after = get().items.filter((i) => !i.freeFor);
+              const after = unitsBy(get().items);
               const short = add.filter((a) => {
-                const gained = (after.find((i) => i.variantId === a.variantId)?.quantity ?? 0) - (before.get(a.variantId) ?? 0);
-                return gained < a.quantity;
+                const k = `${a.variantId}|${a.freeFor ? 1 : 0}`;
+                return (after.get(k) ?? 0) - (before.get(k) ?? 0) < a.quantity;
               });
               if (short.length) {
                 set({ error: `Sorry, ${short.map((s) => s.productTitle).join(", ")} is low on stock. Your cart shows what we could add.` });
@@ -905,9 +925,27 @@ if (typeof window !== "undefined") {
   window.addEventListener("pageshow", (e) => {
     if ((e as PageTransitionEvent).persisted) useCartStore.getState().syncCart();
   });
-  // Another tab changed the cart: pick it up.
+  // Another tab changed the cart: pick it up. Only for a REAL change (fix
+  // Oct 29): Shopify returns a new checkout-link key on every cart read, so
+  // comparing raw values made two open tabs re-sync each other ~4×/second
+  // forever. Lines, quantities, codes and email are what matter.
+  const cartSig = (raw: string | null) => {
+    try {
+      const st = (JSON.parse(raw ?? "null") as { state?: { cartId?: string | null; cart?: CartView | null } } | null)?.state;
+      if (!st) return "";
+      const c = st.cart;
+      return JSON.stringify([
+        st.cartId ?? null,
+        c?.email ?? null,
+        c?.discountCodes ?? [],
+        (c?.lines ?? []).map((l) => [l.lineId, l.variantId, l.quantity, l.attributes]),
+      ]);
+    } catch {
+      return raw ?? "";
+    }
+  };
   window.addEventListener("storage", (e) => {
-    if (e.key === "shopify-cart") {
+    if (e.key === "shopify-cart" && cartSig(e.oldValue) !== cartSig(e.newValue)) {
       Promise.resolve(useCartStore.persist.rehydrate()).then(() => useCartStore.getState().syncCart());
     }
   });

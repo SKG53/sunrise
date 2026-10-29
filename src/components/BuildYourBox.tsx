@@ -39,6 +39,14 @@
 // or the first claim of this code in this browser; "% off N or more" deals use
 // the same page with freeSlots = 0 and `percent`.
 //
+// FIXES (Oct 29, site review): a restored box whose free pick stopped
+// qualifying returns to the build step with a visible note (was a blank
+// page); free picks go to the cart tagged `_sr_free`; a low-stock partial add
+// marks the box as in the cart (no double add on retry); checkout errors show
+// on this page; the free-shipping meter counts the whole order; "% off"
+// savings use Shopify's per-unit rounding (down to the cent); slot rows wrap
+// on phones.
+//
 // "Any 4-pack free" deals: Shopify makes the CHEAPEST qualifying pack free.
 // To keep the page honest, the free picker only offers packs priced at or
 // below the cheapest paid pack, and drops a free pick that stops qualifying.
@@ -58,7 +66,7 @@ import { readUtms } from "../lib/utms";
 import { isKnownBrowser, knownEmail, setIdentityEmail } from "../lib/identity";
 import { addToWallet, getWalletEntry } from "../lib/dealWallet";
 import { siteEvent } from "../lib/siteEvents";
-import { FREE_SHIP_THRESHOLD, FREE_SHIP_LABEL, cheapestPaidPrice, dealByCode } from "../lib/deals";
+import { FREE_SHIP_THRESHOLD, FREE_SHIP_LABEL, cheapestPaidPrice, dealByCode, inScope } from "../lib/deals";
 import { useCartStore, dealLines, type AddInput } from "../stores/cartStore";
 import {
   render10mgLockup,
@@ -219,6 +227,7 @@ export function BuildYourBox({
   const openCart = useCartStore((st) => st.openCart);
   const cartItems = useCartStore((st) => st.items);
   const cartId = useCartStore((st) => st.cartId);
+  const cartAfter = useCartStore((st) => st.cart?.merchandiseAfterDiscounts ?? null);
   const rule = dealByCode(code);
   const boxRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLElement>(null);
@@ -253,6 +262,12 @@ export function BuildYourBox({
   const [unlocking, setUnlocking] = useState(false);
   const [company, setCompany] = useState(""); // honeypot (review 4.2f)
   const [addedTo, setAddedTo] = useState<string | null>(null);
+  // Visible "your free pick was cleared" note (fix Oct 29): before, a restored
+  // box whose free pick stopped qualifying rendered a blank page.
+  const [clearedNote, setClearedNote] = useState("");
+  // Cart id a restored box was already added to (read by the free-pick check
+  // on mount, before `addedTo` state lands).
+  const restoredCartRef = useRef<string | null>(null);
 
   const priceOf = (p: FourPack) => prices[p.variantId] ?? p.fallbackPrice;
   const paidPacks = paid.map((s) => packBySlug(s));
@@ -272,15 +287,30 @@ export function BuildYourBox({
   const totalSlots = paidSlots + freeSlots;
   // "% off" boxes: shipping counts the price after the discount (Shopify's
   // free-shipping rate is after discounts — verified).
-  const pctSavings = percent && paidFull ? round2((paidSubtotal * percent) / 100) : 0;
-  const shipBasis = round2(paidSubtotal - pctSavings);
+  // Shopify takes the percent off EACH unit and rounds down to the cent
+  // (verified live Oct 29: 25% of $24.95 = $6.2375 → $6.23), so sum per pack.
+  const pctOff = (price: number) => (percent ? Math.floor((Math.round(price * 100) * percent) / 100) / 100 : 0);
+  const pctSavings = percent && paidFull ? round2(paidPacks.reduce((sum, p) => sum + (p ? pctOff(priceOf(p)) : 0), 0)) : 0;
+  // Free-shipping meter counts the WHOLE order (fix Oct 29): items already in
+  // the cart plus this box. Box in the cart → Shopify's own total. Otherwise
+  // the cart's items at full price (the box's code replaces any other code),
+  // with this box's percent applied to the ones it covers, plus the box.
+  // Buy-X-get-Y: Shopify frees the cheapest pack, which is the box's free pick
+  // (it's capped at the cheapest paid pack), so paid packs + cart = the order.
+  const boxInCart = !!addedTo && addedTo === cartId;
+  const cartBasis = cartItems.reduce((sum, i) => {
+    const unit = Number(i.price.amount);
+    const covered = rule?.kind === "percent" && inScope({ handle: i.productHandle, variantTitle: i.variantTitle }, rule.scope);
+    return sum + (covered ? unit - pctOff(unit) : unit) * i.quantity;
+  }, 0);
+  const shipBasis = boxInCart && cartAfter !== null ? cartAfter : round2(cartBasis + paidSubtotal - pctSavings);
   const shipUnlocked = shipBasis >= FREE_SHIP_THRESHOLD;
   const shipFill = Math.min(shipBasis / FREE_SHIP_THRESHOLD, 1);
   const shipText = shipUnlocked
     ? "Free shipping unlocked\u00a0✓"
     : `You're ${money(round2(FREE_SHIP_LABEL - shipBasis))} away from free shipping`;
   // Box already in THIS cart? Then the reveal only offers checkout / view cart.
-  const inCart = !!addedTo && addedTo === cartId;
+  const inCart = boxInCart;
   // Older items already in the cart (shown on the reveal before adding).
   const otherItems = inCart ? [] : cartItems;
   const paidLabel = paidSlots === 1 ? "Your 4-pack" : "Your 4-packs";
@@ -296,6 +326,7 @@ export function BuildYourBox({
       setFree(saved.free);
       setEmail(saved.email ?? "");
       setAddedTo(saved.addedToCart ?? null);
+      restoredCartRef.current = saved.addedToCart ?? null;
       setStep("reveal");
     }
   }, [storageKey, paidSlots, freeSlots]);
@@ -516,6 +547,8 @@ export function BuildYourBox({
   // longer matches what Shopify will discount → empty that free slot.
   useEffect(() => {
     if (freePool !== "any" || step !== "build") return;
+    // Box already in this cart: Shopify decides what's free; leave it alone.
+    if (restoredCartRef.current && restoredCartRef.current === useCartStore.getState().cartId) return;
     setFree((cur) => {
       const cleared: string[] = [];
       const next = cur.map((sl) => {
@@ -528,14 +561,26 @@ export function BuildYourBox({
       });
       if (!cleared.length) return cur;
       // Never silent: announce why the free pick was cleared.
-      setAnnounce(
-        `Your free ${cleared.join(", ")} was cleared: the free 4-pack has to be your lowest-priced pack. Pick it again.`,
-      );
+      const note = `Your free ${cleared.join(", ")} was cleared: the free 4-pack has to be your lowest-priced pack. Pick it again.`;
+      setAnnounce(note);
+      setClearedNote(note);
       setShowHint(true);
       return next;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [freePool, minPaid]);
+
+  // A reveal with an empty slot (e.g. a restored box whose free pick was just
+  // cleared) goes back to the build step, where the note explains why.
+  useEffect(() => {
+    if (step === "reveal" && !boxFull) {
+      setStep("build");
+      if (isMobile) setExpanded(true);
+    }
+  }, [step, boxFull, isMobile]);
+  useEffect(() => {
+    if (boxFull) setClearedNote("");
+  }, [boxFull]);
 
   const scrollToStep = (focusEmail: boolean) =>
     window.setTimeout(() => {
@@ -664,13 +709,22 @@ export function BuildYourBox({
   // unlock), records that the box is in the cart (no double add), and the cart
   // applies the code. Checkout sets the email on the Shopify cart and
   // redirects in the same tab.
-  const boxToCart = async (open: boolean): Promise<boolean> => {
+  // Result: "ok" (all in), "partial" (low stock: some packs went in, the box
+  // is marked as in the cart so a retry can't add it twice), "fail" (nothing).
+  const boxToCart = async (open: boolean): Promise<"ok" | "partial" | "fail"> => {
     addToWallet(code, "box", { box: true });
-    const qty = new Map<string, { p: FourPack; n: number }>();
-    [...paidPacks, ...freePacks].forEach((p) => {
-      if (p) qty.set(p.variantId, { p, n: (qty.get(p.variantId)?.n ?? 0) + 1 });
-    });
-    const list: AddInput[] = Array.from(qty.values(), ({ p, n }) => ({
+    // Free picks carry the cart's free-line tag (`_sr_free`), so the cart shows
+    // "Free" on the flavor the shopper picked, keeps it priced to qualify and
+    // takes it out (with a notice) if the deal is switched off (fix Oct 29).
+    const qty = new Map<string, { p: FourPack; n: number; free: boolean }>();
+    const tally = (p: FourPack | null, free: boolean) => {
+      if (!p) return;
+      const k = `${p.variantId}|${free ? 1 : 0}`;
+      qty.set(k, { p, free, n: (qty.get(k)?.n ?? 0) + 1 });
+    };
+    paidPacks.forEach((p) => tally(p, false));
+    freePacks.forEach((p) => tally(p, true));
+    const list: AddInput[] = Array.from(qty.values(), ({ p, n, free: isFree }) => ({
       variantId: p.variantId,
       productHandle: p.slug,
       productTitle: `${p.flavor} ${p.tier}mg`,
@@ -679,10 +733,14 @@ export function BuildYourBox({
       price: { amount: priceOf(p).toFixed(2), currencyCode: "USD" },
       quantity: n,
       selectedOptions: [],
+      freeFor: isFree ? code : null,
     }));
+    const unitsBefore = useCartStore.getState().items.reduce((n, i) => n + i.quantity, 0);
     const ok = await addItems(list, { open });
-    const id = useCartStore.getState().cartId;
-    if (ok && id) {
+    const st = useCartStore.getState();
+    const id = st.cartId;
+    const landed = !!id && st.items.reduce((n, i) => n + i.quantity, 0) > unitsBefore;
+    if (id && (ok || landed)) {
       setAddedTo(id);
       try {
         const saved: Saved = { paid: paid as string[], free: free as string[], claimed: true, email: email || null, addedToCart: id };
@@ -691,7 +749,13 @@ export function BuildYourBox({
         /* harmless */
       }
     }
-    return ok;
+    if (ok) return "ok";
+    if (landed) {
+      st.openCart();
+      setCheckoutError("Some packs are low on stock, so your cart shows what we could add. Please check it before checkout.");
+      return "partial";
+    }
+    return "fail";
   };
 
   // Primary reveal action:
@@ -706,15 +770,25 @@ export function BuildYourBox({
       if (inCart) {
         await cartCheckout(email ? { email } : undefined);
       } else if (otherItems.length > 0) {
-        if (!(await boxToCart(true))) throw new Error("add failed");
+        if ((await boxToCart(true)) === "fail") throw new Error("add failed");
         setCheckoutBusy(false);
         return;
       } else {
-        if (!(await boxToCart(false))) throw new Error("add failed");
+        const r = await boxToCart(false);
+        if (r === "fail") throw new Error("add failed");
+        if (r === "partial") {
+          setCheckoutBusy(false);
+          return;
+        }
         await cartCheckout(email ? { email } : undefined);
       }
-      // Still here = checkout didn't navigate (the cart shows why).
-      if (!useCartStore.getState().isCheckingOut) setCheckoutBusy(false);
+      // Still here = checkout didn't navigate. Say why here too (fix Oct 29):
+      // the store's message (timeout, expired cart…) only showed in the cart.
+      const after = useCartStore.getState();
+      if (!after.isCheckingOut) {
+        setCheckoutBusy(false);
+        if (after.error) setCheckoutError(after.error);
+      }
     } catch (err) {
       console.error(`[${logTag}] checkout failed`, err);
       setCheckoutError("Something went wrong. Please try again.");
@@ -730,9 +804,9 @@ export function BuildYourBox({
     }
     setCheckoutBusy(true);
     setCheckoutError("");
-    const ok = await boxToCart(true);
+    const r = await boxToCart(true);
     setCheckoutBusy(false);
-    if (!ok) setCheckoutError("Something went wrong. Please try again.");
+    if (r === "fail") setCheckoutError("Something went wrong. Please try again.");
   };
 
   const primaryLabel = inCart ? "Checkout" : otherItems.length > 0 ? "Add to Cart" : "Continue to Checkout";
@@ -1003,6 +1077,11 @@ export function BuildYourBox({
             {hint("byb-continue-hint")}
           </div>
         </div>
+      )}
+      {editable && clearedNote && (
+        <p className="byb-cleared-note" role="status">
+          {clearedNote}
+        </p>
       )}
       {isMobile && fullNote}
     </div>

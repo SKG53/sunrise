@@ -19,7 +19,10 @@
 //      cart is at free shipping AND no deal is mid-way; then "Checkout" leads.
 //      Checkout is always available. Under 480 px the secondary one is a link.
 //   6. Email step (unknown shoppers only): EMAIL ONLY (founder). Known shoppers
-//      see "Checking out as a…@… · Not you?".
+//      see "Checking out as" / their FULL email in bold on its own line /
+//      "Not you?" (founder, Oct 29: full address, not masked).
+//   7. "N more items below" pill when cart lines are hidden under the fold
+//      (Oct 29); tap scrolls the next hidden line into view.
 //
 // Renders in a portal on <body> (z-index fix: SiteHeader's stacking context
 // used to put the drawer under the announcement bar). Focus is trapped while
@@ -40,7 +43,7 @@ import {
   type WalletChoice,
   type WalletEntry,
 } from "@/lib/dealWallet";
-import { clearIdentityEmail, knownEmail, maskEmail, subscribeIdentity } from "@/lib/identity";
+import { clearIdentityEmail, knownEmail, subscribeIdentity } from "@/lib/identity";
 import { FREE_10MG, LIVE_FOUR_PACKS, type FourPack } from "@/lib/liveFourPacks";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -109,6 +112,68 @@ export function CartDrawer() {
   const emailRef = useRef<HTMLInputElement>(null);
   const wasOpen = useRef(false);
 
+  // "More below" cue (Oct 29): when cart lines are hidden under the fold, a
+  // pill sits at the bottom of the list ("2 more items below"); tapping it
+  // scrolls the next hidden line into view. Works with either scroller: the
+  // list itself (normal) or the whole panel (short screens, max-height 700px).
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [below, setBelow] = useState(0);
+  const MORE_CLEARANCE = 56; // px kept clear above the pill when scrolling
+  const listView = useCallback(() => {
+    const body = bodyRef.current;
+    const scroller = scrollRef.current;
+    if (!body || !scroller) return null;
+    const bottom = Math.min(body.getBoundingClientRect().bottom, scroller.getBoundingClientRect().bottom);
+    const rows = Array.from(body.querySelectorAll<HTMLElement>(".cart-items > li"));
+    // A line counts as "below" when less than half of it (max 40px) shows
+    // above the pill's zone at the bottom of the list.
+    const hidden = rows.filter((li) => {
+      const r = li.getBoundingClientRect();
+      return r.top + Math.min(r.height / 2, 40) > bottom - 48;
+    });
+    const el = body.scrollHeight > body.clientHeight + 1 ? body : scroller;
+    return { bottom, hidden, el };
+  }, []);
+  useEffect(() => {
+    if (!isOpen || step !== "cart" || items.length === 0) {
+      setBelow(0);
+      return;
+    }
+    const body = bodyRef.current;
+    const scroller = scrollRef.current;
+    if (!body || !scroller) return;
+    let raf = 0;
+    const measure = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setBelow(listView()?.hidden.length ?? 0));
+    };
+    measure();
+    const t = window.setTimeout(measure, 350); // after the slide-in
+    body.addEventListener("scroll", measure, { passive: true });
+    scroller.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+    ro?.observe(body);
+    ro?.observe(scroller);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(t);
+      body.removeEventListener("scroll", measure);
+      scroller.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+      ro?.disconnect();
+    };
+  }, [isOpen, step, items, listView]);
+  const showMore = () => {
+    const v = listView();
+    const next = v?.hidden[0];
+    if (!v || !next) return;
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const delta = next.getBoundingClientRect().bottom - v.bottom + MORE_CLEARANCE;
+    v.el.scrollBy({ top: Math.max(delta, 0), behavior: reduce ? "auto" : "smooth" });
+  };
+
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const before = cart?.merchandiseBeforeDiscounts ?? items.reduce((s, i) => s + Number(i.price.amount) * i.quantity, 0);
   const after = cart?.merchandiseAfterDiscounts ?? before;
@@ -134,9 +199,19 @@ export function CartDrawer() {
   // the same price instead of the one we marked. The money is identical, so
   // free units are counted per unit price and shown on our marked line first,
   // then on other lines of that price. Line totals follow, and still add up to
-  // Shopify's total exactly. Percent codes keep Shopify's own line totals.
+  // Shopify's total exactly. Percent codes keep Shopify's own line totals and
+  // never show "Free" (fix Oct 29: 25% off five of one flavor = 1.25 packs of
+  // discount, which read as "Includes 1 free").
+  const freeKind = rule?.kind === "bxgy" || rule?.kind === "freeCan";
   const display = useMemo(() => {
     const out = new Map<string, { freeUnits: number; total: number }>();
+    if (!freeKind) {
+      items.forEach((i) => {
+        const total = i.lineTotal ?? Number(i.price.amount) * i.quantity;
+        out.set(i.lineId ?? i.variantId, { freeUnits: 0, total: Math.max(0, Math.round(total * 100) / 100) });
+      });
+      return out;
+    }
     const byPrice = new Map<string, CartItem[]>();
     items.forEach((i) => {
       const k = Number(i.price.amount).toFixed(2);
@@ -158,7 +233,7 @@ export function CartDrawer() {
       });
     });
     return out;
-  }, [items]);
+  }, [items, freeKind]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -408,7 +483,7 @@ export function CartDrawer() {
           </button>
         </header>
 
-        <div className="cart-scroll">
+        <div className="cart-scroll" ref={scrollRef}>
           {(notices.length > 0 || choice) && (
             <div className="cart-notices" aria-live="polite">
               {notices.map((n) => (
@@ -471,7 +546,7 @@ export function CartDrawer() {
             </div>
           )}
 
-          <div className="cart-body">
+          <div className="cart-body" ref={bodyRef}>
             {items.length === 0 ? (
               <div className="cart-empty">
                 <p className="cart-empty-title">Your cart is empty</p>
@@ -487,6 +562,22 @@ export function CartDrawer() {
               </div>
             ) : (
               <ul className="cart-items">{items.map(renderItem)}</ul>
+            )}
+            {below > 0 && (
+              <div className="cart-more">
+                <span className="cart-more-fade" aria-hidden="true" />
+                <button
+                  type="button"
+                  className="cart-more-btn"
+                  onClick={showMore}
+                  aria-label={`Scroll to see ${below} more item${below === 1 ? "" : "s"} in your cart`}
+                >
+                  {below} more item{below === 1 ? "" : "s"} below
+                  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+                    <path d="M2 4.25 6 8.25 10 4.25" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </div>
             )}
           </div>
 
@@ -571,7 +662,8 @@ export function CartDrawer() {
               </div>
               {email && (
                 <p className="cart-identity">
-                  Checking out as {maskEmail(email)} ·{" "}
+                  <span className="cart-identity-label">Checking out as</span>
+                  <strong className="cart-identity-email">{email}</strong>
                   <button type="button" className="cart-code-remove" onClick={notYou}>
                     Not you?
                   </button>
