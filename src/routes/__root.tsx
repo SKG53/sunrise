@@ -1,4 +1,4 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts, useRouter, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
@@ -9,9 +9,9 @@ import { AgeGate } from "../components/AgeGate";
 import { SpinWheel } from "../components/SpinWheel";
 import { AnnouncementBar } from "../components/AnnouncementBar";
 import { captureUtms, captureAdVisitor, captureSessionUtms, captureEmailVisitor } from "../lib/utms";
-import { captureKxFromUrl } from "../lib/identity";
+import { setIdentityKx } from "../lib/identity";
 import { initSiteEvents } from "../lib/siteEvents";
-import { captureDealFromUrl } from "../lib/dealWallet";
+import { captureDealCode } from "../lib/dealWallet";
 
 const GTM_ID = "GTM-M7W7CDK2";
 const GTM_HEAD_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`;
@@ -130,6 +130,31 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+// ?code=CODE / ?deal=CODE (email + ad links) → deal wallet → the cart applies
+// it automatically (unknown codes ignored). `_kx` (Klaviyo email click) →
+// identity. Runs on EVERY navigation, not just full loads, then strips the
+// params through the router (review 2.5) so TanStack's cached search can't
+// re-add them on a later search-preserving navigation. Runs after the capture*
+// effects above, which still see `_kx` for the email-visitor flag.
+function useDealAndKlaviyoParams() {
+  const router = useRouter();
+  const searchStr = useRouterState({ select: (s) => s.location.searchStr });
+  useEffect(() => {
+    if (!searchStr) return;
+    const q = new URLSearchParams(searchStr);
+    const code = q.get("code") ?? q.get("deal");
+    const kx = q.get("_kx");
+    if (!code && !kx && !q.has("deal")) return;
+    if (kx) setIdentityKx(kx);
+    if (code) captureDealCode(code);
+    router.navigate({
+      to: ".",
+      replace: true,
+      search: ((prev: Record<string, unknown>) => ({ ...prev, code: undefined, deal: undefined, _kx: undefined })) as never,
+    });
+  }, [searchStr, router]);
+}
+
 function RootComponent() {
   useCartSync();
   // First-touch UTM capture. Runs client-side after hydration; the FB restore
@@ -137,15 +162,11 @@ function RootComponent() {
   // the first visit (cookie already set) or when no utm_* params are present.
   useEffect(() => {
     captureUtms(); captureSessionUtms(); captureAdVisitor(); captureEmailVisitor();
-    // Klaviyo email click → remember the browser (`_kx`), then wire site events
-    // (flushes anything queued before identification; "Active on Site" once
-    // per session).
-    captureKxFromUrl();
+    // Site events: flushes anything queued before identification; "Active on
+    // Site" once per session.
     initSiteEvents();
-    // ?code=CODE / ?deal=CODE (email + ad links) → deal wallet → the cart
-    // applies it automatically. Unknown codes are ignored.
-    captureDealFromUrl();
   }, []);
+  useDealAndKlaviyoParams();
   return (
     <>
       <AnnouncementBar />

@@ -30,6 +30,15 @@
 //                       against the cart at checkout, so a tampered box can't
 //                       get more than the discount allows.
 //
+// SITE PASS 2 (Oct 29): one cart, many views — the box reads the SAME cart as
+// the cart icon (stores/cartStore.ts). Free-pick prices count packs already
+// in the cart; older cart items are listed on the reveal; a box that's
+// already in the cart can't be added again (record + busy guard re-enabled on
+// pageshow, never on a timer); a known browser (saved email OR a Klaviyo
+// click) skips the email step; claim writes only fire for a real form submit
+// or the first claim of this code in this browser; "% off N or more" deals use
+// the same page with freeSlots = 0 and `percent`.
+//
 // "Any 4-pack free" deals: Shopify makes the CHEAPEST qualifying pack free.
 // To keep the page honest, the free picker only offers packs priced at or
 // below the cheapest paid pack, and drops a free pick that stops qualifying.
@@ -46,11 +55,11 @@ import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { storefrontApiRequest } from "../lib/shopify";
 import { readUtms } from "../lib/utms";
-import { knownEmail, setIdentityEmail } from "../lib/identity";
-import { addToWallet } from "../lib/dealWallet";
+import { isKnownBrowser, knownEmail, setIdentityEmail } from "../lib/identity";
+import { addToWallet, getWalletEntry } from "../lib/dealWallet";
 import { siteEvent } from "../lib/siteEvents";
-import { FREE_SHIP_THRESHOLD, FREE_SHIP_LABEL } from "../lib/deals";
-import { useCartStore, type AddInput } from "../stores/cartStore";
+import { FREE_SHIP_THRESHOLD, FREE_SHIP_LABEL, cheapestPaidPrice, dealByCode } from "../lib/deals";
+import { useCartStore, dealLines, type AddInput } from "../stores/cartStore";
 import {
   render10mgLockup,
   render30mgLockup,
@@ -87,6 +96,8 @@ export type BuildYourBoxProps = {
   logTag: string;
   /** Which packs can be free: the three 10 mg 4-packs, or any live 4-pack. */
   freePool: "10mg" | "any";
+  /** "% off N or more" boxes (freeSlots = 0): the percent, for savings copy. */
+  percent?: number;
 };
 
 type Step = "build" | "email" | "reveal";
@@ -128,7 +139,9 @@ const cbLockup = (cb: Cannabinoid, base: number, color: string) =>
 const money = (n: number) => `$${n.toFixed(2)}`;
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
-type Saved = { paid: string[]; free: string[]; claimed: true; email: string };
+// Box record (sessionStorage). email is null for a browser known only by a
+// Klaviyo click; addedToCart = the cart id the box was added to (review 1.4).
+type Saved = { paid: string[]; free: string[]; claimed: true; email: string | null; addedToCart?: string };
 function readSaved(key: string, paidSlots: number, freeSlots: number): Saved | null {
   try {
     const raw = sessionStorage.getItem(key);
@@ -142,7 +155,7 @@ function readSaved(key: string, paidSlots: number, freeSlots: number): Saved | n
       Array.isArray(v.free) &&
       v.free.length === freeSlots &&
       v.free.every((s) => !!packBySlug(s)) &&
-      typeof v.email === "string";
+      (typeof v.email === "string" || v.email === null);
     if (ok) return v as Saved;
   } catch {
     /* private browsing / bad JSON — start fresh */
@@ -194,9 +207,14 @@ export function BuildYourBox({
   storageKey,
   logTag,
   freePool,
+  percent,
 }: BuildYourBoxProps) {
   const addItems = useCartStore((st) => st.addItems);
   const cartCheckout = useCartStore((st) => st.checkout);
+  const openCart = useCartStore((st) => st.openCart);
+  const cartItems = useCartStore((st) => st.items);
+  const cartId = useCartStore((st) => st.cartId);
+  const rule = dealByCode(code);
   const boxRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -227,44 +245,65 @@ export function BuildYourBox({
   const [copied, setCopied] = useState(false);
   const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
+  const [unlocking, setUnlocking] = useState(false);
+  const [company, setCompany] = useState(""); // honeypot (review 4.2f)
+  const [addedTo, setAddedTo] = useState<string | null>(null);
 
   const priceOf = (p: FourPack) => prices[p.variantId] ?? p.fallbackPrice;
   const paidPacks = paid.map((s) => packBySlug(s));
   const freePacks = free.map((s) => packBySlug(s));
   const paidSubtotal = round2(paidPacks.reduce((sum, p) => sum + (p ? priceOf(p) : 0), 0));
   // Free choices: 10 mg pool, or (any-pack deals) packs priced at or below the
-  // cheapest paid pack — the one Shopify will actually make free.
-  const minPaid = paidPacks.reduce((m, p) => (p ? Math.min(m, priceOf(p)) : m), Infinity);
+  // cheapest paid pack — the one Shopify will actually make free. Counts the
+  // WHOLE cart: paid 4-packs already in it count too (review 1.5).
+  const boxMin = paidPacks.reduce((m, p) => (p ? Math.min(m, priceOf(p)) : m), Infinity);
+  const cartMin = rule?.kind === "bxgy" ? cheapestPaidPrice(dealLines(cartItems), rule.buyScope) : Infinity;
+  const minPaid = Math.min(boxMin, cartMin);
   const freeOptions: FourPack[] =
     freePool === "10mg" ? FREE_10MG : LIVE_FOUR_PACKS.filter((p) => priceOf(p) <= minPaid + 0.001);
   const paidFull = paid.every((s) => s !== null);
   const boxFull = paidFull && free.every((s) => s !== null);
   const filledCount = paid.filter(Boolean).length + free.filter(Boolean).length;
   const totalSlots = paidSlots + freeSlots;
-  const shipUnlocked = paidSubtotal >= FREE_SHIP_THRESHOLD;
-  const shipFill = Math.min(paidSubtotal / FREE_SHIP_THRESHOLD, 1);
+  // "% off" boxes: shipping counts the price after the discount (Shopify's
+  // free-shipping rate is after discounts — verified).
+  const pctSavings = percent && paidFull ? round2((paidSubtotal * percent) / 100) : 0;
+  const shipBasis = round2(paidSubtotal - pctSavings);
+  const shipUnlocked = shipBasis >= FREE_SHIP_THRESHOLD;
+  const shipFill = Math.min(shipBasis / FREE_SHIP_THRESHOLD, 1);
   const shipText = shipUnlocked
     ? "Free shipping unlocked\u00a0✓"
-    : `You're ${money(round2(FREE_SHIP_LABEL - paidSubtotal))} away from free shipping`;
+    : `You're ${money(round2(FREE_SHIP_LABEL - shipBasis))} away from free shipping`;
+  // Box already in THIS cart? Then the reveal only offers checkout / view cart.
+  const inCart = !!addedTo && addedTo === cartId;
+  // Older items already in the cart (shown on the reveal before adding).
+  const otherItems = inCart ? [] : cartItems;
   const paidLabel = paidSlots === 1 ? "Your 4-pack" : "Your 4-packs";
   const boxTitle = headline;
 
-  // Suppress the legacy global wheel for this visit (belt + braces with
-  // NO_WHEEL_PATHS). Restore a claimed box straight to the reveal (no fireworks).
+  // Restore a claimed box straight to the reveal (no fireworks). The wheel is
+  // already kept off /box/* by SpinWheel's path check, so this page no longer
+  // marks the wheel "seen" for the whole session (review 4.2g).
   useEffect(() => {
-    try {
-      sessionStorage.setItem("sunrise:spin-wheel-seen", "true");
-    } catch {
-      /* harmless */
-    }
     const saved = readSaved(storageKey, paidSlots, freeSlots);
     if (saved) {
       setPaid(saved.paid);
       setFree(saved.free);
-      setEmail(saved.email);
+      setEmail(saved.email ?? "");
+      setAddedTo(saved.addedToCart ?? null);
       setStep("reveal");
     }
   }, [storageKey, paidSlots, freeSlots]);
+
+  // Back from Shopify (back/forward cache) → buttons usable again.
+  useEffect(() => {
+    const onShow = () => {
+      setCheckoutBusy(false);
+      setUnlocking(false);
+    };
+    window.addEventListener("pageshow", onShow);
+    return () => window.removeEventListener("pageshow", onShow);
+  }, []);
 
   // Live 4-pack prices (fallback prices stay if this fails).
   useEffect(() => {
@@ -471,13 +510,24 @@ export function BuildYourBox({
   // Any-pack deals: a free pick priced above the (new) cheapest paid pack no
   // longer matches what Shopify will discount → empty that free slot.
   useEffect(() => {
-    if (freePool !== "any") return;
+    if (freePool !== "any" || step !== "build") return;
     setFree((cur) => {
+      const cleared: string[] = [];
       const next = cur.map((sl) => {
         const p = packBySlug(sl);
-        return p && priceOf(p) > minPaid + 0.001 ? null : sl;
+        if (p && priceOf(p) > minPaid + 0.001) {
+          cleared.push(p.flavor);
+          return null;
+        }
+        return sl;
       });
-      return next.some((sl, i) => sl !== cur[i]) ? next : cur;
+      if (!cleared.length) return cur;
+      // Never silent: announce why the free pick was cleared.
+      setAnnounce(
+        `Your free ${cleared.join(", ")} was cleared: the free 4-pack has to be your lowest-priced pack. Pick it again.`,
+      );
+      setShowHint(true);
+      return next;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [freePool, minPaid]);
@@ -500,11 +550,9 @@ export function BuildYourBox({
     }
     setExpanded(false);
     setPicker(null);
-    // Known shopper (claimed before / signed up / email click with a saved
-    // email): no second email ask. The claim is still recorded.
-    const known = knownEmail();
-    if (known) {
-      unlockWith(known);
+    // Known browser (saved email OR a Klaviyo email click): no email step.
+    if (isKnownBrowser()) {
+      unlockWith(knownEmail(), false);
       return;
     }
     setStep("email");
@@ -512,70 +560,70 @@ export function BuildYourBox({
   };
 
   // Records the claim (never blocks the reveal) and reveals the box.
-  const unlockWith = async (value: string, viaForm = false) => {
-    const capture_page = `${window.location.host.replace(/^www\./, "")}${window.location.pathname}`;
-    if (viaForm) {
-      // Same gate as Spin & Save: the newsletter write must succeed.
-      try {
-        const res = await fetch("/api/public/newsletter", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: value, source: "build-box" }),
-        });
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          setEmailError(data?.error || "Something went wrong. Please try again.");
+  //  - Form submit (cold visitor): newsletter gate, then HubSpot + Klaviyo
+  //    (Claimed Deal; subscribes) + deal_claims, all with popup_type build_box.
+  //  - Known browser: no Klaviyo write (it subscribes). deal-claim + HubSpot
+  //    only when this is the FIRST claim of this code in this browser; the
+  //    main path (wheel → Shop Now → box) already wrote both (review2 1.7).
+  //  - Klaviyo-click-only browser (no email): nothing to write.
+  const unlockWith = async (value: string | null, viaForm: boolean) => {
+    if (unlocking) return;
+    setUnlocking(true);
+    try {
+      const capture_page = `${window.location.host.replace(/^www\./, "")}${window.location.pathname}`;
+      if (viaForm && value) {
+        try {
+          const res = await fetch("/api/public/newsletter", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: value, source: "build-box" }),
+          });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            setEmailError(data?.error || "Something went wrong. Please try again.");
+            return;
+          }
+        } catch {
+          setEmailError("Something went wrong. Please try again.");
           return;
         }
-      } catch {
-        setEmailError("Something went wrong. Please try again.");
-        return;
       }
+      const firstClaimHere = !getWalletEntry(code);
+      if (value && (viaForm || firstClaimHere)) {
+        const claim = {
+          email: value,
+          popup_type: POPUP_TYPE,
+          capture_page,
+          deal_code: code,
+          deals_offered: code,
+          deal_date: new Date().toISOString().slice(0, 10),
+          ...readUtms(),
+        };
+        const fire = (url: string) =>
+          fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(claim),
+          }).catch(() => {});
+        fire("/api/public/spin-wheel-hubspot");
+        fire("/api/public/deal-claim");
+        if (viaForm) fire("/api/public/spin-wheel-klaviyo"); // Claimed Deal (Spin & Save flow)
+      }
+      if (value) setIdentityEmail(value);
+      addToWallet(code, "box", { box: true });
+      try {
+        const saved: Saved = { paid: paid as string[], free: free as string[], claimed: true, email: value };
+        sessionStorage.setItem(storageKey, JSON.stringify(saved));
+      } catch {
+        /* harmless */
+      }
+      setEmail(value ?? "");
+      setCelebrate(!reduceMotion());
+      setStep("reveal");
+      scrollToStep(false);
+    } finally {
+      setUnlocking(false);
     }
-    const claim = {
-      email: value,
-      popup_type: POPUP_TYPE,
-      capture_page,
-      deal_code: code,
-      deals_offered: code,
-      deal_date: new Date().toISOString().slice(0, 10),
-      ...readUtms(),
-    };
-    const fire = (url: string) =>
-      fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(claim),
-      }).catch(() => {});
-    // Only a real form submit writes the claim: spin-wheel-klaviyo SUBSCRIBES,
-    // and a browser we already know (e.g. from the cart's checkout email step)
-    // never agreed to marketing on this page. Known shoppers just get the code
-    // saved + the client-side Deal Unlocked event below.
-    if (viaForm) {
-      fire("/api/public/spin-wheel-hubspot");
-      fire("/api/public/spin-wheel-klaviyo"); // logs Claimed Deal (Spin & Save flow)
-      fire("/api/public/deal-claim");
-    }
-    setIdentityEmail(value);
-    addToWallet(code, "box");
-    siteEvent("Deal Unlocked", {
-      code,
-      deal: logTag,
-      paid: paidPacks.map((p) => p?.slug),
-      free: freePacks.map((p) => p?.slug),
-      paid_subtotal: paidSubtotal,
-      source: "build_box",
-    }, { value: paidSubtotal });
-    try {
-      const saved: Saved = { paid: paid as string[], free: free as string[], claimed: true, email: value };
-      sessionStorage.setItem(storageKey, JSON.stringify(saved));
-    } catch {
-      /* harmless */
-    }
-    setEmail(value);
-    setCelebrate(!reduceMotion());
-    setStep("reveal");
-    scrollToStep(false);
   };
 
   const onUnlock = () => {
@@ -586,6 +634,11 @@ export function BuildYourBox({
       return;
     }
     setEmailError("");
+    // Honeypot: people never fill it. Reveal locally, write nothing.
+    if (company.trim()) {
+      unlockWith(null, false);
+      return;
+    }
     unlockWith(value, true);
   };
 
@@ -601,10 +654,13 @@ export function BuildYourBox({
     }
   };
 
-  // Box → site cart (merged with anything already there). The cart applies
-  // the code (deal wallet) and, at checkout, sets the email on the Shopify
-  // cart and redirects in the same tab.
+  // Box → the site cart (merged with anything already there). Re-activates
+  // this box's code first (another deal may have become active since the
+  // unlock), records that the box is in the cart (no double add), and the cart
+  // applies the code. Checkout sets the email on the Shopify cart and
+  // redirects in the same tab.
   const boxToCart = async (open: boolean): Promise<boolean> => {
+    addToWallet(code, "box", { box: true });
     const qty = new Map<string, { p: FourPack; n: number }>();
     [...paidPacks, ...freePacks].forEach((p) => {
       if (p) qty.set(p.variantId, { p, n: (qty.get(p.variantId)?.n ?? 0) + 1 });
@@ -614,23 +670,46 @@ export function BuildYourBox({
       productHandle: p.slug,
       productTitle: `${p.flavor} ${p.tier}mg`,
       variantTitle: "4 PACK",
-      imageUrl: cardCanSrc(p.slug),
+      imageUrl: null,
       price: { amount: priceOf(p).toFixed(2), currencyCode: "USD" },
       quantity: n,
       selectedOptions: [],
     }));
-    return addItems(list, { open });
+    const ok = await addItems(list, { open });
+    const id = useCartStore.getState().cartId;
+    if (ok && id) {
+      setAddedTo(id);
+      try {
+        const saved: Saved = { paid: paid as string[], free: free as string[], claimed: true, email: email || null, addedToCart: id };
+        sessionStorage.setItem(storageKey, JSON.stringify(saved));
+      } catch {
+        /* harmless */
+      }
+    }
+    return ok;
   };
 
-  const goToCheckout = async () => {
+  // Primary reveal action:
+  //  - box already in the cart → checkout (no re-add)
+  //  - cart already had other items → add, then OPEN THE CART to review
+  //  - empty cart → add and go straight to checkout
+  const onPrimary = async () => {
     if (checkoutBusy || !boxFull) return;
     setCheckoutBusy(true);
     setCheckoutError("");
     try {
-      if (!(await boxToCart(false))) throw new Error("add failed");
-      await cartCheckout(email ? { email } : undefined);
-      // If checkout didn't navigate (error), let them retry.
-      window.setTimeout(() => setCheckoutBusy(false), 4000);
+      if (inCart) {
+        await cartCheckout(email ? { email } : undefined);
+      } else if (otherItems.length > 0) {
+        if (!(await boxToCart(true))) throw new Error("add failed");
+        setCheckoutBusy(false);
+        return;
+      } else {
+        if (!(await boxToCart(false))) throw new Error("add failed");
+        await cartCheckout(email ? { email } : undefined);
+      }
+      // Still here = checkout didn't navigate (the cart shows why).
+      if (!useCartStore.getState().isCheckingOut) setCheckoutBusy(false);
     } catch (err) {
       console.error(`[${logTag}] checkout failed`, err);
       setCheckoutError("Something went wrong. Please try again.");
@@ -638,14 +717,21 @@ export function BuildYourBox({
     }
   };
 
-  const addAndKeepShopping = async () => {
+  const onSecondary = async () => {
     if (checkoutBusy || !boxFull) return;
+    if (inCart) {
+      openCart();
+      return;
+    }
     setCheckoutBusy(true);
     setCheckoutError("");
     const ok = await boxToCart(true);
     setCheckoutBusy(false);
     if (!ok) setCheckoutError("Something went wrong. Please try again.");
   };
+
+  const primaryLabel = inCart ? "Checkout" : otherItems.length > 0 ? "Add to Cart" : "Continue to Checkout";
+  const secondaryLabel = inCart ? "View Cart" : "Add to Cart & Keep Shopping";
 
   // ── RENDER HELPERS ──────────────────────────────────────────────────────
   const editable = step === "build";
@@ -720,16 +806,16 @@ export function BuildYourBox({
           }}
           type="button"
           className={`byb-slot is-empty is-free${flash === `f${i}` ? " is-flash" : ""}${picker === i ? " is-open" : ""}`}
-          aria-label={`Empty free slot ${n} — pick a flavor`}
+          aria-label={paidFull ? `Empty free slot ${n} — pick a flavor` : `Free slot ${n} — fill your 4-packs first`}
           aria-haspopup="dialog"
           aria-expanded={picker === i}
           onClick={() => setPicker(picker === i ? null : i)}
-          disabled={!editable}
+          disabled={!editable || !paidFull}
         >
           <span className="byb-slot-plus" aria-hidden="true">
             +
           </span>
-          <span className="byb-slot-cta">Pick a flavor</span>
+          <span className="byb-slot-cta">{paidFull ? "Pick a flavor" : "Fill your 4-packs first"}</span>
         </button>
       );
     }
@@ -843,23 +929,27 @@ export function BuildYourBox({
     </div>
   );
 
-  const continueBtn = (
+  // Two copies render on mobile (collapsed row + expanded panel), so each
+  // gets its own hint id (review 4.2k).
+  const continueBtn = (hintId: string) => (
     <button
       type="button"
       className={`btn btn-primary byb-continue${boxFull ? "" : " is-disabled"}`}
       aria-disabled={!boxFull}
-      aria-describedby={!boxFull ? "byb-continue-hint" : undefined}
+      aria-describedby={!boxFull ? hintId : undefined}
       onClick={onContinue}
+      disabled={unlocking}
     >
       Continue
     </button>
   );
 
-  const hint = !boxFull && (
-    <p id="byb-continue-hint" className={`byb-hint${showHint ? " is-shown" : ""}`}>
-      Fill your box to continue
-    </p>
-  );
+  const hint = (hintId: string) =>
+    !boxFull && (
+      <p id={hintId} className={`byb-hint${showHint ? " is-shown" : ""}`}>
+        {freeSlots > 0 && !paidFull ? "Fill your 4-packs, then pick your free one" : "Fill your box to continue"}
+      </p>
+    );
 
   const fullNote = editable && paidFull && (
     <p className={`byb-full-note${fullPulse ? " is-pulse" : ""}`}>
@@ -876,11 +966,26 @@ export function BuildYourBox({
           <div className="byb-group-label">{paidLabel}</div>
           <div className="byb-group-row">{paid.map((_, i) => renderPaidSlot(i))}</div>
         </div>
-        <div className="byb-group byb-group--free" role="group" aria-label="Free 4-packs">
-          <div className="byb-group-label byb-group-label--free">Free 4-packs</div>
-          <div className="byb-group-row">{free.map((_, i) => renderFreeSlot(i))}</div>
-          {!isMobile && pickerEl}
-        </div>
+        {freeSlots > 0 && (
+          <div className="byb-group byb-group--free" role="group" aria-label="Free 4-packs">
+            <div className="byb-group-label byb-group-label--free">{freeSlots === 1 ? "Free 4-pack" : "Free 4-packs"}</div>
+            <div className="byb-group-row">{free.map((_, i) => renderFreeSlot(i))}</div>
+            {!isMobile && pickerEl}
+          </div>
+        )}
+        {percent ? (
+          <div className="byb-pct-note" aria-live="polite">
+            {paidFull ? (
+              <>
+                <strong>{percent}% off your 4-packs</strong> · you save {money(pctSavings)}
+              </>
+            ) : (
+              <>
+                Add {paidSlots} or more 4-packs for <strong>{percent}% off</strong>
+              </>
+            )}
+          </div>
+        ) : null}
       </div>
       {editable && (
         <div className="byb-foot">
@@ -889,8 +994,8 @@ export function BuildYourBox({
             {fullNote}
           </div>
           <div className="byb-cta">
-            {continueBtn}
-            {hint}
+            {continueBtn("byb-continue-hint")}
+            {hint("byb-continue-hint")}
           </div>
         </div>
       )}
@@ -922,10 +1027,12 @@ export function BuildYourBox({
         <span className="byb-mini-group">
           {paidPacks.map((p, i) => miniSlot(p, `p${i}`, false))}
         </span>
-        <span className="byb-mini-group byb-mini-group--free">
-          <span className="byb-mini-free-label">Free</span>
-          {freePacks.map((p, i) => miniSlot(p, `f${i}`, true))}
-        </span>
+        {freeSlots > 0 && (
+          <span className="byb-mini-group byb-mini-group--free">
+            <span className="byb-mini-free-label">Free</span>
+            {freePacks.map((p, i) => miniSlot(p, `f${i}`, true))}
+          </span>
+        )}
         <span className="byb-collapsed-count">
           {filledCount}/{totalSlots}
           <span className={`byb-chevron${expanded ? " is-up" : ""}`} aria-hidden="true" />
@@ -939,9 +1046,9 @@ export function BuildYourBox({
         ) : (
           progress
         )}
-        <div className="byb-cta">{continueBtn}</div>
+        <div className="byb-cta">{continueBtn("byb-continue-hint-m")}</div>
       </div>
-      {hint}
+      {hint("byb-continue-hint-m")}
     </div>
   );
 
@@ -972,7 +1079,7 @@ export function BuildYourBox({
         <div className="tfc-card-can" style={{ background: p.color }}>
           <img
             src={cardCanSrc(p.slug)}
-            alt={`SUNRISE ${p.flavor} seltzer 4-pack`}
+            alt={`SUNRISE ${p.flavor} hemp-infused seltzer 4-pack`}
             width={331}
             height={900}
             loading="lazy"
@@ -1143,8 +1250,27 @@ export function BuildYourBox({
                       {emailError}
                     </p>
                   )}
-                  <button type="submit" className="btn btn-primary tfc-claim-btn byb-unlock-btn">
-                    Unlock My Box
+                  {/* Honeypot — invisible to people; if filled, nothing is written. */}
+                  <div className="tfc-hp" aria-hidden="true">
+                    <label>
+                      Company
+                      <input
+                        type="text"
+                        name="company"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                  <button
+                    type="submit"
+                    className="btn btn-primary tfc-claim-btn byb-unlock-btn"
+                    disabled={unlocking}
+                    aria-busy={unlocking}
+                  >
+                    {unlocking ? "Unlocking…" : "Unlock My Box"}
                   </button>
                   <p className="tfc-fine">
                     By entering your email, you agree to receive marketing emails from SUNRISE.
@@ -1231,6 +1357,24 @@ export function BuildYourBox({
                   ) : null,
                 )}
               </ul>
+              {percent ? (
+                <p className="byb-pct-reveal">
+                  <strong>{percent}% off your 4-packs</strong> · you save {money(pctSavings)}
+                </p>
+              ) : null}
+              {otherItems.length > 0 && (
+                <div className="byb-also">
+                  <p className="byb-also-title">Also in your cart</p>
+                  <ul>
+                    {otherItems.map((i) => (
+                      <li key={i.lineId ?? i.variantId}>
+                        {i.quantity} × {i.productTitle} ({i.variantTitle.toLowerCase()})
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="byb-also-note">They stay in your cart. You'll see everything together before checkout.</p>
+                </div>
+              )}
               <button type="button" className="tfc-code" onClick={copyCode} title="Copy code">
                 <span className="tfc-code-text">{code}</span>
                 <span className="tfc-code-copy">
@@ -1262,22 +1406,23 @@ export function BuildYourBox({
                 </span>
               </button>
               <p className="tfc-fine tfc-code-note">Your code is saved and applied for you in the cart.</p>
+              {inCart && <p className="tfc-fine byb-in-cart">Your box is in your cart.</p>}
               <button
                 type="button"
                 className="btn btn-primary tfc-checkout-btn"
-                onClick={goToCheckout}
+                onClick={onPrimary}
                 disabled={checkoutBusy}
                 aria-busy={checkoutBusy}
               >
-                {checkoutBusy ? "Opening Checkout" : "Continue to Checkout"}
+                {checkoutBusy ? (primaryLabel === "Add to Cart" ? "Adding…" : "Opening checkout…") : primaryLabel}
               </button>
               <button
                 type="button"
                 className="byb-edit byb-keep-shopping"
-                onClick={addAndKeepShopping}
+                onClick={onSecondary}
                 disabled={checkoutBusy}
               >
-                Add to Cart &amp; Keep Shopping
+                {secondaryLabel}
               </button>
               {checkoutError && (
                 <p className="tfc-error" role="alert">

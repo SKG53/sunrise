@@ -4,6 +4,7 @@ import type { RefObject } from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { FreeSampleSection } from "../components/FreeSampleSection";
+import { DealBanner } from "../components/DealBanner";
 import {
   render5mgLockup,
   render10mgLockup,
@@ -478,6 +479,7 @@ function ProductsPage() {
   return (
     <>
       <SiteHeader activeNav="products" />
+      <DealBanner />
 
       <main>
         {/* ── 01 · PAGE HERO ────────────────────────────────────────────── */}
