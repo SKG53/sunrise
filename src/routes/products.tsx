@@ -167,7 +167,10 @@ const LOCKUP_SIZE = 2.2;
 // The live tiers, in stack/scroll order — single source of truth for both the
 // switcher bar and the stacked panels so the two can never disagree. 5mg drops
 // out while SHOW_NON_LIVE_PRODUCTS is off.
-const LIVE_TIERS: TierKey[] = (["5", "10", "30", "60"] as TierKey[])
+// 2026-11-12: bestseller first — 60mg leads, then 30mg, then 10mg (founder).
+const TIER_ORDER: TierKey[] = ["60", "30", "10", "5"];
+const DEFAULT_TIER: TierKey = "60";
+const LIVE_TIERS: TierKey[] = TIER_ORDER
   .filter((k) => SHOW_NON_LIVE_PRODUCTS || k !== "5");
 const panelDomId = (tier: TierKey) => `tier-${tier}mg`;
 function liveFlavors(tier: TierKey): Flavor[] {
@@ -296,7 +299,7 @@ const FAQS: Array<{ q: string; a: string }> = [
 
 // ── COMPONENT ────────────────────────────────────────────────────────────
 function ProductsPage() {
-  const [activeTier, setActiveTier] = useState<TierKey>("10");
+  const [activeTier, setActiveTier] = useState<TierKey>(DEFAULT_TIER);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   // Effect cards: which cards have their below-"Best for" detail expanded.
   // Independent per-card (a Set of indices) — it's a comparison grid, so more
@@ -360,7 +363,7 @@ function ProductsPage() {
 
   // Read ?tier= URL param on mount so Home tier cards (and any other
   // /products?tier=X deep-links) land on the correct panel. Invalid values
-  // are silently ignored and the default 10mg panel remains active.
+  // are silently ignored and the default 60mg panel remains active.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
@@ -510,18 +513,9 @@ function ProductsPage() {
         <section className="p-switcher">
           <div className="container">
             <div className="p-switcher-bar">
-              {/* 5mg — COMING SOON. Inert (div, not a button; does not switch the
-                  panel), greyed via .p-switch-soon to match the home tiers
-                  treatment. When the live-products flag flips on, this hides and
-                  the live 5mg button below takes over. */}
-              {!SHOW_NON_LIVE_PRODUCTS && (
-                <div className="p-switch p-switch-soon" aria-label="5mg tier - coming soon">
-                  <div className="p-switch-lockup" ref={switchRefs["5"]} />
-                  <div className="p-switch-name"><span>Coming</span><span>Soon</span></div>
-                </div>
-              )}
-              {(["5", "10", "30", "60"] as TierKey[])
-                // 5mg shows as the coming-soon cell above while the flag is off;
+              {/* Bestseller first: 60mg → 30mg → 10mg, then 5mg COMING SOON last. */}
+              {TIER_ORDER
+                // 5mg shows as the coming-soon cell below while the flag is off;
                 // the filter keeps it out of the live-button map until the flag flips.
                 .filter((k) => SHOW_NON_LIVE_PRODUCTS || k !== "5")
                 .map((k) => (
@@ -544,6 +538,16 @@ function ProductsPage() {
                   </div>
                 </button>
               ))}
+              {/* 5mg — COMING SOON. Inert (div, not a button; does not switch the
+                  panel), greyed via .p-switch-soon to match the home tiers
+                  treatment. When the live-products flag flips on, this hides and
+                  the live 5mg button above takes over. */}
+              {!SHOW_NON_LIVE_PRODUCTS && (
+                <div className="p-switch p-switch-soon" aria-label="5mg tier - coming soon">
+                  <div className="p-switch-lockup" ref={switchRefs["5"]} />
+                  <div className="p-switch-name"><span>Coming</span><span>Soon</span></div>
+                </div>
+              )}
             </div>
 
             <div className="p-panel-stack">
