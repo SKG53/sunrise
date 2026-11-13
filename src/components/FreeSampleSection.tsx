@@ -40,6 +40,7 @@ import { readUtms, isEmailVisitor } from "../lib/utms";
 import { siteEvent } from "../lib/siteEvents";
 import { setIdentityEmail } from "../lib/identity";
 import { addToWallet } from "../lib/dealWallet";
+import { legacyOffersPaused } from "../lib/sale";
 import "./FreeSampleSection.css";
 
 const DEFAULT_CODE = "WEBFREECAN"; // organic web code (gated)
@@ -119,7 +120,13 @@ const FS_CARDS: FsCard[] = [
   { slug: "60mg-blackberry-cbn", flavor: "Blackberry", descriptor: "Dark + Smooth", color: "#2E1E3D", tier: 60, cannabinoid: "CBN" },
 ];
 
-export function FreeSampleSection({ code = DEFAULT_CODE, source = "organic" }: FreeSampleSectionProps = {}) {
+// Hidden while the sitewide sale is on (lib/sale.ts): its code is disabled.
+export function FreeSampleSection(props: FreeSampleSectionProps = {}) {
+  if (legacyOffersPaused()) return null;
+  return <FreeSampleSectionInner {...props} />;
+}
+
+function FreeSampleSectionInner({ code = DEFAULT_CODE, source = "organic" }: FreeSampleSectionProps = {}) {
   const lockupRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const cannabinoidRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [copied, setCopied] = useState(false);

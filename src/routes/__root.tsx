@@ -12,6 +12,8 @@ import { captureUtms, captureAdVisitor, captureSessionUtms, captureEmailVisitor 
 import { setIdentityKx } from "../lib/identity";
 import { initSiteEvents } from "../lib/siteEvents";
 import { captureDealCode } from "../lib/dealWallet";
+import { SalePopup } from "../components/SalePopup";
+import { captureSaleChannel, legacyOffersPaused, SALE_ENABLED } from "../lib/sale";
 
 const GTM_ID = "GTM-M7W7CDK2";
 const GTM_HEAD_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`;
@@ -141,12 +143,17 @@ function useDealAndKlaviyoParams() {
   const searchStr = useRouterState({ select: (s) => s.location.searchStr });
   useEffect(() => {
     if (!searchStr) return;
+    // Sale (lib/sale.ts): ?code= of any sale pair, or utm_source=brevo /
+    // klaviyo / _kx, picks the channel's code pair. Runs before the early
+    // return below because a utm-only link still sets the channel.
+    captureSaleChannel(searchStr);
     const q = new URLSearchParams(searchStr);
     const code = q.get("code") ?? q.get("deal");
     const kx = q.get("_kx");
     if (!code && !kx && !q.has("deal")) return;
     if (kx) setIdentityKx(kx);
-    if (code) captureDealCode(code);
+    // During the sale the wallet is ignored, so old codes aren't saved into it.
+    if (code && !legacyOffersPaused()) captureDealCode(code);
     router.navigate({
       to: ".",
       replace: true,
@@ -172,7 +179,9 @@ function RootComponent() {
       <AnnouncementBar />
       <Outlet />
       <AgeGate />
-      <SpinWheel />
+      {/* Sale on → the sale popup replaces Spin & Save (restore by setting
+          SALE_ENABLED = false in lib/sale.ts). */}
+      {SALE_ENABLED ? <SalePopup /> : <SpinWheel />}
     </>
   );
 }

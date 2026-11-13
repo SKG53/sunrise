@@ -2,10 +2,16 @@
 // same page (/tryfreecan = Meta ads, /webfreecan = website, /freecan = email);
 // everything lives in components/FreeCanLanding.tsx, only the code differs.
 // noindex: three identical paid/owned-channel landers, kept out of search.
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { pausedForSale } from "../lib/sale";
 import { FreeCanLanding } from "../components/FreeCanLanding";
 
 export const Route = createFileRoute("/freecan")({
+  // Paused while the sitewide sale is on (lib/sale.ts): its code is disabled.
+  beforeLoad: ({ location }) => {
+    const to = pausedForSale(location.searchStr);
+    if (to) throw redirect({ href: to, statusCode: 302 });
+  },
   component: () => <FreeCanLanding code="FREECAN" />,
   head: () => ({
     meta: [

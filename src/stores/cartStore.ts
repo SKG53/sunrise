@@ -19,7 +19,11 @@
 //      cleared first. A missing cart is only REBUILT from the browser's copy
 //      if it was confirmed alive during this visit (real mid-shopping expiry);
 //      otherwise a new cart starts with just the new lines.
-//   4. CODES. The wallet's active code is applied (one at a time). Codes we
+//   4. CODES. SALE MODE (lib/sale.ts, Nov 2026) wins while a sale phase is
+//      on: the cart carries the channel's sale pair (the codes the cart can
+//      use, sent together in ONE cartDiscountCodesUpdate), the wallet is
+//      ignored, any other code is replaced, and old free packs come out.
+//      Otherwise: the wallet's active code is applied (one at a time). Codes we
 //      don't know (e.g. personal codes) are left alone; the cart offers the
 //      saved deal instead of overwriting.
 //   5. USED CODES (review 1.3). The shopper's email goes on the Shopify cart as
@@ -75,6 +79,8 @@ import {
   type DealRule,
 } from "@/lib/deals";
 import { FREE_10MG, packByVariantId } from "@/lib/liveFourPacks";
+import { activeSale,
+  legacyOffersPaused, saleChannel, saleCodesFor, sameCodes, SALE_EVENT } from "@/lib/sale";
 import {
   cartAttributesUpdateFull,
   cartBuyerIdentityUpdateFull,
@@ -243,7 +249,13 @@ function buildAttributes(cart: CartView | null): Array<{ key: string; value: str
     add("_sr_visit_content", se.utm_content);
     add("_sr_ad_visitor", isAdVisitor() ? "yes" : "");
     add("_sr_email_visitor", isEmailVisitor() ? "yes" : "");
-    const active = getActiveCode();
+    const phase = activeSale();
+    const active = legacyOffersPaused() ? null : getActiveCode();
+    if (phase) {
+      add("_sr_deal", (cart?.discountCodes ?? []).filter((d) => d.applicable).map((d) => d.code).join("+"));
+      add("_sr_deal_source", `sale-${saleChannel()}`);
+      add("_sr_sale_phase", phase.id);
+    }
     const applied = cart?.discountCodes.find((d) => d.applicable && active && d.code.toUpperCase() === active.toUpperCase());
     if (applied) {
       const entry = getWalletEntry(active);
@@ -307,7 +319,7 @@ function klaviyoCartProps(items: CartItem[], cart: CartView | null) {
   return {
     ItemNames: items.map((i) => i.productTitle),
     CheckoutURL: cart?.checkoutUrl ?? null,
-    DiscountCode: cart?.discountCodes.find((d) => d.applicable)?.code ?? null,
+    DiscountCode: appliedCodes(cart),
     Items: items.map((i) => ({
       ProductName: i.productTitle,
       VariantTitle: i.variantTitle,
@@ -321,6 +333,12 @@ function klaviyoCartProps(items: CartItem[], cart: CartView | null) {
       Free: !!i.freeFor,
     })),
   };
+}
+
+/** Applicable codes as one string ("SUNRISE30, SUNRISE60"), or null. */
+function appliedCodes(cart: CartView | null): string | null {
+  const c = (cart?.discountCodes ?? []).filter((d) => d.applicable).map((d) => d.code);
+  return c.length ? c.join(", ") : null;
 }
 
 const cartValue = (items: Array<Pick<CartItem, "price" | "quantity">>) =>
@@ -383,7 +401,8 @@ export const useCartStore = create<CartStore>()(
       };
 
       const createCart = (lines: NewLine[]): Promise<CartResult> => {
-        const active = getActiveCode();
+        // Sale mode: codes go on in reconcile, which knows the lines' tiers.
+        const active = legacyOffersPaused() ? null : getActiveCode();
         return cartCreateFull({
           lines,
           discountCodes: active ? [active] : [],
@@ -463,7 +482,8 @@ export const useCartStore = create<CartStore>()(
             converged = true;
             break;
           }
-          const active = getActiveCode();
+          const phase = activeSale();
+          const active = legacyOffersPaused() ? null : getActiveCode();
           const rule = dealByCode(active);
 
           // 0) Email on the cart as soon as we know it (prefill + used-code check).
@@ -496,8 +516,19 @@ export const useCartStore = create<CartStore>()(
 
           // 2) Code on the cart.
           const applied = cart.discountCodes.map((d) => d.code.toUpperCase());
-          const foreign = applied.find((c) => !dealByCode(c)) ?? null;
-          if (foreign && !replaceForeign) {
+          if (phase) {
+            // Sale: exactly the channel's usable codes, both in one update.
+            if (get().foreignCode) set({ foreignCode: null });
+            const want = saleCodesFor(items, phase);
+            if (!sameCodes(applied, want)) {
+              if (!(await mutate((id) => cartDiscountCodesUpdateFull(id, want)))?.ok) break;
+              continue;
+            }
+          }
+          const foreign = phase ? null : applied.find((c) => !dealByCode(c)) ?? null;
+          if (phase) {
+            /* handled above */
+          } else if (foreign && !replaceForeign) {
             if (get().foreignCode !== foreign) set({ foreignCode: foreign });
           } else {
             if (get().foreignCode) set({ foreignCode: null });
@@ -613,7 +644,22 @@ export const useCartStore = create<CartStore>()(
         }
         if (!converged) set({ error: "We couldn't finish updating your deal. Please refresh the page." });
         const { cart, items } = get();
-        const code = getActiveCode();
+        // Sale health check: a sale code on the cart that Shopify won't honour
+        // while its drinks are in the cart (codes not set to combine, wrong
+        // product scope, or not active yet). Logged once per cart and code so
+        // it shows up in Klaviyo/console the first time it happens.
+        const salePhase = activeSale();
+        if (salePhase && cart) {
+          const want = saleCodesFor(items, salePhase).map((c) => c.toUpperCase());
+          const bad = cart.discountCodes.filter((d) => !d.applicable && want.includes(d.code.toUpperCase()));
+          for (const b of bad) {
+            if (markOnce(`salebad|${cart.id}|${b.code}`)) {
+              console.warn(`[sale] Shopify did not apply ${b.code}`);
+              siteEvent("Sale Code Not Applied", { code: b.code, phase: salePhase.id, channel: saleChannel() });
+            }
+          }
+        }
+        const code = salePhase ? null : getActiveCode();
         emitDealEvents(cart, items, evaluateDeal(dealByCode(code), dealLines(items), isFreeDeclined(cart?.id ?? null, code)), code);
       };
 
@@ -866,7 +912,7 @@ export const useCartStore = create<CartStore>()(
             return;
           }
           const value = cart.merchandiseAfterDiscounts;
-          const applied = cart.discountCodes.find((d) => d.applicable)?.code;
+          const applied = appliedCodes(cart) ?? undefined;
           trackEcommerce("begin_checkout", {
             currency: cart.currency,
             value,
@@ -876,7 +922,9 @@ export const useCartStore = create<CartStore>()(
             coupon: applied,
           });
           siteEvent("Started Checkout", { ...klaviyoCartProps(items, cart), Savings: cart.savings }, { value, sync: true });
-          writeJSON(ls(), PENDING_CHECKOUT_KEY, { cartId: cart.id, code: applied ?? null, at: Date.now() });
+          // Sale codes are unlimited-use: nothing to forget after the order.
+          const walletCode = legacyOffersPaused() ? null : cart.discountCodes.find((d) => d.applicable)?.code ?? null;
+          writeJSON(ls(), PENDING_CHECKOUT_KEY, { cartId: cart.id, code: walletCode, at: Date.now() });
           window.location.assign(url);
         },
 
@@ -915,6 +963,10 @@ export const useCartStore = create<CartStore>()(
 if (typeof window !== "undefined") {
   // Wallet changed (new claim, link, or a choice in the cart) → re-apply.
   window.addEventListener(WALLET_EVENT, () => {
+    useCartStore.getState().reconcile();
+  });
+  // Sale channel changed (email link) → swap to that channel's code pair.
+  window.addEventListener(SALE_EVENT, () => {
     useCartStore.getState().reconcile();
   });
   // Shopper identified → their email goes on the cart (prefill + used-code check).

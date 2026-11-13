@@ -16,7 +16,8 @@
 // Links can carry the usual UTMs. The page claims the code itself, so a
 // ?code= param isn't needed here.
 
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
+import { pausedForSale } from "../lib/sale";
 import { BuildYourBox } from "../components/BuildYourBox";
 
 type BoxDeal = {
@@ -126,6 +127,11 @@ const BOX_DEALS: Record<string, BoxDeal> = {
 };
 
 export const Route = createFileRoute("/box/$deal")({
+  // Paused while the sitewide sale is on (lib/sale.ts): its code is disabled.
+  beforeLoad: ({ location }) => {
+    const to = pausedForSale(location.searchStr);
+    if (to) throw redirect({ href: to, statusCode: 302 });
+  },
   loader: ({ params }) => {
     const deal = BOX_DEALS[params.deal.toLowerCase()];
     if (!deal || !deal.enabled || !deal.code) throw notFound();

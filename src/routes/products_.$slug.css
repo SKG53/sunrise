@@ -1259,3 +1259,31 @@
   .pd-inside-ing-name::after { animation: none; }
   .pd-stat-cb-toggle::after { animation: none; }
 }
+
+/* Sale price (lib/sale.ts) */
+.pd-hero-price { flex-wrap: wrap; }
+.pd-price-was {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.42);
+  font-weight: 600;
+  color: var(--text-faint);
+}
+.pd-price-sale {
+  flex-basis: 100%;
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.26);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green-accent);
+}
+
+/* Sale: struck list price + sale price on every pack button. */
+.pd-pack-btn-sale {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.pd-pack-btn-sale s { font-weight: 500; opacity: 0.6; }
+.pd-pack-btn-sale b { font-weight: 800; }
