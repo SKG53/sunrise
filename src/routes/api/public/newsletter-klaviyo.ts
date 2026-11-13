@@ -19,6 +19,8 @@ interface Body {
   utm_content?: unknown
   utm_term?: unknown
   page?: unknown
+  /** Which form sent it (default 'footer'; the sale popup sends 'sale-popup'). */
+  form?: unknown
 }
 
 const asStr = (v: unknown, max = 512) => (typeof v === 'string' && v.length <= max ? v : '')
@@ -58,7 +60,7 @@ export const Route = createFileRoute('/api/public/newsletter-klaviyo')({
           utm_term: hs?.utm_term || asStr(body.utm_term),
           logEvent: false,
           // Submitting page → event only; profile capture_page stays hs-mirrored.
-          newsletterEvent: { form: 'footer', capture_page: asStr(body.page) || undefined },
+          newsletterEvent: { form: asStr(body.form, 32) || 'footer', capture_page: asStr(body.page) || undefined },
         })
 
         return Response.json({ success: true })

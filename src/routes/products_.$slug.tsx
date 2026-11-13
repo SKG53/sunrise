@@ -33,6 +33,7 @@ import { getShopifyMapping } from "@/lib/shopifyProductMap";
 import { fetchProductByHandle } from "@/lib/shopify";
 import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import { useCartStore } from "@/stores/cartStore";
+import { activeSale, salePercentFor, salePrice, type SalePhase } from "@/lib/sale";
 // PD claim-strip icons — imported as raw SVG strings so they can be inlined
 // via dangerouslySetInnerHTML. The src/ versions use `fill: currentColor` for
 // the icon shape (cls-2), letting the parent's CSS `color` drive per-flavor
@@ -627,6 +628,23 @@ function ProductDetailPage() {
   )?.node ?? shopifyProduct?.node.variants.edges[0]?.node;
 
   const displayPrice = selectedVariant?.price.amount;
+  // Sale (lib/sale.ts): list price struck through + the price the cart will
+  // charge. Display only; the cart shows Shopify's real total. Client-only so
+  // server HTML never disagrees with the browser's clock.
+  const [sale, setSale] = useState<SalePhase | null>(null);
+  useEffect(() => setSale(activeSale()), []);
+  const salePct = salePercentFor(product.tier, sale);
+  // Sale: every pack size's list price, for the struck-through price on each
+  // pack button (the sale applies to all volumes, on top of bulk savings).
+  const packPrice = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const e of shopifyProduct?.node.variants.edges ?? []) {
+      const opt = e.node.selectedOptions.find((o) => o.name === "Pack");
+      const price = parseFloat(e.node.price.amount);
+      if (opt && Number.isFinite(price)) m.set(opt.value, price);
+    }
+    return m;
+  }, [shopifyProduct]);
   const isInStock = selectedVariant?.availableForSale ?? false;
 
   // view_item + Klaviyo "Viewed Product" — once per product view, after the
@@ -912,6 +930,14 @@ function ProductDetailPage() {
                   {shopifyMapping ? (
                     shopifyLoading ? (
                       <span className="pd-price-amount">…</span>
+                    ) : displayPrice && salePct > 0 ? (
+                      <>
+                        <s className="pd-price-was">${parseFloat(displayPrice).toFixed(2)}</s>
+                        <span className="pd-price-amount">
+                          ${salePrice(parseFloat(displayPrice), salePct).toFixed(2)}
+                        </span>
+                        <span className="pd-price-sale">{salePct}% off every pack size · applied at checkout</span>
+                      </>
                     ) : displayPrice ? (
                       <span className="pd-price-amount">
                         ${parseFloat(displayPrice).toFixed(2)}
@@ -945,6 +971,12 @@ function ProductDetailPage() {
                           {showSavings && (
                             <span className="pd-pack-btn-savings">
                               Save {info.savingsPct}%
+                            </span>
+                          )}
+                          {salePct > 0 && packPrice.has(opt) && (
+                            <span className="pd-pack-btn-sale">
+                              <s>${packPrice.get(opt)!.toFixed(2)}</s>{" "}
+                              <b>${salePrice(packPrice.get(opt)!, salePct).toFixed(2)}</b>
                             </span>
                           )}
                         </button>

@@ -24,6 +24,10 @@
 //   7. "N more items below" pill when cart lines are hidden under the fold
 //      (Oct 29); tap scrolls the next hidden line into view.
 //
+// SALE MODE (lib/sale.ts, Nov 2026): while a sale phase is on, the wallet UI
+// (deal block, chooser, "Your deals", foreign-code offer) is hidden; a sale
+// line shows instead, with Shopify's real savings.
+//
 // Renders in a portal on <body> (z-index fix: SiteHeader's stacking context
 // used to put the drawer under the announcement bar). Focus is trapped while
 // open; the drawer is inert when closed; focus returns to the cart button.
@@ -45,6 +49,10 @@ import {
 } from "@/lib/dealWallet";
 import { clearIdentityEmail, knownEmail, subscribeIdentity } from "@/lib/identity";
 import { FREE_10MG, LIVE_FOUR_PACKS, type FourPack } from "@/lib/liveFourPacks";
+import { activeSale, legacyOffersPaused, SALE_ALL_LABEL, type SalePhase } from "@/lib/sale";
+import { CartSaleUpsell } from "./CartSaleUpsell";
+import { SaleTitle } from "./SaleFireworks";
+import { render10mgLockup, render30mgLockup, render60mgLockup } from "@/lib/sunrise-components";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const money = (n: number) => `$${n.toFixed(2)}`;
@@ -96,7 +104,13 @@ export function CartDrawer() {
   const useSavedDeal = useCartStore((s) => s.useSavedDeal);
   const syncCart = useCartStore((s) => s.syncCart);
   const checkout = useCartStore((s) => s.checkout);
-  const { active, entries, choice, notices } = useWallet();
+  const wallet = useWallet();
+  const addItem = useCartStore((s) => s.addItem);
+  // Sale mode: the wallet is ignored (client-only, like the wallet itself).
+  const [sale, setSale] = useState<SalePhase | null>(null);
+  useEffect(() => setSale(activeSale()), [isOpen]);
+  const { active, entries, choice } = legacyOffersPaused() ? { active: null, entries: [] as WalletEntry[], choice: null } : wallet;
+  const notices = wallet.notices;
   const email = useKnownEmail();
 
   const [mounted, setMounted] = useState(false);
@@ -175,6 +189,16 @@ export function CartDrawer() {
   };
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
+  // Which sale groups the cart holds (✓ on that deal's line).
+  const saleTiers = items.reduce(
+    (acc, i) => {
+      const t = Number(/^(\d+)mg-/.exec(i.productHandle)?.[1]);
+      if (t === 10) acc.ten = true;
+      else if (t === 30 || t === 60) acc.all = true;
+      return acc;
+    },
+    { all: false, ten: false },
+  );
   const before = cart?.merchandiseBeforeDiscounts ?? items.reduce((s, i) => s + Number(i.price.amount) * i.quantity, 0);
   const after = cart?.merchandiseAfterDiscounts ?? before;
   const savings = Math.max(0, Math.round((before - after) * 100) / 100);
@@ -543,6 +567,32 @@ export function CartDrawer() {
                 </div>
               </div>
               {dealBlock}
+              {sale && (
+                <div className={`cart-deal cart-sale${savings > 0 ? " is-complete" : ""}`}>
+                  <p className="cart-sale-title">
+                    <SaleTitle size="sm">{sale.name}</SaleTitle>
+                  </p>
+                  <div className="cart-sale-cards">
+                    <div className={`cart-sale-card is-all${saleTiers.all ? " is-on" : ""}`}>
+                      <span className="cart-sale-pct">{sale.pctAll}% off</span>
+                      <span className="cart-sale-lockups" aria-label="30mg and 60mg">
+                        <span dangerouslySetInnerHTML={{ __html: render60mgLockup(17, "#FEFBE0") }} />
+                        <span className="cart-sale-plus">+</span>
+                        <span dangerouslySetInnerHTML={{ __html: render30mgLockup(17, "#FEFBE0") }} />
+                      </span>
+                      {saleTiers.all && <span className="cart-sale-on">✓ In your cart</span>}
+                    </div>
+                    <div className={`cart-sale-card is-ten${saleTiers.ten ? " is-on" : ""}`}>
+                      <span className="cart-sale-pct">{sale.pctTen}% off</span>
+                      <span className="cart-sale-lockups" aria-label="10mg">
+                        <span dangerouslySetInnerHTML={{ __html: render10mgLockup(17, "#FEFBE0") }} />
+                      </span>
+                      {saleTiers.ten && <span className="cart-sale-on">✓ In your cart</span>}
+                    </div>
+                  </div>
+                  <p className="cart-sale-note">Applied automatically at checkout.</p>
+                </div>
+              )}
             </div>
           )}
 
@@ -554,6 +604,14 @@ export function CartDrawer() {
                 {rule && (
                   <p className="cart-empty-sub">
                     Your deal, <strong>{rule.label}</strong>, is saved and applies automatically.
+                  </p>
+                )}
+                {sale && (
+                  <p className="cart-empty-sub">
+                    <strong>
+                      {sale.pctAll}% off {SALE_ALL_LABEL} + {sale.pctTen}% off 10mg
+                    </strong>{" "}
+                    applies automatically.
                   </p>
                 )}
                 <a href={rule?.boxPath ?? "/products"} className="cart-empty-cta" onClick={close}>
@@ -634,6 +692,16 @@ export function CartDrawer() {
                   Use my deal: {dealLabel(entries[0].code)}
                 </button>
               )}
+              {sale && (
+                <div className={`cart-row cart-code${savings > 0 ? " is-applied" : ""}`}>
+                  <span className="cart-code-text">
+                    {sale.name}
+                    {savings === 0 && <span className="cart-code-hint"> · applies to 30mg, 60mg and 10mg drinks automatically</span>}
+                  </span>
+                  {savings > 0 && <span>−{money(savings)}</span>}
+                </div>
+              )}
+              {sale && <CartSaleUpsell sale={sale} items={items} busy={busy} onAdd={(it) => addItem(it, { open: true })} />}
               <div className="cart-total">
                 <span>Total</span>
                 <span className="cart-total-amount">

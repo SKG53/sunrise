@@ -1120,3 +1120,10 @@ main { flex: 1; width: 100%; }
 @media (max-width: 768px) {
   .announcement-bar-note { display: block; margin-top: 2px; }
 }
+
+/* Sale line (lib/sale.ts) is longer than the free-shipping line: tighter
+   tracking on small phones, at a readable size (11px), wrapping to two
+   lines only if it has to. */
+@media (max-width: 420px) {
+  .announcement-bar.is-sale .announcement-bar-slide { letter-spacing: 0.06em; font-size: 11px; white-space: normal; line-height: 1.35; }
+}

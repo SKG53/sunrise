@@ -4,6 +4,8 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { S07Map } from "../components/S07Map";
 import { FreeSampleSection } from "../components/FreeSampleSection";
+import { SaleDeals } from "../components/SaleDeals";
+import { activeSale } from "../lib/sale";
 import {
   renderWordmark,
   render5mgLockup,
@@ -215,6 +217,8 @@ function S02Line({
 }
 
 function HomePage() {
+  // Sale on → section 02 shows the deal instead of the manifesto.
+  const sale = activeSale();
   const heroWmRef = useRef<HTMLDivElement>(null);
   const lockup5Ref = useRef<HTMLDivElement>(null);
   const lockup10Ref = useRef<HTMLDivElement>(null);
@@ -337,7 +341,13 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── 02 · BRAND STATEMENT ──────────────────────────────────────── */}
+        {/* ── 02 · BRAND STATEMENT (sale: THE DEAL) ─────────────────────── */}
+        {/* During a sale phase (lib/sale.ts) the manifesto is replaced by the */}
+        {/* deal in the same gradient type-on treatment. Back automatically    */}
+        {/* when the sale ends.                                                */}
+        {sale ? (
+          <SaleDeals sale={sale} />
+        ) : (
         <section className="s02-brand-statement">
           <div className="container">
             <h2 className="sr-only">Refresh the way the world drinks.</h2>
@@ -353,6 +363,7 @@ function HomePage() {
             </div>
           </div>
         </section>
+        )}
 
         {/* ── 03 · PRODUCT INTRO ────────────────────────────────────────── */}
         {/* Centered copy inside the container, followed by a 4-up grid of   */}

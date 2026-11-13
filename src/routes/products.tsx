@@ -5,6 +5,8 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { FreeSampleSection } from "../components/FreeSampleSection";
 import { DealBanner } from "../components/DealBanner";
+import { SaleDeals } from "../components/SaleDeals";
+import { activeSale } from "../lib/sale";
 import {
   render5mgLockup,
   render10mgLockup,
@@ -479,6 +481,9 @@ function ProductsPage() {
     return () => observer.disconnect();
   }, []);
 
+  // Sale block (same decision as the top bar: rendered on server and client).
+  const saleNow = activeSale();
+
   return (
     <>
       <SiteHeader activeNav="products" />
@@ -493,6 +498,9 @@ function ProductsPage() {
             ))}
           </p>
         </section>
+
+        {/* ── SALE (lib/sale.ts): same HOLIDAY SALE block as home section 02 ── */}
+        {saleNow && <SaleDeals sale={saleNow} showCta={false} className="is-products" />}
 
         {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
         <section className="p-hero">

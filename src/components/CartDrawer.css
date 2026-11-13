@@ -552,3 +552,67 @@
   .cart-scroll { display: block; overflow-y: auto; }
   .cart-scroll > .cart-body { overflow: visible; }
 }
+
+/* SALE MODE (lib/sale.ts) */
+.cart-deal.cart-sale, .cart-deal.cart-sale.is-complete { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.15rem; border-color: var(--gold, #C4922A); background: rgba(196, 146, 42, 0.08); color: var(--near-black, #1a1a1a); }
+.cart-sale p { margin: 0; }
+.cart-sale-title { text-align: center; font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.2rem !important; }
+/* Two deal cards, same fields as the home section and popup. */
+.cart-sale-cards { display: flex; gap: 0.5rem; margin: 0.15rem 0 0.1rem; }
+.cart-sale-card {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.55rem 0.4rem 0.5rem;
+  border-radius: 10px;
+  color: #fefbe0;
+  text-align: center;
+}
+.cart-sale-card.is-all { background: var(--tier-60, #2E1E3D); }
+.cart-sale-card.is-ten { background: var(--tier-10, #CC1F39); }
+.cart-sale-pct { font-size: 1.05rem; font-weight: 900; line-height: 1; text-transform: uppercase; letter-spacing: -0.01em; }
+.cart-sale-card.is-all .cart-sale-pct { color: var(--gold, #C4922A); }
+.cart-sale-lockups { display: flex; align-items: center; gap: 0.25rem; line-height: 0; white-space: nowrap; }
+.cart-sale-plus { font-weight: 900; font-size: 0.8rem; color: var(--gold, #C4922A); line-height: 1; }
+.cart-sale-on { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.9; }
+/* A deal not in the cart yet pulses to invite the add; claimed cards sit still. */
+.cart-sale-card:not(.is-on) { animation: cart-sale-pulse 1.6s ease-in-out infinite; }
+.cart-sale-card.is-ten:not(.is-on) { --pulse: rgba(204, 31, 57, 0.55); }
+.cart-sale-card.is-all:not(.is-on) { --pulse: rgba(196, 146, 42, 0.7); }
+@keyframes cart-sale-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 var(--pulse); filter: brightness(1); }
+  50% { transform: scale(1.035); box-shadow: 0 0 0 6px transparent; filter: brightness(1.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-sale-card:not(.is-on) { animation: none; }
+}
+.cart-sale-note { text-align: center; font-size: 0.75rem; color: rgba(26, 26, 26, 0.6); margin-top: 0.2rem !important; }
+/* SALE UPSELL (components/CartSaleUpsell.tsx) */
+.cart-upsell { padding: 0.6rem 0; border-top: 1px solid var(--warm-gray-faint, rgba(154, 148, 136, 0.18)); }
+.cart-upsell-row + .cart-upsell-row { margin-top: 0.6rem; }
+.cart-upsell-title { margin: 0 0 0.4rem; font-size: 0.875rem; font-weight: 700; }
+.cart-upsell-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.cart-upsell-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; }
+.cart-upsell-img { width: 1.75rem; height: 2.5rem; object-fit: contain; flex: none; }
+.cart-upsell-name { flex: 1; min-width: 0; font-weight: 600; }
+.cart-upsell-tier { font-weight: 400; color: rgba(26, 26, 26, 0.6); }
+.cart-upsell-price { white-space: nowrap; font-weight: 700; }
+.cart-upsell-price s { font-weight: 400; color: rgba(26, 26, 26, 0.5); margin-right: 0.15rem; }
+.cart-upsell-add {
+  flex: none;
+  border: 2px solid var(--near-black, #1a1a1a);
+  background: transparent;
+  color: var(--near-black, #1a1a1a);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.cart-upsell-add:hover:not(:disabled) { background: var(--near-black, #1a1a1a); color: #fefbe0; }
+.cart-upsell-add:disabled { opacity: 0.6; cursor: not-allowed; }

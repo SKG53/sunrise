@@ -1,0 +1,97 @@
+/* SALE DEALS SECTION (components/SaleDeals.tsx) — home section 02 during a
+   sale, and the top of /products. Cream field, near-black heading in the same
+   scale as the home section headlines, gold "% OFF" lines, tier lockups. */
+.sale-deals-section {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.6) 0 0;
+}
+.sale-deals-section .container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.sale-deals-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 1.5);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--near-black);
+  line-height: 1;
+  margin: 0 0 calc(var(--base) * 0.7);
+}
+
+.sale-deals {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  width: min(100%, 980px);
+  /* Same frame as the popup: rules above and below the two deals. */
+  padding: calc(var(--base) * 0.35) 0;
+  border-top: 2px solid rgba(26, 26, 26, 0.12);
+  border-bottom: 2px solid rgba(26, 26, 26, 0.12);
+}
+.sale-deal {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--base) * 0.28);
+  padding: calc(var(--base) * 0.3) calc(var(--base) * 0.5);
+  color: inherit;
+  text-decoration: none;
+}
+.sale-deal-pct { display: block; width: 100%; max-width: 440px; }
+.sale-deals-pct { display: block; width: 100%; height: auto; overflow: visible; }
+.sale-deal-tiers { display: flex; align-items: center; justify-content: center; gap: calc(var(--base) * 0.3); }
+.sale-deal-lockup { display: inline-flex; flex: none; line-height: 0; white-space: nowrap; }
+.sale-deal-plus { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: calc(var(--base) * 0.6); color: var(--near-black); line-height: 1; }
+.sale-deal-divider { flex: none; width: 2px; background: rgba(26, 26, 26, 0.12); margin: calc(var(--base) * 0.1) 0; }
+
+.sale-deals-note {
+  margin: calc(var(--base) * 0.4) 0 calc(var(--base) * 0.3);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.32);
+  font-weight: 600;
+  color: var(--near-black);
+}
+.sale-deals-cta {
+  display: inline-block;
+  background: var(--tier-10);
+  color: var(--cream);
+  border-radius: 999px;
+  padding: calc(var(--base) * 0.24) calc(var(--base) * 0.8);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.28);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.sale-deals-cta:hover { background: var(--tier-10-hover); }
+
+/* ribbon */
+.sale-ribbon-text { fill: var(--cream); }
+.sale-ribbon-stitch { stroke: rgba(254, 251, 224, 0.55); stroke-width: 2.5; stroke-dasharray: 9 7; }
+.sale-ribbon { display: block; width: 100%; height: auto; overflow: visible; }
+.sale-deals .sale-ribbon { transform-origin: 50% 50%; opacity: 0; transform: scaleX(0.55); }
+.sale-deals.in-view .sale-ribbon { animation: sale-ribbon-in 0.45s cubic-bezier(.2,.9,.3,1.25) forwards; }
+.sale-deals.in-view .sale-deal.is-ten .sale-ribbon { animation-delay: 0.12s; }
+@keyframes sale-ribbon-in { to { opacity: 1; transform: scaleX(1); } }
+
+/* type-on reveal for the % lines */
+.sale-deals-char { opacity: 0; }
+.sale-deals.in-view .sale-deals-char { animation: sale-deals-char-in 0.05s ease-out forwards; }
+@keyframes sale-deals-char-in { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .sale-deals-char { opacity: 1; }
+  .sale-deals.in-view .sale-deals-char { animation: none; }
+  .sale-deals .sale-ribbon, .sale-deals.in-view .sale-ribbon { opacity: 1; transform: none; animation: none; }
+}
+
+@media (max-width: 768px) {
+  .sale-deals-heading { font-size: calc(var(--base) * 1.05); margin-bottom: calc(var(--base) * 0.5); }
+  .sale-deals { flex-direction: column; }
+  .sale-deal-divider { width: 100%; height: 2px; margin: calc(var(--base) * 0.15) 0; }
+  .sale-deals { padding: 14px 0; }
+  .sale-deals-section { padding-top: calc(var(--base) * 1.2); padding-bottom: 32px; }
+  .sale-deals-note { font-size: 14px; }
+  .sale-deals-cta { font-size: 13px; padding: 13px 30px; }
+}

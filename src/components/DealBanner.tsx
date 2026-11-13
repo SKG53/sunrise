@@ -5,10 +5,12 @@
 // Box deals link to their Build Your Box page. Renders nothing when there's
 // no active deal (and nothing on the server: the wallet is client-only).
 // No timing language, no shipping price.
+// SALE MODE (Nov 2026): shows the sitewide sale instead of any saved deal.
 
 import { useEffect, useState } from "react";
 import { dealByCode } from "../lib/deals";
 import { getActiveCode, WALLET_EVENT } from "../lib/dealWallet";
+import { legacyOffersPaused } from "../lib/sale";
 import "./DealBanner.css";
 
 export function DealBanner() {
@@ -23,6 +25,9 @@ export function DealBanner() {
       window.removeEventListener("storage", sync);
     };
   }, []);
+  // Sale: the HOLIDAY SALE block (SaleDeals) at the top of /products carries
+  // the deal; old wallet deals stay paused while SALE_ENABLED (lib/sale.ts).
+  if (legacyOffersPaused()) return null;
   const rule = dealByCode(code);
   if (!rule) return null;
   return (

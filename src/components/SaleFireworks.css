@@ -1,0 +1,64 @@
+/* SALE FIREWORKS — the Labor Day bar's particle style, looping continuously.
+   Each burst pops in the first ~45% of its 2.4s cycle, then rests; six bursts
+   are staggered across the cycle so one is always going. */
+.sale-fw-title { position: relative; display: inline-block; isolation: isolate; }
+.sale-fw-text { position: relative; z-index: 1; }
+.sale-fw-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: visible; }
+.sale-fw-title.is-sm { --fw-len: 5px; --fw-fly: 10px; --fw-w: 1.5px; --fw-core: 5px; }
+.sale-fw-title.is-md { --fw-len: 12px; --fw-fly: 26px; --fw-w: 3px; --fw-core: 10px; }
+.sale-fw-title.is-lg { --fw-len: 20px; --fw-fly: 54px; --fw-w: 4px; --fw-core: 16px; }
+
+.sale-fw-burst {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  animation: sale-fw-pop 2.4s ease-out infinite;
+}
+.sale-fw-burst::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--fw-core) / -2);
+  left: calc(var(--fw-core) / -2);
+  width: var(--fw-core);
+  height: var(--fw-core);
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 10px 3px currentColor;
+  opacity: 0;
+  animation: sale-fw-flash 2.4s ease-out infinite;
+  animation-delay: inherit;
+}
+.sale-fw-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--fw-w);
+  height: var(--fw-len);
+  margin-left: calc(var(--fw-w) / -2);
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 6px 1px currentColor;
+  transform-origin: top center;
+  opacity: 0;
+  animation: sale-fw-fly 2.4s ease-out infinite;
+}
+@keyframes sale-fw-pop {
+  0% { opacity: 0; transform: scale(0); }
+  7% { opacity: 1; transform: scale(0.5); }
+  45% { opacity: 0; transform: scale(1.5); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+@keyframes sale-fw-flash {
+  0% { opacity: 0.9; transform: scale(0); }
+  18% { opacity: 0.6; transform: scale(1.6); }
+  40%, 100% { opacity: 0; transform: scale(2.2); }
+}
+@keyframes sale-fw-fly {
+  0% { transform: rotate(var(--rotate)) translateY(0) scale(1); opacity: 1; }
+  25% { opacity: 0.95; }
+  45%, 100% { transform: rotate(var(--rotate)) translateY(var(--fw-fly)) scale(0.1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sale-fw-layer { display: none; }
+}
