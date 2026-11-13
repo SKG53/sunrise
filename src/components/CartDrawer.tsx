@@ -580,14 +580,22 @@ export function CartDrawer() {
                         <span className="cart-sale-plus">+</span>
                         <span dangerouslySetInnerHTML={{ __html: render30mgLockup(17, "#FEFBE0") }} />
                       </span>
-                      {saleTiers.all && <span className="cart-sale-on">✓ In your cart</span>}
+                      {saleTiers.all ? (
+                        <span className="cart-sale-on">✓ In your cart</span>
+                      ) : (
+                        <span className="cart-sale-on is-off">{SALE_ALL_LABEL} not in your cart</span>
+                      )}
                     </div>
                     <div className={`cart-sale-card is-ten${saleTiers.ten ? " is-on" : ""}`}>
                       <span className="cart-sale-pct">{sale.pctTen}% off</span>
                       <span className="cart-sale-lockups" aria-label="10mg">
                         <span dangerouslySetInnerHTML={{ __html: render10mgLockup(17, "#FEFBE0") }} />
                       </span>
-                      {saleTiers.ten && <span className="cart-sale-on">✓ In your cart</span>}
+                      {saleTiers.ten ? (
+                        <span className="cart-sale-on">✓ In your cart</span>
+                      ) : (
+                        <span className="cart-sale-on is-off">10mg not in your cart</span>
+                      )}
                     </div>
                   </div>
                   <p className="cart-sale-note">Applied automatically at checkout.</p>

@@ -577,6 +577,7 @@
 .cart-sale-lockups { display: flex; align-items: center; gap: 0.25rem; line-height: 0; white-space: nowrap; }
 .cart-sale-plus { font-weight: 900; font-size: 0.8rem; color: var(--gold, #C4922A); line-height: 1; }
 .cart-sale-on { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.9; }
+.cart-sale-on.is-off { font-weight: 600; text-wrap: balance; line-height: 1.25; }
 /* A deal not in the cart yet pulses to invite the add; claimed cards sit still. */
 .cart-sale-card:not(.is-on) { animation: cart-sale-pulse 1.6s ease-in-out infinite; }
 .cart-sale-card.is-ten:not(.is-on) { --pulse: rgba(204, 31, 57, 0.55); }
