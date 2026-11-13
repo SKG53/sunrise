@@ -45,9 +45,11 @@
   color: var(--near-black);
   margin: 4px 0 20px;
 }
-/* Two deals side by side; each: big gold %, tier lockups underneath. */
+/* Two deals stacked, one on top of the other at every size (founder, Nov 13);
+   each: gold ribbon, tier lockups underneath. */
 .sale-pop-deals {
   display: flex;
+  flex-direction: column;
   align-items: stretch;
   justify-content: center;
   margin: 0 0 18px;
@@ -55,10 +57,10 @@
   border-top: 1.5px solid rgba(26, 26, 26, 0.1);
   border-bottom: 1.5px solid rgba(26, 26, 26, 0.1);
 }
-.sale-pop-deal { flex: 1 1 0; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 0 8px; }
-.sale-pop-divider { flex: none; width: 1.5px; background: rgba(26, 26, 26, 0.1); }
+.sale-pop-deal { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 0 8px; }
+.sale-pop-divider { flex: none; width: 100%; height: 1.5px; margin: 12px 0; background: rgba(26, 26, 26, 0.1); }
 /* Gold ribbon per deal (SaleRibbon, shared with the home/products block). */
-.sale-pop-card .sale-pop-ribbon { width: 190px; max-width: 100%; }
+.sale-pop-card .sale-pop-ribbon { width: 220px; max-width: 100%; }
 .sale-pop-tiers { display: flex; align-items: center; gap: 6px; }
 .sale-pop-lockup { display: inline-flex; flex: none; line-height: 0; white-space: nowrap; }
 .sale-pop-and { font-size: 18px; font-weight: 900; color: var(--near-black); line-height: 1; }
@@ -80,10 +82,8 @@
 @media (max-width: 520px) {
   .sale-pop-card { padding: 26px 20px 20px; }
   .sale-pop-card .sale-pop-kicker { font-size: 28px; }
-  /* Phones: stack the two deals (same as the home block) so both ribbons
-     get the same width. */
-  .sale-pop-deals { flex-direction: column; padding: 12px 0; }
-  .sale-pop-divider { width: 100%; height: 1.5px; margin: 10px 0; }
-  .sale-pop-card .sale-pop-ribbon { width: 176px; }
+  .sale-pop-deals { padding: 12px 0; }
+  .sale-pop-divider { margin: 10px 0; }
+  .sale-pop-card .sale-pop-ribbon { width: 180px; }
   .sale-pop-card .sale-pop-body { font-size: 14px; }
 }

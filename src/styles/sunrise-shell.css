@@ -303,6 +303,7 @@ main { flex: 1; width: 100%; }
 .announcement-bar-emph { font-weight: 700; }
 .announcement-bar.is-sale .announcement-bar-slide { color: var(--cream); }
 .announcement-bar.is-sale .announcement-bar-emph { color: var(--gold); }
+.announcement-bar-name { font-weight: 800; }
 
 /* Desktop only: bar 50% taller with 2-step-larger slide type. Mobile unchanged. */
 @media (min-width: 769px) {
@@ -1121,9 +1122,15 @@ main { flex: 1; width: 100%; }
   .announcement-bar-note { display: block; margin-top: 2px; }
 }
 
-/* Sale line (lib/sale.ts) is longer than the free-shipping line: tighter
-   tracking on small phones, at a readable size (11px), wrapping to two
-   lines only if it has to. */
-@media (max-width: 420px) {
-  .announcement-bar.is-sale .announcement-bar-slide { letter-spacing: 0.06em; font-size: 11px; white-space: normal; line-height: 1.35; }
+/* Sale line (lib/sale.ts) is longer than the free-shipping line: on phones
+   it gets tighter tracking at a readable size, wrapping to two lines only if
+   it has to. Keyed to the slide, not the bar state, so the size doesn't jump
+   while the bar rotates. */
+@media (max-width: 768px) {
+  .announcement-bar-slide.is-sale-slide { letter-spacing: 0.05em; font-size: 12px; white-space: nowrap; line-height: 1.35; }
+  /* "HOLIDAY SALE:" on its own line, the deal on the second. */
+  .announcement-bar-slide.is-sale-slide .announcement-bar-name { display: block; }
+}
+@media (max-width: 360px) {
+  .announcement-bar-slide.is-sale-slide { font-size: 11px; letter-spacing: 0.03em; }
 }
