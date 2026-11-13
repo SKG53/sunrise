@@ -1,7 +1,8 @@
 // Site-wide rotating announcement bar. Mounted in __root.tsx so it renders
 // above the sticky header on every route — product pages, policy pages, 404.
 //
-// During a sale phase (lib/sale.ts) two slides cross every 2.5s with a
+// During a sale phase (lib/sale.ts) two slides take turns (sale 5s, free
+// shipping 3.5s — slowed Nov 13 so the longer sale line is easy to read) with a
 // left→right slide: the outgoing banner exits to the right while the incoming
 // enters from the left (the Labor Day bar, restored Nov 13 2026).
 //   - Sale slide: deep-purple field, "HOLIDAY SALE: 30% off 30mg + 60mg ·
@@ -39,7 +40,8 @@ const FW_SPOTS = [
   { left: "92%", top: "34%" },
 ];
 const FW_COLORS = ["var(--tier-5)", "var(--tier-10)", "var(--tier-30)", "var(--gold)", "var(--cream)"];
-const ROTATE_MS = 2500;
+/** How long each slide stays up, by index: 0 = sale, 1 = free shipping. */
+const DWELL_MS = [5000, 3500];
 
 function Fireworks() {
   return (
@@ -98,16 +100,19 @@ export function AnnouncementBar() {
     setReduce(mq.matches);
     const onChange = () => setReduce(mq.matches);
     mq.addEventListener?.("change", onChange);
-    const id = setInterval(() => {
-      setIdx((cur) => {
-        const next = (cur + 1) % count;
-        setPrev(cur);
-        if (next === 0 && !mq.matches) setBurst((b) => b + 1); // slide 0 is the sale
-        return next;
-      });
-    }, ROTATE_MS);
+    let cur = 0;
+    let id = 0;
+    const step = () => {
+      const next = (cur + 1) % count;
+      setPrev(cur);
+      setIdx(next);
+      if (next === 0 && !mq.matches) setBurst((b) => b + 1); // slide 0 is the sale
+      cur = next;
+      id = window.setTimeout(step, DWELL_MS[cur] ?? 4000);
+    };
+    id = window.setTimeout(step, DWELL_MS[0]);
     return () => {
-      clearInterval(id);
+      clearTimeout(id);
       mq.removeEventListener?.("change", onChange);
     };
   }, [count]);
