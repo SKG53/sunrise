@@ -63,7 +63,9 @@ export const SALE_PHASES: SalePhase[] = [
   {
     id: "launch",
     starts: "2026-11-13T00:00:00-06:00",
-    ends: "2026-11-26T00:00:00-06:00",
+    // Extended to match the Shopify codes, which end Dec 2 11:59:59 PM CT
+    // (founder, Nov 17). Was 2026-11-26T00:00:00-06:00.
+    ends: "2026-12-03T00:00:00-06:00",
     pctAll: 30,
     pctTen: 60,
     name: "Holiday Sale",
