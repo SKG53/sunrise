@@ -99,9 +99,9 @@ const LEGACY_ALIASES: Record<string, SaleChannel> = {
   HOLIDAY20: "brevo", // Nov 12 screening email (Brevo campaign 331)
 };
 
-/** Federal date. Shown in the home FederalDateNotice section (approved Nov 18
- *  2026); still NOT in the bar, popup or /products. Change both lines together
- *  if the date moves. */
+/** Federal date. Shown in the FederalDateNotice section on home and /products
+ *  (approved Nov 18 2026); still NOT in the bar or popup. Change both lines
+ *  together if the date moves. */
 export const FEDERAL_DATE_LABEL = "December 11";
 /** The notice hides itself at this moment (start of the federal date, CT). */
 export const FEDERAL_DATE_CUTOFF = "2026-12-11T00:00:00-06:00";

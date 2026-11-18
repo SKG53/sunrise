@@ -923,6 +923,9 @@
    founder wants the selector higher. ≈33px from the sale note on desktop,
    ≈24px on phones. */
 .p-switcher.is-under-sale { padding-top: 0; }
+/* #lineup target (Dec 11 notice button): land below the sticky header. */
+#lineup { scroll-margin-top: 150px; }
+@media (max-width: 768px) { #lineup { scroll-margin-top: 125px; } }
 .p-switcher.is-under-sale .p-switcher-bar { margin-top: 18px; }
 @media (max-width: 768px) {
   .p-switcher.is-under-sale .p-switcher-bar { margin-top: 14px; }

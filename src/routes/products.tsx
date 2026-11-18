@@ -6,6 +6,7 @@ import { SiteFooter } from "../components/SiteFooter";
 import { FreeSampleSection } from "../components/FreeSampleSection";
 import { DealBanner } from "../components/DealBanner";
 import { SaleDeals } from "../components/SaleDeals";
+import { FederalDateNotice } from "../components/FederalDateNotice";
 import { activeSale } from "../lib/sale";
 import {
   render5mgLockup,
@@ -515,6 +516,9 @@ function ProductsPage() {
           />
         )}
 
+        {/* ── FEDERAL DATE NOTICE (until Dec 11 00:00 CT; same as home) ── */}
+        <FederalDateNotice className="is-products" ctaHref="#lineup" />
+
         {/* ── 02 · HERO (hidden while SHOW_PRODUCTS_INTRO is false) ────────── */}
         {!SHOW_PRODUCTS_INTRO && <h1 className="sr-only">Enjoy every sip and pour.</h1>}
         {SHOW_PRODUCTS_INTRO && (
@@ -534,7 +538,7 @@ function ProductsPage() {
         )}
 
         {/* ── 03 · TIER SWITCHER + PANEL ──────────────────────────────── */}
-        <section className={"p-switcher" + (saleNow && !SHOW_PRODUCTS_INTRO ? " is-under-sale" : "")}>
+        <section id="lineup" className={"p-switcher" + (saleNow && !SHOW_PRODUCTS_INTRO ? " is-under-sale" : "")}>
           <div className="container">
             <div className="p-switcher-bar">
               {/* Bestseller first: 60mg → 30mg → 10mg, then 5mg COMING SOON last. */}

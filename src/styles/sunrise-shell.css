@@ -1077,9 +1077,13 @@ main { flex: 1; width: 100%; }
    selector targets page-hero containers (…-pagehero) but not their children
    (…-pagehero-title / -eyebrow). */
 @media (max-width: 768px) {
+  /* Nov 18 2026 (founder): shorter on phones — same breathing room above and
+     below the title as the home hero's wordmark (~34px), instead of a
+     22.5vh-tall band. Desktop unchanged. Was: min-height 22.5vh,
+     padding-block base*0.9. */
   [class*="-pagehero"]:not([class*="-pagehero-"]) {
-    min-height: 22.5vh;
-    padding-block: calc(var(--base) * 0.9);
+    min-height: 0;
+    padding-block: 34px;
   }
   [class*="-pagehero"]:not([class*="-pagehero-"]) + section {
     padding-block: calc(var(--base) * 1.6);

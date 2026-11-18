@@ -1,7 +1,8 @@
-// FEDERAL DATE NOTICE (home only, approved Nov 18 2026): the "Federal hemp
-// rules change December 11" block from the GM2 / Brevo #336 sale emails,
-// rebuilt as live text. Sits directly under home section 02 (sale deal or
-// manifesto) and above 03 PRODUCT INTRO.
+// FEDERAL DATE NOTICE (approved Nov 18 2026): the "Federal hemp rules change
+// December 11" block from the GM2 / Brevo #336 sale emails, rebuilt as live
+// text. Home: directly under section 02 (sale deal or manifesto), above 03
+// PRODUCT INTRO. /products (added Nov 18, founder): directly under the sale
+// block, above the tier switcher (className "is-products").
 //
 //   eyebrow  gold, letter-spaced     FEDERAL HEMP RULES CHANGE
 //   pill     black, cream caps       {FEDERAL_DATE_LABEL} (lib/sale.ts)
@@ -18,8 +19,8 @@
 // column width, and the brand gradient runs continuously across "GRAB
 // SUNRISE™" and "WHILE YOU CAN", as in the email. "SUNRISE" uses the
 // wordmark's own type (Montserrat 500, 0.125em tracking, 0.375× bold ™).
-// Remove the whole thing: delete this file + its CSS and the one line in
-// routes/index.tsx.
+// Remove the whole thing: delete this file + its CSS and the one line each in
+// routes/index.tsx and routes/products.tsx.
 
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -39,7 +40,9 @@ export function federalNoticeOn(now: number = Date.now()): boolean {
   return now < Date.parse(FEDERAL_DATE_CUTOFF);
 }
 
-export function FederalDateNotice() {
+/** ctaHref: where SHOP THE LINEUP goes. Home → /products. On /products itself
+ *  it jumps down to the tier switcher (#lineup) instead of reloading the page. */
+export function FederalDateNotice({ className = "", ctaHref = "/products" }: { className?: string; ctaHref?: string }) {
   const ref = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -63,7 +66,7 @@ export function FederalDateNotice() {
   const date = FEDERAL_DATE_LABEL.toUpperCase();
   const { W } = HL;
   return (
-    <section ref={ref} className={`fed-notice${inView ? " in-view" : ""}`}>
+    <section ref={ref} className={`fed-notice ${className}${inView ? " in-view" : ""}`.trim()}>
       <div className="container">
         <h2 className="sr-only">
           Federal hemp rules change {FEDERAL_DATE_LABEL}. Grab SUNRISE while you can.
@@ -92,9 +95,15 @@ export function FederalDateNotice() {
             Order your favorites today,<br /> before the laws change
           </p>
         </div>
-        <Link to="/products" className="btn btn-primary fed-notice-cta">
-          Shop the Lineup
-        </Link>
+        {ctaHref.startsWith("#") ? (
+          <a href={ctaHref} className="btn btn-primary fed-notice-cta">
+            Shop the Lineup
+          </a>
+        ) : (
+          <Link to="/products" className="btn btn-primary fed-notice-cta">
+            Shop the Lineup
+          </Link>
+        )}
       </div>
     </section>
   );
