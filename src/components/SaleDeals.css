@@ -66,6 +66,25 @@
   text-decoration: none;
 }
 .sale-deals-cta:hover { background: var(--tier-10-hover); }
+/* Moving arrow (founder, Nov 18): same → as site buttons, with the constant
+   left-right nudge the Spin & Save CTA uses. Static under reduced motion. */
+.sale-deals-cta { display: inline-flex; align-items: center; gap: 0.6em; }
+.sale-deals-cta::after {
+  content: "→";
+  display: inline-block;
+  font-size: 1.35em;
+  line-height: 1;
+  position: relative;
+  top: -0.06em;
+  animation: sale-cta-arrow-nudge 1.1s ease-in-out infinite;
+}
+@keyframes sale-cta-arrow-nudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sale-deals-cta::after { animation: none; }
+}
 
 /* ribbon */
 .sale-ribbon-text { fill: var(--cream); }
@@ -85,6 +104,12 @@
   .sale-deals.in-view .sale-deals-char { animation: none; }
   .sale-deals .sale-ribbon, .sale-deals.in-view .sale-ribbon { opacity: 1; transform: none; animation: none; }
 }
+
+/* /products while the "Enjoy every sip and pour." intro is hidden
+   (products.tsx SHOW_PRODUCTS_INTRO, Nov 18): no padding under the sale block,
+   so the tier switcher sits right under it (founder: pull the selector up).
+   Out-specifies the shell's mobile "-pagehero + section" padding. */
+.sale-deals-section.is-products.is-tight-below { padding-bottom: 0; }
 
 @media (max-width: 768px) {
   .sale-deals-heading { font-size: calc(var(--base) * 1.05); margin-bottom: calc(var(--base) * 0.5); }

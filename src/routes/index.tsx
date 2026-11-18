@@ -5,6 +5,7 @@ import { SiteFooter } from "../components/SiteFooter";
 import { S07Map } from "../components/S07Map";
 import { FreeSampleSection } from "../components/FreeSampleSection";
 import { SaleDeals } from "../components/SaleDeals";
+import { FederalDateNotice } from "../components/FederalDateNotice";
 import { activeSale } from "../lib/sale";
 import {
   renderWordmark,
@@ -364,6 +365,9 @@ function HomePage() {
           </div>
         </section>
         )}
+
+        {/* ── 02b · FEDERAL DATE NOTICE (until Dec 11 00:00 CT; sale or not) ── */}
+        <FederalDateNotice />
 
         {/* ── 03 · PRODUCT INTRO ────────────────────────────────────────── */}
         {/* Centered copy inside the container, followed by a 4-up grid of   */}

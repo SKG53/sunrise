@@ -51,6 +51,13 @@ export const Route = createFileRoute("/products")({
 // See docs/active-potency-cleanup-2026-05-08.md for full revival path.
 const SHOW_NON_LIVE_PRODUCTS = false;
 
+// ── "ENJOY EVERY SIP AND POUR." INTRO FLAG ────────────────────────────
+// 2026-11-18 (founder): hidden for now, it takes too much room under the
+// sale block. Temporary — set back to true to show section 02 again. While
+// hidden, the headline stays in the page as a screen-reader-only <h1> so the
+// page keeps its one H1 (SEO, accessibility); nothing shows on screen.
+const SHOW_PRODUCTS_INTRO = false;
+
 // Live SKU slugs — used to filter flavor grid so hidden cannabinoid
 // variants and Wild Cherry Peach do not render when the flag is off.
 const LIVE_SLUGS = new Set<string>([
@@ -500,9 +507,17 @@ function ProductsPage() {
         </section>
 
         {/* ── SALE (lib/sale.ts): same HOLIDAY SALE block as home section 02 ── */}
-        {saleNow && <SaleDeals sale={saleNow} showCta={false} className="is-products" />}
+        {saleNow && (
+          <SaleDeals
+            sale={saleNow}
+            showCta={false}
+            className={"is-products" + (SHOW_PRODUCTS_INTRO ? "" : " is-tight-below")}
+          />
+        )}
 
-        {/* ── 02 · HERO ─────────────────────────────────────────────────── */}
+        {/* ── 02 · HERO (hidden while SHOW_PRODUCTS_INTRO is false) ────────── */}
+        {!SHOW_PRODUCTS_INTRO && <h1 className="sr-only">Enjoy every sip and pour.</h1>}
+        {SHOW_PRODUCTS_INTRO && (
         <section className="p-hero">
           <div className="container">
             <div className="p-hero-inner">
@@ -516,9 +531,10 @@ function ProductsPage() {
             </div>
           </div>
         </section>
+        )}
 
         {/* ── 03 · TIER SWITCHER + PANEL ──────────────────────────────── */}
-        <section className="p-switcher">
+        <section className={"p-switcher" + (saleNow && !SHOW_PRODUCTS_INTRO ? " is-under-sale" : "")}>
           <div className="container">
             <div className="p-switcher-bar">
               {/* Bestseller first: 60mg → 30mg → 10mg, then 5mg COMING SOON last. */}
