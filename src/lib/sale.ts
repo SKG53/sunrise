@@ -102,7 +102,9 @@ const LEGACY_ALIASES: Record<string, SaleChannel> = {
 /** Federal date. Shown in the FederalDateNotice section on home and /products
  *  (approved Nov 18 2026); still NOT in the bar or popup. Change both lines
  *  together if the date moves. */
-export const FEDERAL_DATE_LABEL = "December 11";
+// Nov 19 2026 (founder): pill reads "DECEMBER 2026" everywhere (was "December 11").
+// The notice still hides at FEDERAL_DATE_CUTOFF below.
+export const FEDERAL_DATE_LABEL = "December 2026";
 /** The notice hides itself at this moment (start of the federal date, CT). */
 export const FEDERAL_DATE_CUTOFF = "2026-12-11T00:00:00-06:00";
 
