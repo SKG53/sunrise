@@ -10,8 +10,8 @@
 //   subline  near-black, spaced      ORDER YOUR FAVORITES TODAY, / BEFORE THE LAWS CHANGE
 //   button   red .btn-primary        SHOP THE LINEUP → /products
 //
-// Shows whether or not a sale is on, until FEDERAL_DATE_CUTOFF (Dec 11 00:00
-// CT), then disappears by itself. The date lives in lib/sale.ts only, so a
+// Shows whether or not a sale is on, with NO automatic end date (founder,
+// Nov 19: nothing disappears on a timer). Take it down by hand. The date lives in lib/sale.ts only, so a
 // change by Congress is a one-line edit there. Copy is approved word for
 // word: say the date and nothing else about the law.
 //
@@ -24,7 +24,7 @@
 
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { FEDERAL_DATE_CUTOFF, FEDERAL_DATE_LABEL } from "../lib/sale";
+import { FEDERAL_DATE_LABEL } from "../lib/sale";
 import "./FederalDateNotice.css";
 
 /** Same stops as the S02 manifesto and the wordmark gradient. */
@@ -35,10 +35,6 @@ const GRAD = ["#4F308D", "#822665", "#94264B", "#BF252D", "#CC382C", "#DC531F", 
 // so 916 lets the longer line fill the column. Re-measure only if the words
 // or type change.
 const HL = { W: 916 };
-
-export function federalNoticeOn(now: number = Date.now()): boolean {
-  return now < Date.parse(FEDERAL_DATE_CUTOFF);
-}
 
 /** ctaHref: where SHOP THE LINEUP goes. Home → /products. On /products itself
  *  it jumps down to the tier switcher (#lineup) instead of reloading the page. */
@@ -62,7 +58,6 @@ export function FederalDateNotice({ className = "", ctaHref = "/products" }: { c
     return () => io.disconnect();
   }, []);
 
-  if (!federalNoticeOn()) return null;
   const date = FEDERAL_DATE_LABEL.toUpperCase();
   const { W } = HL;
   return (

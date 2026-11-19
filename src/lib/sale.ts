@@ -31,6 +31,12 @@
 //
 // To end the sale: set SALE_ENABLED = false. The old deal wallet takes over
 // again (it is untouched underneath).
+//
+// NOTHING SWITCHES ON OR OFF BY DATE (founder, Nov 19 2026: "Don't make any
+// section or element disappear automatically at any time. Not sales, not
+// pills, not anything."). The phase dates below are a record of the Shopify
+// code dates only; the site shows the first enabled phase until someone
+// changes SALE_ENABLED or a phase's `enabled` by hand. Keep ONE phase enabled.
 
 import { tierOf } from "./deals";
 
@@ -45,14 +51,15 @@ export const SALE_ALL_LABEL = "30mg + 60mg";
 
 export type SalePhase = {
   id: "launch" | "blackfriday";
-  /** ISO times with the Central offset; Shopify start/end must match exactly. */
+  /** ISO times with the Central offset, recorded to match the Shopify codes.
+   *  Informational only: the site never turns a phase on or off by date. */
   starts: string;
   ends: string;
   pctAll: number;
   pctTen: number;
   name: string;
-  /** Off = the phase never shows, even inside its dates. Turn a phase on only
-   *  after its Shopify codes exist and pass a live cart test. */
+  /** The only switch (with SALE_ENABLED). Turn a phase on only after its
+   *  Shopify codes exist and pass a live cart test, and turn the other off. */
   enabled: boolean;
   pairs: Record<SaleChannel, SalePair>;
 };
@@ -103,21 +110,19 @@ const LEGACY_ALIASES: Record<string, SaleChannel> = {
  *  (approved Nov 18 2026); still NOT in the bar or popup. Change both lines
  *  together if the date moves. */
 // Nov 19 2026 (founder): pill reads "DECEMBER 2026" everywhere (was "December 11").
-// The notice still hides at FEDERAL_DATE_CUTOFF below.
+// The notice has no automatic end: it shows until it is removed by hand.
 export const FEDERAL_DATE_LABEL = "December 2026";
-/** The notice hides itself at this moment (start of the federal date, CT). */
-export const FEDERAL_DATE_CUTOFF = "2026-12-11T00:00:00-06:00";
 
 const CHANNEL_KEY = "sunrise:sale-channel";
 const CHANNEL_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 export const SALE_EVENT = "sunrise:sale-change";
 
 // ── phase ────────────────────────────────────────────────────────────────
-export function activeSale(now: number = Date.now()): SalePhase | null {
+/** The sale on the site right now: the first enabled phase, regardless of
+ *  date (no automatic start or end, founder Nov 19). */
+export function activeSale(): SalePhase | null {
   if (!SALE_ENABLED) return null;
-  return (
-    SALE_PHASES.find((p) => p.enabled && now >= Date.parse(p.starts) && now < Date.parse(p.ends)) ?? null
-  );
+  return SALE_PHASES.find((p) => p.enabled) ?? null;
 }
 
 /** Old offers (deal wallet, chooser, deal banner, free-can and Build Your Box

@@ -366,7 +366,7 @@ function HomePage() {
         </section>
         )}
 
-        {/* ── 02b · FEDERAL DATE NOTICE (until Dec 11 00:00 CT; sale or not) ── */}
+        {/* ── 02b · FEDERAL DATE NOTICE (no end date; remove by hand) ───── */}
         <FederalDateNotice />
 
         {/* ── 03 · PRODUCT INTRO ────────────────────────────────────────── */}

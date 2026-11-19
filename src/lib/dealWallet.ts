@@ -31,7 +31,6 @@ type Wallet = { entries: WalletEntry[]; active: string | null; choice: WalletCho
 
 const KEY = "sunrise:deal-wallet";
 const NOTICE_KEY = "sunrise:deal-notices";
-const TTL_MS = 60 * 24 * 60 * 60 * 1000;
 export const WALLET_EVENT = "sunrise:wallet-change";
 
 const label = (code: string) => dealByCode(code)?.label ?? code;
@@ -41,10 +40,11 @@ function read(): Wallet {
   try {
     const raw = localStorage.getItem(KEY);
     const v = raw ? (JSON.parse(raw) as Partial<Wallet>) : {};
-    const now = Date.now();
+    // No 60-day expiry any more (founder, Nov 19: nothing disappears on a
+    // timer). A saved deal stays until it's used, replaced, or its code is
+    // retired from deals.ts.
     const entries = (Array.isArray(v.entries) ? v.entries : []).filter(
-      (e): e is WalletEntry =>
-        !!e && typeof e.code === "string" && typeof e.ts === "number" && now - e.ts <= TTL_MS && !!dealByCode(e.code),
+      (e): e is WalletEntry => !!e && typeof e.code === "string" && typeof e.ts === "number" && !!dealByCode(e.code),
     );
     const has = (c: unknown) => typeof c === "string" && entries.some((e) => e.code === c);
     const active = has(v.active) ? (v.active as string) : null;

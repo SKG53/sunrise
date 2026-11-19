@@ -516,7 +516,7 @@ function ProductsPage() {
           />
         )}
 
-        {/* ── FEDERAL DATE NOTICE (until Dec 11 00:00 CT; same as home) ── */}
+        {/* ── FEDERAL DATE NOTICE (no end date; remove by hand) ──────── */}
         <FederalDateNotice className="is-products" ctaHref="#lineup" />
 
         {/* ── 02 · HERO (hidden while SHOW_PRODUCTS_INTRO is false) ────────── */}
