@@ -79,8 +79,13 @@ export function AnnouncementBar() {
           node: (
             <>
               <span className="announcement-bar-name">{sale.name}:</span>{" "}
-              <span className="announcement-bar-emph">{sale.pctAll}% off</span> {SALE_ALL_LABEL} ·{" "}
-              <span className="announcement-bar-emph">{sale.pctTen}% off</span> 10mg
+              <span className="announcement-bar-emph">{sale.pctAll}% off</span> {SALE_ALL_LABEL}
+              {/* 10mg line only while the phase has a 10mg deal (none since Nov 23) */}
+              {sale.pctTen > 0 && (
+                <>
+                  {" "}·{" "}<span className="announcement-bar-emph">{sale.pctTen}% off</span> 10mg
+                </>
+              )}
             </>
           ),
         },

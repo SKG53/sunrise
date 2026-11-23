@@ -6,7 +6,7 @@ import { SiteFooter } from "../components/SiteFooter";
 import { FreeSampleSection } from "../components/FreeSampleSection";
 import { DealBanner } from "../components/DealBanner";
 import { SaleDeals } from "../components/SaleDeals";
-import { FederalDateNotice } from "../components/FederalDateNotice";
+import { OrderCountdown } from "../components/OrderCountdown";
 import { activeSale } from "../lib/sale";
 import {
   render5mgLockup,
@@ -507,7 +507,10 @@ function ProductsPage() {
           </p>
         </section>
 
-        {/* ── SALE (lib/sale.ts): same HOLIDAY SALE block as home section 02 ── */}
+        {/* ── ORDER COUNTDOWN to ORDER_DEADLINE (no automatic end; remove by hand) ── */}
+        <OrderCountdown className="is-products" ctaHref="#lineup" />
+
+        {/* ── SALE (lib/sale.ts): same sale block as home section 02 ── */}
         {saleNow && (
           <SaleDeals
             sale={saleNow}
@@ -515,9 +518,6 @@ function ProductsPage() {
             className={"is-products" + (SHOW_PRODUCTS_INTRO ? "" : " is-tight-below")}
           />
         )}
-
-        {/* ── FEDERAL DATE NOTICE (no end date; remove by hand) ──────── */}
-        <FederalDateNotice className="is-products" ctaHref="#lineup" />
 
         {/* ── 02 · HERO (hidden while SHOW_PRODUCTS_INTRO is false) ────────── */}
         {!SHOW_PRODUCTS_INTRO && <h1 className="sr-only">Enjoy every sip and pour.</h1>}

@@ -136,7 +136,7 @@ export function SaleDeals({
         <h2 className="sale-deals-heading">
           <SaleTitle size="lg">{sale.name}</SaleTitle>
           <span className="sr-only">
-            : {sale.pctAll}% off 30mg and 60mg drinks, {sale.pctTen}% off 10mg drinks.
+            : {sale.pctAll}% off 30mg and 60mg drinks{sale.pctTen > 0 ? `, ${sale.pctTen}% off 10mg drinks` : ""}.
           </span>
         </h2>
         <div ref={stackRef} className={`sale-deals${inView ? " in-view" : ""}`}>
@@ -150,15 +150,20 @@ export function SaleDeals({
               <span className="sale-deal-lockup" ref={l30} />
             </span>
           </a>
-          <span className="sale-deal-divider" aria-hidden="true" />
-          <a href="/products?tier=10" className="sale-deal is-ten">
-            <span className="sale-deal-pct">
-              <SaleRibbon text={tenText} charOffset={allText.length} className="sale-deals-pct" />
-            </span>
-            <span className="sale-deal-tiers">
-              <span className="sale-deal-lockup" ref={l10} />
-            </span>
-          </a>
+          {/* 10mg deal only while the phase has one (none since Nov 23) */}
+          {sale.pctTen > 0 && (
+            <>
+              <span className="sale-deal-divider" aria-hidden="true" />
+              <a href="/products?tier=10" className="sale-deal is-ten">
+                <span className="sale-deal-pct">
+                  <SaleRibbon text={tenText} charOffset={allText.length} className="sale-deals-pct" />
+                </span>
+                <span className="sale-deal-tiers">
+                  <span className="sale-deal-lockup" ref={l10} />
+                </span>
+              </a>
+            </>
+          )}
         </div>
         <p className="sale-deals-note">Applied automatically at checkout.</p>
         {showCta && (

@@ -5,7 +5,7 @@ import { SiteFooter } from "../components/SiteFooter";
 import { S07Map } from "../components/S07Map";
 import { FreeSampleSection } from "../components/FreeSampleSection";
 import { SaleDeals } from "../components/SaleDeals";
-import { FederalDateNotice } from "../components/FederalDateNotice";
+import { OrderCountdown } from "../components/OrderCountdown";
 import { activeSale } from "../lib/sale";
 import {
   renderWordmark,
@@ -346,6 +346,8 @@ function HomePage() {
         {/* During a sale phase (lib/sale.ts) the manifesto is replaced by the */}
         {/* deal in the same gradient type-on treatment. Back automatically    */}
         {/* when the sale ends.                                                */}
+        {/* 02a · ORDER COUNTDOWN + federal line (replaces FederalDateNotice, Nov 23; no automatic end) */}
+        <OrderCountdown />
         {sale ? (
           <SaleDeals sale={sale} />
         ) : (
@@ -365,9 +367,6 @@ function HomePage() {
           </div>
         </section>
         )}
-
-        {/* ── 02b · FEDERAL DATE NOTICE (no end date; remove by hand) ───── */}
-        <FederalDateNotice />
 
         {/* ── 03 · PRODUCT INTRO ────────────────────────────────────────── */}
         {/* Centered copy inside the container, followed by a 4-up grid of   */}

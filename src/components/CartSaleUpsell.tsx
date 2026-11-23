@@ -10,7 +10,7 @@
 import { siteEvent } from "@/lib/siteEvents";
 import { tierOf } from "@/lib/deals";
 import { cardCanSrc, packBySlug, type FourPack } from "@/lib/liveFourPacks";
-import { SALE_ALL_LABEL, SALE_ALL_TIERS, salePrice, type SalePhase } from "@/lib/sale";
+import { SALE_ALL_LABEL, SALE_ALL_TIERS, canBuyTier, salePrice, type SalePhase } from "@/lib/sale";
 import type { AddInput, CartItem } from "@/stores/cartStore";
 
 // The 10mg picks are the three Core flavors (the expiring pallets).
@@ -50,10 +50,13 @@ export function CartSaleUpsell({
     if (t === 10) hasTen = true;
     else if (t !== null && (SALE_ALL_TIERS as readonly number[]).includes(t)) hasAll = true;
   }
-  if (hasTen && hasAll) return null;
+  // No 10mg row while the phase has no 10mg deal (none since Nov 23), and no
+  // 10mg picks while 10mg has no buy buttons (NO_BUY_TIERS in lib/sale.ts).
+  const tenRow = sale.pctTen > 0 && canBuyTier(10);
+  if (hasAll && (hasTen || !tenRow)) return null;
 
   const rows: Array<{ key: string; title: string; pct: number; picks: FourPack[] }> = [];
-  if (!hasTen) {
+  if (!hasTen && tenRow) {
     rows.push({
       key: "ten",
       title: `Add The Perfect Buzz at ${sale.pctTen}% off`,

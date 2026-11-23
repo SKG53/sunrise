@@ -134,7 +134,8 @@ export function SalePopup() {
           <SaleTitle size="md">{sale.name}</SaleTitle>
         </p>
         <h2 id="sale-pop-title" className="sr-only">
-          {sale.name}: {sale.pctAll}% off {SALE_ALL_LABEL}, {sale.pctTen}% off 10mg
+          {sale.name}: {sale.pctAll}% off {SALE_ALL_LABEL}
+          {sale.pctTen > 0 && `, ${sale.pctTen}% off 10mg`}
         </h2>
         <div className="sale-pop-deals" aria-hidden="true">
           <div className="sale-pop-deal is-all">
@@ -145,13 +146,18 @@ export function SalePopup() {
               <span className="sale-pop-lockup" ref={l30} />
             </span>
           </div>
-          <span className="sale-pop-divider" />
-          <div className="sale-pop-deal is-ten">
-            <SaleRibbon text={`${sale.pctTen}% OFF`} typeOn={false} className="sale-pop-ribbon" />
-            <span className="sale-pop-tiers">
-              <span className="sale-pop-lockup" ref={l10} />
-            </span>
-          </div>
+          {/* 10mg deal only while the phase has one (none since Nov 23) */}
+          {sale.pctTen > 0 && (
+            <>
+              <span className="sale-pop-divider" />
+              <div className="sale-pop-deal is-ten">
+                <SaleRibbon text={`${sale.pctTen}% OFF`} typeOn={false} className="sale-pop-ribbon" />
+                <span className="sale-pop-tiers">
+                  <span className="sale-pop-lockup" ref={l10} />
+                </span>
+              </div>
+            </>
+          )}
         </div>
         <p className="sale-pop-body">Every pack size. Applied automatically at checkout.</p>
         <a

@@ -1,0 +1,135 @@
+/* ORDER COUNTDOWN (components/OrderCountdown.tsx). Cream field like SaleDeals
+   and FederalDateNotice; eyebrow + pill match FederalDateNotice; digits carry
+   the wordmark gradient, split across the four boxes so it reads as one sweep
+   purple → orange. No motion beyond the digits changing. */
+.order-cd {
+  background: var(--cream);
+  padding: calc(var(--base) * 1.1) 0 calc(var(--base) * 0.5);
+}
+.order-cd .container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.order-cd-inner { display: flex; flex-direction: column; align-items: center; width: min(100%, 720px); }
+.order-cd .order-cd-eyebrow {
+  margin: 0 0 calc(var(--base) * 0.3);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.62);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  line-height: 1.15;
+}
+.order-cd .order-cd-pill {
+  margin: 0 0 calc(var(--base) * 0.55);
+  display: inline-block;
+  background: var(--near-black);
+  color: var(--cream);
+  border-radius: 999px;
+  padding: calc(var(--base) * 0.16) calc(var(--base) * 0.8);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.5);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+}
+.order-cd-clock {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: calc(var(--base) * 0.4);
+  width: min(100%, 640px);
+}
+.order-cd-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid var(--near-black);
+  border-radius: 14px;
+  padding: calc(var(--base) * 0.35) calc(var(--base) * 0.2) calc(var(--base) * 0.3);
+  background: var(--cream);
+}
+.order-cd-num {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--base) * 1.55);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.order-cd-box.is-0 .order-cd-num { background-image: linear-gradient(90deg, #4F308D, #822665); }
+.order-cd-box.is-1 .order-cd-num { background-image: linear-gradient(90deg, #822665, #BF252D); }
+.order-cd-box.is-2 .order-cd-num { background-image: linear-gradient(90deg, #BF252D, #DC531F); }
+.order-cd-box.is-3 .order-cd-num { background-image: linear-gradient(90deg, #DC531F, #E76B37); }
+.order-cd .order-cd-label {
+  margin-top: calc(var(--base) * 0.18);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.38);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--near-black);
+}
+.order-cd-headline { display: block; width: min(100%, 760px); height: auto; overflow: visible; margin-top: calc(var(--base) * 0.6); }
+.order-cd-cta { margin-top: calc(var(--base) * 0.65); }
+
+/* /products: sits under the page hero, above the sale block. */
+.order-cd.is-products { padding-bottom: calc(var(--base) * 0.2); }
+
+@media (max-width: 768px) {
+  .order-cd { padding: 28px 0 8px; }
+  .order-cd-headline { margin-top: 18px; }
+  .order-cd .order-cd-eyebrow { font-size: 16px; letter-spacing: 0.12em; }
+  .order-cd .order-cd-pill { font-size: 13px; padding: 7px 18px; }
+  .order-cd-clock { gap: 8px; }
+  .order-cd-box { border-radius: 10px; padding: 10px 2px 8px; }
+  .order-cd-num { font-size: clamp(30px, 10vw, 44px); }
+  .order-cd .order-cd-label { font-size: 10px; letter-spacing: 0.12em; margin-top: 4px; }
+  .order-cd-cta { font-size: 13px; padding: 13px 30px; margin-top: 18px; }
+}
+@media (max-width: 360px) {
+  .order-cd .order-cd-eyebrow { font-size: 13px; letter-spacing: 0.08em; }
+  .order-cd .order-cd-pill { font-size: 11.5px; padding: 6px 14px; letter-spacing: 0.08em; }
+}
+
+/* ── compact (product pages): red pill (founder, Nov 23: the outlined line
+   was getting lost). Cream text on --tier-10 red, like .btn-primary. ── */
+.order-cd-compact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-start;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  column-gap: 0.45em;
+  row-gap: 2px;
+  margin: 10px 0 14px;
+  padding: 9px 20px;
+  background: var(--tier-10);
+  border-radius: 999px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream);
+  line-height: 1.3;
+}
+.order-cd-compact-eyebrow { letter-spacing: 0.14em; }
+.order-cd-compact-sep { opacity: 0.6; }
+.order-cd-compact-clock {
+  display: inline-flex;
+  gap: 0.4em;
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+.order-cd-compact-unit small { font-size: 0.72em; font-weight: 800; margin-left: 1px; text-transform: lowercase; }
+@media (max-width: 520px) {
+  .order-cd-compact { font-size: 11.5px; padding: 8px 18px; margin: 8px 0 12px; border-radius: 18px; }
+  .order-cd-compact-clock { font-size: 14px; }
+  .order-cd-compact-eyebrow { flex-basis: 100%; }
+  .order-cd-compact-eyebrow + .order-cd-compact-sep { display: none; }
+}

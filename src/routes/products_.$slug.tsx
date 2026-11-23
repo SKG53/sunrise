@@ -33,7 +33,8 @@ import { getShopifyMapping } from "@/lib/shopifyProductMap";
 import { fetchProductByHandle } from "@/lib/shopify";
 import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import { useCartStore } from "@/stores/cartStore";
-import { activeSale, salePercentFor, salePrice, type SalePhase } from "@/lib/sale";
+import { activeSale, canBuyTier, NO_COUNTDOWN_TIERS, salePercentFor, salePrice, type SalePhase } from "@/lib/sale";
+import { OrderCountdown } from "@/components/OrderCountdown";
 // PD claim-strip icons — imported as raw SVG strings so they can be inlined
 // via dangerouslySetInnerHTML. The src/ versions use `fill: currentColor` for
 // the icon shape (cls-2), letting the parent's CSS `color` drive per-flavor
@@ -634,6 +635,11 @@ function ProductDetailPage() {
   const [sale, setSale] = useState<SalePhase | null>(null);
   useEffect(() => setSale(activeSale()), []);
   const salePct = salePercentFor(product.tier, sale);
+  // Tiers in NO_BUY_TIERS (lib/sale.ts; 10mg after Nov 23 by hand) get no
+  // pack picker, Qty or Add to Your Cart. The Dec 6 countdown skips
+  // NO_COUNTDOWN_TIERS (10mg: its last day is Nov 23).
+  const canBuy = canBuyTier(product.tier);
+  const showCountdown = canBuy && !NO_COUNTDOWN_TIERS.includes(product.tier);
   // Sale: every pack size's list price, for the struck-through price on each
   // pack button (the sale applies to all volumes, on top of bulk savings).
   const packPrice = useMemo(() => {
@@ -950,7 +956,10 @@ function ProductDetailPage() {
                   )}
                 </div>
 
-                {shopifyMapping && packOptions.length > 1 && (
+                {/* Order countdown (compact): under the price, above the packs. */}
+                {showCountdown && <OrderCountdown variant="compact" />}
+
+                {canBuy && shopifyMapping && packOptions.length > 1 && (
                   <div className="pd-hero-pack" role="radiogroup" aria-label="Pack size">
                     {packOptions.map((opt) => {
                       const info = savingsByPack.get(opt);
@@ -985,6 +994,7 @@ function ProductDetailPage() {
                   </div>
                 )}
 
+                {canBuy && (<>
                 <div className="pd-hero-qty">
                   <span className="pd-qty-label">Qty</span>
                   <button
@@ -1036,6 +1046,7 @@ function ProductDetailPage() {
                     </a>
                   )}
                 </div>
+                </>)}
               </div>
             </div>
           </div>

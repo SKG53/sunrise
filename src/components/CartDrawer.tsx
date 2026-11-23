@@ -586,6 +586,7 @@ export function CartDrawer() {
                         <span className="cart-sale-on is-off">{SALE_ALL_LABEL} not in your cart</span>
                       )}
                     </div>
+                    {sale.pctTen > 0 && (
                     <div className={`cart-sale-card is-ten${saleTiers.ten ? " is-on" : ""}`}>
                       <span className="cart-sale-pct">{sale.pctTen}% off</span>
                       <span className="cart-sale-lockups" aria-label="10mg">
@@ -597,6 +598,7 @@ export function CartDrawer() {
                         <span className="cart-sale-on is-off">10mg not in your cart</span>
                       )}
                     </div>
+                    )}
                   </div>
                   <p className="cart-sale-note">Applied automatically at checkout.</p>
                 </div>
@@ -617,7 +619,8 @@ export function CartDrawer() {
                 {sale && (
                   <p className="cart-empty-sub">
                     <strong>
-                      {sale.pctAll}% off {SALE_ALL_LABEL} + {sale.pctTen}% off 10mg
+                      {sale.pctAll}% off {SALE_ALL_LABEL}
+                      {sale.pctTen > 0 && ` + ${sale.pctTen}% off 10mg`}
                     </strong>{" "}
                     applies automatically.
                   </p>
