@@ -75,13 +75,12 @@ export const SALE_PHASES: SalePhase[] = [
     // Was 2026-12-03T00:00:00-06:00 (Nov 17), 2026-11-26 before that.
     ends: "2026-12-09T00:00:00-06:00",
     pctAll: 30,
-    // 10mg deal: the "ten" codes SAVE60 / SUNRISE60 / HOLIDAY60 end in Shopify
-    // Nov 23 11:59:59 PM CT and 10mg sells normally until then (founder, Nov
-    // 23). AFTER MIDNIGHT, BY HAND (nothing switches by date): set this to 0
-    // AND NO_BUY_TIERS below to [10]. 0 = no 10mg deal anywhere (bar, popup,
+    // 10mg is no longer sold (founder, Nov 25: "Remove the 60% OFF badges and
+    // text too"). The "ten" codes SAVE60 / SUNRISE60 / HOLIDAY60 EXPIRED in
+    // Shopify Nov 23 11:59:59 PM CT. 0 = no 10mg deal anywhere (bar, popup,
     // sale blocks, cart cards, upsell, PDP prices) and the cart never sends a
-    // "ten" code.
-    pctTen: 60,
+    // "ten" code. Was 60.
+    pctTen: 0,
     // Shown as "BLACK FRIDAY SALE" everywhere (founder, Nov 23; first asked
     // Nov 14). Was "Holiday Sale".
     name: "Black Friday Sale",
@@ -129,12 +128,12 @@ export const FEDERAL_DATE_LABEL = "December 2026";
 export const ORDER_DEADLINE = "2026-12-06T23:59:59-06:00";
 export const ORDER_DEADLINE_LABEL = "Sunday, Dec 6 · 11:59 PM CT";
 
-/** Tiers with no buy buttons on their product pages (founder, Nov 23 2026:
- *  "remove the buy buttons on the 10mg"). Changed by hand only: set to [10]
- *  after Nov 23 11:59 PM CT together with pctTen 0 (10mg sells normally until
- *  then). The product pages stay up; the pack picker, Qty and Add to Your
- *  Cart are not rendered. */
-export const NO_BUY_TIERS: readonly number[] = [];
+/** Tiers with no Add to Your Cart button on their product pages (founder,
+ *  Nov 25 2026: "Keep everything the exact same, just remove the ADD TO YOUR
+ *  CART buttons from all 10mg pages. No longer selling them."). Changed by
+ *  hand only. Everything else on those pages stays (pack sizes, Qty, price);
+ *  the cart offers no 10mg picks. Was [] until Nov 25. */
+export const NO_BUY_TIERS: readonly number[] = [10];
 /** Tiers whose product pages don't show the Dec 6 countdown: 10mg's last day
  *  to order is Nov 23, not Dec 6. */
 export const NO_COUNTDOWN_TIERS: readonly number[] = [10];

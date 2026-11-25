@@ -635,9 +635,9 @@ function ProductDetailPage() {
   const [sale, setSale] = useState<SalePhase | null>(null);
   useEffect(() => setSale(activeSale()), []);
   const salePct = salePercentFor(product.tier, sale);
-  // Tiers in NO_BUY_TIERS (lib/sale.ts; 10mg after Nov 23 by hand) get no
-  // pack picker, Qty or Add to Your Cart. The Dec 6 countdown skips
-  // NO_COUNTDOWN_TIERS (10mg: its last day is Nov 23).
+  // Tiers in NO_BUY_TIERS (lib/sale.ts; 10mg since Nov 25) get no Add to Your
+  // Cart button; the page is otherwise unchanged (pack sizes and Qty stay).
+  // The Dec 6 countdown skips NO_COUNTDOWN_TIERS (10mg: last day was Nov 23).
   const canBuy = canBuyTier(product.tier);
   const showCountdown = canBuy && !NO_COUNTDOWN_TIERS.includes(product.tier);
   // Sale: every pack size's list price, for the struck-through price on each
@@ -959,7 +959,7 @@ function ProductDetailPage() {
                 {/* Order countdown (compact): under the price, above the packs. */}
                 {showCountdown && <OrderCountdown variant="compact" />}
 
-                {canBuy && shopifyMapping && packOptions.length > 1 && (
+                {shopifyMapping && packOptions.length > 1 && (
                   <div className="pd-hero-pack" role="radiogroup" aria-label="Pack size">
                     {packOptions.map((opt) => {
                       const info = savingsByPack.get(opt);
@@ -994,7 +994,6 @@ function ProductDetailPage() {
                   </div>
                 )}
 
-                {canBuy && (<>
                 <div className="pd-hero-qty">
                   <span className="pd-qty-label">Qty</span>
                   <button
@@ -1016,6 +1015,7 @@ function ProductDetailPage() {
                   </button>
                 </div>
 
+                {canBuy && (
                 <div className="pd-hero-ctas">
                   {shopifyMapping ? (
                     <button
@@ -1046,7 +1046,7 @@ function ProductDetailPage() {
                     </a>
                   )}
                 </div>
-                </>)}
+                )}
               </div>
             </div>
           </div>
