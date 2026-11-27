@@ -70,7 +70,7 @@ import {
 } from "@/lib/megaSale";
 import { CartSaleUpsell } from "./CartSaleUpsell";
 import { SaleTitle } from "./SaleFireworks";
-import { render10mgLockup, render30mgLockup, render60mgLockup } from "@/lib/sunrise-components";
+import { render10mgLockup } from "@/lib/sunrise-components";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const money = (n: number) => `$${n.toFixed(2)}`;
@@ -813,11 +813,8 @@ export function CartDrawer() {
                       <span className="cart-sale-pct">{sale.pctAll}% off</span>
                       {/* Mega Sale (founder, Nov 27): the card says the gift too. */}
                       {megaOn && <span className="cart-sale-mega">+ FREE 4-PACK with every $100</span>}
-                      <span className="cart-sale-lockups" aria-label="30mg and 60mg">
-                        <span dangerouslySetInnerHTML={{ __html: render60mgLockup(17, "#FEFBE0") }} />
-                        <span className="cart-sale-plus">+</span>
-                        <span dangerouslySetInnerHTML={{ __html: render30mgLockup(17, "#FEFBE0") }} />
-                      </span>
+                      {/* 60mg + 30mg lockups removed (founder, Nov 27): the site only sells
+                          30mg + 60mg now, so the card doesn't need to name them. */}
                       {saleTiers.all ? (
                         <span className="cart-sale-on">✓ In your cart</span>
                       ) : (
