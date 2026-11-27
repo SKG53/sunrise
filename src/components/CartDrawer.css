@@ -293,6 +293,10 @@
 
 .cart-scroll { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .cart-scroll > .cart-body { flex: 1; min-height: 0; overflow-y: auto; }
+/* Nov 27 review: toast, notices, bars, sale card and the list scroll together
+   above the pinned footer, so the list isn't squeezed to one line. */
+.cart-scroll > .cart-main { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
+.cart-main > .cart-body { flex: 1 0 auto; overflow: visible; }
 
 .cart-notices { padding: 0.75rem 1.5rem 0; display: grid; gap: 0.5rem; }
 .cart-notice {
@@ -551,6 +555,7 @@
 @media (max-height: 700px) {
   .cart-scroll { display: block; overflow-y: auto; }
   .cart-scroll > .cart-body { overflow: visible; }
+  .cart-scroll > .cart-main { display: block; overflow: visible; }
 }
 
 /* SALE MODE (lib/sale.ts) */
@@ -758,4 +763,26 @@
   line-height: 1;
   padding: 0 0.1rem;
   cursor: pointer;
+}
+
+/* Nov 27 review: while the Mega Sale is on, the sale card follows the lines. */
+.cart-sale-after { padding: 0.25rem 0 0.5rem; }
+.cart-sale-after .cart-deal.cart-sale { margin-top: 0.5rem; }
+/* Nov 27 review: laptop-height screens (≤ 820px tall) get the phone footer —
+   tighter padding and the secondary button as a text link — so more of the
+   cart list shows. */
+@media (min-width: 481px) and (max-height: 820px) {
+  .cart-footer { padding-top: 0.75rem; padding-bottom: 1rem; }
+  .cart-total { margin: 0.25rem 0 0.625rem; }
+  .cart-btn { padding: 0.75rem 1.25rem; }
+  .cart-actions { gap: 0.25rem; }
+  .cart-btn.is-secondary {
+    border: 0;
+    background: transparent;
+    padding: 0.4rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 }

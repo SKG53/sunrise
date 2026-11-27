@@ -162,13 +162,22 @@ export function CartDrawer() {
   // list itself (normal) or the whole panel (short screens, max-height 700px).
   const scrollRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+  // Nov 27 review: the bars, sale card and list scroll TOGETHER above the
+  // pinned footer (.cart-main), so a laptop screen isn't left showing one
+  // line under a fixed stack of bars.
+  const mainRef = useRef<HTMLDivElement>(null);
   const [below, setBelow] = useState(0);
   const MORE_CLEARANCE = 56; // px kept clear above the pill when scrolling
   const listView = useCallback(() => {
     const body = bodyRef.current;
     const scroller = scrollRef.current;
+    const main = mainRef.current;
     if (!body || !scroller) return null;
-    const bottom = Math.min(body.getBoundingClientRect().bottom, scroller.getBoundingClientRect().bottom);
+    const bottom = Math.min(
+      body.getBoundingClientRect().bottom,
+      scroller.getBoundingClientRect().bottom,
+      main ? main.getBoundingClientRect().bottom : Infinity,
+    );
     const rows = Array.from(body.querySelectorAll<HTMLElement>(".cart-items > li"));
     // A line counts as "below" when less than half of it (max 40px) shows
     // above the pill's zone at the bottom of the list.
@@ -176,7 +185,8 @@ export function CartDrawer() {
       const r = li.getBoundingClientRect();
       return r.top + Math.min(r.height / 2, 40) > bottom - 48;
     });
-    const el = body.scrollHeight > body.clientHeight + 1 ? body : scroller;
+    const scrolls = (e: HTMLElement | null) => !!e && e.scrollHeight > e.clientHeight + 1;
+    const el = scrolls(body) ? body : main && scrolls(main) ? main : scroller;
     return { bottom, hidden, el };
   }, []);
   useEffect(() => {
@@ -186,6 +196,7 @@ export function CartDrawer() {
     }
     const body = bodyRef.current;
     const scroller = scrollRef.current;
+    const main = mainRef.current;
     if (!body || !scroller) return;
     let raf = 0;
     const measure = () => {
@@ -196,15 +207,18 @@ export function CartDrawer() {
     const t = window.setTimeout(measure, 350); // after the slide-in
     body.addEventListener("scroll", measure, { passive: true });
     scroller.addEventListener("scroll", measure, { passive: true });
+    main?.addEventListener("scroll", measure, { passive: true });
     window.addEventListener("resize", measure);
     const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
     ro?.observe(body);
     ro?.observe(scroller);
+    if (main) ro?.observe(main);
     return () => {
       cancelAnimationFrame(raf);
       window.clearTimeout(t);
       body.removeEventListener("scroll", measure);
       scroller.removeEventListener("scroll", measure);
+      main?.removeEventListener("scroll", measure);
       window.removeEventListener("resize", measure);
       ro?.disconnect();
     };
@@ -696,6 +710,45 @@ export function CartDrawer() {
       )
     ) : null;
 
+  // Black Friday Sale card. While the Mega Sale is on it sits UNDER the cart
+  // lines (Nov 27 review: on a laptop the bars + card + footer left room for
+  // one line), so the shopper sees their items first; otherwise at the top.
+  const saleCard = sale ? (
+    <div className={`cart-deal cart-sale${savings > 0 ? " is-complete" : ""}`}>
+      <p className="cart-sale-title">
+        <SaleTitle size="sm">{sale.name}</SaleTitle>
+      </p>
+      <div className="cart-sale-cards">
+        <div className={`cart-sale-card is-all${saleTiers.all ? " is-on" : ""}`}>
+          <span className="cart-sale-pct">{sale.pctAll}% off</span>
+          {/* Mega Sale (founder, Nov 27): the card says the gift too. */}
+          {megaOn && <span className="cart-sale-mega">+ FREE 4-PACK with every $100</span>}
+          {/* 60mg + 30mg lockups removed (founder, Nov 27): the site only sells
+              30mg + 60mg now, so the card doesn't need to name them. */}
+          {saleTiers.all ? (
+            <span className="cart-sale-on">✓ In your cart</span>
+          ) : (
+            <span className="cart-sale-on is-off">{SALE_ALL_LABEL} not in your cart</span>
+          )}
+        </div>
+        {sale.pctTen > 0 && (
+        <div className={`cart-sale-card is-ten${saleTiers.ten ? " is-on" : ""}`}>
+          <span className="cart-sale-pct">{sale.pctTen}% off</span>
+          <span className="cart-sale-lockups" aria-label="10mg">
+            <span dangerouslySetInnerHTML={{ __html: render10mgLockup(17, "#FEFBE0") }} />
+          </span>
+          {saleTiers.ten ? (
+            <span className="cart-sale-on">✓ In your cart</span>
+          ) : (
+            <span className="cart-sale-on is-off">10mg not in your cart</span>
+          )}
+        </div>
+        )}
+      </div>
+      <p className="cart-sale-note">Applied automatically at checkout.</p>
+    </div>
+  ) : null;
+
   const drawer = (
     <>
       {isOpen && (
@@ -735,6 +788,7 @@ export function CartDrawer() {
         </header>
 
         <div className="cart-scroll" ref={scrollRef}>
+          <div className="cart-main" ref={mainRef}>
           {megaToast && (
             <div className="cart-mega-toast" role="status">
               <p>{megaToast}</p>
@@ -803,41 +857,7 @@ export function CartDrawer() {
               </div>
               {megaOn && megaBar}
               {dealBlock}
-              {sale && (
-                <div className={`cart-deal cart-sale${savings > 0 ? " is-complete" : ""}`}>
-                  <p className="cart-sale-title">
-                    <SaleTitle size="sm">{sale.name}</SaleTitle>
-                  </p>
-                  <div className="cart-sale-cards">
-                    <div className={`cart-sale-card is-all${saleTiers.all ? " is-on" : ""}`}>
-                      <span className="cart-sale-pct">{sale.pctAll}% off</span>
-                      {/* Mega Sale (founder, Nov 27): the card says the gift too. */}
-                      {megaOn && <span className="cart-sale-mega">+ FREE 4-PACK with every $100</span>}
-                      {/* 60mg + 30mg lockups removed (founder, Nov 27): the site only sells
-                          30mg + 60mg now, so the card doesn't need to name them. */}
-                      {saleTiers.all ? (
-                        <span className="cart-sale-on">✓ In your cart</span>
-                      ) : (
-                        <span className="cart-sale-on is-off">{SALE_ALL_LABEL} not in your cart</span>
-                      )}
-                    </div>
-                    {sale.pctTen > 0 && (
-                    <div className={`cart-sale-card is-ten${saleTiers.ten ? " is-on" : ""}`}>
-                      <span className="cart-sale-pct">{sale.pctTen}% off</span>
-                      <span className="cart-sale-lockups" aria-label="10mg">
-                        <span dangerouslySetInnerHTML={{ __html: render10mgLockup(17, "#FEFBE0") }} />
-                      </span>
-                      {saleTiers.ten ? (
-                        <span className="cart-sale-on">✓ In your cart</span>
-                      ) : (
-                        <span className="cart-sale-on is-off">10mg not in your cart</span>
-                      )}
-                    </div>
-                    )}
-                  </div>
-                  <p className="cart-sale-note">Applied automatically at checkout.</p>
-                </div>
-              )}
+              {!megaOn && saleCard}
             </div>
           )}
 
@@ -870,6 +890,7 @@ export function CartDrawer() {
                 {giftItems.map(renderGift)}
               </ul>
             )}
+            {megaOn && items.length > 0 && saleCard && <div className="cart-sale-after">{saleCard}</div>}
             {below > 0 && (
               <div className="cart-more">
                 <span className="cart-more-fade" aria-hidden="true" />
@@ -886,6 +907,7 @@ export function CartDrawer() {
                 </button>
               </div>
             )}
+          </div>
           </div>
 
           {items.length > 0 && step === "cart" && (

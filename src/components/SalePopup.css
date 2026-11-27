@@ -87,3 +87,26 @@
   .sale-pop-card .sale-pop-ribbon { width: 180px; }
   .sale-pop-card .sale-pop-body { font-size: 14px; }
 }
+
+/* BLACK FRIDAY MEGA SALE card (Nov 27): same lines as the Mega block and the
+   GM6 email; the big line carries the wordmark gradient, as in the email. */
+.sale-pop-mega { margin: 0 0 16px; display: flex; flex-direction: column; align-items: center; line-height: 1; font-family: 'Montserrat', sans-serif; }
+.sale-pop-mega .sale-pop-kicker { margin: 0; }
+.sale-pop-mega-name { margin-top: 6px; font-size: 20px; font-weight: 800; letter-spacing: 0.22em; padding-left: 0.22em; color: var(--gold); }
+.sale-pop-mega-big {
+  margin-top: 14px;
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1.02;
+  background: linear-gradient(90deg, #4F308D, #822665, #BF252D, #DC531F);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.sale-pop-mega-line { display: block; white-space: nowrap; }
+.sale-pop-mega-every { margin-top: 10px; font-size: 15px; font-weight: 800; letter-spacing: 0.16em; padding-left: 0.16em; color: var(--near-black); }
+@media (max-width: 520px) {
+  .sale-pop-mega-name { font-size: 17px; }
+  .sale-pop-mega-big { font-size: clamp(26px, 8.4vw, 36px); }
+  .sale-pop-mega-every { font-size: 13px; }
+}

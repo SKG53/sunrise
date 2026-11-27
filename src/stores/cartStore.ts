@@ -69,6 +69,7 @@ import { knownEmail, setIdentityEmail, subscribeIdentity } from "@/lib/identity"
 import { readUtms, readSessionUtms, isAdVisitor, isEmailVisitor } from "@/lib/utms";
 import {
   askChoice,
+  dropNotices,
   forgetCode,
   getActiveCode,
   getChoice,
@@ -128,6 +129,11 @@ const CHECKOUT_TIMEOUT_MS = 8000;
 const FORGET_WINDOW_MS = 2 * 60 * 60 * 1000;
 const MAX_PASSES = 6;
 const MEGA_TOAST_KEY = "sunrise:mega-toast"; // sessionStorage: first-gift toast shown
+/** A Mega "dropped below $X" notice is about the cart as it WAS: it clears as
+ *  soon as the shopper changes the cart again (Nov 27 review). A new drop
+ *  pushes a fresh one. */
+const clearMegaDropNotices = () =>
+  dropNotices((t) => t.startsWith("Your cart dropped below $") && t.endsWith("so we took out a free 4-pack."));
 
 export interface CartItem {
   lineId: string | null;
@@ -881,6 +887,7 @@ export const useCartStore = create<CartStore>()(
         addItems: async (list, opts = {}) => {
           const add = list.filter((i) => i.quantity > 0);
           if (!add.length) return false;
+          clearMegaDropNotices();
           set({ isLoading: true, error: null });
           if (opts.open !== false) set({ isOpen: true });
           try {
@@ -929,6 +936,7 @@ export const useCartStore = create<CartStore>()(
 
         updateQuantity: async (lineId, quantity) => {
           if (quantity <= 0) return get().removeItem(lineId);
+          clearMegaDropNotices();
           set({ isLoading: true, error: null });
           try {
             await enqueue(async () => {
@@ -948,6 +956,7 @@ export const useCartStore = create<CartStore>()(
         },
 
         removeItem: async (lineId) => {
+          clearMegaDropNotices();
           set({ isLoading: true, error: null });
           try {
             await enqueue(async () => {

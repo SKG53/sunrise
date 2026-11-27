@@ -2,12 +2,17 @@
 // (lib/sale.ts). One message: the deal applies automatically at checkout. No email
 // capture here (founder, Nov 13): emails are collected at other steps.
 //
+// BLACK FRIDAY MEGA SALE (founder, Nov 27): while MEGA_SALE_ENABLED is on the
+// card reads like the Mega block and the GM6 email: BLACK FRIDAY / MEGA SALE /
+// 30% OFF + FREE 4-PACKS / WITH EVERY $100, with no potency lockups.
+//
 // Shows once per visit, after the 21+ gate, on the first of: a 6s timer or
 // desktop exit intent. Never shown to email visitors (they came from a sale
 // email), never on review pages or Build Your Box pages.
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { activeSale, SALE_ALL_LABEL, type SalePhase } from "../lib/sale";
+import { activeSale, MEGA_SALE_ENABLED, SALE_ALL_LABEL, type SalePhase } from "../lib/sale";
+import { MEGA_COPY } from "../lib/megaSale";
 import { isEmailVisitor } from "../lib/utms";
 import { siteEvent } from "../lib/siteEvents";
 import { render10mgLockup, render30mgLockup, render60mgLockup, renderWordmark } from "../lib/sunrise-components";
@@ -130,6 +135,25 @@ export function SalePopup() {
           ×
         </button>
         <div className="sale-pop-wordmark" ref={wmRef} aria-hidden="true" />
+        {MEGA_SALE_ENABLED ? (
+          <>
+            <h2 id="sale-pop-title" className="sale-pop-mega">
+              <span className="sale-pop-kicker">
+                <SaleTitle size="md">{MEGA_COPY.title}</SaleTitle>
+              </span>
+              <span className="sale-pop-mega-name">{MEGA_COPY.kicker}</span>
+              <span className="sale-pop-mega-big">
+                {MEGA_COPY.big.map((line) => (
+                  <span key={line} className="sale-pop-mega-line">
+                    {line}
+                  </span>
+                ))}
+              </span>
+              <span className="sale-pop-mega-every">{MEGA_COPY.every}</span>
+            </h2>
+          </>
+        ) : (
+        <>
         <p className="sale-pop-kicker">
           <SaleTitle size="md">{sale.name}</SaleTitle>
         </p>
@@ -159,6 +183,8 @@ export function SalePopup() {
             </>
           )}
         </div>
+        </>
+        )}
         <p className="sale-pop-body">Every pack size. Applied automatically at checkout.</p>
         <a
           href="/products"

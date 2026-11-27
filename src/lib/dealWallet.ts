@@ -84,6 +84,20 @@ export function pushNotice(text: string): void {
     /* private mode */
   }
 }
+/** Remove the notices that match (Nov 27: a Mega Sale "dropped below $X"
+ *  notice clears as soon as the shopper changes the cart again). */
+export function dropNotices(match: (text: string) => boolean): void {
+  if (typeof window === "undefined") return;
+  try {
+    const cur = takeNotices(false);
+    const keep = cur.filter((t) => !match(t));
+    if (keep.length === cur.length) return;
+    localStorage.setItem(NOTICE_KEY, JSON.stringify(keep));
+    window.dispatchEvent(new CustomEvent(WALLET_EVENT));
+  } catch {
+    /* private mode */
+  }
+}
 /** Read notices; with clear=true they're removed (the cart showed them). */
 export function takeNotices(clear = true): string[] {
   if (typeof window === "undefined") return [];
