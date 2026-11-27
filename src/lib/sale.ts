@@ -42,6 +42,12 @@ import { tierOf } from "./deals";
 
 export const SALE_ENABLED = true;
 
+/** BLACK FRIDAY MEGA SALE (lib/megaSale.ts): a FREE 4-pack for every $100 of
+ *  30mg + 60mg after the 30% OFF. Manual flag only (founder flips it Monday
+ *  night). false = no Mega messaging, and gifts come out of every cart with
+ *  a notice. Publish this flip BEFORE drafting the FREE 4-Pack in Shopify. */
+export const MEGA_SALE_ENABLED = true;
+
 export type SaleChannel = "site" | "klaviyo" | "brevo";
 export type SalePair = { all: string; ten: string };
 /** Tiers the "all" code covers (5mg is not in the sale). */

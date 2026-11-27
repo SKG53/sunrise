@@ -315,6 +315,7 @@ const CART_FIELDS = `
             title
             availableForSale
             price { amount currencyCode }
+            compareAtPrice { amount }
             image { url }
             selectedOptions { name value }
             product { id handle title featuredImage { url } }
@@ -336,6 +337,7 @@ type RawLine = {
     title: string;
     availableForSale: boolean;
     price: { amount: string; currencyCode: string };
+    compareAtPrice: { amount: string } | null;
     image: { url: string } | null;
     selectedOptions: Array<{ name: string; value: string }>;
     product: { id: string; handle: string; title: string; featuredImage: { url: string } | null };
@@ -373,6 +375,8 @@ export type CartLineView = {
   lineSubtotal: number;
   lineDiscount: number;
   attributes: Record<string, string>;
+  /** Variant compare-at price (the FREE 4-Pack's struck-through price), or null. */
+  compareAt: number | null;
 };
 
 export type CartView = {
@@ -423,6 +427,7 @@ function normalizeCart(c: RawCart): CartView {
       lineSubtotal,
       lineDiscount: round2(lineSubtotal - lineTotal),
       attributes: toMap(l.attributes),
+      compareAt: l.merchandise.compareAtPrice ? num(l.merchandise.compareAtPrice.amount) || null : null,
     };
   });
   const before = round2(lines.reduce((s, l) => s + l.lineSubtotal, 0));

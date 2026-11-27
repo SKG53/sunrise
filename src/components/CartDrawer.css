@@ -574,6 +574,7 @@
 .cart-sale-card.is-ten { background: var(--tier-10, #CC1F39); }
 .cart-sale-pct { font-size: 1.05rem; font-weight: 900; line-height: 1; text-transform: uppercase; letter-spacing: -0.01em; }
 .cart-sale-card.is-all .cart-sale-pct { color: var(--gold, #C4922A); }
+.cart-sale-mega { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.03em; line-height: 1.2; color: var(--cream, #FEFBE0); text-align: center; text-wrap: balance; }
 .cart-sale-lockups { display: flex; align-items: center; gap: 0.25rem; line-height: 0; white-space: nowrap; }
 .cart-sale-plus { font-weight: 900; font-size: 0.8rem; color: var(--gold, #C4922A); line-height: 1; }
 .cart-sale-on { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.9; }
@@ -617,3 +618,144 @@
 }
 .cart-upsell-add:hover:not(:disabled) { background: var(--near-black, #1a1a1a); color: #fefbe0; }
 .cart-upsell-add:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── BLACK FRIDAY MEGA SALE (Nov 27, lib/megaSale.ts) ─────────────────────
+   Its own progress bar (plum) under the free-shipping bar, gift lines, the 12-can flavor picker, the nudge and the first-gift message. */
+/* Gift bar: same layout as the free-shipping bar, plum instead of gold/green. */
+.cart-gift-meter { color: var(--plum, #822665); }
+.cart-gift-meter .cart-ship-text strong { color: var(--plum, #822665); }
+.cart-meter.is-gift { background: rgba(130, 38, 101, 0.14); }
+.cart-meter.is-gift > span { background: var(--plum, #822665); }
+
+.cart-item.is-gift .cart-item-title { color: var(--plum, #822665); font-weight: 800; letter-spacing: 0.01em; }
+.cart-gift-change {
+  justify-self: start;
+  align-self: flex-start;
+  margin-top: 0.2rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--cart-ink, #1a1a1a);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.cart-gift-change:hover:not(:disabled) { color: var(--cart-accent); }
+.cart-gift-change:disabled { opacity: 0.6; cursor: not-allowed; }
+.cart-gift-was { font-size: 0.8125rem; color: rgba(26, 26, 26, 0.5); }
+.cart-gift-free {
+  background: var(--cart-good);
+  color: #f7efe0;
+  border-radius: 999px;
+  padding: 0.12rem 0.6rem;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+
+/* Flavor picker: a sheet over the drawer (inside it, so the focus trap and
+   Esc stay with the cart). Tap outside the sheet to close. */
+.cart-gift-picker {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(26, 26, 26, 0.45);
+}
+.cart-gift-sheet {
+  width: 100%;
+  max-height: calc(100% - 3.5rem);
+  overflow-y: auto;
+  background: #f7efe0;
+  border-radius: 16px 16px 0 0;
+  padding: 0.25rem 1.25rem 1.25rem;
+  box-shadow: 0 -8px 24px rgba(26, 26, 26, 0.18);
+}
+.cart-gift-sheet-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0 0.5rem;
+  background: #f7efe0;
+}
+.cart-gift-sheet-title { margin: 0; font-weight: 800; font-size: 1rem; }
+.cart-gift-group + .cart-gift-group { margin-top: 0.75rem; }
+.cart-gift-group-title {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.6);
+}
+.cart-gift-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.cart-gift-tile {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0.35rem 0.55rem;
+  background: #fffaf0;
+  border: 2px solid rgba(26, 26, 26, 0.12);
+  border-radius: 10px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+.cart-gift-tile img { width: 100%; max-width: 64px; aspect-ratio: 3 / 4; object-fit: contain; }
+.cart-gift-tile-name { font-size: 0.75rem; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
+.cart-gift-tile-pick {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cart-good);
+}
+.cart-gift-tile:hover:not(:disabled) { border-color: rgba(26, 26, 26, 0.4); }
+.cart-gift-tile.is-current { border-color: var(--cart-good); background: #f1f5e8; }
+.cart-gift-tile:focus-visible { outline: 2px solid var(--cart-accent); outline-offset: 2px; }
+.cart-gift-tile:disabled { cursor: not-allowed; opacity: 0.7; }
+
+.cart-mega-nudge .cart-upsell-name { font-weight: 700; }
+
+.cart-mega-toast {
+  margin: 0.75rem 1.5rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  background: var(--plum, #822665);
+  color: #fefbe0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.cart-mega-toast p { margin: 0; flex: 1; }
+.cart-mega-toast-x {
+  flex: none;
+  background: none;
+  border: 0;
+  color: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0 0.1rem;
+  cursor: pointer;
+}

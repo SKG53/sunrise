@@ -11,12 +11,18 @@
 //   - Free-shipping slide: the evergreen line on the gold field.
 // With no sale phase on, only the free-shipping line shows (no rotation).
 //
+// BLACK FRIDAY MEGA SALE (Nov 27; MEGA_SALE_ENABLED in lib/sale.ts): the
+// sale slide reads "BLACK FRIDAY MEGA SALE · 30% OFF + FREE 4-PACKS WITH
+// EVERY $100 · Ends Monday 11:59 PM CT" (GM6 email v3 wording). One line on
+// desktop; three short lines on phones, never shrunk below the sale slide's
+// size.
+//
 // Each slide links to /products. Reduced-motion: rotation still runs so both
 // messages are seen, but the slide becomes a plain fade and fireworks are
 // suppressed. Styling lives in sunrise-shell.css under ANNOUNCEMENT BAR.
 
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
-import { activeSale, SALE_ALL_LABEL } from "../lib/sale";
+import { activeSale, MEGA_SALE_ENABLED, SALE_ALL_LABEL } from "../lib/sale";
 
 type Banner = { sale: boolean; node: ReactNode };
 
@@ -72,7 +78,25 @@ function Fireworks() {
 
 export function AnnouncementBar() {
   const sale = activeSale();
-  const banners: Banner[] = sale
+  const banners: Banner[] = sale && MEGA_SALE_ENABLED
+    ? [
+        {
+          sale: true,
+          node: (
+            <span className="announcement-bar-mega">
+              <span className="announcement-bar-name">BLACK FRIDAY MEGA SALE</span>
+              <span className="announcement-bar-sep"> · </span>
+              <span className="announcement-bar-mega-deal">
+                <span className="announcement-bar-emph">30% OFF</span> + <span className="announcement-bar-emph">FREE 4-PACKS</span> WITH EVERY $100
+              </span>
+              <span className="announcement-bar-sep"> · </span>
+              <span className="announcement-bar-mega-end">Ends Monday 11:59 PM CT</span>
+            </span>
+          ),
+        },
+        FREE_SHIPPING,
+      ]
+    : sale
     ? [
         {
           sale: true,

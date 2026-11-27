@@ -6,8 +6,9 @@ import { SiteFooter } from "../components/SiteFooter";
 import { FreeSampleSection } from "../components/FreeSampleSection";
 import { DealBanner } from "../components/DealBanner";
 import { SaleDeals } from "../components/SaleDeals";
+import { MegaSaleBlock } from "../components/MegaSaleBlock";
 import { OrderCountdown } from "../components/OrderCountdown";
-import { activeSale } from "../lib/sale";
+import { activeSale, MEGA_SALE_ENABLED } from "../lib/sale";
 import {
   render5mgLockup,
   render10mgLockup,
@@ -507,11 +508,16 @@ function ProductsPage() {
           </p>
         </section>
 
+        {/* ── BLACK FRIDAY MEGA SALE (MEGA_SALE_ENABLED, lib/sale.ts; manual flag),
+             above the federal-rules countdown (founder, Nov 27) ── */}
+        {saleNow && <MegaSaleBlock className="is-products" />}
+
         {/* ── ORDER COUNTDOWN to ORDER_DEADLINE (no automatic end; remove by hand) ── */}
         <OrderCountdown className="is-products" ctaHref="#lineup" />
 
-        {/* ── SALE (lib/sale.ts): same sale block as home section 02 ── */}
-        {saleNow && (
+        {/* ── SALE (lib/sale.ts): same sale block as home section 02. Hidden
+             while the Mega Sale is on (founder, Nov 27). ── */}
+        {saleNow && !MEGA_SALE_ENABLED && (
           <SaleDeals
             sale={saleNow}
             showCta={false}

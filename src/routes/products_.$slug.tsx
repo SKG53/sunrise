@@ -33,7 +33,8 @@ import { getShopifyMapping } from "@/lib/shopifyProductMap";
 import { fetchProductByHandle } from "@/lib/shopify";
 import { useShopifyProduct } from "@/hooks/useShopifyProduct";
 import { useCartStore } from "@/stores/cartStore";
-import { activeSale, canBuyTier, NO_COUNTDOWN_TIERS, salePercentFor, salePrice, type SalePhase } from "@/lib/sale";
+import { activeSale, canBuyTier, MEGA_SALE_ENABLED, NO_COUNTDOWN_TIERS, salePercentFor, salePrice, type SalePhase } from "@/lib/sale";
+import { MEGA_COPY } from "@/lib/megaSale";
 import { OrderCountdown } from "@/components/OrderCountdown";
 // PD claim-strip icons — imported as raw SVG strings so they can be inlined
 // via dangerouslySetInnerHTML. The src/ versions use `fill: currentColor` for
@@ -955,6 +956,14 @@ function ProductDetailPage() {
                     <span className="pd-price-amount">$X.XX</span>
                   )}
                 </div>
+
+                {/* BLACK FRIDAY MEGA SALE (lib/megaSale.ts): 30mg + 60mg pages only. */}
+                {MEGA_SALE_ENABLED && salePct > 0 && (product.tier === 30 || product.tier === 60) && (
+                  <p className="pd-mega-line">
+                    <span aria-hidden="true">🎁 </span>
+                    {MEGA_COPY.pdp}
+                  </p>
+                )}
 
                 {/* Order countdown (compact): under the price, above the packs. */}
                 {showCountdown && <OrderCountdown variant="compact" />}

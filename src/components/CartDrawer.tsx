@@ -23,6 +23,13 @@
 //      "Not you?" (founder, Oct 29: full address, not masked).
 //   7. "N more items below" pill when cart lines are hidden under the fold
 //      (Oct 29); tap scrolls the next hidden line into view.
+//   8. BLACK FRIDAY MEGA SALE (Nov 27, lib/megaSale.ts; MEGA_SALE_ENABLED):
+//      a second, plum progress bar under the free-shipping bar (FREE 4-pack
+//      at every $100 of 30mg + 60mg after discounts); gift lines sit under the
+//      paid lines (can, "FREE 4-Pack", flavor, struck list price, FREE, no
+//      stepper or Remove, "Change flavor" opens a 12-can picker); an
+//      "Add 1 more 4-pack" nudge replaces CartSaleUpsell; the first gift
+//      shows a dismissible "FREE 4-pack added!" message (per session).
 //
 // SALE MODE (lib/sale.ts, Nov 2026): while a sale phase is on, the wallet UI
 // (deal block, chooser, "Your deals", foreign-code offer) is hidden; a sale
@@ -48,8 +55,19 @@ import {
   type WalletEntry,
 } from "@/lib/dealWallet";
 import { clearIdentityEmail, knownEmail, subscribeIdentity } from "@/lib/identity";
-import { FREE_10MG, LIVE_FOUR_PACKS, type FourPack } from "@/lib/liveFourPacks";
-import { activeSale, legacyOffersPaused, SALE_ALL_LABEL, type SalePhase } from "@/lib/sale";
+import { cardCanSrc, FREE_10MG, LIVE_FOUR_PACKS, packBySlug, type FourPack } from "@/lib/liveFourPacks";
+import { activeSale, legacyOffersPaused, MEGA_SALE_ENABLED, SALE_ALL_LABEL, salePrice, type SalePhase } from "@/lib/sale";
+import {
+  earnedGifts,
+  giftByVariant,
+  isGiftLine,
+  MEGA_COPY,
+  MEGA_GIFT_LIST,
+  MEGA_GIFT_VARIANTS,
+  MEGA_STEP_CENTS,
+  qualifyingCents,
+  topFlavor,
+} from "@/lib/megaSale";
 import { CartSaleUpsell } from "./CartSaleUpsell";
 import { SaleTitle } from "./SaleFireworks";
 import { render10mgLockup, render30mgLockup, render60mgLockup } from "@/lib/sunrise-components";
@@ -83,6 +101,10 @@ function useKnownEmail(): string | null {
   return email;
 }
 
+const giftFlavor = (handle: string) => {
+  const p = packBySlug(handle);
+  return p ? `${p.flavor}${p.cannabinoid ? ` + ${p.cannabinoid}` : ""}` : handle;
+};
 const packLabel = (p: FourPack) => `${p.flavor} · ${p.tier}mg${p.cannabinoid ? ` +${p.cannabinoid}` : ""}`;
 const dealLabel = (code: string | null) => dealByCode(code)?.label ?? code ?? "";
 
@@ -100,6 +122,9 @@ export function CartDrawer() {
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const swapFreeItem = useCartStore((s) => s.swapFreeItem);
+  const changeGiftFlavor = useCartStore((s) => s.changeGiftFlavor);
+  const megaToast = useCartStore((s) => s.megaToast);
+  const dismissMegaToast = useCartStore((s) => s.dismissMegaToast);
   const restoreFreeItem = useCartStore((s) => s.restoreFreeItem);
   const useSavedDeal = useCartStore((s) => s.useSavedDeal);
   const syncCart = useCartStore((s) => s.syncCart);
@@ -120,6 +145,11 @@ export function CartDrawer() {
   const [emailError, setEmailError] = useState("");
   const [confirm, setConfirm] = useState<{ lineId: string; qty: number } | null>(null);
   const [picked, setPicked] = useState<string | null>(null);
+  // Mega Sale flavor picker: the gift line it's open for.
+  const [pickerFor, setPickerFor] = useState<string | null>(null);
+  const pickerRef = useRef<string | null>(null);
+  pickerRef.current = pickerFor;
+  const pickerPanelRef = useRef<HTMLDivElement>(null);
   const asideRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const primaryRef = useRef<HTMLButtonElement>(null);
@@ -204,6 +234,24 @@ export function CartDrawer() {
   const savings = Math.max(0, Math.round((before - after) * 100) / 100);
   const currency = cart?.currency ?? items[0]?.price.currencyCode ?? "USD";
 
+  // Mega Sale: qualifying spend (Shopify's 30/60mg line totals), gifts, nudge.
+  const megaOn = MEGA_SALE_ENABLED;
+  const paidItems = items.filter((i) => !isGiftLine(i));
+  const giftItems = items.filter(isGiftLine);
+  const qCents = qualifyingCents(items);
+  const earned = earnedGifts(items);
+  const stepEndCents = (earned + 1) * MEGA_STEP_CENTS;
+  const stepFill = Math.max(0, Math.min((qCents - earned * MEGA_STEP_CENTS) / MEGA_STEP_CENTS, 1));
+  const nudgePack = useMemo(() => {
+    if (!megaOn) return null;
+    const top = topFlavor(items);
+    const p = top ? packBySlug(top.slug) : null;
+    if (!p) return null;
+    const pct = activeSale()?.pctAll ?? 0;
+    const addCents = Math.round((pct > 0 ? salePrice(p.fallbackPrice, pct) : p.fallbackPrice) * 100);
+    return qCents < stepEndCents && qCents + addCents >= stepEndCents ? { p, addCents } : null;
+  }, [megaOn, items, qCents, stepEndCents]);
+
   const rule = dealByCode(active);
   const lines = useMemo(() => dealLines(items), [items]);
   const declined = isFreeDeclined(cart?.id ?? null, active);
@@ -269,10 +317,12 @@ export function CartDrawer() {
   useEffect(() => setPicked(choice?.preselect ?? null), [choice]);
 
   const close = useCallback(() => {
+    setPickerFor(null);
+    dismissMegaToast();
     takeNotices(true);
     window.dispatchEvent(new CustomEvent(WALLET_EVENT));
     closeCart();
-  }, [closeCart]);
+  }, [closeCart, dismissMegaToast]);
 
   // Open/close: scroll lock, Esc, focus trap, focus in on open, focus back on close.
   useEffect(() => {
@@ -286,10 +336,16 @@ export function CartDrawer() {
     const orig = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") {
+        // Flavor picker open: Esc closes the picker only.
+        if (pickerRef.current) setPickerFor(null);
+        else close();
+        return;
+      }
       if (e.key !== "Tab" || !asideRef.current) return;
+      const scope = pickerPanelRef.current ?? asideRef.current;
       const f = Array.from(
-        asideRef.current.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input, select, [tabindex]:not([tabindex="-1"])'),
+        scope.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input, select, [tabindex]:not([tabindex="-1"])'),
       ).filter((el) => el.offsetParent !== null);
       if (!f.length) return;
       const first = f[0];
@@ -313,6 +369,25 @@ export function CartDrawer() {
       if (t) window.clearTimeout(t);
     };
   }, [isOpen, close]);
+
+  // Picker: focus the current pick on open; back to its "Change flavor" link on close.
+  const pickerOpener = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (pickerFor) {
+      pickerOpener.current = document.activeElement as HTMLElement | null;
+      const t = window.setTimeout(
+        () => pickerPanelRef.current?.querySelector<HTMLElement>(".cart-gift-tile.is-current, .cart-gift-tile")?.focus(),
+        30,
+      );
+      return () => window.clearTimeout(t);
+    }
+    pickerOpener.current?.focus?.({ preventScroll: true });
+    pickerOpener.current = null;
+  }, [pickerFor]);
+  // A gift that leaves the cart closes its picker.
+  useEffect(() => {
+    if (pickerFor && !items.some((i) => i.lineId === pickerFor)) setPickerFor(null);
+  }, [items, pickerFor]);
 
   const onCheckout = () => {
     if (knownEmail()) {
@@ -443,6 +518,158 @@ export function CartDrawer() {
     );
   };
 
+  const renderGift = (item: CartItem) => {
+    const g = giftByVariant(item.variantId);
+    const was = item.compareAt ?? (g ? MEGA_GIFT_LIST[g.tier] : null);
+    return (
+      <li key={item.lineId ?? item.variantId} className="cart-item is-gift">
+        <div className="cart-item-image">{item.imageUrl && <img src={item.imageUrl} alt="" />}</div>
+        <div className="cart-item-body">
+          <div className="cart-item-title">FREE 4-Pack</div>
+          <div className="cart-item-variant">{g?.label ?? item.variantTitle}</div>
+          {g && item.lineId && (
+            <button
+              type="button"
+              className="cart-gift-change"
+              onClick={() => setPickerFor(item.lineId)}
+              disabled={busy}
+              aria-haspopup="dialog"
+            >
+              Change flavor
+            </button>
+          )}
+        </div>
+        <div className="cart-item-side">
+          {was ? <s className="cart-gift-was">{money(was)}</s> : null}
+          <span className="cart-gift-free">FREE</span>
+        </div>
+      </li>
+    );
+  };
+
+  const pickerLine = pickerFor ? items.find((i) => i.lineId === pickerFor) ?? null : null;
+  const giftPicker = pickerLine ? (
+    <div className="cart-gift-picker" onClick={() => setPickerFor(null)}>
+      <div
+        ref={pickerPanelRef}
+        className="cart-gift-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cart-gift-picker-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="cart-gift-sheet-head">
+          <p id="cart-gift-picker-title" className="cart-gift-sheet-title">
+            Pick your FREE 4-pack
+          </p>
+          <button type="button" className="cart-close" onClick={() => setPickerFor(null)} aria-label="Close flavor picker">
+            ×
+          </button>
+        </div>
+        {([60, 30] as const).map((tier) => (
+          <div key={tier} className="cart-gift-group">
+            <p className="cart-gift-group-title">{tier}mg</p>
+            <ul className="cart-gift-grid">
+              {MEGA_GIFT_VARIANTS.filter((v) => v.tier === tier).map((v) => {
+                const current = v.variantId === pickerLine.variantId;
+                return (
+                  <li key={v.variantId}>
+                    <button
+                      type="button"
+                      className={`cart-gift-tile${current ? " is-current" : ""}`}
+                      aria-pressed={current}
+                      disabled={busy}
+                      onClick={() => {
+                        const id = pickerLine.lineId as string;
+                        setPickerFor(null);
+                        if (!current) changeGiftFlavor(id, v.variantId);
+                      }}
+                    >
+                      <img src={cardCanSrc(v.slug)} alt="" loading="lazy" />
+                      <span className="cart-gift-tile-name">{giftFlavor(v.slug)}</span>
+                      {current && <span className="cart-gift-tile-pick">Your pick</span>}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  ) : null;
+
+  // Mega Sale: its OWN bar under the free-shipping bar (founder, Nov 27:
+  // "separate progress bars for free shipping vs. this free gift"). Plum, not
+  // gold/green; fills toward the next $100 of 30mg + 60mg after discounts.
+  const megaBar = (
+    <div className={`cart-gift-meter${earned > 0 ? " has-gift" : ""}`}>
+      <p className="cart-ship-text">
+        <span aria-hidden="true">🎁 </span>
+        {earned > 0 ? (
+          <>
+            <strong>
+              {earned} FREE 4-pack{earned === 1 ? "" : "s"} added
+            </strong>{" "}
+            · {money((stepEndCents - qCents) / 100)} to your next one
+          </>
+        ) : (
+          <>
+            You're <strong>{money((stepEndCents - qCents) / 100)}</strong> away from a FREE 4-pack
+          </>
+        )}
+      </p>
+      <div
+        className="cart-meter is-gift"
+        role="progressbar"
+        aria-valuemin={earned * 100}
+        aria-valuemax={(earned + 1) * 100}
+        aria-valuenow={Math.min(qCents, stepEndCents) / 100}
+        aria-label="Progress to your next FREE 4-pack"
+      >
+        <span style={{ width: `${Math.round(stepFill * 100)}%` }} />
+      </div>
+    </div>
+  );
+
+  const megaNudge = nudgePack ? (
+    <div className="cart-upsell cart-mega-nudge" aria-label="Mega Sale offer">
+      <div className="cart-upsell-item">
+        <img src={cardCanSrc(nudgePack.p.slug)} alt="" className="cart-upsell-img" loading="lazy" />
+        <span className="cart-upsell-name">
+          {MEGA_COPY.nudge}
+          <span className="cart-upsell-tier">
+            {" "}
+            · {giftFlavor(nudgePack.p.slug)} {nudgePack.p.tier}mg 4-pack, {money(nudgePack.addCents / 100)}
+          </span>
+        </span>
+        <button
+          type="button"
+          className="cart-upsell-add"
+          disabled={busy}
+          onClick={() =>
+            addItem(
+              {
+                variantId: nudgePack.p.variantId,
+                productHandle: nudgePack.p.slug,
+                productTitle: nudgePack.p.flavor,
+                variantTitle: "4 PACK",
+                imageUrl: cardCanSrc(nudgePack.p.slug),
+                price: { amount: nudgePack.p.fallbackPrice.toFixed(2), currencyCode: "USD" },
+                quantity: 1,
+                selectedOptions: [{ name: "Pack", value: "4 PACK" }],
+              },
+              { open: true },
+            )
+          }
+          aria-label={`Add 1 more ${nudgePack.p.flavor} ${nudgePack.p.tier}mg 4-pack and unlock a FREE 4-pack`}
+        >
+          Add
+        </button>
+      </div>
+    </div>
+  ) : null;
+
   const dealBlock =
     rule && ev.status !== "none" ? (
       ev.status === "complete" ? (
@@ -508,6 +735,14 @@ export function CartDrawer() {
         </header>
 
         <div className="cart-scroll" ref={scrollRef}>
+          {megaToast && (
+            <div className="cart-mega-toast" role="status">
+              <p>{megaToast}</p>
+              <button type="button" className="cart-mega-toast-x" onClick={dismissMegaToast} aria-label="Dismiss">
+                ×
+              </button>
+            </div>
+          )}
           {(notices.length > 0 || choice) && (
             <div className="cart-notices" aria-live="polite">
               {notices.map((n) => (
@@ -566,6 +801,7 @@ export function CartDrawer() {
                   <span style={{ width: `${Math.round(ship.fill * 100)}%` }} />
                 </div>
               </div>
+              {megaOn && megaBar}
               {dealBlock}
               {sale && (
                 <div className={`cart-deal cart-sale${savings > 0 ? " is-complete" : ""}`}>
@@ -575,6 +811,8 @@ export function CartDrawer() {
                   <div className="cart-sale-cards">
                     <div className={`cart-sale-card is-all${saleTiers.all ? " is-on" : ""}`}>
                       <span className="cart-sale-pct">{sale.pctAll}% off</span>
+                      {/* Mega Sale (founder, Nov 27): the card says the gift too. */}
+                      {megaOn && <span className="cart-sale-mega">+ FREE 4-PACK with every $100</span>}
                       <span className="cart-sale-lockups" aria-label="30mg and 60mg">
                         <span dangerouslySetInnerHTML={{ __html: render60mgLockup(17, "#FEFBE0") }} />
                         <span className="cart-sale-plus">+</span>
@@ -630,7 +868,10 @@ export function CartDrawer() {
                 </a>
               </div>
             ) : (
-              <ul className="cart-items">{items.map(renderItem)}</ul>
+              <ul className="cart-items">
+                {paidItems.map(renderItem)}
+                {giftItems.map(renderGift)}
+              </ul>
             )}
             {below > 0 && (
               <div className="cart-more">
@@ -712,7 +953,9 @@ export function CartDrawer() {
                   {savings > 0 && <span>−{money(savings)}</span>}
                 </div>
               )}
-              {sale && <CartSaleUpsell sale={sale} items={items} busy={busy} onAdd={(it) => addItem(it, { open: true })} />}
+              {megaOn
+                ? megaNudge
+                : sale && <CartSaleUpsell sale={sale} items={items} busy={busy} onAdd={(it) => addItem(it, { open: true })} />}
               <div className="cart-total">
                 <span>Total</span>
                 <span className="cart-total-amount">
@@ -784,6 +1027,7 @@ export function CartDrawer() {
             </footer>
           )}
         </div>
+        {giftPicker}
       </aside>
     </>
   );

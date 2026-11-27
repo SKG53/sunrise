@@ -1287,3 +1287,13 @@
 }
 .pd-pack-btn-sale s { font-weight: 500; opacity: 0.6; }
 .pd-pack-btn-sale b { font-weight: 800; }
+
+/* BLACK FRIDAY MEGA SALE line (Nov 27): under the price, 30mg + 60mg only. */
+.pd-mega-line {
+  margin: calc(var(--base) * -0.3) 0 calc(var(--base) * 0.4);
+  font-family: 'Montserrat', sans-serif;
+  font-size: calc(var(--base) * 0.3);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--plum);
+}

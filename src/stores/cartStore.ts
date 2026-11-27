@@ -50,6 +50,16 @@
 //  10. Other tabs (fix Oct 29): a cart change in another tab is picked up only
 //      when lines, codes or email changed, never for a new checkout-link key
 //      alone (that made two open tabs re-sync each other ~4×/second).
+//  11. BLACK FRIDAY MEGA SALE (Nov 27, lib/megaSale.ts): a FREE 4-pack line
+//      (quantity 1, `_sr_gift`=BFMEGA, `_sr_gift_slot`=1,2,…) for every $100
+//      of 30mg + 60mg after discounts, settled in step 2b. Extras come out
+//      (notice only when spend actually fell under a $100 step), drift is
+//      normalized, missing gifts are added in one call with the cart's
+//      top flavor. A gift keeps its flavor until the shopper changes it. No
+//      analytics events for any of this. A failed add shows one notice and
+//      isn't retried until the page reloads or the earned count changes.
+//      `_bf_mega_spend` / `_bf_mega_gifts` go on the order via
+//      buildAttributes() at checkout (one write, so nothing is erased).
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
@@ -80,7 +90,18 @@ import {
 } from "@/lib/deals";
 import { FREE_10MG, packByVariantId } from "@/lib/liveFourPacks";
 import { activeSale,
-  legacyOffersPaused, saleChannel, saleCodesFor, sameCodes, SALE_EVENT } from "@/lib/sale";
+  legacyOffersPaused, MEGA_SALE_ENABLED, saleChannel, saleCodesFor, sameCodes, SALE_EVENT } from "@/lib/sale";
+import {
+  defaultGift,
+  earnedGifts,
+  giftByVariant,
+  GIFT_ATTR,
+  GIFT_SLOT_ATTR,
+  GIFT_VALUE,
+  isGiftLine,
+  MEGA_COPY,
+  qualifyingCents,
+} from "@/lib/megaSale";
 import {
   cartAttributesUpdateFull,
   cartBuyerIdentityUpdateFull,
@@ -105,7 +126,8 @@ const PENDING_CHECKOUT_KEY = "sunrise:checkout-pending"; // localStorage: {cartI
 const SINGLES_ASKED_KEY = "sunrise:singles-asked"; // sessionStorage: cartIds already asked
 const CHECKOUT_TIMEOUT_MS = 8000;
 const FORGET_WINDOW_MS = 2 * 60 * 60 * 1000;
-const MAX_PASSES = 5;
+const MAX_PASSES = 6;
+const MEGA_TOAST_KEY = "sunrise:mega-toast"; // sessionStorage: first-gift toast shown
 
 export interface CartItem {
   lineId: string | null;
@@ -123,9 +145,17 @@ export interface CartItem {
   lineDiscount?: number;
   /** Code this line was auto-added for, else null. */
   freeFor?: string | null;
+  /** Mega Sale gift tag (`_sr_gift`) and slot (`_sr_gift_slot`), when set. */
+  giftTag?: string | null;
+  giftSlot?: string | null;
+  /** Variant compare-at price (FREE 4-Pack: the 4-pack it stands for). */
+  compareAt?: number | null;
 }
 
-export type AddInput = Omit<CartItem, "lineId" | "lineTotal" | "lineDiscount" | "freeFor" | "productId"> & {
+export type AddInput = Omit<
+  CartItem,
+  "lineId" | "lineTotal" | "lineDiscount" | "freeFor" | "productId" | "giftTag" | "giftSlot" | "compareAt"
+> & {
   /** Build Your Box free pick: the deal code it's free under (tagged `_sr_free`). */
   freeFor?: string | null;
 };
@@ -151,6 +181,11 @@ interface CartStore {
   updateQuantity: (lineId: string, quantity: number) => Promise<void>;
   removeItem: (lineId: string) => Promise<void>;
   swapFreeItem: (lineId: string, variantId: string) => Promise<void>;
+  /** Mega Sale: change a gift's flavor (same line, both attributes kept). */
+  changeGiftFlavor: (lineId: string, variantId: string) => Promise<void>;
+  /** Mega Sale: "FREE 4-pack added!" message, shown once per browser session. */
+  megaToast: string | null;
+  dismissMegaToast: () => void;
   restoreFreeItem: () => Promise<void>;
   /** Replace a foreign code with the saved deal (shopper's choice). */
   useSavedDeal: () => Promise<void>;
@@ -178,6 +213,9 @@ function toItems(cart: CartView | null): CartItem[] {
     lineTotal: l.lineTotal,
     lineDiscount: l.lineDiscount,
     freeFor: l.attributes[FREE_ATTR] || null,
+    giftTag: l.attributes[GIFT_ATTR] || null,
+    giftSlot: l.attributes[GIFT_SLOT_ATTR] || null,
+    compareAt: l.compareAt ?? null,
   }));
 }
 
@@ -263,6 +301,12 @@ function buildAttributes(cart: CartView | null): Array<{ key: string; value: str
       add("_sr_deal_source", entry?.source);
       add("_sr_box", entry?.box ? "1" : "");
     }
+    // Mega Sale, for fulfillment's cross-check (validation v1 §3.2: inside
+    // this one write, or checkout's attribute update would erase them).
+    if (MEGA_SALE_ENABLED && cart) {
+      add("_bf_mega_spend", (qualifyingCents(cart.lines) / 100).toFixed(2));
+      add("_bf_mega_gifts", String(cart.lines.filter(isGiftLine).reduce((n, l) => n + l.quantity, 0)));
+    }
     // Where the cart STARTED: set once at creation, kept afterwards (4.1i).
     add("_sr_capture_page", cart?.attributes._sr_capture_page || (typeof location !== "undefined" ? location.pathname : ""));
   } catch {
@@ -272,8 +316,9 @@ function buildAttributes(cart: CartView | null): Array<{ key: string; value: str
 }
 
 function snapshotLines(items: CartItem[]): NewLine[] {
+  // Mega gifts are left out: reconcile re-adds the right number.
   return items
-    .filter((i) => i.quantity > 0)
+    .filter((i) => i.quantity > 0 && !isGiftLine(i))
     .map((i) => ({
       merchandiseId: i.variantId,
       quantity: i.quantity,
@@ -330,7 +375,7 @@ function klaviyoCartProps(items: CartItem[], cart: CartView | null) {
       ItemPrice: Number(i.price.amount),
       RowTotal: i.lineTotal ?? Number((Number(i.price.amount) * i.quantity).toFixed(2)),
       ImageURL: i.imageUrl,
-      Free: !!i.freeFor,
+      Free: !!i.freeFor || isGiftLine(i),
     })),
   };
 }
@@ -388,6 +433,8 @@ const usageChecked = new Set<string>(); // cartId|code|email
 const freeAddFailed = new Set<string>(); // cartId|code
 let replaceForeign = false;
 let usedCodeStop = false; // set when a used code was found during checkout prep
+const megaLastEarned = new Map<string, number>(); // cartId → gifts earned at the last settle
+const megaAddFailed = new Set<string>(); // cartId|earned: don't retry until reload or a new count
 
 const timeout = (ms: number) => new Promise<"timeout">((r) => setTimeout(() => r("timeout"), ms));
 
@@ -441,6 +488,20 @@ export const useCartStore = create<CartStore>()(
         }
         pendingWarnings.push(...res.warnings);
         apply(res.cart);
+        return res;
+      };
+
+      /** Mega gift add / flavor change: one mutation with NO cart rebuild. A
+       *  gift variant that's missing or drafted comes back as "merchandise …
+       *  does not exist", which `mutate` would read as a lost cart and rebuild
+       *  into a new one (verified Nov 27). Warnings are dropped: a gift that
+       *  can't be added gets its own notice, not the low-stock one. */
+      const giftMutate = async (fn: (cartId: string) => Promise<CartResult>): Promise<CartResult | null> => {
+        const id = get().cartId;
+        if (!id) return null;
+        const res = await fn(id);
+        if (res.ok) apply(res.cart);
+        else console.warn("[mega] gift update failed:", res.errors);
         return res;
       };
 
@@ -539,6 +600,92 @@ export const useCartStore = create<CartStore>()(
               if (!(await mutate((id) => cartDiscountCodesUpdateFull(id, want ? [active as string] : [])))?.ok) break;
               continue;
             }
+          }
+
+          // 2b) BLACK FRIDAY MEGA SALE gifts (lib/megaSale.ts). Runs after the
+          //     codes, so line totals are Shopify's discounted ones.
+          const gifts = items.filter(isGiftLine);
+          if (MEGA_SALE_ENABLED || gifts.length) {
+            if (!MEGA_SALE_ENABLED) {
+              pushNotice(MEGA_COPY.ended);
+              if (!(await mutate((id) => cartLinesRemoveFull(id, gifts.map((g) => g.lineId as string))))?.ok) break;
+              continue;
+            }
+            const earned = earnedGifts(items);
+            const slotOf = (g: CartItem) => {
+              const n = g.giftTag === GIFT_VALUE ? Number(g.giftSlot) : NaN;
+              return Number.isInteger(n) && n > 0 ? n : Infinity;
+            };
+            // Keep the lowest slots; unslotted lines (added outside the site) last.
+            const ranked = [...gifts].sort((a, b) => slotOf(a) - slotOf(b));
+            const keep = ranked.slice(0, earned);
+            const extra = ranked.slice(earned);
+            if (extra.length) {
+              const prev = megaLastEarned.get(cart.id);
+              // Notice only when spend really fell under a $100 step; duplicate
+              // or outside-the-site extras come out silently.
+              if (prev !== undefined && earned < prev) pushNotice(MEGA_COPY.dropped(earned + 1));
+              megaLastEarned.set(cart.id, earned);
+              if (!(await mutate((id) => cartLinesRemoveFull(id, extra.map((g) => g.lineId as string))))?.ok) break;
+              continue;
+            }
+            // Drift: quantity 1, our tag, and a unique slot on every kept gift.
+            const used = new Set<number>();
+            const needSlot: CartItem[] = [];
+            keep.forEach((g) => {
+              const n = slotOf(g);
+              if (n !== Infinity && !used.has(n)) used.add(n);
+              else needSlot.push(g);
+            });
+            const nextSlot = () => {
+              let n = 1;
+              while (used.has(n)) n++;
+              used.add(n);
+              return n;
+            };
+            const fixes = keep
+              .filter((g) => g.quantity !== 1 || needSlot.includes(g))
+              .map((g) => ({
+                id: g.lineId as string,
+                quantity: 1,
+                attributes: [
+                  { key: GIFT_ATTR, value: GIFT_VALUE },
+                  { key: GIFT_SLOT_ATTR, value: String(needSlot.includes(g) ? nextSlot() : slotOf(g)) },
+                ],
+              }));
+            if (fixes.length) {
+              if (!(await mutate((id) => cartLinesUpdateFull(id, fixes)))?.ok) break;
+              continue;
+            }
+            // Too few: add the missing slots in ONE call, cart's top flavor.
+            const failKey = `${cart.id}|${earned}`;
+            if (keep.length < earned && !megaAddFailed.has(failKey)) {
+              const gift = defaultGift(items);
+              const add: NewLine[] = Array.from({ length: earned - keep.length }, () => ({
+                merchandiseId: gift.variantId,
+                quantity: 1,
+                attributes: [
+                  { key: GIFT_ATTR, value: GIFT_VALUE },
+                  { key: GIFT_SLOT_ATTR, value: String(nextSlot()) },
+                ],
+              }));
+              const res = await giftMutate((id) => cartLinesAddFull(id, add));
+              const have = get().items.filter((i) => isGiftLine(i) && i.giftTag === GIFT_VALUE).length;
+              if (!res?.ok || have < earned) {
+                // Fail safe: one notice, no retry loop, the paid cart still works.
+                megaAddFailed.add(failKey);
+                pushNotice(MEGA_COPY.failed);
+                megaLastEarned.set(cart.id, earned);
+                converged = true;
+                break;
+              }
+              if (!readJSON<boolean>(ss(), MEGA_TOAST_KEY, false)) {
+                writeJSON(ss(), MEGA_TOAST_KEY, true);
+                set({ megaToast: MEGA_COPY.toast(gift.label) });
+              }
+              continue;
+            }
+            megaLastEarned.set(cart.id, earned);
           }
 
           // 3) Once per cart/code/email, ask Shopify directly (covers reloads,
@@ -723,6 +870,8 @@ export const useCartStore = create<CartStore>()(
         isCheckingOut: false,
         error: null,
         foreignCode: null,
+        megaToast: null,
+        dismissMegaToast: () => set({ megaToast: null }),
 
         openCart: () => set({ isOpen: true }),
         closeCart: () => set({ isOpen: false }),
@@ -834,6 +983,37 @@ export const useCartStore = create<CartStore>()(
                   { id: lineId, quantity: line.quantity, merchandiseId: variantId, attributes: [{ key: FREE_ATTR, value: line.freeFor as string }] },
                 ]),
               );
+              await reconcileInner();
+            });
+          } finally {
+            set({ isLoading: false });
+          }
+        },
+
+        changeGiftFlavor: async (lineId, variantId) => {
+          const target = giftByVariant(variantId);
+          if (!target) return;
+          set({ isLoading: true });
+          try {
+            await enqueue(async () => {
+              const line = get().items.find((i) => i.lineId === lineId);
+              if (!line || !isGiftLine(line) || line.variantId === variantId) return;
+              // Same line, both attributes kept. No analytics (not an add/remove).
+              const res = await giftMutate((id) =>
+                cartLinesUpdateFull(id, [
+                  {
+                    id: lineId,
+                    quantity: 1,
+                    merchandiseId: variantId,
+                    attributes: [
+                      { key: GIFT_ATTR, value: GIFT_VALUE },
+                      { key: GIFT_SLOT_ATTR, value: line.giftSlot || "1" },
+                    ],
+                  },
+                ]),
+              );
+              if (!res?.ok) pushNotice("We couldn't change your free 4-pack's flavor right now. Please try again.");
+              if (get().megaToast) set({ megaToast: null });
               await reconcileInner();
             });
           } finally {

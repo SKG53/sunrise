@@ -5,8 +5,9 @@ import { SiteFooter } from "../components/SiteFooter";
 import { S07Map } from "../components/S07Map";
 import { FreeSampleSection } from "../components/FreeSampleSection";
 import { SaleDeals } from "../components/SaleDeals";
+import { MegaSaleBlock } from "../components/MegaSaleBlock";
 import { OrderCountdown } from "../components/OrderCountdown";
-import { activeSale } from "../lib/sale";
+import { activeSale, MEGA_SALE_ENABLED } from "../lib/sale";
 import {
   renderWordmark,
   render5mgLockup,
@@ -346,10 +347,15 @@ function HomePage() {
         {/* During a sale phase (lib/sale.ts) the manifesto is replaced by the */}
         {/* deal in the same gradient type-on treatment. Back automatically    */}
         {/* when the sale ends.                                                */}
-        {/* 02a · ORDER COUNTDOWN + federal line (replaces FederalDateNotice, Nov 23; no automatic end) */}
+        {/* 02a · BLACK FRIDAY MEGA SALE (MEGA_SALE_ENABLED, lib/sale.ts; manual flag),
+            above the federal-rules countdown (founder, Nov 27) */}
+        {sale && <MegaSaleBlock />}
+        {/* 02b · ORDER COUNTDOWN + federal line (replaces FederalDateNotice, Nov 23; no automatic end) */}
         <OrderCountdown />
+        {/* 30% OFF block (ribbon + potency lockups): hidden while the Mega Sale
+            is on (founder, Nov 27); back when MEGA_SALE_ENABLED = false. */}
         {sale ? (
-          <SaleDeals sale={sale} />
+          MEGA_SALE_ENABLED ? null : <SaleDeals sale={sale} />
         ) : (
         <section className="s02-brand-statement">
           <div className="container">
